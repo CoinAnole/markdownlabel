@@ -8,8 +8,8 @@
   - Create `__init__.py` with `MarkdownLabel` export
   - _Requirements: 1.1_
 
-- [ ] 2. Implement InlineRenderer for Kivy markup conversion
-  - [ ] 2.1 Create InlineRenderer class with render method
+- [x] 2. Implement InlineRenderer for Kivy markup conversion
+  - [x] 2.1 Create InlineRenderer class with render method
     - Implement `text()` method with Kivy markup escaping (`[` → `&bl;`, `]` → `&br;`, `&` → `&amp;`)
     - Implement `strong()` method returning `[b]...[/b]`
     - Implement `emphasis()` method returning `[i]...[/i]`
@@ -18,10 +18,10 @@
     - Implement `link()` method returning `[ref=url]...[/ref]`
     - Implement `softbreak()` and `linebreak()` methods
     - _Requirements: 3.2, 3.3, 3.4, 3.5, 7.1, 13.3_
-  - [ ] 2.2 Write property test for inline formatting conversion
+  - [x] 2.2 Write property test for inline formatting conversion
     - **Property 4: Inline Formatting Conversion**
     - **Validates: Requirements 3.2, 3.3, 3.4, 3.5**
-  - [ ] 2.3 Write property test for special character escaping
+  - [x] 2.3 Write property test for special character escaping
     - **Property 19: Special Character Escaping**
     - **Validates: Requirements 13.3**
 

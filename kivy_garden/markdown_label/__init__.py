@@ -16,7 +16,9 @@ Example usage::
 from kivy.uix.boxlayout import BoxLayout
 from kivy.properties import StringProperty
 
-__all__ = ('MarkdownLabel',)
+from .inline_renderer import InlineRenderer
+
+__all__ = ('MarkdownLabel', 'InlineRenderer')
 
 from ._version import __version__
 
