@@ -1,3 +1,6 @@
 [submodule "external/kivy"]
 	path = external/kivy
 	url = https://github.com/kivy/kivy.git
+[submodule "external/mistune"]
+	path = external/mistune
+	url = https://github.com/lepture/mistune.git
