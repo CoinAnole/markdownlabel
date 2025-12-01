@@ -1,0 +1,32 @@
+---
+alwaysApply: true
+---
+
+Project: Kivy Garden MarkdownLabel — a Kivy Garden flower that renders Markdown documents as interactive Kivy UI. It offers a Label-compatible API for easy migration but extends BoxLayout (and is not a drop-in Label replacment) because Markdown rendering builds multiple widgets; supports full Markdown syntax, links, headings, lists, tables, code blocks, and styling controls.
+
+Purpose/target: Give Kivy apps rich formatted text without hand-building widget trees. Targeted at Kivy developers who need Markdown content with Label-like properties and link callbacks.
+
+Key features:
+- Full Markdown blocks: headings, paragraphs, lists, tables, quotes, fenced code, images.
+- Inline formatting: bold/italic/strike/code/links with markup escaping.
+- Interactive links via `on_ref_press`; configurable fonts/colors/sizes.
+- Built on mistune 3.x with plugins (tables, strikethrough).
+
+Architecture: Three-layer pipeline—mistune parses to AST; `KivyRenderer` builds block-level Kivy widgets (layouts, labels, images) with nesting depth safeguards; `InlineRenderer` turns inline tokens into safe Kivy markup strings. `MarkdownSerializer` supports AST→Markdown round-trips for tests.
+
+Package/namespace: Modern Kivy Garden flower using namespace package `kivy_garden.markdownlabel` (not legacy `garden.*`); import via `from kivy_garden.markdownlabel import MarkdownLabel`.
+
+Key modules:
+- `kivy_garden/markdownlabel/__init__.py`: exposes `MarkdownLabel` plus render/serialize helpers; builds AST with Mistune (tables + strikethrough plugins) and renders via `KivyRenderer`; serializes back to Markdown with `MarkdownSerializer`.
+- `kivy_garden/markdownlabel/inline_renderer.py`: converts inline tokens to Kivy markup (bold/italic/code/links/etc) with markup escaping.
+- `kivy_garden/markdownlabel/kivy_renderer.py`: block-level renderer building Kivy widget trees (headings with scaled sizes, lists with markers/indentation, code blocks with monospace + background, images via `AsyncImage`, nesting guards).
+- `kivy_garden/markdownlabel/markdown_serializer.py`: AST→Markdown round-trip support for tests.
+- Version in `kivy_garden/markdownlabel/_version.py`.
+
+Packaging/deps: Python 3.8–3.12; installable as `kivy_garden.markdownlabel` (see `setup.py`). Runtime deps: `kivy>=2.0.0`, `mistune>=3.0.0`; extras for dev/test use pytest, hypothesis, coverage, sphinx. Flake8 config lives in `setup.cfg`.
+
+Docs: Sphinx sources under `doc/`; published at https://kivy-garden.github.io/markdownlabel/.
+
+Testing: pytest property-based tests in `kivy_garden/markdownlabel/tests/`; they set `KIVY_NO_ARGS=1` and `KIVY_NO_CONSOLELOG=1` for headless runs—keep those when running CI locally (e.g., `pytest` from repo root).
+
+Repo structure note: `external/` contains vendored upstream Kivy and Mistune sources/docs/examples; usually leave untouched unless updating vendored copies.
