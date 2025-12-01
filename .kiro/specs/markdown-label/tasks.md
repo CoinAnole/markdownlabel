@@ -1,6 +1,6 @@
 # Implementation Plan
 
-- [ ] 1. Set up project structure and dependencies
+- [x] 1. Set up project structure and dependencies
   - Rename `kivy_garden/flower` to `kivy_garden/markdown_label`
   - Update `setup.py` to replace `flower` references with `markdown_label`
   - Add `mistune>=3.0.0` to dependencies in `setup.py`

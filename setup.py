@@ -7,8 +7,7 @@ from os import path
 
 here = path.abspath(path.dirname(__file__))
 
-filename = path.join(here, 'kivy_garden', 'flower', '_version.py')
-# change this                              ^^^^^^
+filename = path.join(here, 'kivy_garden', 'markdown_label', '_version.py')
 locals = {}
 with open(filename, "rb") as fh:
     exec(compile(fh.read(), filename, 'exec'), globals(), locals)
@@ -17,12 +16,12 @@ __version__ = locals['__version__']
 with open(path.join(here, 'README.md'), encoding='utf-8') as f:
     long_description = f.read()
 
-URL = 'https://github.com/kivy-garden/flower'
+URL = 'https://github.com/kivy-garden/markdown_label'
 
 setup(
-    name='kivy_garden.flower',
+    name='kivy_garden.markdown_label',
     version=__version__,
-    description='A kivy garden flower demo.',
+    description='A Kivy widget that renders Markdown as interactive UI elements.',
     long_description=long_description,
     long_description_content_type='text/markdown',
     url=URL,
@@ -33,19 +32,24 @@ setup(
         'Intended Audience :: Developers',
         'Topic :: Software Development :: Libraries',
         'License :: OSI Approved :: MIT License',
-        'Programming Language :: Python :: 3.5',
-        'Programming Language :: Python :: 3.6',
-        'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.10',
+        'Programming Language :: Python :: 3.11',
+        'Programming Language :: Python :: 3.12',
     ],
-    keywords='Kivy kivy-garden',
+    keywords='Kivy kivy-garden markdown',
 
     packages=find_namespace_packages(include=['kivy_garden.*']),
-    install_requires=[],
+    install_requires=[
+        'kivy>=2.0.0',
+        'mistune>=3.0.0',
+    ],
     extras_require={
         'dev': ['pytest>=3.6', 'pytest-cov', 'pytest-asyncio',
-                'sphinx_rtd_theme'],
+                'sphinx_rtd_theme', 'hypothesis>=6.0.0'],
         'ci': ['coveralls', 'pycodestyle'],
+        'test': ['pytest>=3.6', 'hypothesis>=6.0.0'],
     },
     package_data={},
     data_files=[],
