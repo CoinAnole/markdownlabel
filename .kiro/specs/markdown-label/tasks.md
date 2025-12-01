@@ -18,10 +18,10 @@
     - Implement `link()` method returning `[ref=url]...[/ref]`
     - Implement `softbreak()` and `linebreak()` methods
     - _Requirements: 3.2, 3.3, 3.4, 3.5, 7.1, 13.3_
-  - [ ]* 2.2 Write property test for inline formatting conversion
+  - [ ] 2.2 Write property test for inline formatting conversion
     - **Property 4: Inline Formatting Conversion**
     - **Validates: Requirements 3.2, 3.3, 3.4, 3.5**
-  - [ ]* 2.3 Write property test for special character escaping
+  - [ ] 2.3 Write property test for special character escaping
     - **Property 19: Special Character Escaping**
     - **Validates: Requirements 13.3**
 
@@ -32,10 +32,10 @@
     - Implement `heading()` with font size based on level (h1=2.5x, h2=2x, h3=1.75x, h4=1.5x, h5=1.25x, h6=1x base)
     - Implement `blank_line()` returning empty widget
     - _Requirements: 2.1, 3.1_
-  - [ ]* 3.2 Write property test for heading font hierarchy
+  - [ ] 3.2 Write property test for heading font hierarchy
     - **Property 3: Heading Font Size Hierarchy**
     - **Validates: Requirements 2.1**
-  - [ ]* 3.3 Write property test for paragraph markup enabled
+  - [ ] 3.3 Write property test for paragraph markup enabled
     - **Property 5: Paragraph Markup Enabled**
     - **Validates: Requirements 3.1**
   - [ ] 3.4 Implement list rendering
@@ -43,10 +43,10 @@
     - Implement `list_item()` with bullet/number prefix in horizontal BoxLayout
     - Handle nested lists with indentation (padding_left increases per level)
     - _Requirements: 4.1, 4.2, 4.3, 4.4_
-  - [ ]* 3.5 Write property test for list structure
+  - [ ] 3.5 Write property test for list structure
     - **Property 6: List Structure Preservation**
     - **Validates: Requirements 4.1, 4.2**
-  - [ ]* 3.6 Write property test for nested list indentation
+  - [ ] 3.6 Write property test for nested list indentation
     - **Property 7: Nested List Indentation**
     - **Validates: Requirements 4.3**
   - [ ] 3.7 Implement code block rendering
@@ -54,10 +54,10 @@
     - Add dark background using canvas instructions
     - Store language info in widget attribute `language_info`
     - _Requirements: 6.1, 6.2, 6.3_
-  - [ ]* 3.8 Write property test for code block styling
+  - [ ] 3.8 Write property test for code block styling
     - **Property 10: Code Block Styling**
     - **Validates: Requirements 6.1, 6.2**
-  - [ ]* 3.9 Write property test for code block language metadata
+  - [ ] 3.9 Write property test for code block language metadata
     - **Property 11: Code Block Language Metadata**
     - **Validates: Requirements 6.3**
   - [ ] 3.10 Implement block quote rendering
@@ -65,20 +65,20 @@
     - Add left padding for indentation
     - Handle nested quotes with cumulative indentation
     - _Requirements: 9.1, 9.2, 9.3_
-  - [ ]* 3.11 Write property test for block quote structure
+  - [ ] 3.11 Write property test for block quote structure
     - **Property 14: Block Quote Structure**
     - **Validates: Requirements 9.1**
   - [ ] 3.12 Implement thematic break rendering
     - Implement `thematic_break()` returning Widget with horizontal line on canvas
     - _Requirements: 10.1_
-  - [ ]* 3.13 Write property test for thematic break rendering
+  - [ ] 3.13 Write property test for thematic break rendering
     - **Property 15: Thematic Break Rendering**
     - **Validates: Requirements 10.1**
   - [ ] 3.14 Implement image rendering
     - Implement `image()` returning AsyncImage with source URL
     - Store alt text for fallback
     - _Requirements: 8.1_
-  - [ ]* 3.15 Write property test for image widget creation
+  - [ ] 3.15 Write property test for image widget creation
     - **Property 13: Image Widget Creation**
     - **Validates: Requirements 8.1**
 
@@ -89,10 +89,10 @@
     - Implement `table_cell()` with halign from alignment attribute
     - Handle empty cells with empty Label widgets
     - _Requirements: 5.1, 5.2, 5.3, 5.4_
-  - [ ]* 4.2 Write property test for table grid structure
+  - [ ] 4.2 Write property test for table grid structure
     - **Property 8: Table Grid Structure**
     - **Validates: Requirements 5.1**
-  - [ ]* 4.3 Write property test for table alignment
+  - [ ] 4.3 Write property test for table alignment
     - **Property 9: Table Alignment Application**
     - **Validates: Requirements 5.2**
 
@@ -107,20 +107,20 @@
     - Implement `_rebuild_widgets()` to parse and render
     - Set `size_hint_y=None` and bind height to content
     - _Requirements: 1.1, 1.2, 1.3, 11.1_
-  - [ ]* 6.2 Write property test for widget tree generation
+  - [ ] 6.2 Write property test for widget tree generation
     - **Property 1: Widget Tree Generation**
     - **Validates: Requirements 1.1**
-  - [ ]* 6.3 Write property test for reactive text updates
+  - [ ] 6.3 Write property test for reactive text updates
     - **Property 2: Reactive Text Updates**
     - **Validates: Requirements 1.2**
-  - [ ]* 6.4 Write property test for auto-sizing behavior
+  - [ ] 6.4 Write property test for auto-sizing behavior
     - **Property 16: Auto-Sizing Behavior**
     - **Validates: Requirements 11.1**
   - [ ] 6.5 Implement link interaction
     - Register `on_ref_press` event
     - Bind child Label `on_ref_press` to bubble up to MarkdownLabel
     - _Requirements: 7.2_
-  - [ ]* 6.6 Write property test for link ref markup
+  - [ ] 6.6 Write property test for link ref markup
     - **Property 12: Link Ref Markup**
     - **Validates: Requirements 7.1**
 
@@ -131,7 +131,7 @@
     - Implement `serialize_inline()` for inline token serialization
     - Add `to_markdown()` method to MarkdownLabel
     - _Requirements: 12.1, 12.2_
-  - [ ]* 7.2 Write property test for round-trip serialization
+  - [ ] 7.2 Write property test for round-trip serialization
     - **Property 17: Round-Trip Serialization**
     - **Validates: Requirements 12.2, 12.3**
 
@@ -140,7 +140,7 @@
     - Track nesting depth during rendering
     - Limit to 10 levels, log warning if exceeded
     - _Requirements: 13.1_
-  - [ ]* 8.2 Write property test for deep nesting stability
+  - [ ] 8.2 Write property test for deep nesting stability
     - **Property 18: Deep Nesting Stability**
     - **Validates: Requirements 13.1**
   - [ ] 8.3 Handle empty elements
