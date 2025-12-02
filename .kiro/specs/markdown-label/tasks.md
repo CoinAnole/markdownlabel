@@ -99,28 +99,28 @@
 - [x] 5. Checkpoint
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 6. Implement MarkdownLabel widget
-  - [ ] 6.1 Create MarkdownLabel class extending BoxLayout
+- [x] 6. Implement MarkdownLabel widget
+  - [x] 6.1 Create MarkdownLabel class extending BoxLayout
     - Add `text` StringProperty with on_text callback
     - Add styling properties: `base_font_size`, `code_font_name`, `link_color`, `code_bg_color`
     - Configure mistune parser with table, strikethrough plugins
     - Implement `_rebuild_widgets()` to parse and render
     - Set `size_hint_y=None` and bind height to content
     - _Requirements: 1.1, 1.2, 1.3, 11.1_
-  - [ ] 6.2 Write property test for widget tree generation
+  - [x] 6.2 Write property test for widget tree generation
     - **Property 1: Widget Tree Generation**
     - **Validates: Requirements 1.1**
-  - [ ] 6.3 Write property test for reactive text updates
+  - [x] 6.3 Write property test for reactive text updates
     - **Property 2: Reactive Text Updates**
     - **Validates: Requirements 1.2**
-  - [ ] 6.4 Write property test for auto-sizing behavior
+  - [x] 6.4 Write property test for auto-sizing behavior
     - **Property 16: Auto-Sizing Behavior**
     - **Validates: Requirements 11.1**
-  - [ ] 6.5 Implement link interaction
+  - [x] 6.5 Implement link interaction
     - Register `on_ref_press` event
     - Bind child Label `on_ref_press` to bubble up to MarkdownLabel
     - _Requirements: 7.2_
-  - [ ] 6.6 Write property test for link ref markup
+  - [x] 6.6 Write property test for link ref markup
     - **Property 12: Link Ref Markup**
     - **Validates: Requirements 7.1**
 
