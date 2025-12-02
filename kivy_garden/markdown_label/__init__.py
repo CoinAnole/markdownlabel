@@ -27,8 +27,9 @@ from mistune.plugins.formatting import strikethrough
 
 from .inline_renderer import InlineRenderer
 from .kivy_renderer import KivyRenderer
+from .markdown_serializer import MarkdownSerializer
 
-__all__ = ('MarkdownLabel', 'InlineRenderer', 'KivyRenderer')
+__all__ = ('MarkdownLabel', 'InlineRenderer', 'KivyRenderer', 'MarkdownSerializer')
 
 from ._version import __version__
 
@@ -202,12 +203,8 @@ class MarkdownLabel(BoxLayout):
     def to_markdown(self):
         """Serialize the current AST back to Markdown text.
         
-        Note: This method requires the MarkdownSerializer to be implemented.
-        
         Returns:
             Markdown string representation of the current AST
         """
-        # This will be implemented in task 7 (MarkdownSerializer)
-        raise NotImplementedError(
-            "to_markdown() requires MarkdownSerializer (task 7)"
-        )
+        serializer = MarkdownSerializer()
+        return serializer.serialize(self._ast_tokens)

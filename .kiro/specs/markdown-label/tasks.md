@@ -124,14 +124,14 @@
     - **Property 12: Link Ref Markup**
     - **Validates: Requirements 7.1**
 
-- [ ] 7. Implement MarkdownSerializer for round-trip testing
-  - [ ] 7.1 Create MarkdownSerializer class
+- [x] 7. Implement MarkdownSerializer for round-trip testing
+  - [x] 7.1 Create MarkdownSerializer class
     - Implement `serialize()` method to convert AST to Markdown string
     - Implement block serializers: `paragraph`, `heading`, `list`, `block_code`, `block_quote`, `table`, `thematic_break`
     - Implement `serialize_inline()` for inline token serialization
     - Add `to_markdown()` method to MarkdownLabel
     - _Requirements: 12.1, 12.2_
-  - [ ] 7.2 Write property test for round-trip serialization
+  - [x] 7.2 Write property test for round-trip serialization
     - **Property 17: Round-Trip Serialization**
     - **Validates: Requirements 12.2, 12.3**
 
