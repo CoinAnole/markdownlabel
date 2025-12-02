@@ -125,13 +125,20 @@ class TestInlineFormattingConversion:
     @given(link_token())
     @settings(max_examples=100)
     def test_link_produces_ref_tags(self, token):
-        """Link tokens produce [ref=url]...[/ref] markup."""
+        """Link tokens produce [ref=url]...[/ref] markup with color and underline styling."""
         renderer = InlineRenderer()
         result = renderer.link(token)
         url = token['attrs']['url']
         
-        assert result.startswith(f'[ref={url}]'), f"Link should start with [ref={url}], got: {result}"
-        assert result.endswith('[/ref]'), f"Link should end with [/ref], got: {result}"
+        # Links should contain the ref tag with the URL
+        assert f'[ref={url}]' in result, f"Link should contain [ref={url}], got: {result}"
+        assert '[/ref]' in result, f"Link should contain [/ref], got: {result}"
+        
+        # Links should have color and underline styling applied
+        assert '[color=' in result, f"Link should have color styling, got: {result}"
+        assert '[u]' in result, f"Link should have underline styling, got: {result}"
+        assert '[/u]' in result, f"Link should close underline styling, got: {result}"
+        assert '[/color]' in result, f"Link should close color styling, got: {result}"
 
 
 # **Feature: markdown-label, Property 19: Special Character Escaping**
