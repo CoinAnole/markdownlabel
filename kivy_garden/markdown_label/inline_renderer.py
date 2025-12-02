@@ -131,19 +131,25 @@ class InlineRenderer:
         return f'[s]{inner}[/s]'
     
     def link(self, token: Dict[str, Any]) -> str:
-        """Render link as [ref=url]...[/ref].
+        """Render link as [ref=url]...[/ref] with color and underline.
         
         Args:
             token: Token with 'children' and 'attrs' containing url
             
         Returns:
-            Kivy ref markup for clickable links
+            Kivy ref markup for clickable links with styling
         """
         children = token.get('children', [])
         attrs = token.get('attrs', {})
         url = attrs.get('url', '')
         inner = self.render(children)
-        return f'[ref={url}]{inner}[/ref]'
+        
+        # Convert RGBA color list to hex format for Kivy markup
+        r, g, b, a = self.link_color
+        color_hex = f'{int(r*255):02x}{int(g*255):02x}{int(b*255):02x}{int(a*255):02x}'
+        
+        # Apply color and underline to make links visually distinct
+        return f'[color={color_hex}][u][ref={url}]{inner}[/ref][/u][/color]'
     
     def softbreak(self, token: Dict[str, Any]) -> str:
         """Render soft line break as a space.
