@@ -1,26 +1,58 @@
-kivy-garden demo flower
-========================
+MarkdownLabel
+=============
 
-[![Github Build Status](https://github.com/kivy-garden/flower/workflows/Garden%20flower/badge.svg)](https://github.com/kivy-garden/flower/actions)
+[![Github Build Status](https://github.com/kivy-garden/markdown_label/workflows/Garden%20flower/badge.svg)](https://github.com/kivy-garden/markdown_label/actions)
 
-A kivy garden flower that shows how to add flowers.
+A Kivy widget that parses and renders Markdown documents as structured, interactive Kivy UI elements. It serves as a drop-in replacement for Kivy's standard Label widget but supports full Markdown syntax.
 
-See https://kivy-garden.github.io/flower/ for the rendered flower docs.
+See https://kivy-garden.github.io/markdown_label/ for the rendered flower docs.
 
 Please see the garden [instructions](https://kivy-garden.github.io) for how to use kivy garden flowers.
+
+Features
+--------
+
+* Full Markdown syntax support (headings, paragraphs, lists, tables, code blocks, block quotes, images)
+* Inline formatting (bold, italic, strikethrough, inline code, links)
+* Interactive links with `on_ref_press` event
+* Customizable styling (font sizes, colors, code font)
+* Built on mistune parser with plugin support
+* Auto-sizing widget that adapts to content
+
+Installation
+------------
+
+```bash
+pip install kivy_garden.markdown_label
+```
+
+Usage
+-----
+
+```python
+from kivy_garden.markdown_label import MarkdownLabel
+
+# Basic usage
+label = MarkdownLabel(text='# Hello World\n\nThis is **bold** text.')
+
+# Handle link clicks
+def on_link_click(instance, url):
+    print(f'Clicked: {url}')
+
+label.bind(on_ref_press=on_link_click)
+
+# Customize styling
+label.base_font_size = 18
+label.link_color = [0, 0.7, 1, 1]
+label.code_bg_color = [0.1, 0.1, 0.1, 1]
+```
 
 CI
 --
 
-Every push or pull request run the [GitHub Action](https://github.com/kivy-garden/flower/actions) CI.
+Every push or pull request run the [GitHub Action](https://github.com/kivy-garden/markdown_label/actions) CI.
 It tests the code on various OS and also generates wheels that can be released on PyPI upon a
 tag. Docs are also generated and uploaded to the repo as well as artifacts of the CI.
-
-
-TODO
--------
-
-* add your code
 
 Contributing
 --------------
