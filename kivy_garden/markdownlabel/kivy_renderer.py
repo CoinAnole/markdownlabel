@@ -290,17 +290,13 @@ class KivyRenderer:
         if ordered:
             self._list_counters.append(start)
         
-        # Create outer container to include bottom spacing
-        outer_container = BoxLayout(
-            orientation='vertical',
-            size_hint_y=None
-        )
-        outer_container.bind(minimum_height=outer_container.setter('height'))
+        # Add bottom spacing only for top-level lists
+        bottom_padding = self.base_font_size if self._list_depth == 1 else 0
         
         container = BoxLayout(
             orientation='vertical',
             size_hint_y=None,
-            padding=[self._list_depth * 20, 0, 0, 0]  # Left indent based on depth
+            padding=[self._list_depth * 20, 0, 0, bottom_padding]  # Left indent + bottom spacing
         )
         container.bind(minimum_height=container.setter('height'))
         
@@ -309,13 +305,6 @@ class KivyRenderer:
             if item_widget is not None:
                 container.add_widget(item_widget)
         
-        outer_container.add_widget(container)
-        
-        # Add bottom spacing only for top-level lists
-        if self._list_depth == 1:
-            spacer = Widget(size_hint_y=None, height=self.base_font_size)
-            outer_container.add_widget(spacer)
-        
         # Pop counter for ordered lists
         if ordered:
             self._list_counters.pop()
@@ -323,7 +312,7 @@ class KivyRenderer:
         self._list_depth -= 1
         self._nesting_depth -= 1
         
-        return outer_container
+        return container
     
     def _render_list_item(self, token: Dict[str, Any], ordered: bool, 
                           index: int, state: Any = None) -> BoxLayout:
@@ -610,7 +599,7 @@ class KivyRenderer:
         """
         return Widget(size_hint_y=None, height=5)
 
-    def table(self, token: Dict[str, Any], state: Any = None) -> BoxLayout:
+    def table(self, token: Dict[str, Any], state: Any = None) -> GridLayout:
         """Render a table as a GridLayout with bottom spacing.
         
         Args:
@@ -618,26 +607,19 @@ class KivyRenderer:
             state: Block state
             
         Returns:
-            BoxLayout containing GridLayout and spacing
+            GridLayout containing table cells
         """
         children = token.get('children', [])
         
         # Determine number of columns from the first row
         num_cols = self._get_table_column_count(token)
         
-        # Create outer container for table + spacing
-        outer_container = BoxLayout(
-            orientation='vertical',
-            size_hint_y=None
-        )
-        outer_container.bind(minimum_height=outer_container.setter('height'))
-        
-        # Create GridLayout with correct number of columns
+        # Create GridLayout with correct number of columns and bottom padding
         grid = GridLayout(
             cols=num_cols,
             size_hint_y=None,
             spacing=[2, 2],
-            padding=[5, 5, 5, 5]
+            padding=[5, 5, 5, 5 + self.base_font_size]  # Add bottom spacing via padding
         )
         grid.bind(minimum_height=grid.setter('height'))
         
@@ -649,13 +631,7 @@ class KivyRenderer:
             elif child_type == 'table_body':
                 self._render_table_section(child, grid, state, is_head=False)
         
-        outer_container.add_widget(grid)
-        
-        # Add bottom spacing
-        spacer = Widget(size_hint_y=None, height=self.base_font_size)
-        outer_container.add_widget(spacer)
-        
-        return outer_container
+        return grid
     
     def _get_table_column_count(self, token: Dict[str, Any]) -> int:
         """Get the number of columns in a table.
