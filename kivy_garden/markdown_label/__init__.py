@@ -155,7 +155,8 @@ class MarkdownLabel(BoxLayout):
         self._bind_ref_press_events(content)
         
         # Add rendered content
-        for child in list(content.children):
+        # Note: content.children is in reverse order, so we reverse it to maintain document order
+        for child in reversed(list(content.children)):
             content.remove_widget(child)
             self.add_widget(child)
     
