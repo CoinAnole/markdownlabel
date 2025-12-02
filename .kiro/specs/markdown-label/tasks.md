@@ -82,17 +82,17 @@
     - **Property 13: Image Widget Creation**
     - **Validates: Requirements 8.1**
 
-- [ ] 4. Implement table rendering
-  - [ ] 4.1 Implement table methods in KivyRenderer
+- [x] 4. Implement table rendering
+  - [x] 4.1 Implement table methods in KivyRenderer
     - Implement `table()` returning GridLayout with correct cols
     - Implement `table_head()`, `table_body()`, `table_row()`
     - Implement `table_cell()` with halign from alignment attribute
     - Handle empty cells with empty Label widgets
     - _Requirements: 5.1, 5.2, 5.3, 5.4_
-  - [ ] 4.2 Write property test for table grid structure
+  - [x] 4.2 Write property test for table grid structure
     - **Property 8: Table Grid Structure**
     - **Validates: Requirements 5.1**
-  - [ ] 4.3 Write property test for table alignment
+  - [x] 4.3 Write property test for table alignment
     - **Property 9: Table Alignment Application**
     - **Validates: Requirements 5.2**
 

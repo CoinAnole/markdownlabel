@@ -17,6 +17,7 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label import Label
 from kivy.uix.widget import Widget
 from kivy.uix.image import AsyncImage
+from kivy.uix.gridlayout import GridLayout
 
 from kivy_garden.markdown_label.kivy_renderer import KivyRenderer
 
@@ -560,3 +561,292 @@ class TestImageWidgetCreation:
         widget = renderer.image(token, None)
         
         assert hasattr(widget, 'alt_text'), "Image should have alt_text attribute"
+
+
+# Custom strategies for table tokens
+
+@st.composite
+def table_cell_token(draw, align=None, is_head=False):
+    """Generate a table cell token."""
+    text = draw(st.text(min_size=0, max_size=30, alphabet=st.characters(
+        whitelist_categories=['L', 'N', 'P', 'S'],
+        blacklist_characters='[]&'
+    )))
+    if align is None:
+        align = draw(st.sampled_from([None, 'left', 'center', 'right']))
+    
+    return {
+        'type': 'table_cell',
+        'children': [{'type': 'text', 'raw': text}] if text else [],
+        'attrs': {'align': align, 'head': is_head}
+    }
+
+
+@st.composite
+def table_row_token(draw, num_cols, alignments=None, is_head=False):
+    """Generate a table row token with specified number of columns."""
+    cells = []
+    for i in range(num_cols):
+        align = alignments[i] if alignments else None
+        cell = draw(table_cell_token(align=align, is_head=is_head))
+        cells.append(cell)
+    
+    return {
+        'type': 'table_row',
+        'children': cells
+    }
+
+
+@st.composite
+def table_token(draw, num_rows=None, num_cols=None):
+    """Generate a table token with specified dimensions."""
+    if num_rows is None:
+        num_rows = draw(st.integers(min_value=1, max_value=5))
+    if num_cols is None:
+        num_cols = draw(st.integers(min_value=1, max_value=5))
+    
+    # Generate alignments for columns
+    alignments = [draw(st.sampled_from([None, 'left', 'center', 'right'])) 
+                  for _ in range(num_cols)]
+    
+    # Generate header row
+    head_row = draw(table_row_token(num_cols, alignments, is_head=True))
+    
+    # Generate body rows
+    body_rows = []
+    for _ in range(num_rows - 1):  # -1 because header is one row
+        body_row = draw(table_row_token(num_cols, alignments, is_head=False))
+        body_rows.append(body_row)
+    
+    return {
+        'type': 'table',
+        'children': [
+            {
+                'type': 'table_head',
+                'children': [head_row]
+            },
+            {
+                'type': 'table_body',
+                'children': body_rows
+            }
+        ]
+    }
+
+
+# **Feature: markdown-label, Property 8: Table Grid Structure**
+# *For any* Markdown table with R rows and C columns, the rendered GridLayout
+# SHALL have cols=C and contain exactly R×C Label widgets.
+# **Validates: Requirements 5.1**
+
+class TestTableGridStructure:
+    """Property tests for table grid structure (Property 8)."""
+    
+    @given(st.integers(min_value=1, max_value=5), st.integers(min_value=1, max_value=5))
+    @settings(max_examples=100, deadline=None)
+    def test_table_has_correct_column_count(self, num_rows, num_cols):
+        """Table GridLayout has correct number of columns."""
+        renderer = KivyRenderer()
+        
+        # Create table token with specified dimensions
+        # Generate alignments for columns
+        alignments = [None] * num_cols
+        
+        # Generate header row
+        head_cells = [
+            {'type': 'table_cell', 'children': [{'type': 'text', 'raw': f'H{i}'}], 
+             'attrs': {'align': None, 'head': True}}
+            for i in range(num_cols)
+        ]
+        head_row = {'type': 'table_row', 'children': head_cells}
+        
+        # Generate body rows
+        body_rows = []
+        for r in range(num_rows - 1):
+            body_cells = [
+                {'type': 'table_cell', 'children': [{'type': 'text', 'raw': f'C{r}{c}'}],
+                 'attrs': {'align': None, 'head': False}}
+                for c in range(num_cols)
+            ]
+            body_rows.append({'type': 'table_row', 'children': body_cells})
+        
+        token = {
+            'type': 'table',
+            'children': [
+                {'type': 'table_head', 'children': [head_row]},
+                {'type': 'table_body', 'children': body_rows}
+            ]
+        }
+        
+        widget = renderer.table(token, None)
+        
+        assert isinstance(widget, GridLayout), f"Expected GridLayout, got {type(widget)}"
+        assert widget.cols == num_cols, \
+            f"Expected {num_cols} columns, got {widget.cols}"
+    
+    @given(st.integers(min_value=1, max_value=5), st.integers(min_value=1, max_value=5))
+    @settings(max_examples=100, deadline=None)
+    def test_table_has_correct_cell_count(self, num_rows, num_cols):
+        """Table contains exactly R×C Label widgets."""
+        renderer = KivyRenderer()
+        
+        # Generate header row
+        head_cells = [
+            {'type': 'table_cell', 'children': [{'type': 'text', 'raw': f'H{i}'}],
+             'attrs': {'align': None, 'head': True}}
+            for i in range(num_cols)
+        ]
+        head_row = {'type': 'table_row', 'children': head_cells}
+        
+        # Generate body rows
+        body_rows = []
+        for r in range(num_rows - 1):
+            body_cells = [
+                {'type': 'table_cell', 'children': [{'type': 'text', 'raw': f'C{r}{c}'}],
+                 'attrs': {'align': None, 'head': False}}
+                for c in range(num_cols)
+            ]
+            body_rows.append({'type': 'table_row', 'children': body_cells})
+        
+        token = {
+            'type': 'table',
+            'children': [
+                {'type': 'table_head', 'children': [head_row]},
+                {'type': 'table_body', 'children': body_rows}
+            ]
+        }
+        
+        widget = renderer.table(token, None)
+        
+        # Count Label widgets in the grid
+        label_count = sum(1 for child in widget.children if isinstance(child, Label))
+        expected_count = num_rows * num_cols
+        
+        assert label_count == expected_count, \
+            f"Expected {expected_count} cells (R={num_rows} × C={num_cols}), got {label_count}"
+    
+    @given(table_token())
+    @settings(max_examples=100, deadline=None)
+    def test_table_returns_gridlayout(self, token):
+        """Table tokens produce GridLayout widgets."""
+        renderer = KivyRenderer()
+        widget = renderer.table(token, None)
+        
+        assert isinstance(widget, GridLayout), f"Expected GridLayout, got {type(widget)}"
+    
+    @given(table_token())
+    @settings(max_examples=100, deadline=None)
+    def test_table_cells_are_labels(self, token):
+        """All table cells are Label widgets."""
+        renderer = KivyRenderer()
+        widget = renderer.table(token, None)
+        
+        for child in widget.children:
+            assert isinstance(child, Label), f"Expected Label, got {type(child)}"
+
+
+# **Feature: markdown-label, Property 9: Table Alignment Application**
+# *For any* Markdown table cell with specified alignment (left, center, right),
+# the corresponding Label widget SHALL have halign set to that alignment value.
+# **Validates: Requirements 5.2**
+
+class TestTableAlignmentApplication:
+    """Property tests for table alignment application (Property 9)."""
+    
+    @given(st.sampled_from(['left', 'center', 'right']))
+    @settings(max_examples=100, deadline=None)
+    def test_cell_alignment_applied(self, alignment):
+        """Table cell alignment is applied to Label halign."""
+        renderer = KivyRenderer()
+        
+        cell_token = {
+            'type': 'table_cell',
+            'children': [{'type': 'text', 'raw': 'Test'}],
+            'attrs': {'align': alignment, 'head': False}
+        }
+        
+        widget = renderer._render_table_cell(cell_token, None, is_head=False)
+        
+        assert isinstance(widget, Label), f"Expected Label, got {type(widget)}"
+        assert widget.halign == alignment, \
+            f"Expected halign='{alignment}', got '{widget.halign}'"
+    
+    @given(st.integers(min_value=1, max_value=3), st.integers(min_value=2, max_value=4))
+    @settings(max_examples=100, deadline=None)
+    def test_table_preserves_column_alignments(self, num_rows, num_cols):
+        """Table preserves alignment for each column."""
+        renderer = KivyRenderer()
+        
+        # Generate specific alignments for each column
+        alignments = ['left', 'center', 'right'][:num_cols]
+        while len(alignments) < num_cols:
+            alignments.append('left')
+        
+        # Generate header row with alignments
+        head_cells = [
+            {'type': 'table_cell', 'children': [{'type': 'text', 'raw': f'H{i}'}],
+             'attrs': {'align': alignments[i], 'head': True}}
+            for i in range(num_cols)
+        ]
+        head_row = {'type': 'table_row', 'children': head_cells}
+        
+        # Generate body rows with same alignments
+        body_rows = []
+        for r in range(num_rows - 1):
+            body_cells = [
+                {'type': 'table_cell', 'children': [{'type': 'text', 'raw': f'C{r}{c}'}],
+                 'attrs': {'align': alignments[c], 'head': False}}
+                for c in range(num_cols)
+            ]
+            body_rows.append({'type': 'table_row', 'children': body_cells})
+        
+        token = {
+            'type': 'table',
+            'children': [
+                {'type': 'table_head', 'children': [head_row]},
+                {'type': 'table_body', 'children': body_rows}
+            ]
+        }
+        
+        widget = renderer.table(token, None)
+        
+        # Verify each cell has correct alignment
+        # Note: GridLayout children are in reverse order (last added first)
+        children = list(reversed(widget.children))
+        
+        for row_idx in range(num_rows):
+            for col_idx in range(num_cols):
+                cell_idx = row_idx * num_cols + col_idx
+                cell = children[cell_idx]
+                expected_align = alignments[col_idx]
+                
+                assert cell.halign == expected_align, \
+                    f"Cell [{row_idx}][{col_idx}] expected halign='{expected_align}', got '{cell.halign}'"
+    
+    @given(st.sampled_from([None, 'invalid', '']))
+    @settings(max_examples=100, deadline=None)
+    def test_invalid_alignment_defaults_to_left(self, alignment):
+        """Invalid or missing alignment defaults to 'left'."""
+        renderer = KivyRenderer()
+        
+        cell_token = {
+            'type': 'table_cell',
+            'children': [{'type': 'text', 'raw': 'Test'}],
+            'attrs': {'align': alignment, 'head': False}
+        }
+        
+        widget = renderer._render_table_cell(cell_token, None, is_head=False)
+        
+        assert widget.halign == 'left', \
+            f"Expected halign='left' for invalid alignment, got '{widget.halign}'"
+    
+    @given(table_token())
+    @settings(max_examples=100, deadline=None)
+    def test_cell_stores_alignment_metadata(self, token):
+        """Table cells store alignment as metadata."""
+        renderer = KivyRenderer()
+        widget = renderer.table(token, None)
+        
+        for child in widget.children:
+            assert hasattr(child, 'cell_align'), "Cell should have cell_align attribute"
+            assert child.cell_align in ('left', 'center', 'right'), \
+                f"cell_align should be valid alignment, got '{child.cell_align}'"

@@ -526,3 +526,186 @@ class KivyRenderer:
             Small spacer widget
         """
         return Widget(size_hint_y=None, height=5)
+
+    def table(self, token: Dict[str, Any], state: Any = None) -> GridLayout:
+        """Render a table as a GridLayout.
+        
+        Args:
+            token: Table token with 'children' containing head and body
+            state: Block state
+            
+        Returns:
+            GridLayout containing table cells
+        """
+        children = token.get('children', [])
+        
+        # Determine number of columns from the first row
+        num_cols = self._get_table_column_count(token)
+        
+        # Create GridLayout with correct number of columns
+        grid = GridLayout(
+            cols=num_cols,
+            size_hint_y=None,
+            spacing=[2, 2],
+            padding=[5, 5, 5, 5]
+        )
+        grid.bind(minimum_height=grid.setter('height'))
+        
+        # Process table head and body
+        for child in children:
+            child_type = child.get('type', '')
+            if child_type == 'table_head':
+                self._render_table_section(child, grid, state, is_head=True)
+            elif child_type == 'table_body':
+                self._render_table_section(child, grid, state, is_head=False)
+        
+        return grid
+    
+    def _get_table_column_count(self, token: Dict[str, Any]) -> int:
+        """Get the number of columns in a table.
+        
+        Args:
+            token: Table token
+            
+        Returns:
+            Number of columns
+        """
+        children = token.get('children', [])
+        for child in children:
+            child_type = child.get('type', '')
+            if child_type in ('table_head', 'table_body'):
+                rows = child.get('children', [])
+                if rows:
+                    first_row = rows[0]
+                    cells = first_row.get('children', [])
+                    return len(cells)
+        return 1  # Default to 1 column if structure is unclear
+    
+    def _render_table_section(self, section: Dict[str, Any], grid: GridLayout, 
+                               state: Any, is_head: bool = False) -> None:
+        """Render a table section (head or body) into the grid.
+        
+        Args:
+            section: Table head or body token
+            grid: GridLayout to add cells to
+            state: Block state
+            is_head: Whether this is the header section
+        """
+        rows = section.get('children', [])
+        for row in rows:
+            self._render_table_row(row, grid, state, is_head)
+    
+    def _render_table_row(self, row: Dict[str, Any], grid: GridLayout,
+                          state: Any, is_head: bool = False) -> None:
+        """Render a table row into the grid.
+        
+        Args:
+            row: Table row token
+            grid: GridLayout to add cells to
+            state: Block state
+            is_head: Whether this row is in the header
+        """
+        cells = row.get('children', [])
+        for cell in cells:
+            cell_widget = self._render_table_cell(cell, state, is_head)
+            grid.add_widget(cell_widget)
+    
+    def _render_table_cell(self, cell: Dict[str, Any], state: Any,
+                           is_head: bool = False) -> Label:
+        """Render a table cell as a Label.
+        
+        Args:
+            cell: Table cell token
+            state: Block state
+            is_head: Whether this cell is in the header
+            
+        Returns:
+            Label widget for the cell
+        """
+        children = cell.get('children', [])
+        attrs = cell.get('attrs', {})
+        
+        # Get alignment from attrs
+        align = attrs.get('align', None)
+        halign = align if align in ('left', 'center', 'right') else 'left'
+        
+        # Render inline content
+        text = self._render_inline(children) if children else ''
+        
+        # Create label with appropriate styling
+        label = Label(
+            text=text,
+            markup=True,
+            font_size=self.base_font_size,
+            size_hint_y=None,
+            halign=halign,
+            valign='middle',
+            bold=is_head  # Bold for header cells
+        )
+        label.bind(texture_size=label.setter('size'))
+        
+        # Store alignment as metadata
+        label.cell_align = halign
+        label.is_header = is_head
+        
+        return label
+    
+    def table_head(self, token: Dict[str, Any], state: Any = None) -> None:
+        """Handle table_head token (processed by table()).
+        
+        This method exists for completeness but table_head is typically
+        processed as part of the table() method.
+        
+        Args:
+            token: Table head token
+            state: Block state
+            
+        Returns:
+            None (processed by parent table)
+        """
+        return None
+    
+    def table_body(self, token: Dict[str, Any], state: Any = None) -> None:
+        """Handle table_body token (processed by table()).
+        
+        This method exists for completeness but table_body is typically
+        processed as part of the table() method.
+        
+        Args:
+            token: Table body token
+            state: Block state
+            
+        Returns:
+            None (processed by parent table)
+        """
+        return None
+    
+    def table_row(self, token: Dict[str, Any], state: Any = None) -> None:
+        """Handle table_row token (processed by table()).
+        
+        This method exists for completeness but table_row is typically
+        processed as part of the table() method.
+        
+        Args:
+            token: Table row token
+            state: Block state
+            
+        Returns:
+            None (processed by parent table)
+        """
+        return None
+    
+    def table_cell(self, token: Dict[str, Any], state: Any = None) -> Label:
+        """Handle table_cell token directly.
+        
+        This method can be called directly if needed, but cells are typically
+        processed as part of the table() method.
+        
+        Args:
+            token: Table cell token
+            state: Block state
+            
+        Returns:
+            Label widget for the cell
+        """
+        return self._render_table_cell(token, state, is_head=False)
