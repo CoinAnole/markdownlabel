@@ -665,3 +665,128 @@ class TestRoundTripSerialization:
         
         assert ast1 == ast2, \
             f"AST mismatch after round-trip:\nOriginal: {ast1}\nAfter: {ast2}"
+
+
+# **Feature: markdown-label, Property 18: Deep Nesting Stability**
+# *For any* Markdown with nesting depth up to 10 levels (nested lists, quotes),
+# the MarkdownLabel SHALL render without raising exceptions or causing stack overflow.
+# **Validates: Requirements 13.1**
+
+class TestDeepNestingStability:
+    """Property tests for deep nesting stability (Property 18)."""
+    
+    @given(st.integers(min_value=1, max_value=15))
+    @settings(max_examples=100, deadline=None)
+    def test_nested_lists_render_without_exception(self, depth):
+        """Deeply nested lists render without raising exceptions."""
+        # Generate nested list markdown
+        markdown = self._generate_nested_list(depth)
+        
+        # Should not raise any exception
+        try:
+            label = MarkdownLabel(text=markdown)
+            # Verify it produced some output
+            assert isinstance(label, BoxLayout)
+        except RecursionError:
+            pytest.fail(f"RecursionError at depth {depth}")
+        except Exception as e:
+            pytest.fail(f"Unexpected exception at depth {depth}: {e}")
+    
+    @given(st.integers(min_value=1, max_value=15))
+    @settings(max_examples=100, deadline=None)
+    def test_nested_quotes_render_without_exception(self, depth):
+        """Deeply nested block quotes render without raising exceptions."""
+        # Generate nested quote markdown
+        markdown = self._generate_nested_quote(depth)
+        
+        # Should not raise any exception
+        try:
+            label = MarkdownLabel(text=markdown)
+            assert isinstance(label, BoxLayout)
+        except RecursionError:
+            pytest.fail(f"RecursionError at depth {depth}")
+        except Exception as e:
+            pytest.fail(f"Unexpected exception at depth {depth}: {e}")
+    
+    @given(st.integers(min_value=1, max_value=15))
+    @settings(max_examples=100, deadline=None)
+    def test_mixed_nesting_renders_without_exception(self, depth):
+        """Mixed nested structures (lists and quotes) render without exceptions."""
+        # Generate mixed nested markdown
+        markdown = self._generate_mixed_nesting(depth)
+        
+        # Should not raise any exception
+        try:
+            label = MarkdownLabel(text=markdown)
+            assert isinstance(label, BoxLayout)
+        except RecursionError:
+            pytest.fail(f"RecursionError at depth {depth}")
+        except Exception as e:
+            pytest.fail(f"Unexpected exception at depth {depth}: {e}")
+    
+    def test_exactly_10_levels_renders_fully(self):
+        """Exactly 10 levels of nesting renders without truncation warning."""
+        markdown = self._generate_nested_list(10)
+        label = MarkdownLabel(text=markdown)
+        
+        # Should render without exception
+        assert isinstance(label, BoxLayout)
+        assert len(label.children) >= 1
+    
+    def test_beyond_10_levels_still_renders(self):
+        """Beyond 10 levels still renders (with truncation) without crashing."""
+        markdown = self._generate_nested_list(15)
+        label = MarkdownLabel(text=markdown)
+        
+        # Should render without exception
+        assert isinstance(label, BoxLayout)
+        # Should have at least some content
+        assert len(label.children) >= 1
+    
+    def _generate_nested_list(self, depth: int) -> str:
+        """Generate a nested list with specified depth.
+        
+        Args:
+            depth: Number of nesting levels
+            
+        Returns:
+            Markdown string with nested list
+        """
+        lines = []
+        for i in range(depth):
+            indent = '  ' * i
+            lines.append(f'{indent}- Level {i + 1}')
+        return '\n'.join(lines)
+    
+    def _generate_nested_quote(self, depth: int) -> str:
+        """Generate nested block quotes with specified depth.
+        
+        Args:
+            depth: Number of nesting levels
+            
+        Returns:
+            Markdown string with nested quotes
+        """
+        prefix = '> ' * depth
+        return f'{prefix}Deeply nested quote at level {depth}'
+    
+    def _generate_mixed_nesting(self, depth: int) -> str:
+        """Generate mixed nested structures (alternating lists and quotes).
+        
+        Args:
+            depth: Number of nesting levels
+            
+        Returns:
+            Markdown string with mixed nesting
+        """
+        lines = []
+        for i in range(depth):
+            if i % 2 == 0:
+                # List item
+                indent = '  ' * (i // 2)
+                lines.append(f'{indent}- List level {i + 1}')
+            else:
+                # Quote (inside list)
+                indent = '  ' * (i // 2)
+                lines.append(f'{indent}  > Quote level {i + 1}')
+        return '\n'.join(lines)

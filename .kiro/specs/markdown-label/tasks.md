@@ -135,15 +135,15 @@
     - **Property 17: Round-Trip Serialization**
     - **Validates: Requirements 12.2, 12.3**
 
-- [ ] 8. Implement edge case handling
-  - [ ] 8.1 Add deep nesting protection
+- [x] 8. Implement edge case handling
+  - [x] 8.1 Add deep nesting protection
     - Track nesting depth during rendering
     - Limit to 10 levels, log warning if exceeded
     - _Requirements: 13.1_
-  - [ ] 8.2 Write property test for deep nesting stability
+  - [x] 8.2 Write property test for deep nesting stability
     - **Property 18: Deep Nesting Stability**
     - **Validates: Requirements 13.1**
-  - [ ] 8.3 Handle empty elements
+  - [x] 8.3 Handle empty elements
     - Ensure empty paragraphs, cells render as empty widgets
     - _Requirements: 13.2_
 

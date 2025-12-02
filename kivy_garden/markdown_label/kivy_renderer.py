@@ -5,6 +5,7 @@ KivyRenderer
 Renders mistune AST to Kivy widgets for block-level elements.
 """
 
+import logging
 from typing import Any, Dict, List, Optional
 
 from kivy.uix.boxlayout import BoxLayout
@@ -15,6 +16,8 @@ from kivy.uix.gridlayout import GridLayout
 from kivy.graphics import Color, Rectangle, Line
 
 from .inline_renderer import InlineRenderer
+
+logger = logging.getLogger(__name__)
 
 
 class KivyRenderer:
@@ -98,6 +101,15 @@ class KivyRenderer:
         Returns:
             Rendered widget or None
         """
+        # Check nesting depth limit
+        if self._nesting_depth > self._max_nesting_depth:
+            logger.warning(
+                f"Maximum nesting depth ({self._max_nesting_depth}) exceeded. "
+                f"Truncating nested content at depth {self._nesting_depth}."
+            )
+            # Return a placeholder widget indicating truncation
+            return self._create_truncation_placeholder()
+        
         token_type = token.get('type', '')
         method = getattr(self, token_type, None)
         
@@ -106,6 +118,23 @@ class KivyRenderer:
         
         # Unknown token type - skip with warning
         return None
+    
+    def _create_truncation_placeholder(self) -> Widget:
+        """Create a placeholder widget for truncated deeply nested content.
+        
+        Returns:
+            Label widget indicating content was truncated
+        """
+        label = Label(
+            text='[...content truncated due to deep nesting...]',
+            markup=False,
+            font_size=self.base_font_size,
+            size_hint_y=None,
+            color=[0.6, 0.6, 0.6, 1],  # Gray text
+            italic=True
+        )
+        label.bind(texture_size=label.setter('size'))
+        return label
     
     def _render_inline(self, children: List[Dict[str, Any]]) -> str:
         """Render inline tokens to Kivy markup string.
@@ -217,8 +246,9 @@ class KivyRenderer:
         start = attrs.get('start', 1)
         children = token.get('children', [])
         
-        # Track list depth for indentation
+        # Track list depth for indentation and nesting depth for protection
         self._list_depth += 1
+        self._nesting_depth += 1
         
         # Push counter for ordered lists
         if ordered:
@@ -241,6 +271,7 @@ class KivyRenderer:
             self._list_counters.pop()
         
         self._list_depth -= 1
+        self._nesting_depth -= 1
         
         return container
     
