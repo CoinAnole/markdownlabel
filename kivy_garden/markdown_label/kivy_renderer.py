@@ -443,6 +443,7 @@ class KivyRenderer:
             color=[0.9, 0.9, 0.9, 1]  # Light text on dark background
         )
         label.bind(texture_size=label.setter('size'))
+        label.bind(size=lambda instance, value: setattr(instance, 'text_size', (value[0], None)))
         
         container.add_widget(label)
         container.bind(minimum_height=container.setter('height'))
