@@ -341,12 +341,13 @@ class KivyRenderer:
         marker = Label(
             text=marker_text,
             font_size=self.base_font_size,
-            size_hint=(None, None),
+            size_hint=(None, 1),  # Match content height
             width=30,
             halign='right',
             valign='top'
         )
-        marker.bind(texture_size=lambda inst, val: setattr(inst, 'height', val[1]))
+        # Bind text_size to enable valign to work properly
+        marker.bind(size=lambda inst, val: setattr(inst, 'text_size', val))
         
         item_layout.add_widget(marker)
         
