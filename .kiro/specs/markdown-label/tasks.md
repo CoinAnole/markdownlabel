@@ -96,7 +96,7 @@
     - **Property 9: Table Alignment Application**
     - **Validates: Requirements 5.2**
 
-- [ ] 5. Checkpoint
+- [x] 5. Checkpoint
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 6. Implement MarkdownLabel widget
