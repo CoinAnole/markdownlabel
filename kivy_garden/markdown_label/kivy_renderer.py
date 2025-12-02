@@ -173,6 +173,32 @@ class KivyRenderer:
         
         return label
     
+    def block_text(self, token: Dict[str, Any], state: Any = None) -> Label:
+        """Render block text (used in list items) as a Label with markup enabled.
+        
+        Args:
+            token: Block text token with 'children'
+            state: Block state
+            
+        Returns:
+            Label widget with markup=True
+        """
+        children = token.get('children', [])
+        text = self._render_inline(children)
+        
+        label = Label(
+            text=text,
+            markup=True,
+            font_size=self.base_font_size,
+            size_hint_y=None,
+            text_size=(None, None),
+            halign='left',
+            valign='top'
+        )
+        label.bind(texture_size=label.setter('size'))
+        
+        return label
+    
     def heading(self, token: Dict[str, Any], state: Any = None) -> Label:
         """Render a heading as a Label with scaled font size.
         
