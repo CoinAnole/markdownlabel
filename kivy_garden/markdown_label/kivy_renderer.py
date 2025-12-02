@@ -725,11 +725,14 @@ class KivyRenderer:
             markup=True,
             font_size=self.base_font_size,
             size_hint_y=None,
+            size_hint_x=1,
             halign=halign,
             valign='middle',
             bold=is_head  # Bold for header cells
         )
-        label.bind(texture_size=label.setter('size'))
+        # Bind text_size to enable halign to work properly
+        label.bind(width=lambda inst, val: setattr(inst, 'text_size', (val, None)))
+        label.bind(texture_size=lambda inst, val: setattr(inst, 'height', val[1]))
         
         # Store alignment as metadata
         label.cell_align = halign
