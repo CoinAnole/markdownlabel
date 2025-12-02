@@ -8,7 +8,7 @@ standard Label widget but supports full Markdown syntax.
 
 Example usage::
 
-    from kivy_garden.markdown_label import MarkdownLabel
+    from kivy_garden.markdownlabel import MarkdownLabel
     
     label = MarkdownLabel(text='# Hello World\\n\\nThis is **bold** text.')
 """

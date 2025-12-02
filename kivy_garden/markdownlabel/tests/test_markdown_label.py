@@ -18,7 +18,7 @@ from kivy.uix.label import Label
 from kivy.uix.widget import Widget
 from kivy.uix.gridlayout import GridLayout
 
-from kivy_garden.markdown_label import MarkdownLabel
+from kivy_garden.markdownlabel import MarkdownLabel
 
 
 # Custom strategies for generating valid Markdown text

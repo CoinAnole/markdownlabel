@@ -8,7 +8,7 @@ to Kivy markup strings.
 import pytest
 from hypothesis import given, strategies as st, settings
 
-from kivy_garden.markdown_label.inline_renderer import InlineRenderer
+from kivy_garden.markdownlabel.inline_renderer import InlineRenderer
 
 
 # Custom strategies for generating valid inline tokens

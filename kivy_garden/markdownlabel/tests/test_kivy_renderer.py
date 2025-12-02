@@ -19,7 +19,7 @@ from kivy.uix.widget import Widget
 from kivy.uix.image import AsyncImage
 from kivy.uix.gridlayout import GridLayout
 
-from kivy_garden.markdown_label.kivy_renderer import KivyRenderer
+from kivy_garden.markdownlabel.kivy_renderer import KivyRenderer
 
 
 # Custom strategies for generating valid AST tokens

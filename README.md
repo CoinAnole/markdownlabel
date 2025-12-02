@@ -1,11 +1,11 @@
 MarkdownLabel
 =============
 
-[![Github Build Status](https://github.com/kivy-garden/markdown_label/workflows/Garden%20flower/badge.svg)](https://github.com/kivy-garden/markdown_label/actions)
+[![Github Build Status](https://github.com/kivy-garden/markdownlabel/workflows/Garden%20flower/badge.svg)](https://github.com/kivy-garden/markdownlabel/actions)
 
 A Kivy widget that parses and renders Markdown documents as structured, interactive Kivy UI elements. It serves as a drop-in replacement for Kivy's standard Label widget but supports full Markdown syntax.
 
-See https://kivy-garden.github.io/markdown_label/ for the rendered flower docs.
+See https://kivy-garden.github.io/markdownlabel/ for the rendered flower docs.
 
 Please see the garden [instructions](https://kivy-garden.github.io) for how to use kivy garden flowers.
 
@@ -23,14 +23,14 @@ Installation
 ------------
 
 ```bash
-pip install kivy_garden.markdown_label
+pip install kivy_garden.markdownlabel
 ```
 
 Usage
 -----
 
 ```python
-from kivy_garden.markdown_label import MarkdownLabel
+from kivy_garden.markdownlabel import MarkdownLabel
 
 # Basic usage
 label = MarkdownLabel(text='# Hello World\n\nThis is **bold** text.')
@@ -50,7 +50,7 @@ label.code_bg_color = [0.1, 0.1, 0.1, 1]
 CI
 --
 
-Every push or pull request run the [GitHub Action](https://github.com/kivy-garden/markdown_label/actions) CI.
+Every push or pull request run the [GitHub Action](https://github.com/kivy-garden/markdownlabel/actions) CI.
 It tests the code on various OS and also generates wheels that can be released on PyPI upon a
 tag. Docs are also generated and uploaded to the repo as well as artifacts of the CI.
 
