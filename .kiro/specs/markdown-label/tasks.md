@@ -147,5 +147,5 @@
     - Ensure empty paragraphs, cells render as empty widgets
     - _Requirements: 13.2_
 
-- [ ] 9. Final Checkpoint
+- [x] 9. Final Checkpoint
   - Ensure all tests pass, ask the user if questions arise.
