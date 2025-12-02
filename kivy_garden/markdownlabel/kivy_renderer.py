@@ -290,6 +290,13 @@ class KivyRenderer:
         if ordered:
             self._list_counters.append(start)
         
+        # Create outer container to include bottom spacing
+        outer_container = BoxLayout(
+            orientation='vertical',
+            size_hint_y=None
+        )
+        outer_container.bind(minimum_height=outer_container.setter('height'))
+        
         container = BoxLayout(
             orientation='vertical',
             size_hint_y=None,
@@ -302,6 +309,13 @@ class KivyRenderer:
             if item_widget is not None:
                 container.add_widget(item_widget)
         
+        outer_container.add_widget(container)
+        
+        # Add bottom spacing only for top-level lists
+        if self._list_depth == 1:
+            spacer = Widget(size_hint_y=None, height=self.base_font_size * 1.5)
+            outer_container.add_widget(spacer)
+        
         # Pop counter for ordered lists
         if ordered:
             self._list_counters.pop()
@@ -309,7 +323,7 @@ class KivyRenderer:
         self._list_depth -= 1
         self._nesting_depth -= 1
         
-        return container
+        return outer_container
     
     def _render_list_item(self, token: Dict[str, Any], ordered: bool, 
                           index: int, state: Any = None) -> BoxLayout:
@@ -596,20 +610,27 @@ class KivyRenderer:
         """
         return Widget(size_hint_y=None, height=5)
 
-    def table(self, token: Dict[str, Any], state: Any = None) -> GridLayout:
-        """Render a table as a GridLayout.
+    def table(self, token: Dict[str, Any], state: Any = None) -> BoxLayout:
+        """Render a table as a GridLayout with bottom spacing.
         
         Args:
             token: Table token with 'children' containing head and body
             state: Block state
             
         Returns:
-            GridLayout containing table cells
+            BoxLayout containing GridLayout and spacing
         """
         children = token.get('children', [])
         
         # Determine number of columns from the first row
         num_cols = self._get_table_column_count(token)
+        
+        # Create outer container for table + spacing
+        outer_container = BoxLayout(
+            orientation='vertical',
+            size_hint_y=None
+        )
+        outer_container.bind(minimum_height=outer_container.setter('height'))
         
         # Create GridLayout with correct number of columns
         grid = GridLayout(
@@ -628,7 +649,13 @@ class KivyRenderer:
             elif child_type == 'table_body':
                 self._render_table_section(child, grid, state, is_head=False)
         
-        return grid
+        outer_container.add_widget(grid)
+        
+        # Add bottom spacing
+        spacer = Widget(size_hint_y=None, height=self.base_font_size * 1.5)
+        outer_container.add_widget(spacer)
+        
+        return outer_container
     
     def _get_table_column_count(self, token: Dict[str, Any]) -> int:
         """Get the number of columns in a table.
