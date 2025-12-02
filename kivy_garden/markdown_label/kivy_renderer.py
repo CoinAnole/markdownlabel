@@ -165,11 +165,14 @@ class KivyRenderer:
             markup=True,
             font_size=self.base_font_size,
             size_hint_y=None,
-            text_size=(None, None),
+            size_hint_x=1,
             halign='left',
             valign='top'
         )
-        label.bind(texture_size=label.setter('size'))
+        
+        # Bind text_size width to label width for proper alignment
+        label.bind(width=lambda inst, val: setattr(inst, 'text_size', (val, None)))
+        label.bind(texture_size=lambda inst, val: setattr(inst, 'height', val[1]))
         
         return label
     
@@ -191,11 +194,14 @@ class KivyRenderer:
             markup=True,
             font_size=self.base_font_size,
             size_hint_y=None,
-            text_size=(None, None),
+            size_hint_x=1,
             halign='left',
             valign='top'
         )
-        label.bind(texture_size=label.setter('size'))
+        
+        # Bind text_size width to label width for proper alignment
+        label.bind(width=lambda inst, val: setattr(inst, 'text_size', (val, None)))
+        label.bind(texture_size=lambda inst, val: setattr(inst, 'height', val[1]))
         
         return label
     
@@ -233,11 +239,15 @@ class KivyRenderer:
             markup=True,
             font_size=font_size,
             size_hint_y=None,
+            size_hint_x=1,
             bold=True,
             halign='left',
             valign='top'
         )
-        label.bind(texture_size=label.setter('size'))
+        
+        # Bind text_size width to label width for proper alignment
+        label.bind(width=lambda inst, val: setattr(inst, 'text_size', (val, None)))
+        label.bind(texture_size=lambda inst, val: setattr(inst, 'height', val[1]))
         
         # Store heading level as metadata
         label.heading_level = level
