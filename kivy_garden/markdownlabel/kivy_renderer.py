@@ -313,7 +313,7 @@ class KivyRenderer:
         
         # Add bottom spacing only for top-level lists
         if self._list_depth == 1:
-            spacer = Widget(size_hint_y=None, height=self.base_font_size * 1.5)
+            spacer = Widget(size_hint_y=None, height=self.base_font_size)
             outer_container.add_widget(spacer)
         
         # Pop counter for ordered lists
@@ -652,7 +652,7 @@ class KivyRenderer:
         outer_container.add_widget(grid)
         
         # Add bottom spacing
-        spacer = Widget(size_hint_y=None, height=self.base_font_size * 1.5)
+        spacer = Widget(size_hint_y=None, height=self.base_font_size)
         outer_container.add_widget(spacer)
         
         return outer_container
