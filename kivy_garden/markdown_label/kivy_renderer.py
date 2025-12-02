@@ -645,9 +645,14 @@ class KivyRenderer:
             if child_type in ('table_head', 'table_body'):
                 rows = child.get('children', [])
                 if rows:
-                    first_row = rows[0]
-                    cells = first_row.get('children', [])
-                    return len(cells)
+                    first_item = rows[0]
+                    # table_head has direct table_cell children
+                    # table_body has table_row children which contain table_cell children
+                    if first_item.get('type') == 'table_cell':
+                        return len(rows)
+                    elif first_item.get('type') == 'table_row':
+                        cells = first_item.get('children', [])
+                        return len(cells)
         return 1  # Default to 1 column if structure is unclear
     
     def _render_table_section(self, section: Dict[str, Any], grid: GridLayout, 
@@ -660,9 +665,22 @@ class KivyRenderer:
             state: Block state
             is_head: Whether this is the header section
         """
-        rows = section.get('children', [])
-        for row in rows:
-            self._render_table_row(row, grid, state, is_head)
+        children = section.get('children', [])
+        if not children:
+            return
+        
+        # Check if children are table_cell (table_head) or table_row (table_body)
+        first_child_type = children[0].get('type', '')
+        
+        if first_child_type == 'table_cell':
+            # table_head: direct table_cell children
+            for cell in children:
+                cell_widget = self._render_table_cell(cell, state, is_head)
+                grid.add_widget(cell_widget)
+        elif first_child_type == 'table_row':
+            # table_body: table_row children containing table_cell children
+            for row in children:
+                self._render_table_row(row, grid, state, is_head)
     
     def _render_table_row(self, row: Dict[str, Any], grid: GridLayout,
                           state: Any, is_head: bool = False) -> None:
