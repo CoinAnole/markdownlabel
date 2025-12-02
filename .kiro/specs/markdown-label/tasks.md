@@ -25,60 +25,60 @@
     - **Property 19: Special Character Escaping**
     - **Validates: Requirements 13.3**
 
-- [ ] 3. Implement KivyRenderer for block-level widgets
-  - [ ] 3.1 Create KivyRenderer class extending BaseRenderer
+- [x] 3. Implement KivyRenderer for block-level widgets
+  - [x] 3.1 Create KivyRenderer class extending BaseRenderer
     - Implement `__call__` to return root BoxLayout
     - Implement `paragraph()` returning Label with `markup=True`
     - Implement `heading()` with font size based on level (h1=2.5x, h2=2x, h3=1.75x, h4=1.5x, h5=1.25x, h6=1x base)
     - Implement `blank_line()` returning empty widget
     - _Requirements: 2.1, 3.1_
-  - [ ] 3.2 Write property test for heading font hierarchy
+  - [x] 3.2 Write property test for heading font hierarchy
     - **Property 3: Heading Font Size Hierarchy**
     - **Validates: Requirements 2.1**
-  - [ ] 3.3 Write property test for paragraph markup enabled
+  - [x] 3.3 Write property test for paragraph markup enabled
     - **Property 5: Paragraph Markup Enabled**
     - **Validates: Requirements 3.1**
-  - [ ] 3.4 Implement list rendering
+  - [x] 3.4 Implement list rendering
     - Implement `list()` returning vertical BoxLayout
     - Implement `list_item()` with bullet/number prefix in horizontal BoxLayout
     - Handle nested lists with indentation (padding_left increases per level)
     - _Requirements: 4.1, 4.2, 4.3, 4.4_
-  - [ ] 3.5 Write property test for list structure
+  - [x] 3.5 Write property test for list structure
     - **Property 6: List Structure Preservation**
     - **Validates: Requirements 4.1, 4.2**
-  - [ ] 3.6 Write property test for nested list indentation
+  - [x] 3.6 Write property test for nested list indentation
     - **Property 7: Nested List Indentation**
     - **Validates: Requirements 4.3**
-  - [ ] 3.7 Implement code block rendering
+  - [x] 3.7 Implement code block rendering
     - Implement `block_code()` with monospace font Label
     - Add dark background using canvas instructions
     - Store language info in widget attribute `language_info`
     - _Requirements: 6.1, 6.2, 6.3_
-  - [ ] 3.8 Write property test for code block styling
+  - [x] 3.8 Write property test for code block styling
     - **Property 10: Code Block Styling**
     - **Validates: Requirements 6.1, 6.2**
-  - [ ] 3.9 Write property test for code block language metadata
+  - [x] 3.9 Write property test for code block language metadata
     - **Property 11: Code Block Language Metadata**
     - **Validates: Requirements 6.3**
-  - [ ] 3.10 Implement block quote rendering
+  - [x] 3.10 Implement block quote rendering
     - Implement `block_quote()` returning BoxLayout with left border
     - Add left padding for indentation
     - Handle nested quotes with cumulative indentation
     - _Requirements: 9.1, 9.2, 9.3_
-  - [ ] 3.11 Write property test for block quote structure
+  - [x] 3.11 Write property test for block quote structure
     - **Property 14: Block Quote Structure**
     - **Validates: Requirements 9.1**
-  - [ ] 3.12 Implement thematic break rendering
+  - [x] 3.12 Implement thematic break rendering
     - Implement `thematic_break()` returning Widget with horizontal line on canvas
     - _Requirements: 10.1_
-  - [ ] 3.13 Write property test for thematic break rendering
+  - [x] 3.13 Write property test for thematic break rendering
     - **Property 15: Thematic Break Rendering**
     - **Validates: Requirements 10.1**
-  - [ ] 3.14 Implement image rendering
+  - [x] 3.14 Implement image rendering
     - Implement `image()` returning AsyncImage with source URL
     - Store alt text for fallback
     - _Requirements: 8.1_
-  - [ ] 3.15 Write property test for image widget creation
+  - [x] 3.15 Write property test for image widget creation
     - **Property 13: Image Widget Creation**
     - **Validates: Requirements 8.1**
 

@@ -17,8 +17,9 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.properties import StringProperty
 
 from .inline_renderer import InlineRenderer
+from .kivy_renderer import KivyRenderer
 
-__all__ = ('MarkdownLabel', 'InlineRenderer')
+__all__ = ('MarkdownLabel', 'InlineRenderer', 'KivyRenderer')
 
 from ._version import __version__
 
