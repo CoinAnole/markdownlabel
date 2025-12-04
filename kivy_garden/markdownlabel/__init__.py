@@ -349,6 +349,50 @@ class MarkdownLabel(BoxLayout):
     and defaults to [1, 1, 1, 0.3] (semi-transparent white).
     """
     
+    # Truncation properties
+    
+    shorten = BooleanProperty(False)
+    """Enable text shortening with ellipsis.
+    
+    When True and text_size is constrained, text that exceeds the bounds
+    will be truncated with an ellipsis.
+    
+    :attr:`shorten` is a :class:`~kivy.properties.BooleanProperty`
+    and defaults to False.
+    """
+    
+    max_lines = NumericProperty(0)
+    """Maximum number of lines to display.
+    
+    When set to a positive integer, limits visible content to that number
+    of lines. A value of 0 means no limit.
+    
+    :attr:`max_lines` is a :class:`~kivy.properties.NumericProperty`
+    and defaults to 0.
+    """
+    
+    shorten_from = OptionProperty('center', options=['left', 'center', 'right'])
+    """Direction from which to truncate text when shortening.
+    
+    Options:
+        - 'left': Truncate from the left side
+        - 'center': Truncate from the center (default)
+        - 'right': Truncate from the right side
+    
+    :attr:`shorten_from` is an :class:`~kivy.properties.OptionProperty`
+    and defaults to 'center'.
+    """
+    
+    split_str = StringProperty('')
+    """String used as word boundary for shortening.
+    
+    When shortening text, this string is used to determine word boundaries.
+    An empty string means split on any character.
+    
+    :attr:`split_str` is a :class:`~kivy.properties.StringProperty`
+    and defaults to ''.
+    """
+    
     __events__ = ('on_ref_press',)
     
     def __init__(self, **kwargs):
@@ -388,6 +432,10 @@ class MarkdownLabel(BoxLayout):
         self.bind(font_blended=self._on_style_changed)
         self.bind(disabled=self._on_style_changed)
         self.bind(disabled_color=self._on_style_changed)
+        self.bind(shorten=self._on_style_changed)
+        self.bind(max_lines=self._on_style_changed)
+        self.bind(shorten_from=self._on_style_changed)
+        self.bind(split_str=self._on_style_changed)
         
         # Bind padding to the container (self is a BoxLayout)
         self.bind(padding=self._on_padding_changed)
@@ -449,7 +497,11 @@ class MarkdownLabel(BoxLayout):
             font_kerning=self.font_kerning,
             font_blended=self.font_blended,
             disabled=self.disabled,
-            disabled_color=list(self.disabled_color)
+            disabled_color=list(self.disabled_color),
+            shorten=self.shorten,
+            max_lines=int(self.max_lines),
+            shorten_from=self.shorten_from,
+            split_str=self.split_str
         )
         
         # Render AST to widget tree

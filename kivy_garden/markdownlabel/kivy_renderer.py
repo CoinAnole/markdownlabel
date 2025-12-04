@@ -60,7 +60,11 @@ class KivyRenderer:
                  font_kerning: bool = True,
                  font_blended: bool = True,
                  disabled: bool = False,
-                 disabled_color: Optional[List[float]] = None):
+                 disabled_color: Optional[List[float]] = None,
+                 shorten: bool = False,
+                 max_lines: int = 0,
+                 shorten_from: str = 'center',
+                 split_str: str = ''):
         """Initialize the KivyRenderer.
         
         Args:
@@ -84,6 +88,10 @@ class KivyRenderer:
             font_blended: Whether to use blended font rendering (default: True)
             disabled: Whether the widget is disabled (default: False)
             disabled_color: RGBA color list for disabled text (default: semi-transparent white)
+            shorten: Whether to shorten text with ellipsis (default: False)
+            max_lines: Maximum number of lines to display, 0 for no limit (default: 0)
+            shorten_from: Direction to truncate from: 'left', 'center', 'right' (default: 'center')
+            split_str: String used as word boundary for shortening (default: '')
         """
         self.base_font_size = base_font_size
         self.code_font_name = code_font_name
@@ -106,6 +114,10 @@ class KivyRenderer:
         self.font_blended = font_blended
         self.disabled = disabled
         self.disabled_color = disabled_color or [1, 1, 1, 0.3]
+        self.shorten = shorten
+        self.max_lines = max_lines
+        self.shorten_from = shorten_from
+        self.split_str = split_str
         
         # Compute effective color based on disabled state
         self.effective_color = self.disabled_color if self.disabled else self.color
@@ -228,7 +240,14 @@ class KivyRenderer:
             'font_features': self.font_features,
             'font_kerning': self.font_kerning,
             'font_blended': self.font_blended,
+            'shorten': self.shorten,
+            'shorten_from': self.shorten_from,
+            'split_str': self.split_str,
         }
+        
+        # Add max_lines only if set (non-zero)
+        if self.max_lines > 0:
+            label_kwargs['max_lines'] = self.max_lines
         
         # Add optional font properties if set
         if self.font_family is not None:
@@ -280,7 +299,14 @@ class KivyRenderer:
             'font_features': self.font_features,
             'font_kerning': self.font_kerning,
             'font_blended': self.font_blended,
+            'shorten': self.shorten,
+            'shorten_from': self.shorten_from,
+            'split_str': self.split_str,
         }
+        
+        # Add max_lines only if set (non-zero)
+        if self.max_lines > 0:
+            label_kwargs['max_lines'] = self.max_lines
         
         # Add optional font properties if set
         if self.font_family is not None:
@@ -347,7 +373,14 @@ class KivyRenderer:
             'font_features': self.font_features,
             'font_kerning': self.font_kerning,
             'font_blended': self.font_blended,
+            'shorten': self.shorten,
+            'shorten_from': self.shorten_from,
+            'split_str': self.split_str,
         }
+        
+        # Add max_lines only if set (non-zero)
+        if self.max_lines > 0:
+            label_kwargs['max_lines'] = self.max_lines
         
         # Add optional font properties if set
         if self.font_family is not None:
@@ -473,7 +506,14 @@ class KivyRenderer:
             'font_features': self.font_features,
             'font_kerning': self.font_kerning,
             'font_blended': self.font_blended,
+            'shorten': self.shorten,
+            'shorten_from': self.shorten_from,
+            'split_str': self.split_str,
         }
+        
+        # Add max_lines only if set (non-zero)
+        if self.max_lines > 0:
+            marker_kwargs['max_lines'] = self.max_lines
         
         # Add optional font properties if set
         if self.font_family is not None:
@@ -880,7 +920,14 @@ class KivyRenderer:
             'font_features': self.font_features,
             'font_kerning': self.font_kerning,
             'font_blended': self.font_blended,
+            'shorten': self.shorten,
+            'shorten_from': self.shorten_from,
+            'split_str': self.split_str,
         }
+        
+        # Add max_lines only if set (non-zero)
+        if self.max_lines > 0:
+            label_kwargs['max_lines'] = self.max_lines
         
         # Add optional font properties if set
         if self.font_family is not None:

@@ -144,8 +144,8 @@
     - **Property 12: disabled_color Application**
     - **Validates: Requirements 12.1, 12.2**
 
-- [ ] 9. Add truncation properties
-  - [ ] 9.1 Add shorten, max_lines, shorten_from, split_str properties
+- [x] 9. Add truncation properties
+  - [x] 9.1 Add shorten, max_lines, shorten_from, split_str properties
     - Add BooleanProperty shorten (default False)
     - Add NumericProperty max_lines (default 0)
     - Add OptionProperty shorten_from (default 'center', options: left, center, right)
