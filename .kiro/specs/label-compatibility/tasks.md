@@ -134,13 +134,13 @@
     - **Property 11: Advanced Font Properties Forwarding**
     - **Validates: Requirements 11.1, 11.2, 11.3, 11.4, 11.5, 11.6**
 
-- [ ] 8. Add disabled state support
-  - [ ] 8.1 Add disabled_color property
+- [x] 8. Add disabled state support
+  - [x] 8.1 Add disabled_color property
     - Add ColorProperty disabled_color (default [1, 1, 1, 0.3])
     - Bind disabled property to trigger widget rebuild
     - When disabled=True, use disabled_color instead of color for Labels
     - _Requirements: 12.1, 12.2_
-  - [ ] 8.2 Write property test for disabled_color application
+  - [x] 8.2 Write property test for disabled_color application
     - **Property 12: disabled_color Application**
     - **Validates: Requirements 12.1, 12.2**
 

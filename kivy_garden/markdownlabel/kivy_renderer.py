@@ -58,7 +58,9 @@ class KivyRenderer:
                  font_features: str = '',
                  font_hinting: Optional[str] = 'normal',
                  font_kerning: bool = True,
-                 font_blended: bool = True):
+                 font_blended: bool = True,
+                 disabled: bool = False,
+                 disabled_color: Optional[List[float]] = None):
         """Initialize the KivyRenderer.
         
         Args:
@@ -80,6 +82,8 @@ class KivyRenderer:
             font_hinting: Font hinting mode (default: 'normal')
             font_kerning: Whether to enable font kerning (default: True)
             font_blended: Whether to use blended font rendering (default: True)
+            disabled: Whether the widget is disabled (default: False)
+            disabled_color: RGBA color list for disabled text (default: semi-transparent white)
         """
         self.base_font_size = base_font_size
         self.code_font_name = code_font_name
@@ -100,6 +104,11 @@ class KivyRenderer:
         self.font_hinting = font_hinting
         self.font_kerning = font_kerning
         self.font_blended = font_blended
+        self.disabled = disabled
+        self.disabled_color = disabled_color or [1, 1, 1, 0.3]
+        
+        # Compute effective color based on disabled state
+        self.effective_color = self.disabled_color if self.disabled else self.color
         
         self.inline_renderer = InlineRenderer(
             link_color=self.link_color,
@@ -208,7 +217,7 @@ class KivyRenderer:
             'markup': True,
             'font_name': self.font_name,
             'font_size': self.base_font_size,
-            'color': self.color,
+            'color': self.effective_color,
             'line_height': self.line_height,
             'size_hint_y': None,
             'size_hint_x': 1,
@@ -260,7 +269,7 @@ class KivyRenderer:
             'markup': True,
             'font_name': self.font_name,
             'font_size': self.base_font_size,
-            'color': self.color,
+            'color': self.effective_color,
             'line_height': self.line_height,
             'size_hint_y': None,
             'size_hint_x': 1,
@@ -326,7 +335,7 @@ class KivyRenderer:
             'markup': True,
             'font_name': self.font_name,
             'font_size': font_size,
-            'color': self.color,
+            'color': self.effective_color,
             'line_height': self.line_height,
             'size_hint_y': None,
             'size_hint_x': 1,
@@ -453,7 +462,7 @@ class KivyRenderer:
             'text': marker_text,
             'font_name': self.font_name,
             'font_size': self.base_font_size,
-            'color': self.color,
+            'color': self.effective_color,
             'line_height': self.line_height,
             'size_hint': (None, 1),  # Match content height
             'width': 30,
@@ -859,7 +868,7 @@ class KivyRenderer:
             'markup': True,
             'font_name': self.font_name,
             'font_size': self.base_font_size,
-            'color': self.color,
+            'color': self.effective_color,
             'line_height': self.line_height,
             'size_hint_y': None,
             'size_hint_x': 1,

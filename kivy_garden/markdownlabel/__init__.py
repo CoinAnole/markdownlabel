@@ -339,6 +339,16 @@ class MarkdownLabel(BoxLayout):
     and defaults to True.
     """
     
+    disabled_color = ColorProperty([1, 1, 1, 0.3])
+    """RGBA color for text when the widget is disabled.
+    
+    When :attr:`disabled` is True, this color is applied to all internal
+    Label widgets instead of :attr:`color`.
+    
+    :attr:`disabled_color` is a :class:`~kivy.properties.ColorProperty`
+    and defaults to [1, 1, 1, 0.3] (semi-transparent white).
+    """
+    
     __events__ = ('on_ref_press',)
     
     def __init__(self, **kwargs):
@@ -376,6 +386,8 @@ class MarkdownLabel(BoxLayout):
         self.bind(font_hinting=self._on_style_changed)
         self.bind(font_kerning=self._on_style_changed)
         self.bind(font_blended=self._on_style_changed)
+        self.bind(disabled=self._on_style_changed)
+        self.bind(disabled_color=self._on_style_changed)
         
         # Bind padding to the container (self is a BoxLayout)
         self.bind(padding=self._on_padding_changed)
@@ -435,7 +447,9 @@ class MarkdownLabel(BoxLayout):
             font_features=self.font_features,
             font_hinting=self.font_hinting,
             font_kerning=self.font_kerning,
-            font_blended=self.font_blended
+            font_blended=self.font_blended,
+            disabled=self.disabled,
+            disabled_color=list(self.disabled_color)
         )
         
         # Render AST to widget tree
