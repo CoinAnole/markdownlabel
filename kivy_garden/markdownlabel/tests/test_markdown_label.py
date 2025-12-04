@@ -857,3 +857,134 @@ class TestDeepNestingStability:
                 indent = '  ' * (i // 2)
                 lines.append(f'{indent}  > Quote level {i + 1}')
         return '\n'.join(lines)
+
+
+# **Feature: label-compatibility, Property 8: No-Op Properties Acceptance**
+# *For any* boolean value, setting `bold`, `italic`, `underline`, `strikethrough`,
+# or `markup` on MarkdownLabel SHALL NOT raise an exception, and the rendered
+# output SHALL be identical regardless of these property values.
+# **Validates: Requirements 8.1, 8.2, 8.3, 8.4, 8.5, 8.6**
+
+class TestNoOpPropertiesAcceptance:
+    """Property tests for no-op properties acceptance (Property 8)."""
+    
+    @given(st.booleans())
+    @settings(max_examples=100, deadline=None)
+    def test_bold_property_accepted(self, value):
+        """Setting bold property does not raise an exception."""
+        # Should not raise any exception
+        label = MarkdownLabel(text='# Hello World', bold=value)
+        assert label.bold == value
+    
+    @given(st.booleans())
+    @settings(max_examples=100, deadline=None)
+    def test_italic_property_accepted(self, value):
+        """Setting italic property does not raise an exception."""
+        label = MarkdownLabel(text='# Hello World', italic=value)
+        assert label.italic == value
+    
+    @given(st.booleans())
+    @settings(max_examples=100, deadline=None)
+    def test_underline_property_accepted(self, value):
+        """Setting underline property does not raise an exception."""
+        label = MarkdownLabel(text='# Hello World', underline=value)
+        assert label.underline == value
+    
+    @given(st.booleans())
+    @settings(max_examples=100, deadline=None)
+    def test_strikethrough_property_accepted(self, value):
+        """Setting strikethrough property does not raise an exception."""
+        label = MarkdownLabel(text='# Hello World', strikethrough=value)
+        assert label.strikethrough == value
+    
+    @given(st.booleans())
+    @settings(max_examples=100, deadline=None)
+    def test_markup_property_accepted(self, value):
+        """Setting markup property does not raise an exception."""
+        label = MarkdownLabel(text='# Hello World', markup=value)
+        assert label.markup == value
+    
+    @given(st.booleans(), st.booleans(), st.booleans(), st.booleans(), st.booleans())
+    @settings(max_examples=100, deadline=None)
+    def test_all_noop_properties_together(self, bold, italic, underline, strikethrough, markup):
+        """Setting all no-op properties together does not raise an exception."""
+        label = MarkdownLabel(
+            text='# Hello World',
+            bold=bold,
+            italic=italic,
+            underline=underline,
+            strikethrough=strikethrough,
+            markup=markup
+        )
+        assert label.bold == bold
+        assert label.italic == italic
+        assert label.underline == underline
+        assert label.strikethrough == strikethrough
+        assert label.markup == markup
+    
+    @given(st.booleans(), st.booleans(), st.booleans(), st.booleans(), st.booleans(),
+           simple_markdown_document())
+    @settings(max_examples=100, deadline=None)
+    def test_noop_properties_do_not_affect_rendering(self, bold, italic, underline, 
+                                                      strikethrough, markup, markdown_text):
+        """No-op properties do not affect the rendered output."""
+        assume(markdown_text.strip())
+        
+        # Create label with default no-op property values
+        label_default = MarkdownLabel(text=markdown_text)
+        default_child_count = len(label_default.children)
+        
+        # Create label with various no-op property values
+        label_with_props = MarkdownLabel(
+            text=markdown_text,
+            bold=bold,
+            italic=italic,
+            underline=underline,
+            strikethrough=strikethrough,
+            markup=markup
+        )
+        props_child_count = len(label_with_props.children)
+        
+        # The number of children should be the same regardless of no-op properties
+        assert default_child_count == props_child_count, \
+            f"Expected {default_child_count} children, got {props_child_count} with no-op props"
+    
+    @given(st.booleans())
+    @settings(max_examples=100, deadline=None)
+    def test_bold_property_change_after_creation(self, value):
+        """Changing bold property after creation does not raise an exception."""
+        label = MarkdownLabel(text='# Hello')
+        label.bold = value
+        assert label.bold == value
+    
+    @given(st.booleans())
+    @settings(max_examples=100, deadline=None)
+    def test_italic_property_change_after_creation(self, value):
+        """Changing italic property after creation does not raise an exception."""
+        label = MarkdownLabel(text='# Hello')
+        label.italic = value
+        assert label.italic == value
+    
+    @given(st.booleans())
+    @settings(max_examples=100, deadline=None)
+    def test_underline_property_change_after_creation(self, value):
+        """Changing underline property after creation does not raise an exception."""
+        label = MarkdownLabel(text='# Hello')
+        label.underline = value
+        assert label.underline == value
+    
+    @given(st.booleans())
+    @settings(max_examples=100, deadline=None)
+    def test_strikethrough_property_change_after_creation(self, value):
+        """Changing strikethrough property after creation does not raise an exception."""
+        label = MarkdownLabel(text='# Hello')
+        label.strikethrough = value
+        assert label.strikethrough == value
+    
+    @given(st.booleans())
+    @settings(max_examples=100, deadline=None)
+    def test_markup_property_change_after_creation(self, value):
+        """Changing markup property after creation does not raise an exception."""
+        label = MarkdownLabel(text='# Hello')
+        label.markup = value
+        assert label.markup == value

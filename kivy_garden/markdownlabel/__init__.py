@@ -19,7 +19,8 @@ from kivy.properties import (
     StringProperty, 
     NumericProperty, 
     ColorProperty,
-    AliasProperty
+    AliasProperty,
+    BooleanProperty
 )
 
 import mistune
@@ -117,6 +118,60 @@ class MarkdownLabel(BoxLayout):
     
     :attr:`font_size` is an :class:`~kivy.properties.AliasProperty` that
     maps to :attr:`base_font_size`.
+    """
+    
+    # No-op properties for Label API compatibility
+    # These are accepted but have no effect on rendering since
+    # Markdown syntax controls formatting
+    
+    bold = BooleanProperty(False)
+    """No-op property for Label API compatibility.
+    
+    This property is accepted but has no effect on rendering.
+    Markdown syntax (e.g., **text**) controls bold formatting.
+    
+    :attr:`bold` is a :class:`~kivy.properties.BooleanProperty`
+    and defaults to False.
+    """
+    
+    italic = BooleanProperty(False)
+    """No-op property for Label API compatibility.
+    
+    This property is accepted but has no effect on rendering.
+    Markdown syntax (e.g., *text*) controls italic formatting.
+    
+    :attr:`italic` is a :class:`~kivy.properties.BooleanProperty`
+    and defaults to False.
+    """
+    
+    underline = BooleanProperty(False)
+    """No-op property for Label API compatibility.
+    
+    This property is accepted but has no effect on rendering.
+    
+    :attr:`underline` is a :class:`~kivy.properties.BooleanProperty`
+    and defaults to False.
+    """
+    
+    strikethrough = BooleanProperty(False)
+    """No-op property for Label API compatibility.
+    
+    This property is accepted but has no effect on rendering.
+    Markdown syntax (e.g., ~~text~~) controls strikethrough formatting.
+    
+    :attr:`strikethrough` is a :class:`~kivy.properties.BooleanProperty`
+    and defaults to False.
+    """
+    
+    markup = BooleanProperty(True)
+    """No-op property for Label API compatibility.
+    
+    This property is accepted but has no effect on rendering.
+    MarkdownLabel always uses markup internally for rendering.
+    The value is always treated as True regardless of what is set.
+    
+    :attr:`markup` is a :class:`~kivy.properties.BooleanProperty`
+    and defaults to True.
     """
     
     __events__ = ('on_ref_press',)

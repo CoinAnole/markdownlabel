@@ -10,8 +10,8 @@
     - **Property 1: font_size/base_font_size Alias Bidirectionality**
     - **Validates: Requirements 2.1, 2.2**
 
-- [ ] 2. Add no-op properties for Label compatibility
-  - [ ] 2.1 Add bold, italic, underline, strikethrough, markup properties
+- [x] 2. Add no-op properties for Label compatibility
+  - [x] 2.1 Add bold, italic, underline, strikethrough, markup properties
     - Add BooleanProperty for bold (default False)
     - Add BooleanProperty for italic (default False)
     - Add BooleanProperty for underline (default False)
@@ -19,7 +19,7 @@
     - Add BooleanProperty for markup (default True, always True for MarkdownLabel)
     - These properties are accepted but have no effect on rendering
     - _Requirements: 8.1, 8.2, 8.3, 8.4, 8.5, 8.6_
-  - [ ] 2.2 Write property test for no-op properties acceptance
+  - [x] 2.2 Write property test for no-op properties acceptance
     - **Property 8: No-Op Properties Acceptance**
     - **Validates: Requirements 8.1, 8.2, 8.3, 8.4, 8.5, 8.6**
 
