@@ -988,3 +988,474 @@ class TestNoOpPropertiesAcceptance:
         label = MarkdownLabel(text='# Hello')
         label.markup = value
         assert label.markup == value
+
+
+# **Feature: label-compatibility, Property 2: font_name Forwarding with Code Preservation**
+# *For any* Markdown text containing both regular text and code blocks, and any font_name value,
+# all non-code internal Labels SHALL have `font_name` set to the specified value, while code
+# Labels SHALL retain `code_font_name`.
+# **Validates: Requirements 1.1, 1.3**
+
+# Use Kivy's built-in fonts that are guaranteed to be available
+KIVY_FONTS = ['Roboto', 'Roboto-Bold', 'Roboto-Italic', 'RobotoMono-Regular']
+
+
+class TestFontNameForwarding:
+    """Property tests for font_name forwarding (Property 2)."""
+    
+    def _find_labels_recursive(self, widget, labels=None):
+        """Recursively find all Label widgets in a widget tree.
+        
+        Args:
+            widget: Root widget to search
+            labels: List to accumulate labels (created if None)
+            
+        Returns:
+            List of Label widgets found
+        """
+        if labels is None:
+            labels = []
+        
+        if isinstance(widget, Label):
+            labels.append(widget)
+        
+        if hasattr(widget, 'children'):
+            for child in widget.children:
+                self._find_labels_recursive(child, labels)
+        
+        return labels
+    
+    def _is_code_label(self, label, code_font_name='RobotoMono-Regular'):
+        """Check if a label is a code label based on its font.
+        
+        Args:
+            label: Label widget to check
+            code_font_name: Expected code font name
+            
+        Returns:
+            True if this appears to be a code label
+        """
+        return label.font_name == code_font_name
+    
+    @given(st.sampled_from(KIVY_FONTS))
+    @settings(max_examples=100, deadline=None)
+    def test_font_name_applied_to_paragraph(self, font_name):
+        """font_name is applied to paragraph Labels."""
+        label = MarkdownLabel(text='Hello World', font_name=font_name)
+        
+        labels = self._find_labels_recursive(label)
+        assert len(labels) >= 1, "Expected at least one Label"
+        
+        # All labels should have the specified font_name
+        for lbl in labels:
+            assert lbl.font_name == font_name, \
+                f"Expected font_name={font_name}, got {lbl.font_name}"
+    
+    @given(st.sampled_from(KIVY_FONTS))
+    @settings(max_examples=100, deadline=None)
+    def test_font_name_applied_to_heading(self, font_name):
+        """font_name is applied to heading Labels."""
+        label = MarkdownLabel(text='# Heading', font_name=font_name)
+        
+        labels = self._find_labels_recursive(label)
+        assert len(labels) >= 1, "Expected at least one Label"
+        
+        # All labels should have the specified font_name
+        for lbl in labels:
+            assert lbl.font_name == font_name, \
+                f"Expected font_name={font_name}, got {lbl.font_name}"
+    
+    @given(st.sampled_from(KIVY_FONTS))
+    @settings(max_examples=100, deadline=None)
+    def test_code_block_preserves_code_font_name(self, font_name):
+        """Code blocks preserve code_font_name regardless of font_name setting."""
+        code_font = 'RobotoMono-Regular'
+        markdown = '```python\nprint("hello")\n```'
+        
+        label = MarkdownLabel(
+            text=markdown,
+            font_name=font_name,
+            code_font_name=code_font
+        )
+        
+        labels = self._find_labels_recursive(label)
+        assert len(labels) >= 1, "Expected at least one Label for code block"
+        
+        # Code block labels should use code_font_name, not font_name
+        for lbl in labels:
+            assert lbl.font_name == code_font, \
+                f"Code label should use code_font_name={code_font}, got {lbl.font_name}"
+    
+    @given(st.sampled_from(['Roboto', 'Roboto-Bold', 'Roboto-Italic']))
+    @settings(max_examples=100, deadline=None)
+    def test_mixed_content_font_separation(self, font_name):
+        """Mixed content correctly separates font_name and code_font_name."""
+        code_font = 'RobotoMono-Regular'
+        markdown = 'Regular text\n\n```\ncode\n```\n\nMore text'
+        
+        label = MarkdownLabel(
+            text=markdown,
+            font_name=font_name,
+            code_font_name=code_font
+        )
+        
+        labels = self._find_labels_recursive(label)
+        assert len(labels) >= 2, "Expected at least 2 Labels (text + code)"
+        
+        # Separate labels by font
+        body_labels = [l for l in labels if l.font_name == font_name]
+        code_labels = [l for l in labels if l.font_name == code_font]
+        
+        # Should have both body and code labels
+        assert len(body_labels) >= 1, "Expected at least one body text label"
+        assert len(code_labels) >= 1, "Expected at least one code label"
+    
+    @given(st.sampled_from(['Roboto', 'Roboto-Bold', 'Roboto-Italic']),
+           st.sampled_from(['Roboto', 'Roboto-Bold', 'Roboto-Italic']))
+    @settings(max_examples=100, deadline=None)
+    def test_font_name_change_triggers_rebuild(self, font1, font2):
+        """Changing font_name triggers widget rebuild with new font."""
+        assume(font1 != font2)
+        
+        label = MarkdownLabel(text='Hello World', font_name=font1)
+        
+        # Verify initial font
+        labels = self._find_labels_recursive(label)
+        for lbl in labels:
+            assert lbl.font_name == font1
+        
+        # Change font_name
+        label.font_name = font2
+        
+        # Verify new font
+        labels = self._find_labels_recursive(label)
+        for lbl in labels:
+            assert lbl.font_name == font2, \
+                f"After change, expected font_name={font2}, got {lbl.font_name}"
+    
+    @given(st.sampled_from(KIVY_FONTS))
+    @settings(max_examples=100, deadline=None)
+    def test_font_name_applied_to_list_items(self, font_name):
+        """font_name is applied to list item Labels."""
+        markdown = '- Item 1\n- Item 2'
+        label = MarkdownLabel(text=markdown, font_name=font_name)
+        
+        labels = self._find_labels_recursive(label)
+        assert len(labels) >= 2, "Expected at least 2 Labels for list items"
+        
+        # All labels should have the specified font_name
+        for lbl in labels:
+            assert lbl.font_name == font_name, \
+                f"Expected font_name={font_name}, got {lbl.font_name}"
+    
+    @given(st.sampled_from(KIVY_FONTS))
+    @settings(max_examples=100, deadline=None)
+    def test_font_name_applied_to_table_cells(self, font_name):
+        """font_name is applied to table cell Labels."""
+        markdown = '| A | B |\n| --- | --- |\n| 1 | 2 |'
+        label = MarkdownLabel(text=markdown, font_name=font_name)
+        
+        labels = self._find_labels_recursive(label)
+        assert len(labels) >= 4, "Expected at least 4 Labels for table cells"
+        
+        # All labels should have the specified font_name
+        for lbl in labels:
+            assert lbl.font_name == font_name, \
+                f"Expected font_name={font_name}, got {lbl.font_name}"
+
+
+# **Feature: label-compatibility, Property 3: color Forwarding with Link Preservation**
+# *For any* Markdown text containing both regular text and links, and any color value,
+# all body text Labels SHALL have `color` set to the specified value, while link text
+# SHALL retain `link_color` styling.
+# **Validates: Requirements 3.1, 3.2**
+
+# Strategy for generating valid RGBA colors
+color_strategy = st.lists(
+    st.floats(min_value=0.0, max_value=1.0, allow_nan=False, allow_infinity=False),
+    min_size=4, max_size=4
+)
+
+
+class TestColorForwarding:
+    """Property tests for color forwarding (Property 3)."""
+    
+    def _find_labels_recursive(self, widget, labels=None):
+        """Recursively find all Label widgets in a widget tree."""
+        if labels is None:
+            labels = []
+        
+        if isinstance(widget, Label):
+            labels.append(widget)
+        
+        if hasattr(widget, 'children'):
+            for child in widget.children:
+                self._find_labels_recursive(child, labels)
+        
+        return labels
+    
+    def _colors_equal(self, c1, c2, tolerance=0.001):
+        """Compare two colors with tolerance for floating point differences."""
+        if len(c1) != len(c2):
+            return False
+        return all(abs(a - b) < tolerance for a, b in zip(c1, c2))
+    
+    @given(color_strategy)
+    @settings(max_examples=100, deadline=None)
+    def test_color_applied_to_paragraph(self, color):
+        """color is applied to paragraph Labels."""
+        label = MarkdownLabel(text='Hello World', color=color)
+        
+        labels = self._find_labels_recursive(label)
+        assert len(labels) >= 1, "Expected at least one Label"
+        
+        # All labels should have the specified color
+        for lbl in labels:
+            assert self._colors_equal(list(lbl.color), color), \
+                f"Expected color={color}, got {list(lbl.color)}"
+    
+    @given(color_strategy)
+    @settings(max_examples=100, deadline=None)
+    def test_color_applied_to_heading(self, color):
+        """color is applied to heading Labels."""
+        label = MarkdownLabel(text='# Heading', color=color)
+        
+        labels = self._find_labels_recursive(label)
+        assert len(labels) >= 1, "Expected at least one Label"
+        
+        # All labels should have the specified color
+        for lbl in labels:
+            assert self._colors_equal(list(lbl.color), color), \
+                f"Expected color={color}, got {list(lbl.color)}"
+    
+    @given(color_strategy)
+    @settings(max_examples=100, deadline=None)
+    def test_code_block_preserves_light_color(self, color):
+        """Code blocks preserve their light text color regardless of color setting."""
+        markdown = '```python\nprint("hello")\n```'
+        code_color = [0.9, 0.9, 0.9, 1]  # Expected code block color
+        
+        label = MarkdownLabel(text=markdown, color=color)
+        
+        labels = self._find_labels_recursive(label)
+        assert len(labels) >= 1, "Expected at least one Label for code block"
+        
+        # Code block labels should use their own light color, not the specified color
+        for lbl in labels:
+            assert self._colors_equal(list(lbl.color), code_color), \
+                f"Code label should use light color={code_color}, got {list(lbl.color)}"
+    
+    @given(color_strategy, color_strategy)
+    @settings(max_examples=100, deadline=None)
+    def test_color_change_triggers_rebuild(self, color1, color2):
+        """Changing color triggers widget rebuild with new color."""
+        assume(not self._colors_equal(color1, color2))
+        
+        label = MarkdownLabel(text='Hello World', color=color1)
+        
+        # Verify initial color
+        labels = self._find_labels_recursive(label)
+        for lbl in labels:
+            assert self._colors_equal(list(lbl.color), color1)
+        
+        # Change color
+        label.color = color2
+        
+        # Verify new color
+        labels = self._find_labels_recursive(label)
+        for lbl in labels:
+            assert self._colors_equal(list(lbl.color), color2), \
+                f"After change, expected color={color2}, got {list(lbl.color)}"
+    
+    @given(color_strategy)
+    @settings(max_examples=100, deadline=None)
+    def test_color_applied_to_list_items(self, color):
+        """color is applied to list item Labels."""
+        markdown = '- Item 1\n- Item 2'
+        label = MarkdownLabel(text=markdown, color=color)
+        
+        labels = self._find_labels_recursive(label)
+        assert len(labels) >= 2, "Expected at least 2 Labels for list items"
+        
+        # All labels should have the specified color
+        for lbl in labels:
+            assert self._colors_equal(list(lbl.color), color), \
+                f"Expected color={color}, got {list(lbl.color)}"
+    
+    @given(color_strategy)
+    @settings(max_examples=100, deadline=None)
+    def test_color_applied_to_table_cells(self, color):
+        """color is applied to table cell Labels."""
+        markdown = '| A | B |\n| --- | --- |\n| 1 | 2 |'
+        label = MarkdownLabel(text=markdown, color=color)
+        
+        labels = self._find_labels_recursive(label)
+        assert len(labels) >= 4, "Expected at least 4 Labels for table cells"
+        
+        # All labels should have the specified color
+        for lbl in labels:
+            assert self._colors_equal(list(lbl.color), color), \
+                f"Expected color={color}, got {list(lbl.color)}"
+    
+    @given(color_strategy)
+    @settings(max_examples=100, deadline=None)
+    def test_mixed_content_color_separation(self, color):
+        """Mixed content correctly separates body color and code color."""
+        code_color = [0.9, 0.9, 0.9, 1]
+        markdown = 'Regular text\n\n```\ncode\n```\n\nMore text'
+        
+        label = MarkdownLabel(text=markdown, color=color)
+        
+        labels = self._find_labels_recursive(label)
+        assert len(labels) >= 2, "Expected at least 2 Labels (text + code)"
+        
+        # Separate labels by color
+        body_labels = [l for l in labels if self._colors_equal(list(l.color), color)]
+        code_labels = [l for l in labels if self._colors_equal(list(l.color), code_color)]
+        
+        # Should have both body and code labels
+        assert len(body_labels) >= 1, "Expected at least one body text label with specified color"
+        assert len(code_labels) >= 1, "Expected at least one code label with light color"
+
+
+# **Feature: label-compatibility, Property 4: line_height Forwarding**
+# *For any* Markdown text and any line_height value, all internal Labels SHALL have
+# `line_height` set to the specified value.
+# **Validates: Requirements 4.1**
+
+# Strategy for generating valid line_height values
+line_height_strategy = st.floats(min_value=0.5, max_value=3.0, allow_nan=False, allow_infinity=False)
+
+
+class TestLineHeightForwarding:
+    """Property tests for line_height forwarding (Property 4)."""
+    
+    def _find_labels_recursive(self, widget, labels=None):
+        """Recursively find all Label widgets in a widget tree."""
+        if labels is None:
+            labels = []
+        
+        if isinstance(widget, Label):
+            labels.append(widget)
+        
+        if hasattr(widget, 'children'):
+            for child in widget.children:
+                self._find_labels_recursive(child, labels)
+        
+        return labels
+    
+    def _floats_equal(self, f1, f2, tolerance=0.001):
+        """Compare two floats with tolerance."""
+        return abs(f1 - f2) < tolerance
+    
+    @given(line_height_strategy)
+    @settings(max_examples=100, deadline=None)
+    def test_line_height_applied_to_paragraph(self, line_height):
+        """line_height is applied to paragraph Labels."""
+        label = MarkdownLabel(text='Hello World', line_height=line_height)
+        
+        labels = self._find_labels_recursive(label)
+        assert len(labels) >= 1, "Expected at least one Label"
+        
+        # All labels should have the specified line_height
+        for lbl in labels:
+            assert self._floats_equal(lbl.line_height, line_height), \
+                f"Expected line_height={line_height}, got {lbl.line_height}"
+    
+    @given(line_height_strategy)
+    @settings(max_examples=100, deadline=None)
+    def test_line_height_applied_to_heading(self, line_height):
+        """line_height is applied to heading Labels."""
+        label = MarkdownLabel(text='# Heading', line_height=line_height)
+        
+        labels = self._find_labels_recursive(label)
+        assert len(labels) >= 1, "Expected at least one Label"
+        
+        # All labels should have the specified line_height
+        for lbl in labels:
+            assert self._floats_equal(lbl.line_height, line_height), \
+                f"Expected line_height={line_height}, got {lbl.line_height}"
+    
+    @given(line_height_strategy)
+    @settings(max_examples=100, deadline=None)
+    def test_line_height_applied_to_code_block(self, line_height):
+        """line_height is applied to code block Labels."""
+        markdown = '```python\nprint("hello")\n```'
+        
+        label = MarkdownLabel(text=markdown, line_height=line_height)
+        
+        labels = self._find_labels_recursive(label)
+        assert len(labels) >= 1, "Expected at least one Label for code block"
+        
+        # Code block labels should also have the specified line_height
+        for lbl in labels:
+            assert self._floats_equal(lbl.line_height, line_height), \
+                f"Expected line_height={line_height}, got {lbl.line_height}"
+    
+    @given(line_height_strategy, line_height_strategy)
+    @settings(max_examples=100, deadline=None)
+    def test_line_height_change_triggers_rebuild(self, lh1, lh2):
+        """Changing line_height triggers widget rebuild with new value."""
+        assume(not self._floats_equal(lh1, lh2))
+        
+        label = MarkdownLabel(text='Hello World', line_height=lh1)
+        
+        # Verify initial line_height
+        labels = self._find_labels_recursive(label)
+        for lbl in labels:
+            assert self._floats_equal(lbl.line_height, lh1)
+        
+        # Change line_height
+        label.line_height = lh2
+        
+        # Verify new line_height
+        labels = self._find_labels_recursive(label)
+        for lbl in labels:
+            assert self._floats_equal(lbl.line_height, lh2), \
+                f"After change, expected line_height={lh2}, got {lbl.line_height}"
+    
+    @given(line_height_strategy)
+    @settings(max_examples=100, deadline=None)
+    def test_line_height_applied_to_list_items(self, line_height):
+        """line_height is applied to list item Labels."""
+        markdown = '- Item 1\n- Item 2'
+        label = MarkdownLabel(text=markdown, line_height=line_height)
+        
+        labels = self._find_labels_recursive(label)
+        assert len(labels) >= 2, "Expected at least 2 Labels for list items"
+        
+        # All labels should have the specified line_height
+        for lbl in labels:
+            assert self._floats_equal(lbl.line_height, line_height), \
+                f"Expected line_height={line_height}, got {lbl.line_height}"
+    
+    @given(line_height_strategy)
+    @settings(max_examples=100, deadline=None)
+    def test_line_height_applied_to_table_cells(self, line_height):
+        """line_height is applied to table cell Labels."""
+        markdown = '| A | B |\n| --- | --- |\n| 1 | 2 |'
+        label = MarkdownLabel(text=markdown, line_height=line_height)
+        
+        labels = self._find_labels_recursive(label)
+        assert len(labels) >= 4, "Expected at least 4 Labels for table cells"
+        
+        # All labels should have the specified line_height
+        for lbl in labels:
+            assert self._floats_equal(lbl.line_height, line_height), \
+                f"Expected line_height={line_height}, got {lbl.line_height}"
+    
+    @given(line_height_strategy)
+    @settings(max_examples=100, deadline=None)
+    def test_line_height_applied_to_all_content_types(self, line_height):
+        """line_height is applied to all content types including code."""
+        markdown = 'Regular text\n\n```\ncode\n```\n\n# Heading\n\n- List item'
+        
+        label = MarkdownLabel(text=markdown, line_height=line_height)
+        
+        labels = self._find_labels_recursive(label)
+        assert len(labels) >= 3, "Expected at least 3 Labels"
+        
+        # All labels should have the specified line_height
+        for lbl in labels:
+            assert self._floats_equal(lbl.line_height, line_height), \
+                f"Expected line_height={line_height}, got {lbl.line_height}"

@@ -44,7 +44,10 @@ class KivyRenderer:
                  base_font_size: float = 15,
                  code_font_name: str = 'RobotoMono-Regular',
                  link_color: Optional[List[float]] = None,
-                 code_bg_color: Optional[List[float]] = None):
+                 code_bg_color: Optional[List[float]] = None,
+                 font_name: str = 'Roboto',
+                 color: Optional[List[float]] = None,
+                 line_height: float = 1.0):
         """Initialize the KivyRenderer.
         
         Args:
@@ -52,11 +55,17 @@ class KivyRenderer:
             code_font_name: Font name for code blocks and inline code
             link_color: RGBA color list for link text (default: blue)
             code_bg_color: RGBA color list for code block background
+            font_name: Font name for body text (default: 'Roboto')
+            color: RGBA color list for body text (default: white)
+            line_height: Line height multiplier for text (default: 1.0)
         """
         self.base_font_size = base_font_size
         self.code_font_name = code_font_name
         self.link_color = link_color or [0, 0.5, 1, 1]
         self.code_bg_color = code_bg_color or [0.15, 0.15, 0.15, 1]
+        self.font_name = font_name
+        self.color = color or [1, 1, 1, 1]
+        self.line_height = line_height
         
         self.inline_renderer = InlineRenderer(
             link_color=self.link_color,
@@ -163,7 +172,10 @@ class KivyRenderer:
         label = Label(
             text=text,
             markup=True,
+            font_name=self.font_name,
             font_size=self.base_font_size,
+            color=self.color,
+            line_height=self.line_height,
             size_hint_y=None,
             size_hint_x=1,
             halign='left',
@@ -192,7 +204,10 @@ class KivyRenderer:
         label = Label(
             text=text,
             markup=True,
+            font_name=self.font_name,
             font_size=self.base_font_size,
+            color=self.color,
+            line_height=self.line_height,
             size_hint_y=None,
             size_hint_x=1,
             halign='left',
@@ -237,7 +252,10 @@ class KivyRenderer:
         label = Label(
             text=text,
             markup=True,
+            font_name=self.font_name,
             font_size=font_size,
+            color=self.color,
+            line_height=self.line_height,
             size_hint_y=None,
             size_hint_x=1,
             bold=True,
@@ -343,7 +361,10 @@ class KivyRenderer:
         
         marker = Label(
             text=marker_text,
+            font_name=self.font_name,
             font_size=self.base_font_size,
+            color=self.color,
+            line_height=self.line_height,
             size_hint=(None, 1),  # Match content height
             width=30,
             halign='right',
@@ -435,11 +456,13 @@ class KivyRenderer:
         container.bind(pos=update_bg, size=update_bg)
         
         # Create label with monospace font
+        # Note: code blocks use code_font_name and fixed light color, not font_name/color
         label = Label(
             text=escaped_text,
             markup=True,
             font_name=self.code_font_name,
             font_size=self.base_font_size,
+            line_height=self.line_height,
             size_hint_y=None,
             halign='left',
             valign='top',
@@ -726,7 +749,10 @@ class KivyRenderer:
         label = Label(
             text=text,
             markup=True,
+            font_name=self.font_name,
             font_size=self.base_font_size,
+            color=self.color,
+            line_height=self.line_height,
             size_hint_y=None,
             size_hint_x=1,
             halign=halign,

@@ -23,39 +23,39 @@
     - **Property 8: No-Op Properties Acceptance**
     - **Validates: Requirements 8.1, 8.2, 8.3, 8.4, 8.5, 8.6**
 
-- [ ] 3. Add core styling forwarding properties
-  - [ ] 3.1 Add font_name property with forwarding
+- [x] 3. Add core styling forwarding properties
+  - [x] 3.1 Add font_name property with forwarding
     - Add StringProperty font_name (default 'Roboto')
     - Bind to trigger widget rebuild
     - Pass to KivyRenderer constructor
     - _Requirements: 1.1, 1.2_
-  - [ ] 3.2 Update KivyRenderer to accept and apply font_name
+  - [x] 3.2 Update KivyRenderer to accept and apply font_name
     - Add font_name parameter to __init__
     - Apply font_name to all non-code Labels in rendering methods
     - Preserve code_font_name for code blocks and inline code
     - _Requirements: 1.1, 1.3_
-  - [ ] 3.3 Write property test for font_name forwarding
+  - [x] 3.3 Write property test for font_name forwarding
     - **Property 2: font_name Forwarding with Code Preservation**
     - **Validates: Requirements 1.1, 1.3**
-  - [ ] 3.4 Add color property with forwarding
+  - [x] 3.4 Add color property with forwarding
     - Add ColorProperty color (default [1, 1, 1, 1])
     - Bind to trigger widget rebuild
     - Pass to KivyRenderer constructor
     - _Requirements: 3.1, 3.3_
-  - [ ] 3.5 Update KivyRenderer to accept and apply color
+  - [x] 3.5 Update KivyRenderer to accept and apply color
     - Add color parameter to __init__
     - Apply color to all body text Labels
     - Preserve link_color for hyperlinks
     - _Requirements: 3.1, 3.2_
-  - [ ] 3.6 Write property test for color forwarding
+  - [x] 3.6 Write property test for color forwarding
     - **Property 3: color Forwarding with Link Preservation**
     - **Validates: Requirements 3.1, 3.2**
-  - [ ] 3.7 Add line_height property with forwarding
+  - [x] 3.7 Add line_height property with forwarding
     - Add NumericProperty line_height (default 1.0)
     - Bind to trigger widget rebuild
     - Pass to KivyRenderer and apply to all Labels
     - _Requirements: 4.1, 4.2_
-  - [ ] 3.8 Write property test for line_height forwarding
+  - [x] 3.8 Write property test for line_height forwarding
     - **Property 4: line_height Forwarding**
     - **Validates: Requirements 4.1**
 

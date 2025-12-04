@@ -174,6 +174,38 @@ class MarkdownLabel(BoxLayout):
     and defaults to True.
     """
     
+    # Forwarding properties - these are passed to KivyRenderer and applied to internal Labels
+    
+    font_name = StringProperty('Roboto')
+    """Font name for body text in internal Labels.
+    
+    This font is applied to all internal Label widgets except code blocks
+    and inline code, which use :attr:`code_font_name`.
+    
+    :attr:`font_name` is a :class:`~kivy.properties.StringProperty`
+    and defaults to 'Roboto'.
+    """
+    
+    color = ColorProperty([1, 1, 1, 1])
+    """RGBA color for body text in internal Labels.
+    
+    This color is applied to all internal Label widgets for body text.
+    Links use :attr:`link_color` instead.
+    
+    :attr:`color` is a :class:`~kivy.properties.ColorProperty`
+    and defaults to [1, 1, 1, 1] (white).
+    """
+    
+    line_height = NumericProperty(1.0)
+    """Line height multiplier for internal Labels.
+    
+    This value is applied to all internal Label widgets to control
+    spacing between lines of text.
+    
+    :attr:`line_height` is a :class:`~kivy.properties.NumericProperty`
+    and defaults to 1.0.
+    """
+    
     __events__ = ('on_ref_press',)
     
     def __init__(self, **kwargs):
@@ -196,12 +228,21 @@ class MarkdownLabel(BoxLayout):
         # Bind text property to rebuild widgets
         self.bind(text=self._on_text_changed)
         
+        # Bind forwarding properties to trigger widget rebuild
+        self.bind(font_name=self._on_style_changed)
+        self.bind(color=self._on_style_changed)
+        self.bind(line_height=self._on_style_changed)
+        
         # Initial build if text is provided
         if self.text:
             self._rebuild_widgets()
     
     def _on_text_changed(self, instance, value):
         """Callback when text property changes."""
+        self._rebuild_widgets()
+    
+    def _on_style_changed(self, instance, value):
+        """Callback when a styling property changes."""
         self._rebuild_widgets()
     
     def _rebuild_widgets(self):
@@ -224,7 +265,10 @@ class MarkdownLabel(BoxLayout):
             base_font_size=self.base_font_size,
             code_font_name=self.code_font_name,
             link_color=list(self.link_color),
-            code_bg_color=list(self.code_bg_color)
+            code_bg_color=list(self.code_bg_color),
+            font_name=self.font_name,
+            color=list(self.color),
+            line_height=self.line_height
         )
         
         # Render AST to widget tree
