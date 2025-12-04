@@ -488,6 +488,10 @@ class TestRoundTripSerialization:
                 elif key == 'attrs':
                     # Keep attrs but normalize them
                     norm_token[key] = dict(value) if value else {}
+                elif key == 'bullet':
+                    # Normalize bullet character - all unordered list bullets
+                    # are semantically equivalent (-, +, *)
+                    norm_token[key] = '-'
                 else:
                     norm_token[key] = value
             

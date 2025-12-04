@@ -154,7 +154,7 @@
     - Pass to KivyRenderer and apply to Labels
     - _Requirements: 13.1, 13.2, 13.3, 13.4_
 
-- [ ] 10. Checkpoint
+- [x] 10. Checkpoint
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 11. Write reactive rebuild property test
