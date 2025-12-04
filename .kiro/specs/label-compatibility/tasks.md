@@ -1,12 +1,12 @@
 # Implementation Plan
 
-- [ ] 1. Add font_size alias property
-  - [ ] 1.1 Implement font_size as AliasProperty to base_font_size
+- [x] 1. Add font_size alias property
+  - [x] 1.1 Implement font_size as AliasProperty to base_font_size
     - Add AliasProperty with getter returning base_font_size
     - Add setter that updates base_font_size
     - Bind to base_font_size for change notifications
     - _Requirements: 2.1, 2.2, 2.3_
-  - [ ] 1.2 Write property test for font_size/base_font_size alias
+  - [x] 1.2 Write property test for font_size/base_font_size alias
     - **Property 1: font_size/base_font_size Alias Bidirectionality**
     - **Validates: Requirements 2.1, 2.2**
 

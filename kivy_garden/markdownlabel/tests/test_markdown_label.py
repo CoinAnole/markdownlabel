@@ -97,6 +97,71 @@ def simple_markdown_document(draw):
     return '\n\n'.join(elements) if elements else 'Default text'
 
 
+# **Feature: label-compatibility, Property 1: font_size/base_font_size Alias Bidirectionality**
+# *For any* numeric value V, setting `font_size` to V SHALL result in `base_font_size`
+# equaling V, and setting `base_font_size` to V SHALL result in `font_size` returning V.
+# **Validates: Requirements 2.1, 2.2**
+
+class TestFontSizeAliasBidirectionality:
+    """Property tests for font_size/base_font_size alias (Property 1)."""
+    
+    @given(st.floats(min_value=1, max_value=200, allow_nan=False, allow_infinity=False))
+    @settings(max_examples=100, deadline=None)
+    def test_font_size_sets_base_font_size(self, font_size_value):
+        """Setting font_size updates base_font_size to the same value."""
+        label = MarkdownLabel(font_size=font_size_value)
+        
+        assert label.base_font_size == font_size_value, \
+            f"Expected base_font_size={font_size_value}, got {label.base_font_size}"
+    
+    @given(st.floats(min_value=1, max_value=200, allow_nan=False, allow_infinity=False))
+    @settings(max_examples=100, deadline=None)
+    def test_base_font_size_returns_via_font_size(self, base_font_size_value):
+        """Setting base_font_size is returned when reading font_size."""
+        label = MarkdownLabel(base_font_size=base_font_size_value)
+        
+        assert label.font_size == base_font_size_value, \
+            f"Expected font_size={base_font_size_value}, got {label.font_size}"
+    
+    @given(st.floats(min_value=1, max_value=200, allow_nan=False, allow_infinity=False),
+           st.floats(min_value=1, max_value=200, allow_nan=False, allow_infinity=False))
+    @settings(max_examples=100, deadline=None)
+    def test_font_size_change_updates_base_font_size(self, initial_value, new_value):
+        """Changing font_size after creation updates base_font_size."""
+        label = MarkdownLabel(font_size=initial_value)
+        label.font_size = new_value
+        
+        assert label.base_font_size == new_value, \
+            f"Expected base_font_size={new_value}, got {label.base_font_size}"
+    
+    @given(st.floats(min_value=1, max_value=200, allow_nan=False, allow_infinity=False),
+           st.floats(min_value=1, max_value=200, allow_nan=False, allow_infinity=False))
+    @settings(max_examples=100, deadline=None)
+    def test_base_font_size_change_updates_font_size(self, initial_value, new_value):
+        """Changing base_font_size after creation updates font_size."""
+        label = MarkdownLabel(base_font_size=initial_value)
+        label.base_font_size = new_value
+        
+        assert label.font_size == new_value, \
+            f"Expected font_size={new_value}, got {label.font_size}"
+    
+    @given(st.floats(min_value=1, max_value=200, allow_nan=False, allow_infinity=False))
+    @settings(max_examples=100, deadline=None)
+    def test_bidirectional_equivalence(self, value):
+        """font_size and base_font_size are always equivalent."""
+        label = MarkdownLabel()
+        
+        # Set via font_size
+        label.font_size = value
+        assert label.font_size == label.base_font_size, \
+            f"font_size ({label.font_size}) != base_font_size ({label.base_font_size})"
+        
+        # Set via base_font_size
+        label.base_font_size = value + 1
+        assert label.font_size == label.base_font_size, \
+            f"font_size ({label.font_size}) != base_font_size ({label.base_font_size})"
+
+
 # **Feature: markdown-label, Property 1: Widget Tree Generation**
 # *For any* valid Markdown text, when parsed and rendered by MarkdownLabel,
 # the resulting widget tree SHALL contain at least one child widget for each

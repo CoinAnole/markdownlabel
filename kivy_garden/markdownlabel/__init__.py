@@ -18,7 +18,8 @@ from kivy.uix.label import Label
 from kivy.properties import (
     StringProperty, 
     NumericProperty, 
-    ColorProperty
+    ColorProperty,
+    AliasProperty
 )
 
 import mistune
@@ -93,6 +94,29 @@ class MarkdownLabel(BoxLayout):
     
     :attr:`code_bg_color` is a :class:`~kivy.properties.ColorProperty`
     and defaults to [0.15, 0.15, 0.15, 1] (dark gray).
+    """
+    
+    def _get_font_size(self):
+        """Getter for font_size alias property."""
+        return self.base_font_size
+    
+    def _set_font_size(self, value):
+        """Setter for font_size alias property."""
+        self.base_font_size = value
+    
+    font_size = AliasProperty(
+        _get_font_size,
+        _set_font_size,
+        bind=['base_font_size']
+    )
+    """Alias for :attr:`base_font_size` for Label API compatibility.
+    
+    Setting this property updates :attr:`base_font_size`, and reading it
+    returns the current :attr:`base_font_size` value. This allows
+    MarkdownLabel to be used as a drop-in replacement for Label.
+    
+    :attr:`font_size` is an :class:`~kivy.properties.AliasProperty` that
+    maps to :attr:`base_font_size`.
     """
     
     __events__ = ('on_ref_press',)
