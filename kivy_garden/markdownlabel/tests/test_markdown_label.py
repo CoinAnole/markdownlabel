@@ -2237,3 +2237,223 @@ class TestStripForwarding:
         
         assert label.strip is False, \
             f"Default strip should be False, got {label.strip}"
+
+
+# **Feature: label-compatibility, Property 11: Advanced Font Properties Forwarding**
+# *For any* values of `font_family`, `font_context`, `font_features`, `font_hinting`,
+# `font_kerning`, or `font_blended`, all internal Labels SHALL have those properties
+# set to the corresponding values.
+# **Validates: Requirements 11.1, 11.2, 11.3, 11.4, 11.5, 11.6**
+
+class TestAdvancedFontPropertiesForwarding:
+    """Property tests for advanced font properties forwarding (Property 11)."""
+    
+    def _find_labels_recursive(self, widget):
+        """Recursively find all Label widgets in the tree."""
+        labels = []
+        if isinstance(widget, Label):
+            labels.append(widget)
+        if hasattr(widget, 'children'):
+            for child in widget.children:
+                labels.extend(self._find_labels_recursive(child))
+        return labels
+    
+    @given(st.text(min_size=1, max_size=30, alphabet=st.characters(
+        whitelist_categories=['L', 'N'],
+        blacklist_characters='[]&\n\r'
+    )))
+    @settings(max_examples=100, deadline=None)
+    def test_font_family_forwarded_to_labels(self, font_family_value):
+        """font_family is forwarded to all internal Labels."""
+        label = MarkdownLabel(text='Hello World', font_family=font_family_value)
+        
+        labels = self._find_labels_recursive(label)
+        assert len(labels) >= 1, "Expected at least 1 Label"
+        
+        for lbl in labels:
+            assert lbl.font_family == font_family_value, \
+                f"Expected font_family={font_family_value!r}, got {lbl.font_family!r}"
+    
+    @given(st.text(min_size=1, max_size=30, alphabet=st.characters(
+        whitelist_categories=['L', 'N'],
+        blacklist_characters='[]&\n\r'
+    )))
+    @settings(max_examples=100, deadline=None)
+    def test_font_context_forwarded_to_labels(self, font_context_value):
+        """font_context is forwarded to all internal Labels."""
+        label = MarkdownLabel(text='Hello World', font_context=font_context_value)
+        
+        labels = self._find_labels_recursive(label)
+        assert len(labels) >= 1, "Expected at least 1 Label"
+        
+        for lbl in labels:
+            assert lbl.font_context == font_context_value, \
+                f"Expected font_context={font_context_value!r}, got {lbl.font_context!r}"
+    
+    @given(st.text(min_size=0, max_size=50, alphabet=st.characters(
+        whitelist_categories=['L', 'N', 'P'],
+        blacklist_characters='[]&\n\r'
+    )))
+    @settings(max_examples=100, deadline=None)
+    def test_font_features_forwarded_to_labels(self, font_features_value):
+        """font_features is forwarded to all internal Labels."""
+        label = MarkdownLabel(text='Hello World', font_features=font_features_value)
+        
+        labels = self._find_labels_recursive(label)
+        assert len(labels) >= 1, "Expected at least 1 Label"
+        
+        for lbl in labels:
+            assert lbl.font_features == font_features_value, \
+                f"Expected font_features={font_features_value!r}, got {lbl.font_features!r}"
+    
+    @given(st.sampled_from([None, 'normal', 'light', 'mono']))
+    @settings(max_examples=100, deadline=None)
+    def test_font_hinting_forwarded_to_labels(self, font_hinting_value):
+        """font_hinting is forwarded to all internal Labels."""
+        label = MarkdownLabel(text='Hello World', font_hinting=font_hinting_value)
+        
+        labels = self._find_labels_recursive(label)
+        assert len(labels) >= 1, "Expected at least 1 Label"
+        
+        for lbl in labels:
+            # When font_hinting is None, it may not be set on the Label
+            if font_hinting_value is not None:
+                assert lbl.font_hinting == font_hinting_value, \
+                    f"Expected font_hinting={font_hinting_value!r}, got {lbl.font_hinting!r}"
+    
+    @given(st.booleans())
+    @settings(max_examples=100, deadline=None)
+    def test_font_kerning_forwarded_to_labels(self, font_kerning_value):
+        """font_kerning is forwarded to all internal Labels."""
+        label = MarkdownLabel(text='Hello World', font_kerning=font_kerning_value)
+        
+        labels = self._find_labels_recursive(label)
+        assert len(labels) >= 1, "Expected at least 1 Label"
+        
+        for lbl in labels:
+            assert lbl.font_kerning == font_kerning_value, \
+                f"Expected font_kerning={font_kerning_value}, got {lbl.font_kerning}"
+    
+    @given(st.booleans())
+    @settings(max_examples=100, deadline=None)
+    def test_font_blended_forwarded_to_labels(self, font_blended_value):
+        """font_blended is forwarded to all internal Labels."""
+        label = MarkdownLabel(text='Hello World', font_blended=font_blended_value)
+        
+        labels = self._find_labels_recursive(label)
+        assert len(labels) >= 1, "Expected at least 1 Label"
+        
+        for lbl in labels:
+            assert lbl.font_blended == font_blended_value, \
+                f"Expected font_blended={font_blended_value}, got {lbl.font_blended}"
+    
+    @given(st.sampled_from([None, 'normal', 'light', 'mono']),
+           st.booleans(),
+           st.booleans())
+    @settings(max_examples=100, deadline=None)
+    def test_multiple_advanced_font_properties_forwarded(self, font_hinting, font_kerning, font_blended):
+        """Multiple advanced font properties are forwarded together."""
+        label = MarkdownLabel(
+            text='# Heading\n\nParagraph text',
+            font_hinting=font_hinting,
+            font_kerning=font_kerning,
+            font_blended=font_blended
+        )
+        
+        labels = self._find_labels_recursive(label)
+        assert len(labels) >= 2, "Expected at least 2 Labels (heading + paragraph)"
+        
+        for lbl in labels:
+            if font_hinting is not None:
+                assert lbl.font_hinting == font_hinting, \
+                    f"Expected font_hinting={font_hinting!r}, got {lbl.font_hinting!r}"
+            assert lbl.font_kerning == font_kerning, \
+                f"Expected font_kerning={font_kerning}, got {lbl.font_kerning}"
+            assert lbl.font_blended == font_blended, \
+                f"Expected font_blended={font_blended}, got {lbl.font_blended}"
+    
+    @given(st.booleans(), st.booleans())
+    @settings(max_examples=100, deadline=None)
+    def test_font_kerning_change_triggers_rebuild(self, kerning1, kerning2):
+        """Changing font_kerning triggers widget rebuild with new value."""
+        assume(kerning1 != kerning2)
+        
+        label = MarkdownLabel(text='Hello World', font_kerning=kerning1)
+        
+        # Verify initial value
+        labels = self._find_labels_recursive(label)
+        for lbl in labels:
+            assert lbl.font_kerning == kerning1
+        
+        # Change value
+        label.font_kerning = kerning2
+        
+        # Verify new value
+        labels = self._find_labels_recursive(label)
+        for lbl in labels:
+            assert lbl.font_kerning == kerning2, \
+                f"After change, expected font_kerning={kerning2}, got {lbl.font_kerning}"
+    
+    @given(st.booleans(), st.booleans())
+    @settings(max_examples=100, deadline=None)
+    def test_font_blended_change_triggers_rebuild(self, blended1, blended2):
+        """Changing font_blended triggers widget rebuild with new value."""
+        assume(blended1 != blended2)
+        
+        label = MarkdownLabel(text='Hello World', font_blended=blended1)
+        
+        # Verify initial value
+        labels = self._find_labels_recursive(label)
+        for lbl in labels:
+            assert lbl.font_blended == blended1
+        
+        # Change value
+        label.font_blended = blended2
+        
+        # Verify new value
+        labels = self._find_labels_recursive(label)
+        for lbl in labels:
+            assert lbl.font_blended == blended2, \
+                f"After change, expected font_blended={blended2}, got {lbl.font_blended}"
+    
+    def test_default_font_kerning_is_true(self):
+        """Default font_kerning is True."""
+        label = MarkdownLabel(text='Hello World')
+        
+        assert label.font_kerning is True, \
+            f"Default font_kerning should be True, got {label.font_kerning}"
+    
+    def test_default_font_blended_is_true(self):
+        """Default font_blended is True."""
+        label = MarkdownLabel(text='Hello World')
+        
+        assert label.font_blended is True, \
+            f"Default font_blended should be True, got {label.font_blended}"
+    
+    def test_default_font_hinting_is_normal(self):
+        """Default font_hinting is 'normal'."""
+        label = MarkdownLabel(text='Hello World')
+        
+        assert label.font_hinting == 'normal', \
+            f"Default font_hinting should be 'normal', got {label.font_hinting}"
+    
+    def test_default_font_features_is_empty(self):
+        """Default font_features is empty string."""
+        label = MarkdownLabel(text='Hello World')
+        
+        assert label.font_features == '', \
+            f"Default font_features should be '', got {label.font_features!r}"
+    
+    def test_default_font_family_is_none(self):
+        """Default font_family is None."""
+        label = MarkdownLabel(text='Hello World')
+        
+        assert label.font_family is None, \
+            f"Default font_family should be None, got {label.font_family!r}"
+    
+    def test_default_font_context_is_none(self):
+        """Default font_context is None."""
+        label = MarkdownLabel(text='Hello World')
+        
+        assert label.font_context is None, \
+            f"Default font_context should be None, got {label.font_context!r}"

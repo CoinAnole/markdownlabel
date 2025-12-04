@@ -52,7 +52,13 @@ class KivyRenderer:
                  valign: str = 'bottom',
                  text_size: Optional[List] = None,
                  unicode_errors: str = 'replace',
-                 strip: bool = False):
+                 strip: bool = False,
+                 font_family: Optional[str] = None,
+                 font_context: Optional[str] = None,
+                 font_features: str = '',
+                 font_hinting: Optional[str] = 'normal',
+                 font_kerning: bool = True,
+                 font_blended: bool = True):
         """Initialize the KivyRenderer.
         
         Args:
@@ -68,6 +74,12 @@ class KivyRenderer:
             text_size: Bounding box size [width, height] for text wrapping
             unicode_errors: Unicode error handling mode (default: 'replace')
             strip: Whether to strip leading/trailing whitespace (default: False)
+            font_family: Font family for text (default: None)
+            font_context: Font context for text (default: None)
+            font_features: OpenType font features string (default: '')
+            font_hinting: Font hinting mode (default: 'normal')
+            font_kerning: Whether to enable font kerning (default: True)
+            font_blended: Whether to use blended font rendering (default: True)
         """
         self.base_font_size = base_font_size
         self.code_font_name = code_font_name
@@ -82,6 +94,12 @@ class KivyRenderer:
         self.text_size = text_size or [None, None]
         self.unicode_errors = unicode_errors
         self.strip = strip
+        self.font_family = font_family
+        self.font_context = font_context
+        self.font_features = font_features
+        self.font_hinting = font_hinting
+        self.font_kerning = font_kerning
+        self.font_blended = font_blended
         
         self.inline_renderer = InlineRenderer(
             link_color=self.link_color,
@@ -185,20 +203,33 @@ class KivyRenderer:
         children = token.get('children', [])
         text = self._render_inline(children)
         
-        label = Label(
-            text=text,
-            markup=True,
-            font_name=self.font_name,
-            font_size=self.base_font_size,
-            color=self.color,
-            line_height=self.line_height,
-            size_hint_y=None,
-            size_hint_x=1,
-            halign=self.halign,
-            valign=self.valign,
-            unicode_errors=self.unicode_errors,
-            strip=self.strip
-        )
+        label_kwargs = {
+            'text': text,
+            'markup': True,
+            'font_name': self.font_name,
+            'font_size': self.base_font_size,
+            'color': self.color,
+            'line_height': self.line_height,
+            'size_hint_y': None,
+            'size_hint_x': 1,
+            'halign': self.halign,
+            'valign': self.valign,
+            'unicode_errors': self.unicode_errors,
+            'strip': self.strip,
+            'font_features': self.font_features,
+            'font_kerning': self.font_kerning,
+            'font_blended': self.font_blended,
+        }
+        
+        # Add optional font properties if set
+        if self.font_family is not None:
+            label_kwargs['font_family'] = self.font_family
+        if self.font_context is not None:
+            label_kwargs['font_context'] = self.font_context
+        if self.font_hinting is not None:
+            label_kwargs['font_hinting'] = self.font_hinting
+        
+        label = Label(**label_kwargs)
         
         # Handle text_size width constraint
         if self.text_size[0] is not None:
@@ -224,20 +255,33 @@ class KivyRenderer:
         children = token.get('children', [])
         text = self._render_inline(children)
         
-        label = Label(
-            text=text,
-            markup=True,
-            font_name=self.font_name,
-            font_size=self.base_font_size,
-            color=self.color,
-            line_height=self.line_height,
-            size_hint_y=None,
-            size_hint_x=1,
-            halign=self.halign,
-            valign=self.valign,
-            unicode_errors=self.unicode_errors,
-            strip=self.strip
-        )
+        label_kwargs = {
+            'text': text,
+            'markup': True,
+            'font_name': self.font_name,
+            'font_size': self.base_font_size,
+            'color': self.color,
+            'line_height': self.line_height,
+            'size_hint_y': None,
+            'size_hint_x': 1,
+            'halign': self.halign,
+            'valign': self.valign,
+            'unicode_errors': self.unicode_errors,
+            'strip': self.strip,
+            'font_features': self.font_features,
+            'font_kerning': self.font_kerning,
+            'font_blended': self.font_blended,
+        }
+        
+        # Add optional font properties if set
+        if self.font_family is not None:
+            label_kwargs['font_family'] = self.font_family
+        if self.font_context is not None:
+            label_kwargs['font_context'] = self.font_context
+        if self.font_hinting is not None:
+            label_kwargs['font_hinting'] = self.font_hinting
+        
+        label = Label(**label_kwargs)
         
         # Handle text_size width constraint
         if self.text_size[0] is not None:
@@ -277,21 +321,34 @@ class KivyRenderer:
         multiplier = self.HEADING_SIZES.get(level, 1.0)
         font_size = self.base_font_size * multiplier
         
-        label = Label(
-            text=text,
-            markup=True,
-            font_name=self.font_name,
-            font_size=font_size,
-            color=self.color,
-            line_height=self.line_height,
-            size_hint_y=None,
-            size_hint_x=1,
-            bold=True,
-            halign=self.halign,
-            valign=self.valign,
-            unicode_errors=self.unicode_errors,
-            strip=self.strip
-        )
+        label_kwargs = {
+            'text': text,
+            'markup': True,
+            'font_name': self.font_name,
+            'font_size': font_size,
+            'color': self.color,
+            'line_height': self.line_height,
+            'size_hint_y': None,
+            'size_hint_x': 1,
+            'bold': True,
+            'halign': self.halign,
+            'valign': self.valign,
+            'unicode_errors': self.unicode_errors,
+            'strip': self.strip,
+            'font_features': self.font_features,
+            'font_kerning': self.font_kerning,
+            'font_blended': self.font_blended,
+        }
+        
+        # Add optional font properties if set
+        if self.font_family is not None:
+            label_kwargs['font_family'] = self.font_family
+        if self.font_context is not None:
+            label_kwargs['font_context'] = self.font_context
+        if self.font_hinting is not None:
+            label_kwargs['font_hinting'] = self.font_hinting
+        
+        label = Label(**label_kwargs)
         
         # Handle text_size width constraint
         if self.text_size[0] is not None:
@@ -392,19 +449,32 @@ class KivyRenderer:
         else:
             marker_text = '•'
         
-        marker = Label(
-            text=marker_text,
-            font_name=self.font_name,
-            font_size=self.base_font_size,
-            color=self.color,
-            line_height=self.line_height,
-            size_hint=(None, 1),  # Match content height
-            width=30,
-            halign='right',
-            valign=self.valign,
-            unicode_errors=self.unicode_errors,
-            strip=self.strip
-        )
+        marker_kwargs = {
+            'text': marker_text,
+            'font_name': self.font_name,
+            'font_size': self.base_font_size,
+            'color': self.color,
+            'line_height': self.line_height,
+            'size_hint': (None, 1),  # Match content height
+            'width': 30,
+            'halign': 'right',
+            'valign': self.valign,
+            'unicode_errors': self.unicode_errors,
+            'strip': self.strip,
+            'font_features': self.font_features,
+            'font_kerning': self.font_kerning,
+            'font_blended': self.font_blended,
+        }
+        
+        # Add optional font properties if set
+        if self.font_family is not None:
+            marker_kwargs['font_family'] = self.font_family
+        if self.font_context is not None:
+            marker_kwargs['font_context'] = self.font_context
+        if self.font_hinting is not None:
+            marker_kwargs['font_hinting'] = self.font_hinting
+        
+        marker = Label(**marker_kwargs)
         # Bind text_size to enable valign to work properly
         marker.bind(size=lambda inst, val: setattr(inst, 'text_size', val))
         
@@ -784,21 +854,34 @@ class KivyRenderer:
         text = self._render_inline(children) if children else ''
         
         # Create label with appropriate styling
-        label = Label(
-            text=text,
-            markup=True,
-            font_name=self.font_name,
-            font_size=self.base_font_size,
-            color=self.color,
-            line_height=self.line_height,
-            size_hint_y=None,
-            size_hint_x=1,
-            halign=cell_halign,
-            valign=self.valign,
-            bold=is_head,  # Bold for header cells
-            unicode_errors=self.unicode_errors,
-            strip=self.strip
-        )
+        label_kwargs = {
+            'text': text,
+            'markup': True,
+            'font_name': self.font_name,
+            'font_size': self.base_font_size,
+            'color': self.color,
+            'line_height': self.line_height,
+            'size_hint_y': None,
+            'size_hint_x': 1,
+            'halign': cell_halign,
+            'valign': self.valign,
+            'bold': is_head,  # Bold for header cells
+            'unicode_errors': self.unicode_errors,
+            'strip': self.strip,
+            'font_features': self.font_features,
+            'font_kerning': self.font_kerning,
+            'font_blended': self.font_blended,
+        }
+        
+        # Add optional font properties if set
+        if self.font_family is not None:
+            label_kwargs['font_family'] = self.font_family
+        if self.font_context is not None:
+            label_kwargs['font_context'] = self.font_context
+        if self.font_hinting is not None:
+            label_kwargs['font_hinting'] = self.font_hinting
+        
+        label = Label(**label_kwargs)
         # Handle text_size width constraint
         if self.text_size[0] is not None:
             label.bind(width=lambda inst, val: setattr(inst, 'text_size', (self.text_size[0], None)))

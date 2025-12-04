@@ -274,6 +274,71 @@ class MarkdownLabel(BoxLayout):
     and defaults to False.
     """
     
+    # Advanced font properties
+    
+    font_family = StringProperty(None, allownone=True)
+    """Font family for internal Labels.
+    
+    This value is forwarded to all internal Label widgets.
+    
+    :attr:`font_family` is a :class:`~kivy.properties.StringProperty`
+    and defaults to None.
+    """
+    
+    font_context = StringProperty(None, allownone=True)
+    """Font context for internal Labels.
+    
+    This value is forwarded to all internal Label widgets.
+    
+    :attr:`font_context` is a :class:`~kivy.properties.StringProperty`
+    and defaults to None.
+    """
+    
+    font_features = StringProperty('')
+    """Font features for internal Labels.
+    
+    This value is forwarded to all internal Label widgets.
+    OpenType font features can be specified as a string.
+    
+    :attr:`font_features` is a :class:`~kivy.properties.StringProperty`
+    and defaults to ''.
+    """
+    
+    font_hinting = OptionProperty('normal', options=[None, 'normal', 'light', 'mono'], allownone=True)
+    """Font hinting mode for internal Labels.
+    
+    This value is forwarded to all internal Label widgets.
+    
+    Options:
+        - None: No hinting
+        - 'normal': Normal hinting (default)
+        - 'light': Light hinting
+        - 'mono': Monochrome hinting
+    
+    :attr:`font_hinting` is an :class:`~kivy.properties.OptionProperty`
+    and defaults to 'normal'.
+    """
+    
+    font_kerning = BooleanProperty(True)
+    """Font kerning for internal Labels.
+    
+    When True, kerning is enabled for text rendering.
+    This value is forwarded to all internal Label widgets.
+    
+    :attr:`font_kerning` is a :class:`~kivy.properties.BooleanProperty`
+    and defaults to True.
+    """
+    
+    font_blended = BooleanProperty(True)
+    """Font blending for internal Labels.
+    
+    When True, blended rendering is used for smoother text.
+    This value is forwarded to all internal Label widgets.
+    
+    :attr:`font_blended` is a :class:`~kivy.properties.BooleanProperty`
+    and defaults to True.
+    """
+    
     __events__ = ('on_ref_press',)
     
     def __init__(self, **kwargs):
@@ -305,6 +370,12 @@ class MarkdownLabel(BoxLayout):
         self.bind(text_size=self._on_style_changed)
         self.bind(unicode_errors=self._on_style_changed)
         self.bind(strip=self._on_style_changed)
+        self.bind(font_family=self._on_style_changed)
+        self.bind(font_context=self._on_style_changed)
+        self.bind(font_features=self._on_style_changed)
+        self.bind(font_hinting=self._on_style_changed)
+        self.bind(font_kerning=self._on_style_changed)
+        self.bind(font_blended=self._on_style_changed)
         
         # Bind padding to the container (self is a BoxLayout)
         self.bind(padding=self._on_padding_changed)
@@ -358,7 +429,13 @@ class MarkdownLabel(BoxLayout):
             valign=self.valign,
             text_size=list(self.text_size) if self.text_size else [None, None],
             unicode_errors=self.unicode_errors,
-            strip=self.strip
+            strip=self.strip,
+            font_family=self.font_family,
+            font_context=self.font_context,
+            font_features=self.font_features,
+            font_hinting=self.font_hinting,
+            font_kerning=self.font_kerning,
+            font_blended=self.font_blended
         )
         
         # Render AST to widget tree

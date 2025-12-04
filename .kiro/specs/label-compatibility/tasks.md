@@ -115,22 +115,22 @@
     - **Property 13: strip Forwarding**
     - **Validates: Requirements 14.1**
 
-- [ ] 7. Add advanced font properties
-  - [ ] 7.1 Add font_family, font_context, font_features properties
+- [x] 7. Add advanced font properties
+  - [x] 7.1 Add font_family, font_context, font_features properties
     - Add StringProperty font_family (default None, allownone=True)
     - Add StringProperty font_context (default None, allownone=True)
     - Add StringProperty font_features (default '')
     - Bind all to trigger widget rebuild
     - Pass to KivyRenderer and apply to all Labels
     - _Requirements: 11.1, 11.2, 11.3_
-  - [ ] 7.2 Add font_hinting, font_kerning, font_blended properties
+  - [x] 7.2 Add font_hinting, font_kerning, font_blended properties
     - Add OptionProperty font_hinting (default 'normal', options: None, normal, light, mono)
     - Add BooleanProperty font_kerning (default True)
     - Add BooleanProperty font_blended (default True)
     - Bind all to trigger widget rebuild
     - Pass to KivyRenderer and apply to all Labels
     - _Requirements: 11.4, 11.5, 11.6_
-  - [ ] 7.3 Write property test for advanced font properties forwarding
+  - [x] 7.3 Write property test for advanced font properties forwarding
     - **Property 11: Advanced Font Properties Forwarding**
     - **Validates: Requirements 11.1, 11.2, 11.3, 11.4, 11.5, 11.6**
 
