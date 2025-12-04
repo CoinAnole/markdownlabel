@@ -1960,3 +1960,280 @@ class TestTextSizeForwarding:
         # Verify the label has children (widgets were created)
         labels = self._find_labels_recursive(label)
         assert len(labels) >= 1, "Expected at least one Label"
+
+
+# **Feature: label-compatibility, Property 10: unicode_errors Forwarding**
+# *For any* unicode_errors value in ['strict', 'replace', 'ignore'], all internal
+# Labels SHALL have `unicode_errors` set to that value.
+# **Validates: Requirements 10.1, 10.2**
+
+# Strategy for generating valid unicode_errors values
+unicode_errors_strategy = st.sampled_from(['strict', 'replace', 'ignore'])
+
+
+class TestUnicodeErrorsForwarding:
+    """Property tests for unicode_errors forwarding (Property 10)."""
+    
+    def _find_labels_recursive(self, widget, labels=None):
+        """Recursively find all Label widgets in a widget tree."""
+        if labels is None:
+            labels = []
+        
+        if isinstance(widget, Label):
+            labels.append(widget)
+        
+        if hasattr(widget, 'children'):
+            for child in widget.children:
+                self._find_labels_recursive(child, labels)
+        
+        return labels
+    
+    @given(unicode_errors_strategy)
+    @settings(max_examples=100, deadline=None)
+    def test_unicode_errors_stored_correctly(self, unicode_errors):
+        """unicode_errors value is stored correctly on MarkdownLabel."""
+        label = MarkdownLabel(text='Hello World', unicode_errors=unicode_errors)
+        
+        assert label.unicode_errors == unicode_errors, \
+            f"Expected unicode_errors={unicode_errors}, got {label.unicode_errors}"
+    
+    @given(unicode_errors_strategy)
+    @settings(max_examples=100, deadline=None)
+    def test_unicode_errors_applied_to_paragraph(self, unicode_errors):
+        """unicode_errors is applied to paragraph Labels."""
+        label = MarkdownLabel(text='Hello World', unicode_errors=unicode_errors)
+        
+        labels = self._find_labels_recursive(label)
+        assert len(labels) >= 1, "Expected at least one Label"
+        
+        # All labels should have the specified unicode_errors
+        for lbl in labels:
+            assert lbl.unicode_errors == unicode_errors, \
+                f"Expected unicode_errors={unicode_errors}, got {lbl.unicode_errors}"
+    
+    @given(unicode_errors_strategy)
+    @settings(max_examples=100, deadline=None)
+    def test_unicode_errors_applied_to_heading(self, unicode_errors):
+        """unicode_errors is applied to heading Labels."""
+        label = MarkdownLabel(text='# Heading', unicode_errors=unicode_errors)
+        
+        labels = self._find_labels_recursive(label)
+        assert len(labels) >= 1, "Expected at least one Label"
+        
+        # All labels should have the specified unicode_errors
+        for lbl in labels:
+            assert lbl.unicode_errors == unicode_errors, \
+                f"Expected unicode_errors={unicode_errors}, got {lbl.unicode_errors}"
+    
+    @given(unicode_errors_strategy)
+    @settings(max_examples=100, deadline=None)
+    def test_unicode_errors_applied_to_code_block(self, unicode_errors):
+        """unicode_errors is applied to code block Labels."""
+        markdown = '```python\nprint("hello")\n```'
+        label = MarkdownLabel(text=markdown, unicode_errors=unicode_errors)
+        
+        labels = self._find_labels_recursive(label)
+        assert len(labels) >= 1, "Expected at least one Label for code block"
+        
+        # All labels should have the specified unicode_errors
+        for lbl in labels:
+            assert lbl.unicode_errors == unicode_errors, \
+                f"Expected unicode_errors={unicode_errors}, got {lbl.unicode_errors}"
+    
+    @given(unicode_errors_strategy)
+    @settings(max_examples=100, deadline=None)
+    def test_unicode_errors_applied_to_list_items(self, unicode_errors):
+        """unicode_errors is applied to list item Labels."""
+        markdown = '- Item 1\n- Item 2'
+        label = MarkdownLabel(text=markdown, unicode_errors=unicode_errors)
+        
+        labels = self._find_labels_recursive(label)
+        assert len(labels) >= 2, "Expected at least 2 Labels for list items"
+        
+        # All labels should have the specified unicode_errors
+        for lbl in labels:
+            assert lbl.unicode_errors == unicode_errors, \
+                f"Expected unicode_errors={unicode_errors}, got {lbl.unicode_errors}"
+    
+    @given(unicode_errors_strategy)
+    @settings(max_examples=100, deadline=None)
+    def test_unicode_errors_applied_to_table_cells(self, unicode_errors):
+        """unicode_errors is applied to table cell Labels."""
+        markdown = '| A | B |\n| --- | --- |\n| 1 | 2 |'
+        label = MarkdownLabel(text=markdown, unicode_errors=unicode_errors)
+        
+        labels = self._find_labels_recursive(label)
+        assert len(labels) >= 4, "Expected at least 4 Labels for table cells"
+        
+        # All labels should have the specified unicode_errors
+        for lbl in labels:
+            assert lbl.unicode_errors == unicode_errors, \
+                f"Expected unicode_errors={unicode_errors}, got {lbl.unicode_errors}"
+    
+    @given(st.sampled_from(['strict', 'replace']), st.sampled_from(['replace', 'ignore']))
+    @settings(max_examples=100, deadline=None)
+    def test_unicode_errors_change_triggers_rebuild(self, errors1, errors2):
+        """Changing unicode_errors triggers widget rebuild with new value."""
+        assume(errors1 != errors2)
+        
+        label = MarkdownLabel(text='Hello World', unicode_errors=errors1)
+        
+        # Verify initial unicode_errors
+        labels = self._find_labels_recursive(label)
+        for lbl in labels:
+            assert lbl.unicode_errors == errors1
+        
+        # Change unicode_errors
+        label.unicode_errors = errors2
+        
+        # Verify new unicode_errors
+        labels = self._find_labels_recursive(label)
+        for lbl in labels:
+            assert lbl.unicode_errors == errors2, \
+                f"After change, expected unicode_errors={errors2}, got {lbl.unicode_errors}"
+    
+    @settings(max_examples=100, deadline=None)
+    @given(st.data())
+    def test_default_unicode_errors_is_replace(self, data):
+        """Default unicode_errors is 'replace'."""
+        label = MarkdownLabel(text='Hello World')
+        
+        assert label.unicode_errors == 'replace', \
+            f"Default unicode_errors should be 'replace', got {label.unicode_errors}"
+
+
+# **Feature: label-compatibility, Property 13: strip Forwarding**
+# *For any* Markdown text and any strip boolean value, all internal Labels
+# SHALL have `strip` set to that value.
+# **Validates: Requirements 14.1**
+
+
+class TestStripForwarding:
+    """Property tests for strip forwarding (Property 13)."""
+    
+    def _find_labels_recursive(self, widget, labels=None):
+        """Recursively find all Label widgets in a widget tree."""
+        if labels is None:
+            labels = []
+        
+        if isinstance(widget, Label):
+            labels.append(widget)
+        
+        if hasattr(widget, 'children'):
+            for child in widget.children:
+                self._find_labels_recursive(child, labels)
+        
+        return labels
+    
+    @given(st.booleans())
+    @settings(max_examples=100, deadline=None)
+    def test_strip_stored_correctly(self, strip_value):
+        """strip value is stored correctly on MarkdownLabel."""
+        label = MarkdownLabel(text='Hello World', strip=strip_value)
+        
+        assert label.strip == strip_value, \
+            f"Expected strip={strip_value}, got {label.strip}"
+    
+    @given(st.booleans())
+    @settings(max_examples=100, deadline=None)
+    def test_strip_applied_to_paragraph(self, strip_value):
+        """strip is applied to paragraph Labels."""
+        label = MarkdownLabel(text='Hello World', strip=strip_value)
+        
+        labels = self._find_labels_recursive(label)
+        assert len(labels) >= 1, "Expected at least one Label"
+        
+        # All labels should have the specified strip value
+        for lbl in labels:
+            assert lbl.strip == strip_value, \
+                f"Expected strip={strip_value}, got {lbl.strip}"
+    
+    @given(st.booleans())
+    @settings(max_examples=100, deadline=None)
+    def test_strip_applied_to_heading(self, strip_value):
+        """strip is applied to heading Labels."""
+        label = MarkdownLabel(text='# Heading', strip=strip_value)
+        
+        labels = self._find_labels_recursive(label)
+        assert len(labels) >= 1, "Expected at least one Label"
+        
+        # All labels should have the specified strip value
+        for lbl in labels:
+            assert lbl.strip == strip_value, \
+                f"Expected strip={strip_value}, got {lbl.strip}"
+    
+    @given(st.booleans())
+    @settings(max_examples=100, deadline=None)
+    def test_strip_applied_to_code_block(self, strip_value):
+        """strip is applied to code block Labels."""
+        markdown = '```python\nprint("hello")\n```'
+        label = MarkdownLabel(text=markdown, strip=strip_value)
+        
+        labels = self._find_labels_recursive(label)
+        assert len(labels) >= 1, "Expected at least one Label for code block"
+        
+        # All labels should have the specified strip value
+        for lbl in labels:
+            assert lbl.strip == strip_value, \
+                f"Expected strip={strip_value}, got {lbl.strip}"
+    
+    @given(st.booleans())
+    @settings(max_examples=100, deadline=None)
+    def test_strip_applied_to_list_items(self, strip_value):
+        """strip is applied to list item Labels."""
+        markdown = '- Item 1\n- Item 2'
+        label = MarkdownLabel(text=markdown, strip=strip_value)
+        
+        labels = self._find_labels_recursive(label)
+        assert len(labels) >= 2, "Expected at least 2 Labels for list items"
+        
+        # All labels should have the specified strip value
+        for lbl in labels:
+            assert lbl.strip == strip_value, \
+                f"Expected strip={strip_value}, got {lbl.strip}"
+    
+    @given(st.booleans())
+    @settings(max_examples=100, deadline=None)
+    def test_strip_applied_to_table_cells(self, strip_value):
+        """strip is applied to table cell Labels."""
+        markdown = '| A | B |\n| --- | --- |\n| 1 | 2 |'
+        label = MarkdownLabel(text=markdown, strip=strip_value)
+        
+        labels = self._find_labels_recursive(label)
+        assert len(labels) >= 4, "Expected at least 4 Labels for table cells"
+        
+        # All labels should have the specified strip value
+        for lbl in labels:
+            assert lbl.strip == strip_value, \
+                f"Expected strip={strip_value}, got {lbl.strip}"
+    
+    @given(st.booleans(), st.booleans())
+    @settings(max_examples=100, deadline=None)
+    def test_strip_change_triggers_rebuild(self, strip1, strip2):
+        """Changing strip triggers widget rebuild with new value."""
+        assume(strip1 != strip2)
+        
+        label = MarkdownLabel(text='Hello World', strip=strip1)
+        
+        # Verify initial strip
+        labels = self._find_labels_recursive(label)
+        for lbl in labels:
+            assert lbl.strip == strip1
+        
+        # Change strip
+        label.strip = strip2
+        
+        # Verify new strip
+        labels = self._find_labels_recursive(label)
+        for lbl in labels:
+            assert lbl.strip == strip2, \
+                f"After change, expected strip={strip2}, got {lbl.strip}"
+    
+    @settings(max_examples=100, deadline=None)
+    @given(st.data())
+    def test_default_strip_is_false(self, data):
+        """Default strip is False."""
+        label = MarkdownLabel(text='Hello World')
+        
+        assert label.strip is False, \
+            f"Default strip should be False, got {label.strip}"

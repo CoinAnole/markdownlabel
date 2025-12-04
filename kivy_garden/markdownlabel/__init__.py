@@ -248,6 +248,32 @@ class MarkdownLabel(BoxLayout):
     and defaults to [None, None].
     """
     
+    unicode_errors = OptionProperty('replace', options=['strict', 'replace', 'ignore'])
+    """Unicode error handling mode for internal Labels.
+    
+    This value is applied to all internal Label widgets to control
+    how unicode encoding errors are handled.
+    
+    Options:
+        - 'strict': Raise an exception on encoding errors
+        - 'replace': Replace invalid characters with a replacement character
+        - 'ignore': Ignore invalid characters
+    
+    :attr:`unicode_errors` is an :class:`~kivy.properties.OptionProperty`
+    and defaults to 'replace'.
+    """
+    
+    strip = BooleanProperty(False)
+    """Strip leading and trailing whitespace from each displayed line.
+    
+    When True, internal Labels will strip leading and trailing whitespace
+    from each line of text. When False, whitespace is preserved as specified
+    in the Markdown source.
+    
+    :attr:`strip` is a :class:`~kivy.properties.BooleanProperty`
+    and defaults to False.
+    """
+    
     __events__ = ('on_ref_press',)
     
     def __init__(self, **kwargs):
@@ -277,6 +303,8 @@ class MarkdownLabel(BoxLayout):
         self.bind(halign=self._on_style_changed)
         self.bind(valign=self._on_style_changed)
         self.bind(text_size=self._on_style_changed)
+        self.bind(unicode_errors=self._on_style_changed)
+        self.bind(strip=self._on_style_changed)
         
         # Bind padding to the container (self is a BoxLayout)
         self.bind(padding=self._on_padding_changed)
@@ -328,7 +356,9 @@ class MarkdownLabel(BoxLayout):
             line_height=self.line_height,
             halign=self.halign,
             valign=self.valign,
-            text_size=list(self.text_size) if self.text_size else [None, None]
+            text_size=list(self.text_size) if self.text_size else [None, None],
+            unicode_errors=self.unicode_errors,
+            strip=self.strip
         )
         
         # Render AST to widget tree

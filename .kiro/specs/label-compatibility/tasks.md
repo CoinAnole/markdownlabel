@@ -97,21 +97,21 @@
     - **Property 9: text_size Width Constraint Forwarding**
     - **Validates: Requirements 9.1**
 
-- [ ] 6. Add text processing properties
-  - [ ] 6.1 Add unicode_errors property with forwarding
+- [x] 6. Add text processing properties
+  - [x] 6.1 Add unicode_errors property with forwarding
     - Add OptionProperty unicode_errors (default 'replace', options: strict, replace, ignore)
     - Bind to trigger widget rebuild
     - Pass to KivyRenderer and apply to all Labels
     - _Requirements: 10.1, 10.2_
-  - [ ] 6.2 Write property test for unicode_errors forwarding
+  - [x] 6.2 Write property test for unicode_errors forwarding
     - **Property 10: unicode_errors Forwarding**
     - **Validates: Requirements 10.1, 10.2**
-  - [ ] 6.3 Add strip property with forwarding
+  - [x] 6.3 Add strip property with forwarding
     - Add BooleanProperty strip (default False)
     - Bind to trigger widget rebuild
     - Pass to KivyRenderer and apply to all Labels
     - _Requirements: 14.1, 14.2_
-  - [ ] 6.4 Write property test for strip forwarding
+  - [x] 6.4 Write property test for strip forwarding
     - **Property 13: strip Forwarding**
     - **Validates: Requirements 14.1**
 

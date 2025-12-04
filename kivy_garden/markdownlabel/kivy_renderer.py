@@ -50,7 +50,9 @@ class KivyRenderer:
                  line_height: float = 1.0,
                  halign: str = 'auto',
                  valign: str = 'bottom',
-                 text_size: Optional[List] = None):
+                 text_size: Optional[List] = None,
+                 unicode_errors: str = 'replace',
+                 strip: bool = False):
         """Initialize the KivyRenderer.
         
         Args:
@@ -64,6 +66,8 @@ class KivyRenderer:
             halign: Horizontal alignment for text (default: 'auto', converted to 'left')
             valign: Vertical alignment for text (default: 'bottom')
             text_size: Bounding box size [width, height] for text wrapping
+            unicode_errors: Unicode error handling mode (default: 'replace')
+            strip: Whether to strip leading/trailing whitespace (default: False)
         """
         self.base_font_size = base_font_size
         self.code_font_name = code_font_name
@@ -76,6 +80,8 @@ class KivyRenderer:
         self.halign = 'left' if halign == 'auto' else halign
         self.valign = valign
         self.text_size = text_size or [None, None]
+        self.unicode_errors = unicode_errors
+        self.strip = strip
         
         self.inline_renderer = InlineRenderer(
             link_color=self.link_color,
@@ -189,7 +195,9 @@ class KivyRenderer:
             size_hint_y=None,
             size_hint_x=1,
             halign=self.halign,
-            valign=self.valign
+            valign=self.valign,
+            unicode_errors=self.unicode_errors,
+            strip=self.strip
         )
         
         # Handle text_size width constraint
@@ -226,7 +234,9 @@ class KivyRenderer:
             size_hint_y=None,
             size_hint_x=1,
             halign=self.halign,
-            valign=self.valign
+            valign=self.valign,
+            unicode_errors=self.unicode_errors,
+            strip=self.strip
         )
         
         # Handle text_size width constraint
@@ -278,7 +288,9 @@ class KivyRenderer:
             size_hint_x=1,
             bold=True,
             halign=self.halign,
-            valign=self.valign
+            valign=self.valign,
+            unicode_errors=self.unicode_errors,
+            strip=self.strip
         )
         
         # Handle text_size width constraint
@@ -389,7 +401,9 @@ class KivyRenderer:
             size_hint=(None, 1),  # Match content height
             width=30,
             halign='right',
-            valign=self.valign
+            valign=self.valign,
+            unicode_errors=self.unicode_errors,
+            strip=self.strip
         )
         # Bind text_size to enable valign to work properly
         marker.bind(size=lambda inst, val: setattr(inst, 'text_size', val))
@@ -487,7 +501,9 @@ class KivyRenderer:
             size_hint_y=None,
             halign='left',
             valign='top',
-            color=[0.9, 0.9, 0.9, 1]  # Light text on dark background
+            color=[0.9, 0.9, 0.9, 1],  # Light text on dark background
+            unicode_errors=self.unicode_errors,
+            strip=self.strip
         )
         label.bind(texture_size=label.setter('size'))
         label.bind(size=lambda instance, value: setattr(instance, 'text_size', (value[0], None)))
@@ -779,7 +795,9 @@ class KivyRenderer:
             size_hint_x=1,
             halign=cell_halign,
             valign=self.valign,
-            bold=is_head  # Bold for header cells
+            bold=is_head,  # Bold for header cells
+            unicode_errors=self.unicode_errors,
+            strip=self.strip
         )
         # Handle text_size width constraint
         if self.text_size[0] is not None:
