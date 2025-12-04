@@ -157,8 +157,8 @@
 - [x] 10. Checkpoint
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 11. Write reactive rebuild property test
-  - [ ] 11.1 Write property test for reactive rebuild on property change
+- [x] 11. Write reactive rebuild property test
+  - [x] 11.1 Write property test for reactive rebuild on property change
     - **Property 14: Reactive Rebuild on Property Change**
     - **Validates: Requirements 1.2, 3.3, 4.2, 9.3**
 
