@@ -47,7 +47,10 @@ class KivyRenderer:
                  code_bg_color: Optional[List[float]] = None,
                  font_name: str = 'Roboto',
                  color: Optional[List[float]] = None,
-                 line_height: float = 1.0):
+                 line_height: float = 1.0,
+                 halign: str = 'auto',
+                 valign: str = 'bottom',
+                 text_size: Optional[List] = None):
         """Initialize the KivyRenderer.
         
         Args:
@@ -58,6 +61,9 @@ class KivyRenderer:
             font_name: Font name for body text (default: 'Roboto')
             color: RGBA color list for body text (default: white)
             line_height: Line height multiplier for text (default: 1.0)
+            halign: Horizontal alignment for text (default: 'auto', converted to 'left')
+            valign: Vertical alignment for text (default: 'bottom')
+            text_size: Bounding box size [width, height] for text wrapping
         """
         self.base_font_size = base_font_size
         self.code_font_name = code_font_name
@@ -66,6 +72,10 @@ class KivyRenderer:
         self.font_name = font_name
         self.color = color or [1, 1, 1, 1]
         self.line_height = line_height
+        # Convert 'auto' to 'left' for actual rendering
+        self.halign = 'left' if halign == 'auto' else halign
+        self.valign = valign
+        self.text_size = text_size or [None, None]
         
         self.inline_renderer = InlineRenderer(
             link_color=self.link_color,
@@ -178,12 +188,17 @@ class KivyRenderer:
             line_height=self.line_height,
             size_hint_y=None,
             size_hint_x=1,
-            halign='left',
-            valign='top'
+            halign=self.halign,
+            valign=self.valign
         )
         
-        # Bind text_size width to label width for proper alignment
-        label.bind(width=lambda inst, val: setattr(inst, 'text_size', (val, None)))
+        # Handle text_size width constraint
+        if self.text_size[0] is not None:
+            # Use specified width constraint
+            label.bind(width=lambda inst, val: setattr(inst, 'text_size', (self.text_size[0], None)))
+        else:
+            # Bind text_size width to label width for proper alignment
+            label.bind(width=lambda inst, val: setattr(inst, 'text_size', (val, None)))
         label.bind(texture_size=lambda inst, val: setattr(inst, 'height', val[1]))
         
         return label
@@ -210,12 +225,15 @@ class KivyRenderer:
             line_height=self.line_height,
             size_hint_y=None,
             size_hint_x=1,
-            halign='left',
-            valign='top'
+            halign=self.halign,
+            valign=self.valign
         )
         
-        # Bind text_size width to label width for proper alignment
-        label.bind(width=lambda inst, val: setattr(inst, 'text_size', (val, None)))
+        # Handle text_size width constraint
+        if self.text_size[0] is not None:
+            label.bind(width=lambda inst, val: setattr(inst, 'text_size', (self.text_size[0], None)))
+        else:
+            label.bind(width=lambda inst, val: setattr(inst, 'text_size', (val, None)))
         label.bind(texture_size=lambda inst, val: setattr(inst, 'height', val[1]))
         
         return label
@@ -259,12 +277,15 @@ class KivyRenderer:
             size_hint_y=None,
             size_hint_x=1,
             bold=True,
-            halign='left',
-            valign='top'
+            halign=self.halign,
+            valign=self.valign
         )
         
-        # Bind text_size width to label width for proper alignment
-        label.bind(width=lambda inst, val: setattr(inst, 'text_size', (val, None)))
+        # Handle text_size width constraint
+        if self.text_size[0] is not None:
+            label.bind(width=lambda inst, val: setattr(inst, 'text_size', (self.text_size[0], None)))
+        else:
+            label.bind(width=lambda inst, val: setattr(inst, 'text_size', (val, None)))
         label.bind(texture_size=lambda inst, val: setattr(inst, 'height', val[1]))
         
         # Store heading level as metadata
@@ -368,7 +389,7 @@ class KivyRenderer:
             size_hint=(None, 1),  # Match content height
             width=30,
             halign='right',
-            valign='top'
+            valign=self.valign
         )
         # Bind text_size to enable valign to work properly
         marker.bind(size=lambda inst, val: setattr(inst, 'text_size', val))
@@ -738,9 +759,10 @@ class KivyRenderer:
         children = cell.get('children', [])
         attrs = cell.get('attrs', {})
         
-        # Get alignment from attrs
+        # Get alignment from attrs - table cells use their own alignment from markdown
+        # but fall back to the renderer's halign if not specified
         align = attrs.get('align', None)
-        halign = align if align in ('left', 'center', 'right') else 'left'
+        cell_halign = align if align in ('left', 'center', 'right') else self.halign
         
         # Render inline content
         text = self._render_inline(children) if children else ''
@@ -755,16 +777,19 @@ class KivyRenderer:
             line_height=self.line_height,
             size_hint_y=None,
             size_hint_x=1,
-            halign=halign,
-            valign='middle',
+            halign=cell_halign,
+            valign=self.valign,
             bold=is_head  # Bold for header cells
         )
-        # Bind text_size to enable halign to work properly
-        label.bind(width=lambda inst, val: setattr(inst, 'text_size', (val, None)))
+        # Handle text_size width constraint
+        if self.text_size[0] is not None:
+            label.bind(width=lambda inst, val: setattr(inst, 'text_size', (self.text_size[0], None)))
+        else:
+            label.bind(width=lambda inst, val: setattr(inst, 'text_size', (val, None)))
         label.bind(texture_size=lambda inst, val: setattr(inst, 'height', val[1]))
         
         # Store alignment as metadata
-        label.cell_align = halign
+        label.cell_align = cell_halign
         label.is_header = is_head
         
         return label

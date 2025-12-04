@@ -59,41 +59,41 @@
     - **Property 4: line_height Forwarding**
     - **Validates: Requirements 4.1**
 
-- [ ] 4. Checkpoint
+- [x] 4. Checkpoint
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 5. Add alignment and layout properties
-  - [ ] 5.1 Add halign property with forwarding
+- [x] 5. Add alignment and layout properties
+  - [x] 5.1 Add halign property with forwarding
     - Add OptionProperty halign (default 'auto', options: left, center, right, justify, auto)
     - Bind to trigger widget rebuild
     - Pass to KivyRenderer and apply to paragraph/heading Labels
     - Convert 'auto' to 'left' when applying
     - _Requirements: 5.1, 5.2, 5.3_
-  - [ ] 5.2 Write property test for halign forwarding
+  - [x] 5.2 Write property test for halign forwarding
     - **Property 5: halign Forwarding**
     - **Validates: Requirements 5.1, 5.2**
-  - [ ] 5.3 Add valign property with forwarding
+  - [x] 5.3 Add valign property with forwarding
     - Add OptionProperty valign (default 'bottom', options: bottom, middle, center, top)
     - Bind to trigger widget rebuild
     - Pass to KivyRenderer and apply to Labels
     - _Requirements: 6.1, 6.2_
-  - [ ] 5.4 Write property test for valign forwarding
+  - [x] 5.4 Write property test for valign forwarding
     - **Property 6: valign Forwarding**
     - **Validates: Requirements 6.1, 6.2**
-  - [ ] 5.5 Add padding property
+  - [x] 5.5 Add padding property
     - Add VariableListProperty padding (default [0, 0, 0, 0])
     - Apply to MarkdownLabel container BoxLayout
     - Handle single, two-element, and four-element formats
     - _Requirements: 7.1, 7.2, 7.3, 7.4_
-  - [ ] 5.6 Write property test for padding application
+  - [x] 5.6 Write property test for padding application
     - **Property 7: padding Application**
     - **Validates: Requirements 7.1, 7.2, 7.3, 7.4**
-  - [ ] 5.7 Add text_size property with forwarding
+  - [x] 5.7 Add text_size property with forwarding
     - Add ListProperty text_size (default [None, None])
     - Bind to trigger widget rebuild
     - Pass to KivyRenderer and apply width constraint to Labels
     - _Requirements: 9.1, 9.2, 9.3_
-  - [ ] 5.8 Write property test for text_size forwarding
+  - [x] 5.8 Write property test for text_size forwarding
     - **Property 9: text_size Width Constraint Forwarding**
     - **Validates: Requirements 9.1**
 

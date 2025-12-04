@@ -20,7 +20,10 @@ from kivy.properties import (
     NumericProperty, 
     ColorProperty,
     AliasProperty,
-    BooleanProperty
+    BooleanProperty,
+    OptionProperty,
+    VariableListProperty,
+    ListProperty
 )
 
 import mistune
@@ -206,6 +209,45 @@ class MarkdownLabel(BoxLayout):
     and defaults to 1.0.
     """
     
+    halign = OptionProperty('auto', options=['left', 'center', 'right', 'justify', 'auto'])
+    """Horizontal alignment for text in internal Labels.
+    
+    This value is applied to all internal Label widgets for paragraphs
+    and headings. When set to 'auto', left alignment is used.
+    
+    :attr:`halign` is an :class:`~kivy.properties.OptionProperty`
+    and defaults to 'auto'.
+    """
+    
+    valign = OptionProperty('bottom', options=['bottom', 'middle', 'center', 'top'])
+    """Vertical alignment for text in internal Labels.
+    
+    This value is applied to all internal Label widgets where applicable.
+    
+    :attr:`valign` is an :class:`~kivy.properties.OptionProperty`
+    and defaults to 'bottom'.
+    """
+    
+    padding = VariableListProperty([0, 0, 0, 0])
+    """Padding for the MarkdownLabel container.
+    
+    Can be specified as a single value (applied to all sides),
+    two values [horizontal, vertical], or four values [left, top, right, bottom].
+    
+    :attr:`padding` is a :class:`~kivy.properties.VariableListProperty`
+    and defaults to [0, 0, 0, 0].
+    """
+    
+    text_size = ListProperty([None, None])
+    """Bounding box size for text wrapping.
+    
+    When a width is specified, internal Labels will constrain text to that width.
+    When [None, None], text flows naturally without width constraints.
+    
+    :attr:`text_size` is a :class:`~kivy.properties.ListProperty`
+    and defaults to [None, None].
+    """
+    
     __events__ = ('on_ref_press',)
     
     def __init__(self, **kwargs):
@@ -232,6 +274,12 @@ class MarkdownLabel(BoxLayout):
         self.bind(font_name=self._on_style_changed)
         self.bind(color=self._on_style_changed)
         self.bind(line_height=self._on_style_changed)
+        self.bind(halign=self._on_style_changed)
+        self.bind(valign=self._on_style_changed)
+        self.bind(text_size=self._on_style_changed)
+        
+        # Bind padding to the container (self is a BoxLayout)
+        self.bind(padding=self._on_padding_changed)
         
         # Initial build if text is provided
         if self.text:
@@ -244,6 +292,15 @@ class MarkdownLabel(BoxLayout):
     def _on_style_changed(self, instance, value):
         """Callback when a styling property changes."""
         self._rebuild_widgets()
+    
+    def _on_padding_changed(self, instance, value):
+        """Callback when padding property changes.
+        
+        Note: padding is applied directly to the BoxLayout (self),
+        not passed to the renderer.
+        """
+        # BoxLayout handles padding directly, no rebuild needed
+        pass
     
     def _rebuild_widgets(self):
         """Parse the Markdown text and rebuild the widget tree."""
@@ -268,7 +325,10 @@ class MarkdownLabel(BoxLayout):
             code_bg_color=list(self.code_bg_color),
             font_name=self.font_name,
             color=list(self.color),
-            line_height=self.line_height
+            line_height=self.line_height,
+            halign=self.halign,
+            valign=self.valign,
+            text_size=list(self.text_size) if self.text_size else [None, None]
         )
         
         # Render AST to widget tree

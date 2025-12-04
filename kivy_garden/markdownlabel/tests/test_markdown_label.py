@@ -1459,3 +1459,504 @@ class TestLineHeightForwarding:
         for lbl in labels:
             assert self._floats_equal(lbl.line_height, line_height), \
                 f"Expected line_height={line_height}, got {lbl.line_height}"
+
+
+# **Feature: label-compatibility, Property 5: halign Forwarding**
+# *For any* Markdown text with paragraphs or headings, and any halign value in
+# ['left', 'center', 'right', 'justify'], all paragraph and heading Labels SHALL
+# have `halign` set to that value. When halign is 'auto', Labels SHALL have
+# `halign` set to 'left'.
+# **Validates: Requirements 5.1, 5.2**
+
+# Strategy for generating valid halign values
+halign_values = st.sampled_from(['left', 'center', 'right', 'justify', 'auto'])
+halign_explicit_values = st.sampled_from(['left', 'center', 'right', 'justify'])
+
+
+class TestHalignForwarding:
+    """Property tests for halign forwarding (Property 5)."""
+    
+    def _find_labels_recursive(self, widget, labels=None):
+        """Recursively find all Label widgets in a widget tree."""
+        if labels is None:
+            labels = []
+        
+        if isinstance(widget, Label):
+            labels.append(widget)
+        
+        if hasattr(widget, 'children'):
+            for child in widget.children:
+                self._find_labels_recursive(child, labels)
+        
+        return labels
+    
+    @given(halign_explicit_values)
+    @settings(max_examples=100, deadline=None)
+    def test_halign_applied_to_paragraph(self, halign):
+        """halign is applied to paragraph Labels."""
+        label = MarkdownLabel(text='Hello World', halign=halign)
+        
+        labels = self._find_labels_recursive(label)
+        assert len(labels) >= 1, "Expected at least one Label"
+        
+        # All labels should have the specified halign
+        for lbl in labels:
+            assert lbl.halign == halign, \
+                f"Expected halign={halign}, got {lbl.halign}"
+    
+    @given(halign_explicit_values)
+    @settings(max_examples=100, deadline=None)
+    def test_halign_applied_to_heading(self, halign):
+        """halign is applied to heading Labels."""
+        label = MarkdownLabel(text='# Heading', halign=halign)
+        
+        labels = self._find_labels_recursive(label)
+        assert len(labels) >= 1, "Expected at least one Label"
+        
+        # All labels should have the specified halign
+        for lbl in labels:
+            assert lbl.halign == halign, \
+                f"Expected halign={halign}, got {lbl.halign}"
+    
+    @given(st.integers(min_value=1, max_value=6), halign_explicit_values)
+    @settings(max_examples=100, deadline=None)
+    def test_halign_applied_to_all_heading_levels(self, level, halign):
+        """halign is applied to all heading levels."""
+        markdown = '#' * level + ' Heading'
+        label = MarkdownLabel(text=markdown, halign=halign)
+        
+        labels = self._find_labels_recursive(label)
+        assert len(labels) >= 1, "Expected at least one Label"
+        
+        for lbl in labels:
+            assert lbl.halign == halign, \
+                f"Expected halign={halign}, got {lbl.halign}"
+    
+    @settings(max_examples=100, deadline=None)
+    @given(st.data())
+    def test_halign_auto_converts_to_left(self, data):
+        """halign='auto' is converted to 'left' in internal Labels."""
+        label = MarkdownLabel(text='Hello World', halign='auto')
+        
+        labels = self._find_labels_recursive(label)
+        assert len(labels) >= 1, "Expected at least one Label"
+        
+        # When halign is 'auto', internal labels should have 'left'
+        for lbl in labels:
+            assert lbl.halign == 'left', \
+                f"Expected halign='left' for auto, got {lbl.halign}"
+    
+    @given(halign_explicit_values, halign_explicit_values)
+    @settings(max_examples=100, deadline=None)
+    def test_halign_change_triggers_rebuild(self, halign1, halign2):
+        """Changing halign triggers widget rebuild with new alignment."""
+        assume(halign1 != halign2)
+        
+        label = MarkdownLabel(text='Hello World', halign=halign1)
+        
+        # Verify initial halign
+        labels = self._find_labels_recursive(label)
+        for lbl in labels:
+            assert lbl.halign == halign1
+        
+        # Change halign
+        label.halign = halign2
+        
+        # Verify new halign
+        labels = self._find_labels_recursive(label)
+        for lbl in labels:
+            assert lbl.halign == halign2, \
+                f"After change, expected halign={halign2}, got {lbl.halign}"
+    
+    @given(halign_explicit_values)
+    @settings(max_examples=100, deadline=None)
+    def test_halign_applied_to_list_items(self, halign):
+        """halign is applied to list item content Labels (not markers)."""
+        markdown = '- Item 1\n- Item 2'
+        label = MarkdownLabel(text=markdown, halign=halign)
+        
+        labels = self._find_labels_recursive(label)
+        assert len(labels) >= 2, "Expected at least 2 Labels for list items"
+        
+        # List markers have halign='right' for proper bullet/number alignment
+        # Content labels should have the specified halign
+        content_labels = [lbl for lbl in labels if lbl.text not in ('•', '1.', '2.')]
+        marker_labels = [lbl for lbl in labels if lbl.text in ('•', '1.', '2.')]
+        
+        # Content labels should have the specified halign
+        for lbl in content_labels:
+            assert lbl.halign == halign, \
+                f"Expected content halign={halign}, got {lbl.halign}"
+        
+        # Marker labels should have halign='right' for proper alignment
+        for lbl in marker_labels:
+            assert lbl.halign == 'right', \
+                f"Expected marker halign='right', got {lbl.halign}"
+    
+    @given(halign_explicit_values)
+    @settings(max_examples=100, deadline=None)
+    def test_halign_applied_to_table_cells(self, halign):
+        """halign is applied to table cell Labels when no cell-specific alignment."""
+        # Table without explicit alignment
+        markdown = '| A | B |\n| --- | --- |\n| 1 | 2 |'
+        label = MarkdownLabel(text=markdown, halign=halign)
+        
+        labels = self._find_labels_recursive(label)
+        assert len(labels) >= 4, "Expected at least 4 Labels for table cells"
+        
+        # All labels should have the specified halign
+        for lbl in labels:
+            assert lbl.halign == halign, \
+                f"Expected halign={halign}, got {lbl.halign}"
+    
+    @given(halign_values)
+    @settings(max_examples=100, deadline=None)
+    def test_halign_property_stored_correctly(self, halign):
+        """halign property value is stored correctly on MarkdownLabel."""
+        label = MarkdownLabel(text='Hello', halign=halign)
+        
+        assert label.halign == halign, \
+            f"Expected MarkdownLabel.halign={halign}, got {label.halign}"
+
+
+# **Feature: label-compatibility, Property 6: valign Forwarding**
+# *For any* Markdown text and any valign value in ['top', 'middle', 'center', 'bottom'],
+# all applicable internal Labels SHALL have `valign` set to that value.
+# **Validates: Requirements 6.1, 6.2**
+
+# Strategy for generating valid valign values
+valign_values = st.sampled_from(['bottom', 'middle', 'center', 'top'])
+
+
+class TestValignForwarding:
+    """Property tests for valign forwarding (Property 6)."""
+    
+    def _find_labels_recursive(self, widget, labels=None):
+        """Recursively find all Label widgets in a widget tree."""
+        if labels is None:
+            labels = []
+        
+        if isinstance(widget, Label):
+            labels.append(widget)
+        
+        if hasattr(widget, 'children'):
+            for child in widget.children:
+                self._find_labels_recursive(child, labels)
+        
+        return labels
+    
+    @given(valign_values)
+    @settings(max_examples=100, deadline=None)
+    def test_valign_applied_to_paragraph(self, valign):
+        """valign is applied to paragraph Labels."""
+        label = MarkdownLabel(text='Hello World', valign=valign)
+        
+        labels = self._find_labels_recursive(label)
+        assert len(labels) >= 1, "Expected at least one Label"
+        
+        # All labels should have the specified valign
+        for lbl in labels:
+            assert lbl.valign == valign, \
+                f"Expected valign={valign}, got {lbl.valign}"
+    
+    @given(valign_values)
+    @settings(max_examples=100, deadline=None)
+    def test_valign_applied_to_heading(self, valign):
+        """valign is applied to heading Labels."""
+        label = MarkdownLabel(text='# Heading', valign=valign)
+        
+        labels = self._find_labels_recursive(label)
+        assert len(labels) >= 1, "Expected at least one Label"
+        
+        # All labels should have the specified valign
+        for lbl in labels:
+            assert lbl.valign == valign, \
+                f"Expected valign={valign}, got {lbl.valign}"
+    
+    @given(st.integers(min_value=1, max_value=6), valign_values)
+    @settings(max_examples=100, deadline=None)
+    def test_valign_applied_to_all_heading_levels(self, level, valign):
+        """valign is applied to all heading levels."""
+        markdown = '#' * level + ' Heading'
+        label = MarkdownLabel(text=markdown, valign=valign)
+        
+        labels = self._find_labels_recursive(label)
+        assert len(labels) >= 1, "Expected at least one Label"
+        
+        for lbl in labels:
+            assert lbl.valign == valign, \
+                f"Expected valign={valign}, got {lbl.valign}"
+    
+    @given(valign_values, valign_values)
+    @settings(max_examples=100, deadline=None)
+    def test_valign_change_triggers_rebuild(self, valign1, valign2):
+        """Changing valign triggers widget rebuild with new alignment."""
+        assume(valign1 != valign2)
+        
+        label = MarkdownLabel(text='Hello World', valign=valign1)
+        
+        # Verify initial valign
+        labels = self._find_labels_recursive(label)
+        for lbl in labels:
+            assert lbl.valign == valign1
+        
+        # Change valign
+        label.valign = valign2
+        
+        # Verify new valign
+        labels = self._find_labels_recursive(label)
+        for lbl in labels:
+            assert lbl.valign == valign2, \
+                f"After change, expected valign={valign2}, got {lbl.valign}"
+    
+    @given(valign_values)
+    @settings(max_examples=100, deadline=None)
+    def test_valign_applied_to_list_items(self, valign):
+        """valign is applied to list item Labels."""
+        markdown = '- Item 1\n- Item 2'
+        label = MarkdownLabel(text=markdown, valign=valign)
+        
+        labels = self._find_labels_recursive(label)
+        assert len(labels) >= 2, "Expected at least 2 Labels for list items"
+        
+        # All labels should have the specified valign
+        for lbl in labels:
+            assert lbl.valign == valign, \
+                f"Expected valign={valign}, got {lbl.valign}"
+    
+    @given(valign_values)
+    @settings(max_examples=100, deadline=None)
+    def test_valign_applied_to_table_cells(self, valign):
+        """valign is applied to table cell Labels."""
+        markdown = '| A | B |\n| --- | --- |\n| 1 | 2 |'
+        label = MarkdownLabel(text=markdown, valign=valign)
+        
+        labels = self._find_labels_recursive(label)
+        assert len(labels) >= 4, "Expected at least 4 Labels for table cells"
+        
+        # All labels should have the specified valign
+        for lbl in labels:
+            assert lbl.valign == valign, \
+                f"Expected valign={valign}, got {lbl.valign}"
+    
+    @given(valign_values)
+    @settings(max_examples=100, deadline=None)
+    def test_valign_property_stored_correctly(self, valign):
+        """valign property value is stored correctly on MarkdownLabel."""
+        label = MarkdownLabel(text='Hello', valign=valign)
+        
+        assert label.valign == valign, \
+            f"Expected MarkdownLabel.valign={valign}, got {label.valign}"
+
+
+# **Feature: label-compatibility, Property 7: padding Application**
+# *For any* padding value (single, two-element, or four-element list), the
+# MarkdownLabel container SHALL have `padding` set to the normalized four-element form.
+# **Validates: Requirements 7.1, 7.2, 7.3, 7.4**
+
+# Strategy for generating valid padding values
+padding_single = st.floats(min_value=0, max_value=100, allow_nan=False, allow_infinity=False)
+padding_two = st.lists(
+    st.floats(min_value=0, max_value=100, allow_nan=False, allow_infinity=False),
+    min_size=2, max_size=2
+)
+padding_four = st.lists(
+    st.floats(min_value=0, max_value=100, allow_nan=False, allow_infinity=False),
+    min_size=4, max_size=4
+)
+
+
+class TestPaddingApplication:
+    """Property tests for padding application (Property 7)."""
+    
+    @given(padding_single)
+    @settings(max_examples=100, deadline=None)
+    def test_single_padding_applied_uniformly(self, padding_value):
+        """Single padding value is applied uniformly to all sides."""
+        label = MarkdownLabel(text='Hello World', padding=padding_value)
+        
+        # VariableListProperty normalizes single value to [v, v, v, v]
+        expected = [padding_value, padding_value, padding_value, padding_value]
+        
+        assert len(label.padding) == 4, \
+            f"Expected 4-element padding, got {len(label.padding)}"
+        
+        for i, (actual, exp) in enumerate(zip(label.padding, expected)):
+            assert abs(actual - exp) < 0.001, \
+                f"Padding[{i}]: expected {exp}, got {actual}"
+    
+    @given(padding_two)
+    @settings(max_examples=100, deadline=None)
+    def test_two_element_padding_applied_to_axes(self, padding_values):
+        """Two-element padding [horizontal, vertical] is applied to appropriate axes."""
+        label = MarkdownLabel(text='Hello World', padding=padding_values)
+        
+        # VariableListProperty normalizes [h, v] to [h, v, h, v]
+        h, v = padding_values
+        expected = [h, v, h, v]
+        
+        assert len(label.padding) == 4, \
+            f"Expected 4-element padding, got {len(label.padding)}"
+        
+        for i, (actual, exp) in enumerate(zip(label.padding, expected)):
+            assert abs(actual - exp) < 0.001, \
+                f"Padding[{i}]: expected {exp}, got {actual}"
+    
+    @given(padding_four)
+    @settings(max_examples=100, deadline=None)
+    def test_four_element_padding_applied_directly(self, padding_values):
+        """Four-element padding [left, top, right, bottom] is applied directly."""
+        label = MarkdownLabel(text='Hello World', padding=padding_values)
+        
+        assert len(label.padding) == 4, \
+            f"Expected 4-element padding, got {len(label.padding)}"
+        
+        for i, (actual, exp) in enumerate(zip(label.padding, padding_values)):
+            assert abs(actual - exp) < 0.001, \
+                f"Padding[{i}]: expected {exp}, got {actual}"
+    
+    @given(padding_four)
+    @settings(max_examples=100, deadline=None)
+    def test_padding_property_stored_correctly(self, padding_values):
+        """padding property value is stored correctly on MarkdownLabel."""
+        label = MarkdownLabel(text='Hello', padding=padding_values)
+        
+        assert len(label.padding) == 4, \
+            f"Expected 4-element padding, got {len(label.padding)}"
+        
+        for i, (actual, exp) in enumerate(zip(label.padding, padding_values)):
+            assert abs(actual - exp) < 0.001, \
+                f"Padding[{i}]: expected {exp}, got {actual}"
+    
+    @given(padding_four, padding_four)
+    @settings(max_examples=100, deadline=None)
+    def test_padding_change_updates_container(self, padding1, padding2):
+        """Changing padding updates the container padding."""
+        assume(padding1 != padding2)
+        
+        label = MarkdownLabel(text='Hello World', padding=padding1)
+        
+        # Verify initial padding
+        for i, (actual, exp) in enumerate(zip(label.padding, padding1)):
+            assert abs(actual - exp) < 0.001
+        
+        # Change padding
+        label.padding = padding2
+        
+        # Verify new padding
+        for i, (actual, exp) in enumerate(zip(label.padding, padding2)):
+            assert abs(actual - exp) < 0.001, \
+                f"After change, padding[{i}]: expected {exp}, got {actual}"
+    
+    @settings(max_examples=100, deadline=None)
+    @given(st.data())
+    def test_default_padding_is_zero(self, data):
+        """Default padding is [0, 0, 0, 0]."""
+        label = MarkdownLabel(text='Hello World')
+        
+        expected = [0, 0, 0, 0]
+        assert len(label.padding) == 4, \
+            f"Expected 4-element padding, got {len(label.padding)}"
+        
+        for i, (actual, exp) in enumerate(zip(label.padding, expected)):
+            assert abs(actual - exp) < 0.001, \
+                f"Default padding[{i}]: expected {exp}, got {actual}"
+
+
+# **Feature: label-compatibility, Property 9: text_size Width Constraint Forwarding**
+# *For any* Markdown text and any text_size with a non-None width, all internal
+# Labels SHALL have `text_size[0]` set to that width value.
+# **Validates: Requirements 9.1**
+
+# Strategy for generating valid text_size values
+text_size_with_width = st.lists(
+    st.one_of(
+        st.floats(min_value=50, max_value=1000, allow_nan=False, allow_infinity=False),
+        st.none()
+    ),
+    min_size=2, max_size=2
+)
+
+
+class TestTextSizeForwarding:
+    """Property tests for text_size forwarding (Property 9)."""
+    
+    def _find_labels_recursive(self, widget, labels=None):
+        """Recursively find all Label widgets in a widget tree."""
+        if labels is None:
+            labels = []
+        
+        if isinstance(widget, Label):
+            labels.append(widget)
+        
+        if hasattr(widget, 'children'):
+            for child in widget.children:
+                self._find_labels_recursive(child, labels)
+        
+        return labels
+    
+    @given(st.floats(min_value=50, max_value=1000, allow_nan=False, allow_infinity=False))
+    @settings(max_examples=100, deadline=None)
+    def test_text_size_width_stored_correctly(self, width):
+        """text_size width is stored correctly on MarkdownLabel."""
+        label = MarkdownLabel(text='Hello World', text_size=[width, None])
+        
+        assert label.text_size[0] == width, \
+            f"Expected text_size[0]={width}, got {label.text_size[0]}"
+    
+    @given(st.floats(min_value=50, max_value=1000, allow_nan=False, allow_infinity=False))
+    @settings(max_examples=100, deadline=None)
+    def test_text_size_property_stored_correctly(self, width):
+        """text_size property value is stored correctly on MarkdownLabel."""
+        label = MarkdownLabel(text='Hello', text_size=[width, None])
+        
+        assert len(label.text_size) == 2, \
+            f"Expected 2-element text_size, got {len(label.text_size)}"
+        assert label.text_size[0] == width, \
+            f"Expected text_size[0]={width}, got {label.text_size[0]}"
+    
+    @given(st.floats(min_value=50, max_value=1000, allow_nan=False, allow_infinity=False),
+           st.floats(min_value=50, max_value=1000, allow_nan=False, allow_infinity=False))
+    @settings(max_examples=100, deadline=None)
+    def test_text_size_change_triggers_rebuild(self, width1, width2):
+        """Changing text_size triggers widget rebuild."""
+        assume(abs(width1 - width2) > 1)  # Ensure they're different
+        
+        label = MarkdownLabel(text='Hello World', text_size=[width1, None])
+        
+        # Verify initial text_size
+        assert label.text_size[0] == width1
+        
+        # Change text_size
+        label.text_size = [width2, None]
+        
+        # Verify new text_size
+        assert label.text_size[0] == width2, \
+            f"After change, expected text_size[0]={width2}, got {label.text_size[0]}"
+    
+    @settings(max_examples=100, deadline=None)
+    @given(st.data())
+    def test_default_text_size_is_none_none(self, data):
+        """Default text_size is [None, None]."""
+        label = MarkdownLabel(text='Hello World')
+        
+        assert len(label.text_size) == 2, \
+            f"Expected 2-element text_size, got {len(label.text_size)}"
+        assert label.text_size[0] is None, \
+            f"Default text_size[0] should be None, got {label.text_size[0]}"
+        assert label.text_size[1] is None, \
+            f"Default text_size[1] should be None, got {label.text_size[1]}"
+    
+    @given(st.floats(min_value=50, max_value=1000, allow_nan=False, allow_infinity=False))
+    @settings(max_examples=100, deadline=None)
+    def test_text_size_with_width_passed_to_renderer(self, width):
+        """text_size with width is passed to renderer and affects internal Labels."""
+        label = MarkdownLabel(text='Hello World', text_size=[width, None])
+        
+        # The text_size should be stored on the MarkdownLabel
+        assert label.text_size[0] == width, \
+            f"Expected text_size[0]={width}, got {label.text_size[0]}"
+        
+        # Verify the label has children (widgets were created)
+        labels = self._find_labels_recursive(label)
+        assert len(labels) >= 1, "Expected at least one Label"
