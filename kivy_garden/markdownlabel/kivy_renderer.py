@@ -500,7 +500,8 @@ class KivyRenderer:
             'size_hint': (None, 1),  # Match content height
             'width': 30,
             'halign': 'right',
-            'valign': self.valign,
+            # Force top alignment so bullets align with the first line of nested content
+            'valign': 'top',
             'unicode_errors': self.unicode_errors,
             'strip': self.strip,
             'font_features': self.font_features,
