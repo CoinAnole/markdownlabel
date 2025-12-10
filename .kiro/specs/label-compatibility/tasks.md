@@ -41,11 +41,11 @@
     - **Property 6: Padding with Nested Structures**
     - **Validates: Requirements 2.4**
 
-- [ ] 4. Checkpoint - Ensure all tests pass
+- [x] 4. Checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 5. Implement configurable auto-sizing behavior
-  - [ ] 5.1 Add auto_size_height property to MarkdownLabel
+  - [x] 5.1 Add auto_size_height property to MarkdownLabel
     - Add BooleanProperty with default True
     - Add docstring explaining behavior
     - _Requirements: 3.1, 3.2_

@@ -404,6 +404,26 @@ class MarkdownLabel(BoxLayout):
     and defaults to ''.
     """
     
+    auto_size_height = BooleanProperty(True)
+    """Control automatic height sizing behavior.
+    
+    When True (default):
+        - size_hint_y is set to None
+        - height is bound to minimum_height
+        - Widget auto-sizes to fit content
+    
+    When False:
+        - size_hint_y is preserved (user-specified or default)
+        - height is NOT bound to minimum_height
+        - Widget participates in normal size hint layout
+    
+    This property allows MarkdownLabel to be used in layouts that expect
+    widgets to participate in size hints by setting auto_size_height=False.
+    
+    :attr:`auto_size_height` is a :class:`~kivy.properties.BooleanProperty`
+    and defaults to True.
+    """
+    
     # Read-only aggregated properties from child Labels
     
     def _get_texture_size(self):
