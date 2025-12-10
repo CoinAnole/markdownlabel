@@ -28,40 +28,40 @@ pycodestyle          # Code style checking
 coveralls            # CI coverage integration
 ```
 
-## Always use direct venv paths (RECOMMENDED):
+## Commands should already be placed in PATH from `.venv/bin` automatically when terminal opens:
 
-- **Run Python**: `.venv/bin/python3 script.py`
-- **Run pip**: `.venv/bin/pip install package`
-- **Run pytest**: `.venv/bin/pytest tests/`
-- **Run any Python tool**: `.venv/bin/tool_name`
+- **Run Python**: `python3 script.py`
+- **Run pip**: `pip install package`
+- **Run pytest**: `pytest tests/`
+- **Run any Python tool**: `tool_name`
 
 ## Common Commands
 
 ### Setup
 ```bash
 # Install package in development mode
-.venv/bin/pip install -e .
+pip install -e .
 
 # Install with dev dependencies
-.venv/bin/pip install -e ".[dev]"
+pip install -e ".[dev]"
 ```
 
 ### Testing
 ```bash
 # Run all tests
-.venv/bin/pytest tests/
+pytest tests/
 
 # Run with coverage
-.venv/bin/pytest --cov=kivy_garden.markdownlabel tests/
+pytest --cov=kivy_garden.markdownlabel tests/
 
 # Run specific test file
-.venv/bin/pytest tests/test_markdown_label.py
+pytest tests/test_markdown_label.py
 ```
 
 ### Code Quality
 ```bash
 # Check code style (flake8)
-.venv/bin/python3 -m flake8 kivy_garden/
+python3 -m flake8 kivy_garden/
 
 # Run pre-commit hook manually
 ./tools/hooks/pre-commit
@@ -70,14 +70,14 @@ coveralls            # CI coverage integration
 ### Building Distribution
 ```bash
 # Build wheel and source distribution
-.venv/bin/python3 setup.py bdist_wheel --universal
-.venv/bin/python3 setup.py sdist
+python3 setup.py bdist_wheel --universal
+python3 setup.py sdist
 
 # Check distribution
-.venv/bin/twine check dist/*
+twine check dist/*
 
 # Upload to PyPI (maintainers only)
-.venv/bin/twine upload dist/*
+twine upload dist/*
 ```
 
 ## Code Style
@@ -86,7 +86,3 @@ coveralls            # CI coverage integration
 - **Max line length**: 80 characters
 - **Flake8 configuration**: See `setup.cfg` for ignored rules
 - Pre-commit hook available in `tools/hooks/pre-commit`
-
-**Why direct paths?** The `source .venv/bin/activate && python3` pattern can be unreliable in automated contexts. Direct venv paths are more explicit and error-proof.
-
-**Never use `python` command directly** - it may not exist or point to the wrong version.
