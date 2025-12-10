@@ -3,7 +3,7 @@ MarkdownLabel
 
 [![Github Build Status](https://github.com/kivy-garden/markdownlabel/workflows/Garden%20flower/badge.svg)](https://github.com/kivy-garden/markdownlabel/actions)
 
-A Kivy widget that parses and renders Markdown documents as structured, interactive Kivy UI elements. It serves as a drop-in replacement for Kivy's standard Label widget but supports full Markdown syntax.
+A Kivy widget that parses and renders Markdown documents as structured, interactive Kivy UI elements. It provides a Label-compatible API for common styling properties while supporting full Markdown syntax.
 
 See https://kivy-garden.github.io/markdownlabel/ for the rendered flower docs.
 
@@ -18,7 +18,7 @@ Features
 * Customizable styling (font sizes, colors, code font)
 * Built on mistune parser with plugin support
 * Auto-sizing widget that adapts to content
-* **Label compatibility**: Drop-in replacement for Kivy's Label widget with support for common properties like `font_name`, `color`, `halign`, `valign`, `padding`, `text_size`, and more
+* **Label-compatible API**: Supports common Label properties like `font_name`, `color`, `halign`, `valign`, `padding`, `text_size`, `texture_size`, `refs`, and `anchors`
 
 Installation
 ------------

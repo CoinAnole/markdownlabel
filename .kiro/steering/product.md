@@ -4,7 +4,7 @@
 
 ## Purpose
 
-Provides a drop-in replacement for Kivy's standard Label widget with full Markdown syntax support, allowing developers to display rich formatted text in Kivy applications.
+Provides a Label-compatible API for common styling properties while supporting full Markdown syntax, allowing developers to display rich formatted text in Kivy applications. Note: MarkdownLabel extends BoxLayout (not Label) because Markdown rendering requires multiple widgets.
 
 ## Key Features
 

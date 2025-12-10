@@ -23,7 +23,8 @@ from kivy.properties import (
     BooleanProperty,
     OptionProperty,
     VariableListProperty,
-    ListProperty
+    ListProperty,
+    ObjectProperty
 )
 
 import mistune
@@ -46,6 +47,16 @@ class MarkdownLabel(BoxLayout):
     The MarkdownLabel parses Markdown text using mistune and renders it as
     a hierarchy of Kivy widgets. It supports headings, paragraphs, lists,
     tables, code blocks, block quotes, images, and inline formatting.
+    
+    Note:
+        MarkdownLabel is NOT a true Label subclass. It provides a Label-compatible
+        API for common styling properties, but because Markdown rendering requires
+        multiple widgets (headings, lists, tables, images, code blocks), it extends
+        BoxLayout instead. Some Label-specific APIs like `texture`, `mipmap`,
+        `outline_*`, `base_direction`, and `text_language` are not available.
+        
+        Properties like `texture_size`, `refs`, and `anchors` are provided as
+        aggregated read-only properties from child Label widgets.
     
     Events:
         on_ref_press: Dispatched when a link is clicked. The event data
@@ -391,6 +402,123 @@ class MarkdownLabel(BoxLayout):
     
     :attr:`split_str` is a :class:`~kivy.properties.StringProperty`
     and defaults to ''.
+    """
+    
+    # Read-only aggregated properties from child Labels
+    
+    def _get_texture_size(self):
+        """Compute aggregate texture_size from all child Labels.
+        
+        Returns the bounding box size that encompasses all child Label textures.
+        Width is the maximum width of any child, height is the sum of all heights.
+        """
+        if not self.children:
+            return [0, 0]
+        
+        max_width = 0
+        total_height = 0
+        
+        def collect_sizes(widget):
+            nonlocal max_width, total_height
+            if isinstance(widget, Label) and hasattr(widget, 'texture_size'):
+                ts = widget.texture_size
+                if ts[0] > max_width:
+                    max_width = ts[0]
+                total_height += ts[1]
+            if hasattr(widget, 'children'):
+                for child in widget.children:
+                    collect_sizes(child)
+        
+        for child in self.children:
+            collect_sizes(child)
+        
+        return [max_width, total_height]
+    
+    texture_size = AliasProperty(_get_texture_size, bind=['children', 'text'])
+    """Aggregated texture size from all child Label widgets.
+    
+    Returns the bounding box size [width, height] that encompasses all child
+    Label textures. Width is the maximum width of any child Label, height is
+    the sum of all child Label heights.
+    
+    Note:
+        This is a read-only property. Unlike Kivy's Label.texture_size, it
+        represents the aggregate of multiple internal Labels, not a single
+        texture. The value may not update immediately after text changes
+        due to texture rendering being asynchronous.
+    
+    :attr:`texture_size` is a read-only :class:`~kivy.properties.AliasProperty`.
+    """
+    
+    def _get_refs(self):
+        """Aggregate refs from all child Labels.
+        
+        Returns a merged dictionary of all ref positions from child Labels.
+        Keys are ref names (URLs), values are lists of bounding box coordinates.
+        """
+        refs = {}
+        
+        def collect_refs(widget):
+            if isinstance(widget, Label) and hasattr(widget, 'refs'):
+                for ref_name, ref_boxes in widget.refs.items():
+                    if ref_name not in refs:
+                        refs[ref_name] = []
+                    refs[ref_name].extend(ref_boxes)
+            if hasattr(widget, 'children'):
+                for child in widget.children:
+                    collect_refs(child)
+        
+        for child in self.children:
+            collect_refs(child)
+        
+        return refs
+    
+    refs = AliasProperty(_get_refs, bind=['children', 'text'])
+    """Aggregated refs from all child Label widgets.
+    
+    Returns a dictionary mapping ref names (typically URLs) to lists of
+    bounding box coordinates where those refs appear. This aggregates
+    refs from all internal Label widgets.
+    
+    Note:
+        Coordinates are relative to each child Label's position, not the
+        MarkdownLabel container. For hit testing, use the `on_ref_press`
+        event instead, which handles coordinate translation automatically.
+    
+    :attr:`refs` is a read-only :class:`~kivy.properties.AliasProperty`.
+    """
+    
+    def _get_anchors(self):
+        """Aggregate anchors from all child Labels.
+        
+        Returns a merged dictionary of all anchor positions from child Labels.
+        Keys are anchor names, values are position tuples.
+        """
+        anchors = {}
+        
+        def collect_anchors(widget):
+            if isinstance(widget, Label) and hasattr(widget, 'anchors'):
+                anchors.update(widget.anchors)
+            if hasattr(widget, 'children'):
+                for child in widget.children:
+                    collect_anchors(child)
+        
+        for child in self.children:
+            collect_anchors(child)
+        
+        return anchors
+    
+    anchors = AliasProperty(_get_anchors, bind=['children', 'text'])
+    """Aggregated anchors from all child Label widgets.
+    
+    Returns a dictionary mapping anchor names to position tuples. This
+    aggregates anchors from all internal Label widgets.
+    
+    Note:
+        Coordinates are relative to each child Label's position, not the
+        MarkdownLabel container.
+    
+    :attr:`anchors` is a read-only :class:`~kivy.properties.AliasProperty`.
     """
     
     __events__ = ('on_ref_press',)
