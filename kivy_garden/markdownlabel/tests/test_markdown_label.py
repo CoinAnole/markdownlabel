@@ -1966,6 +1966,263 @@ class TestTextSizeForwarding:
         assert len(labels) >= 1, "Expected at least one Label"
 
 
+# **Feature: label-compatibility, Property 1: text_size Height Forwarding**
+# *For any* MarkdownLabel with `text_size[1]` set to a non-None numeric value H, 
+# all child Labels SHALL have their `text_size[1]` equal to H, and their `valign` 
+# property SHALL match the MarkdownLabel's `valign` value.
+# **Validates: Requirements 1.1, 1.2**
+
+class TestTextSizeHeightForwarding:
+    """Property tests for text_size height forwarding (Property 1)."""
+    
+    def _find_labels_recursive(self, widget, labels=None):
+        """Recursively find all Label widgets in a widget tree."""
+        if labels is None:
+            labels = []
+        
+        if isinstance(widget, Label):
+            labels.append(widget)
+        
+        if hasattr(widget, 'children'):
+            for child in widget.children:
+                self._find_labels_recursive(child, labels)
+        
+        return labels
+    
+    @given(st.floats(min_value=50, max_value=500, allow_nan=False, allow_infinity=False))
+    @settings(max_examples=100, deadline=None)
+    def test_text_size_height_forwarded_to_paragraph(self, height):
+        """text_size height is forwarded to paragraph Labels."""
+        label = MarkdownLabel(text='Hello World', text_size=[None, height])
+        
+        labels = self._find_labels_recursive(label)
+        assert len(labels) >= 1, "Expected at least one Label"
+        
+        # All labels should have the specified height in text_size
+        for lbl in labels:
+            assert lbl.text_size[1] == height, \
+                f"Expected text_size[1]={height}, got {lbl.text_size[1]}"
+    
+    @given(st.floats(min_value=50, max_value=500, allow_nan=False, allow_infinity=False))
+    @settings(max_examples=100, deadline=None)
+    def test_text_size_height_forwarded_to_heading(self, height):
+        """text_size height is forwarded to heading Labels."""
+        label = MarkdownLabel(text='# Heading', text_size=[None, height])
+        
+        labels = self._find_labels_recursive(label)
+        assert len(labels) >= 1, "Expected at least one Label"
+        
+        # All labels should have the specified height in text_size
+        for lbl in labels:
+            assert lbl.text_size[1] == height, \
+                f"Expected text_size[1]={height}, got {lbl.text_size[1]}"
+    
+    @given(st.floats(min_value=100, max_value=500, allow_nan=False, allow_infinity=False),
+           st.floats(min_value=50, max_value=300, allow_nan=False, allow_infinity=False))
+    @settings(max_examples=100, deadline=None)
+    def test_text_size_both_width_and_height_forwarded(self, width, height):
+        """Both width and height in text_size are forwarded to Labels."""
+        label = MarkdownLabel(text='Hello World', text_size=[width, height])
+        
+        labels = self._find_labels_recursive(label)
+        assert len(labels) >= 1, "Expected at least one Label"
+        
+        # All labels should have both width and height in text_size
+        for lbl in labels:
+            assert lbl.text_size[0] == width, \
+                f"Expected text_size[0]={width}, got {lbl.text_size[0]}"
+            assert lbl.text_size[1] == height, \
+                f"Expected text_size[1]={height}, got {lbl.text_size[1]}"
+    
+    @given(st.floats(min_value=50, max_value=500, allow_nan=False, allow_infinity=False),
+           st.sampled_from(['top', 'middle', 'bottom']))
+    @settings(max_examples=100, deadline=None)
+    def test_valign_forwarded_with_height(self, height, valign):
+        """valign is forwarded to Labels when text_size height is set."""
+        label = MarkdownLabel(text='Hello World', text_size=[None, height], valign=valign)
+        
+        labels = self._find_labels_recursive(label)
+        assert len(labels) >= 1, "Expected at least one Label"
+        
+        # All labels should have the specified valign
+        for lbl in labels:
+            assert lbl.valign == valign, \
+                f"Expected valign={valign}, got {lbl.valign}"
+    
+    @given(st.floats(min_value=50, max_value=500, allow_nan=False, allow_infinity=False))
+    @settings(max_examples=100, deadline=None)
+    def test_text_size_height_forwarded_to_table_cells(self, height):
+        """text_size height is forwarded to table cell Labels."""
+        markdown = '| A | B |\n| --- | --- |\n| 1 | 2 |'
+        label = MarkdownLabel(text=markdown, text_size=[None, height])
+        
+        labels = self._find_labels_recursive(label)
+        assert len(labels) >= 4, "Expected at least 4 Labels for table cells"
+        
+        # All labels should have the specified height in text_size
+        for lbl in labels:
+            assert lbl.text_size[1] == height, \
+                f"Expected text_size[1]={height}, got {lbl.text_size[1]}"
+
+
+# **Feature: label-compatibility, Property 2: text_size Height None Backward Compatibility**
+# *For any* MarkdownLabel with `text_size[1]` set to None, all child Labels SHALL 
+# have their `text_size[1]` equal to None, maintaining the existing auto-sizing behavior.
+# **Validates: Requirements 1.3**
+
+class TestTextSizeHeightNoneBackwardCompatibility:
+    """Property tests for text_size height None backward compatibility (Property 2)."""
+    
+    def _find_labels_recursive(self, widget, labels=None):
+        """Recursively find all Label widgets in a widget tree."""
+        if labels is None:
+            labels = []
+        
+        if isinstance(widget, Label):
+            labels.append(widget)
+        
+        if hasattr(widget, 'children'):
+            for child in widget.children:
+                self._find_labels_recursive(child, labels)
+        
+        return labels
+    
+    @given(simple_markdown_document())
+    @settings(max_examples=100, deadline=None)
+    def test_text_size_height_none_preserves_auto_sizing(self, markdown_text):
+        """text_size[1]=None preserves auto-sizing behavior."""
+        assume(markdown_text.strip())
+        
+        label = MarkdownLabel(text=markdown_text, text_size=[None, None])
+        
+        labels = self._find_labels_recursive(label)
+        assert len(labels) >= 1, "Expected at least one Label"
+        
+        # All labels should have text_size[1]=None for auto-sizing
+        for lbl in labels:
+            assert lbl.text_size[1] is None, \
+                f"Expected text_size[1]=None for auto-sizing, got {lbl.text_size[1]}"
+    
+    @given(st.floats(min_value=50, max_value=1000, allow_nan=False, allow_infinity=False))
+    @settings(max_examples=100, deadline=None)
+    def test_text_size_width_only_preserves_height_none(self, width):
+        """Setting only text_size width preserves height=None."""
+        label = MarkdownLabel(text='Hello World', text_size=[width, None])
+        
+        labels = self._find_labels_recursive(label)
+        assert len(labels) >= 1, "Expected at least one Label"
+        
+        # Labels should have width constraint but height=None
+        for lbl in labels:
+            # Width should be bound dynamically, but we can check the initial text_size
+            # The exact behavior depends on binding, but height should be None
+            if hasattr(lbl, 'text_size') and lbl.text_size:
+                assert lbl.text_size[1] is None, \
+                    f"Expected text_size[1]=None, got {lbl.text_size[1]}"
+    
+    def test_default_text_size_maintains_none_height(self):
+        """Default text_size=[None, None] maintains None height in child Labels."""
+        label = MarkdownLabel(text='Hello World')
+        
+        labels = self._find_labels_recursive(label)
+        assert len(labels) >= 1, "Expected at least one Label"
+        
+        # All labels should have text_size[1]=None by default
+        for lbl in labels:
+            if hasattr(lbl, 'text_size') and lbl.text_size:
+                assert lbl.text_size[1] is None, \
+                    f"Expected default text_size[1]=None, got {lbl.text_size[1]}"
+
+
+# **Feature: label-compatibility, Property 3: text_size Dynamic Updates**
+# *For any* MarkdownLabel, when `text_size` is changed from value A to value B, 
+# all child Labels SHALL be updated to reflect the new `text_size` value B.
+# **Validates: Requirements 1.4**
+
+class TestTextSizeDynamicUpdates:
+    """Property tests for text_size dynamic updates (Property 3)."""
+    
+    def _find_labels_recursive(self, widget, labels=None):
+        """Recursively find all Label widgets in a widget tree."""
+        if labels is None:
+            labels = []
+        
+        if isinstance(widget, Label):
+            labels.append(widget)
+        
+        if hasattr(widget, 'children'):
+            for child in widget.children:
+                self._find_labels_recursive(child, labels)
+        
+        return labels
+    
+    @given(st.floats(min_value=50, max_value=300, allow_nan=False, allow_infinity=False),
+           st.floats(min_value=350, max_value=600, allow_nan=False, allow_infinity=False))
+    @settings(max_examples=100, deadline=None)
+    def test_text_size_height_change_updates_labels(self, height1, height2):
+        """Changing text_size height updates all child Labels."""
+        label = MarkdownLabel(text='Hello World', text_size=[None, height1])
+        
+        # Verify initial height
+        labels = self._find_labels_recursive(label)
+        for lbl in labels:
+            assert lbl.text_size[1] == height1, \
+                f"Initial: Expected text_size[1]={height1}, got {lbl.text_size[1]}"
+        
+        # Change text_size height
+        label.text_size = [None, height2]
+        
+        # Verify new height
+        labels = self._find_labels_recursive(label)
+        for lbl in labels:
+            assert lbl.text_size[1] == height2, \
+                f"After change: Expected text_size[1]={height2}, got {lbl.text_size[1]}"
+    
+    @given(st.floats(min_value=50, max_value=300, allow_nan=False, allow_infinity=False))
+    @settings(max_examples=100, deadline=None)
+    def test_text_size_height_to_none_updates_labels(self, height):
+        """Changing text_size height to None updates all child Labels."""
+        label = MarkdownLabel(text='Hello World', text_size=[None, height])
+        
+        # Verify initial height
+        labels = self._find_labels_recursive(label)
+        for lbl in labels:
+            assert lbl.text_size[1] == height, \
+                f"Initial: Expected text_size[1]={height}, got {lbl.text_size[1]}"
+        
+        # Change text_size height to None
+        label.text_size = [None, None]
+        
+        # Verify height is now None
+        labels = self._find_labels_recursive(label)
+        for lbl in labels:
+            if hasattr(lbl, 'text_size') and lbl.text_size:
+                assert lbl.text_size[1] is None, \
+                    f"After change to None: Expected text_size[1]=None, got {lbl.text_size[1]}"
+    
+    @given(st.floats(min_value=50, max_value=300, allow_nan=False, allow_infinity=False))
+    @settings(max_examples=100, deadline=None)
+    def test_text_size_none_to_height_updates_labels(self, height):
+        """Changing text_size height from None to value updates all child Labels."""
+        label = MarkdownLabel(text='Hello World', text_size=[None, None])
+        
+        # Verify initial height is None
+        labels = self._find_labels_recursive(label)
+        for lbl in labels:
+            if hasattr(lbl, 'text_size') and lbl.text_size:
+                assert lbl.text_size[1] is None, \
+                    f"Initial: Expected text_size[1]=None, got {lbl.text_size[1]}"
+        
+        # Change text_size height to specific value
+        label.text_size = [None, height]
+        
+        # Verify new height
+        labels = self._find_labels_recursive(label)
+        for lbl in labels:
+            assert lbl.text_size[1] == height, \
+                f"After change from None: Expected text_size[1]={height}, got {lbl.text_size[1]}"
+
+
 # **Feature: label-compatibility, Property 10: unicode_errors Forwarding**
 # *For any* unicode_errors value in ['strict', 'replace', 'ignore'], all internal
 # Labels SHALL have `unicode_errors` set to that value.

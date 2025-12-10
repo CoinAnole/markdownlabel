@@ -259,13 +259,29 @@ class KivyRenderer:
         
         label = Label(**label_kwargs)
         
-        # Handle text_size width constraint
-        if self.text_size[0] is not None:
-            # Use specified width constraint
-            label.bind(width=lambda inst, val: setattr(inst, 'text_size', (self.text_size[0], None)))
+        # Handle text_size constraints - respect both width AND height
+        text_width = self.text_size[0]
+        text_height = self.text_size[1]
+        
+        if text_width is not None:
+            if text_height is not None:
+                # Both width and height specified
+                label.text_size = (text_width, text_height)
+            else:
+                # Only width specified - bind to maintain width
+                label.bind(width=lambda inst, val, tw=text_width: setattr(
+                    inst, 'text_size', (tw, None)))
         else:
-            # Bind text_size width to label width for proper alignment
-            label.bind(width=lambda inst, val: setattr(inst, 'text_size', (val, None)))
+            if text_height is not None:
+                # Only height specified - set initial text_size and bind width to label width
+                label.text_size = (label.width, text_height)
+                label.bind(width=lambda inst, val, th=text_height: setattr(
+                    inst, 'text_size', (val, th)))
+            else:
+                # Neither specified - current behavior
+                label.bind(width=lambda inst, val: setattr(
+                    inst, 'text_size', (val, None)))
+        
         label.bind(texture_size=lambda inst, val: setattr(inst, 'height', val[1]))
         
         return label
@@ -318,11 +334,29 @@ class KivyRenderer:
         
         label = Label(**label_kwargs)
         
-        # Handle text_size width constraint
-        if self.text_size[0] is not None:
-            label.bind(width=lambda inst, val: setattr(inst, 'text_size', (self.text_size[0], None)))
+        # Handle text_size constraints - respect both width AND height
+        text_width = self.text_size[0]
+        text_height = self.text_size[1]
+        
+        if text_width is not None:
+            if text_height is not None:
+                # Both width and height specified
+                label.text_size = (text_width, text_height)
+            else:
+                # Only width specified - bind to maintain width
+                label.bind(width=lambda inst, val, tw=text_width: setattr(
+                    inst, 'text_size', (tw, None)))
         else:
-            label.bind(width=lambda inst, val: setattr(inst, 'text_size', (val, None)))
+            if text_height is not None:
+                # Only height specified - set initial text_size and bind width to label width
+                label.text_size = (label.width, text_height)
+                label.bind(width=lambda inst, val, th=text_height: setattr(
+                    inst, 'text_size', (val, th)))
+            else:
+                # Neither specified - current behavior
+                label.bind(width=lambda inst, val: setattr(
+                    inst, 'text_size', (val, None)))
+        
         label.bind(texture_size=lambda inst, val: setattr(inst, 'height', val[1]))
         
         return label
@@ -392,11 +426,29 @@ class KivyRenderer:
         
         label = Label(**label_kwargs)
         
-        # Handle text_size width constraint
-        if self.text_size[0] is not None:
-            label.bind(width=lambda inst, val: setattr(inst, 'text_size', (self.text_size[0], None)))
+        # Handle text_size constraints - respect both width AND height
+        text_width = self.text_size[0]
+        text_height = self.text_size[1]
+        
+        if text_width is not None:
+            if text_height is not None:
+                # Both width and height specified
+                label.text_size = (text_width, text_height)
+            else:
+                # Only width specified - bind to maintain width
+                label.bind(width=lambda inst, val, tw=text_width: setattr(
+                    inst, 'text_size', (tw, None)))
         else:
-            label.bind(width=lambda inst, val: setattr(inst, 'text_size', (val, None)))
+            if text_height is not None:
+                # Only height specified - set initial text_size and bind width to label width
+                label.text_size = (label.width, text_height)
+                label.bind(width=lambda inst, val, th=text_height: setattr(
+                    inst, 'text_size', (val, th)))
+            else:
+                # Neither specified - current behavior
+                label.bind(width=lambda inst, val: setattr(
+                    inst, 'text_size', (val, None)))
+        
         label.bind(texture_size=lambda inst, val: setattr(inst, 'height', val[1]))
         
         # Store heading level as metadata
@@ -939,11 +991,30 @@ class KivyRenderer:
             label_kwargs['font_hinting'] = self.font_hinting
         
         label = Label(**label_kwargs)
-        # Handle text_size width constraint
-        if self.text_size[0] is not None:
-            label.bind(width=lambda inst, val: setattr(inst, 'text_size', (self.text_size[0], None)))
+        
+        # Handle text_size constraints - respect both width AND height
+        text_width = self.text_size[0]
+        text_height = self.text_size[1]
+        
+        if text_width is not None:
+            if text_height is not None:
+                # Both width and height specified
+                label.text_size = (text_width, text_height)
+            else:
+                # Only width specified - bind to maintain width
+                label.bind(width=lambda inst, val, tw=text_width: setattr(
+                    inst, 'text_size', (tw, None)))
         else:
-            label.bind(width=lambda inst, val: setattr(inst, 'text_size', (val, None)))
+            if text_height is not None:
+                # Only height specified - set initial text_size and bind width to label width
+                label.text_size = (label.width, text_height)
+                label.bind(width=lambda inst, val, th=text_height: setattr(
+                    inst, 'text_size', (val, th)))
+            else:
+                # Neither specified - current behavior
+                label.bind(width=lambda inst, val: setattr(
+                    inst, 'text_size', (val, None)))
+        
         label.bind(texture_size=lambda inst, val: setattr(inst, 'height', val[1]))
         
         # Store alignment as metadata

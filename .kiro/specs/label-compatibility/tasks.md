@@ -1,18 +1,18 @@
 # Implementation Plan
 
-- [ ] 1. Implement text_size height forwarding in KivyRenderer
-  - [ ] 1.1 Update KivyRenderer to respect text_size[1] in Label creation
+- [x] 1. Implement text_size height forwarding in KivyRenderer
+  - [x] 1.1 Update KivyRenderer to respect text_size[1] in Label creation
     - Modify `paragraph()`, `heading()`, `block_text()`, and `_render_table_cell()` methods
     - Change from always setting `text_size[1]` to None to using the provided value
     - Handle all four cases: both set, width only, height only, neither set
     - _Requirements: 1.1, 1.2, 1.3_
-  - [ ] 1.2 Write property test for text_size height forwarding
+  - [x] 1.2 Write property test for text_size height forwarding
     - **Property 1: text_size Height Forwarding**
     - **Validates: Requirements 1.1, 1.2**
-  - [ ] 1.3 Write property test for text_size height None backward compatibility
+  - [x] 1.3 Write property test for text_size height None backward compatibility
     - **Property 2: text_size Height None Backward Compatibility**
     - **Validates: Requirements 1.3**
-  - [ ] 1.4 Write property test for text_size dynamic updates
+  - [x] 1.4 Write property test for text_size dynamic updates
     - **Property 3: text_size Dynamic Updates**
     - **Validates: Requirements 1.4**
 
