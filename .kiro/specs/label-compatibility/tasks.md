@@ -1,166 +1,72 @@
 # Implementation Plan
 
-- [x] 1. Add font_size alias property
-  - [x] 1.1 Implement font_size as AliasProperty to base_font_size
-    - Add AliasProperty with getter returning base_font_size
-    - Add setter that updates base_font_size
-    - Bind to base_font_size for change notifications
-    - _Requirements: 2.1, 2.2, 2.3_
-  - [x] 1.2 Write property test for font_size/base_font_size alias
-    - **Property 1: font_size/base_font_size Alias Bidirectionality**
+- [ ] 1. Implement text_size height forwarding in KivyRenderer
+  - [ ] 1.1 Update KivyRenderer to respect text_size[1] in Label creation
+    - Modify `paragraph()`, `heading()`, `block_text()`, and `_render_table_cell()` methods
+    - Change from always setting `text_size[1]` to None to using the provided value
+    - Handle all four cases: both set, width only, height only, neither set
+    - _Requirements: 1.1, 1.2, 1.3_
+  - [ ] 1.2 Write property test for text_size height forwarding
+    - **Property 1: text_size Height Forwarding**
+    - **Validates: Requirements 1.1, 1.2**
+  - [ ] 1.3 Write property test for text_size height None backward compatibility
+    - **Property 2: text_size Height None Backward Compatibility**
+    - **Validates: Requirements 1.3**
+  - [ ] 1.4 Write property test for text_size dynamic updates
+    - **Property 3: text_size Dynamic Updates**
+    - **Validates: Requirements 1.4**
+
+- [ ] 2. Checkpoint - Ensure all tests pass
+  - Ensure all tests pass, ask the user if questions arise.
+
+- [ ] 3. Implement padding forwarding to child Labels
+  - [ ] 3.1 Add padding parameter to KivyRenderer
+    - Add `padding` parameter to `__init__` method
+    - Store padding value for use in Label creation
+    - _Requirements: 2.1_
+  - [ ] 3.2 Forward padding to child Labels in KivyRenderer
+    - Update `paragraph()`, `heading()`, `block_text()`, and `_render_table_cell()` to apply padding
+    - Ensure padding is applied to Labels in nested structures (lists, tables, block quotes)
+    - _Requirements: 2.1, 2.2, 2.4_
+  - [ ] 3.3 Update MarkdownLabel to pass padding to KivyRenderer
+    - Modify `_rebuild_widgets()` to pass padding to KivyRenderer constructor
+    - _Requirements: 2.1, 2.3_
+  - [ ] 3.4 Write property test for padding forwarding
+    - **Property 4: Padding Forwarding to Child Labels**
     - **Validates: Requirements 2.1, 2.2**
+  - [ ] 3.5 Write property test for padding dynamic updates
+    - **Property 5: Padding Dynamic Updates**
+    - **Validates: Requirements 2.3**
+  - [ ] 3.6 Write property test for padding with nested structures
+    - **Property 6: Padding with Nested Structures**
+    - **Validates: Requirements 2.4**
 
-- [x] 2. Add no-op properties for Label compatibility
-  - [x] 2.1 Add bold, italic, underline, strikethrough, markup properties
-    - Add BooleanProperty for bold (default False)
-    - Add BooleanProperty for italic (default False)
-    - Add BooleanProperty for underline (default False)
-    - Add BooleanProperty for strikethrough (default False)
-    - Add BooleanProperty for markup (default True, always True for MarkdownLabel)
-    - These properties are accepted but have no effect on rendering
-    - _Requirements: 8.1, 8.2, 8.3, 8.4, 8.5, 8.6_
-  - [x] 2.2 Write property test for no-op properties acceptance
-    - **Property 8: No-Op Properties Acceptance**
-    - **Validates: Requirements 8.1, 8.2, 8.3, 8.4, 8.5, 8.6**
+- [ ] 4. Checkpoint - Ensure all tests pass
+  - Ensure all tests pass, ask the user if questions arise.
 
-- [x] 3. Add core styling forwarding properties
-  - [x] 3.1 Add font_name property with forwarding
-    - Add StringProperty font_name (default 'Roboto')
-    - Bind to trigger widget rebuild
-    - Pass to KivyRenderer constructor
-    - _Requirements: 1.1, 1.2_
-  - [x] 3.2 Update KivyRenderer to accept and apply font_name
-    - Add font_name parameter to __init__
-    - Apply font_name to all non-code Labels in rendering methods
-    - Preserve code_font_name for code blocks and inline code
-    - _Requirements: 1.1, 1.3_
-  - [x] 3.3 Write property test for font_name forwarding
-    - **Property 2: font_name Forwarding with Code Preservation**
-    - **Validates: Requirements 1.1, 1.3**
-  - [x] 3.4 Add color property with forwarding
-    - Add ColorProperty color (default [1, 1, 1, 1])
-    - Bind to trigger widget rebuild
-    - Pass to KivyRenderer constructor
-    - _Requirements: 3.1, 3.3_
-  - [x] 3.5 Update KivyRenderer to accept and apply color
-    - Add color parameter to __init__
-    - Apply color to all body text Labels
-    - Preserve link_color for hyperlinks
+- [ ] 5. Implement configurable auto-sizing behavior
+  - [ ] 5.1 Add auto_size_height property to MarkdownLabel
+    - Add BooleanProperty with default True
+    - Add docstring explaining behavior
     - _Requirements: 3.1, 3.2_
-  - [x] 3.6 Write property test for color forwarding
-    - **Property 3: color Forwarding with Link Preservation**
-    - **Validates: Requirements 3.1, 3.2**
-  - [x] 3.7 Add line_height property with forwarding
-    - Add NumericProperty line_height (default 1.0)
-    - Bind to trigger widget rebuild
-    - Pass to KivyRenderer and apply to all Labels
-    - _Requirements: 4.1, 4.2_
-  - [x] 3.8 Write property test for line_height forwarding
-    - **Property 4: line_height Forwarding**
-    - **Validates: Requirements 4.1**
+  - [ ] 5.2 Modify MarkdownLabel __init__ to use auto_size_height
+    - Store user's size_hint_y value before potential override
+    - Apply auto-sizing only when auto_size_height is True
+    - Bind auto_size_height changes to handler
+    - _Requirements: 3.1, 3.2, 3.3_
+  - [ ] 5.3 Implement _on_auto_size_height_changed handler
+    - When True: set size_hint_y=None and bind height to minimum_height
+    - When False: unbind height and restore user's size_hint_y
+    - _Requirements: 3.4, 3.5_
+  - [ ] 5.4 Write property test for auto_size_height True behavior
+    - **Property 7: auto_size_height True Behavior**
+    - **Validates: Requirements 3.1, 3.3**
+  - [ ] 5.5 Write property test for auto_size_height False behavior
+    - **Property 8: auto_size_height False Behavior**
+    - **Validates: Requirements 3.2**
+  - [ ] 5.6 Write property test for auto_size_height dynamic toggling
+    - **Property 9: auto_size_height Dynamic Toggling**
+    - **Validates: Requirements 3.4, 3.5**
 
-- [x] 4. Checkpoint
-  - Ensure all tests pass, ask the user if questions arise.
-
-- [x] 5. Add alignment and layout properties
-  - [x] 5.1 Add halign property with forwarding
-    - Add OptionProperty halign (default 'auto', options: left, center, right, justify, auto)
-    - Bind to trigger widget rebuild
-    - Pass to KivyRenderer and apply to paragraph/heading Labels
-    - Convert 'auto' to 'left' when applying
-    - _Requirements: 5.1, 5.2, 5.3_
-  - [x] 5.2 Write property test for halign forwarding
-    - **Property 5: halign Forwarding**
-    - **Validates: Requirements 5.1, 5.2**
-  - [x] 5.3 Add valign property with forwarding
-    - Add OptionProperty valign (default 'bottom', options: bottom, middle, center, top)
-    - Bind to trigger widget rebuild
-    - Pass to KivyRenderer and apply to Labels
-    - _Requirements: 6.1, 6.2_
-  - [x] 5.4 Write property test for valign forwarding
-    - **Property 6: valign Forwarding**
-    - **Validates: Requirements 6.1, 6.2**
-  - [x] 5.5 Add padding property
-    - Add VariableListProperty padding (default [0, 0, 0, 0])
-    - Apply to MarkdownLabel container BoxLayout
-    - Handle single, two-element, and four-element formats
-    - _Requirements: 7.1, 7.2, 7.3, 7.4_
-  - [x] 5.6 Write property test for padding application
-    - **Property 7: padding Application**
-    - **Validates: Requirements 7.1, 7.2, 7.3, 7.4**
-  - [x] 5.7 Add text_size property with forwarding
-    - Add ListProperty text_size (default [None, None])
-    - Bind to trigger widget rebuild
-    - Pass to KivyRenderer and apply width constraint to Labels
-    - _Requirements: 9.1, 9.2, 9.3_
-  - [x] 5.8 Write property test for text_size forwarding
-    - **Property 9: text_size Width Constraint Forwarding**
-    - **Validates: Requirements 9.1**
-
-- [x] 6. Add text processing properties
-  - [x] 6.1 Add unicode_errors property with forwarding
-    - Add OptionProperty unicode_errors (default 'replace', options: strict, replace, ignore)
-    - Bind to trigger widget rebuild
-    - Pass to KivyRenderer and apply to all Labels
-    - _Requirements: 10.1, 10.2_
-  - [x] 6.2 Write property test for unicode_errors forwarding
-    - **Property 10: unicode_errors Forwarding**
-    - **Validates: Requirements 10.1, 10.2**
-  - [x] 6.3 Add strip property with forwarding
-    - Add BooleanProperty strip (default False)
-    - Bind to trigger widget rebuild
-    - Pass to KivyRenderer and apply to all Labels
-    - _Requirements: 14.1, 14.2_
-  - [x] 6.4 Write property test for strip forwarding
-    - **Property 13: strip Forwarding**
-    - **Validates: Requirements 14.1**
-
-- [x] 7. Add advanced font properties
-  - [x] 7.1 Add font_family, font_context, font_features properties
-    - Add StringProperty font_family (default None, allownone=True)
-    - Add StringProperty font_context (default None, allownone=True)
-    - Add StringProperty font_features (default '')
-    - Bind all to trigger widget rebuild
-    - Pass to KivyRenderer and apply to all Labels
-    - _Requirements: 11.1, 11.2, 11.3_
-  - [x] 7.2 Add font_hinting, font_kerning, font_blended properties
-    - Add OptionProperty font_hinting (default 'normal', options: None, normal, light, mono)
-    - Add BooleanProperty font_kerning (default True)
-    - Add BooleanProperty font_blended (default True)
-    - Bind all to trigger widget rebuild
-    - Pass to KivyRenderer and apply to all Labels
-    - _Requirements: 11.4, 11.5, 11.6_
-  - [x] 7.3 Write property test for advanced font properties forwarding
-    - **Property 11: Advanced Font Properties Forwarding**
-    - **Validates: Requirements 11.1, 11.2, 11.3, 11.4, 11.5, 11.6**
-
-- [x] 8. Add disabled state support
-  - [x] 8.1 Add disabled_color property
-    - Add ColorProperty disabled_color (default [1, 1, 1, 0.3])
-    - Bind disabled property to trigger widget rebuild
-    - When disabled=True, use disabled_color instead of color for Labels
-    - _Requirements: 12.1, 12.2_
-  - [x] 8.2 Write property test for disabled_color application
-    - **Property 12: disabled_color Application**
-    - **Validates: Requirements 12.1, 12.2**
-
-- [x] 9. Add truncation properties
-  - [x] 9.1 Add shorten, max_lines, shorten_from, split_str properties
-    - Add BooleanProperty shorten (default False)
-    - Add NumericProperty max_lines (default 0)
-    - Add OptionProperty shorten_from (default 'center', options: left, center, right)
-    - Add StringProperty split_str (default '')
-    - Bind all to trigger widget rebuild
-    - Pass to KivyRenderer and apply to Labels
-    - _Requirements: 13.1, 13.2, 13.3, 13.4_
-
-- [x] 10. Checkpoint
-  - Ensure all tests pass, ask the user if questions arise.
-
-- [x] 11. Write reactive rebuild property test
-  - [x] 11.1 Write property test for reactive rebuild on property change
-    - **Property 14: Reactive Rebuild on Property Change**
-    - **Validates: Requirements 1.2, 3.3, 4.2, 9.3**
-
-- [x] 12. Final Checkpoint
+- [ ] 6. Final Checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
