@@ -546,10 +546,17 @@ class MarkdownLabel(BoxLayout):
     def __init__(self, **kwargs):
         super(MarkdownLabel, self).__init__(**kwargs)
         self.orientation = 'vertical'
-        self.size_hint_y = None
         
-        # Bind height to minimum_height for auto-sizing
-        self.bind(minimum_height=self.setter('height'))
+        # Store user's size_hint_y value before potential override
+        self._user_size_hint_y = kwargs.get('size_hint_y', 1)
+        
+        # Apply auto-sizing only when auto_size_height is True
+        if self.auto_size_height:
+            self.size_hint_y = None
+            self.bind(minimum_height=self.setter('height'))
+        
+        # Bind auto_size_height changes to handler
+        self.bind(auto_size_height=self._on_auto_size_height_changed)
         
         # Store the parsed AST tokens
         self._ast_tokens = []
@@ -609,6 +616,17 @@ class MarkdownLabel(BoxLayout):
         """
         # BoxLayout handles padding directly, no rebuild needed
         pass
+    
+    def _on_auto_size_height_changed(self, instance, value):
+        """Handle auto_size_height property changes."""
+        if value:
+            # Enable auto-sizing
+            self.size_hint_y = None
+            self.bind(minimum_height=self.setter('height'))
+        else:
+            # Disable auto-sizing
+            self.unbind(minimum_height=self.setter('height'))
+            self.size_hint_y = self._user_size_hint_y
     
     def _rebuild_widgets(self):
         """Parse the Markdown text and rebuild the widget tree."""
