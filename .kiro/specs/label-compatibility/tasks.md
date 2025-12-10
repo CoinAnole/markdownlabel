@@ -31,13 +31,13 @@
   - [x] 3.3 Update MarkdownLabel to pass padding to KivyRenderer
     - Modify `_rebuild_widgets()` to pass padding to KivyRenderer constructor
     - _Requirements: 2.1, 2.3_
-  - [ ] 3.4 Write property test for padding forwarding
+  - [x] 3.4 Write property test for padding forwarding
     - **Property 4: Padding Forwarding to Child Labels**
     - **Validates: Requirements 2.1, 2.2**
-  - [ ] 3.5 Write property test for padding dynamic updates
+  - [x] 3.5 Write property test for padding dynamic updates
     - **Property 5: Padding Dynamic Updates**
     - **Validates: Requirements 2.3**
-  - [ ] 3.6 Write property test for padding with nested structures
+  - [x] 3.6 Write property test for padding with nested structures
     - **Property 6: Padding with Nested Structures**
     - **Validates: Requirements 2.4**
 

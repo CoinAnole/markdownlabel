@@ -568,6 +568,7 @@ class KivyRenderer:
             'shorten': self.shorten,
             'shorten_from': self.shorten_from,
             'split_str': self.split_str,
+            'padding': self.padding,
         }
         
         # Add max_lines only if set (non-zero)
