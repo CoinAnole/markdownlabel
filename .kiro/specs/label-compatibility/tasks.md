@@ -44,27 +44,27 @@
 - [x] 4. Checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 5. Implement configurable auto-sizing behavior
+- [x] 5. Implement configurable auto-sizing behavior
   - [x] 5.1 Add auto_size_height property to MarkdownLabel
     - Add BooleanProperty with default True
     - Add docstring explaining behavior
     - _Requirements: 3.1, 3.2_
-  - [ ] 5.2 Modify MarkdownLabel __init__ to use auto_size_height
+  - [x] 5.2 Modify MarkdownLabel __init__ to use auto_size_height
     - Store user's size_hint_y value before potential override
     - Apply auto-sizing only when auto_size_height is True
     - Bind auto_size_height changes to handler
     - _Requirements: 3.1, 3.2, 3.3_
-  - [ ] 5.3 Implement _on_auto_size_height_changed handler
+  - [x] 5.3 Implement _on_auto_size_height_changed handler
     - When True: set size_hint_y=None and bind height to minimum_height
     - When False: unbind height and restore user's size_hint_y
     - _Requirements: 3.4, 3.5_
-  - [ ] 5.4 Write property test for auto_size_height True behavior
+  - [x] 5.4 Write property test for auto_size_height True behavior
     - **Property 7: auto_size_height True Behavior**
     - **Validates: Requirements 3.1, 3.3**
-  - [ ] 5.5 Write property test for auto_size_height False behavior
+  - [x] 5.5 Write property test for auto_size_height False behavior
     - **Property 8: auto_size_height False Behavior**
     - **Validates: Requirements 3.2**
-  - [ ] 5.6 Write property test for auto_size_height dynamic toggling
+  - [x] 5.6 Write property test for auto_size_height dynamic toggling
     - **Property 9: auto_size_height Dynamic Toggling**
     - **Validates: Requirements 3.4, 3.5**
 

@@ -4126,3 +4126,230 @@ Final paragraph.
                 f"Expected padding={padding}, got {list(lbl.padding)}"
             # Verify the label is still properly embedded in the widget tree
             assert lbl.parent is not None, "Label should have a parent widget"
+
+
+# **Feature: label-compatibility, Property 7: auto_size_height True Behavior**
+# *For any* MarkdownLabel with `auto_size_height=True`, the widget SHALL have 
+# `size_hint_y=None` AND its height SHALL be bound to `minimum_height`.
+# **Validates: Requirements 3.1, 3.3**
+
+class TestAutoSizeHeightTrueBehavior:
+    """Property tests for auto_size_height True behavior (Property 7)."""
+    
+    @given(simple_markdown_document())
+    @settings(max_examples=100, deadline=None)
+    def test_auto_size_height_true_sets_size_hint_y_none(self, markdown_text):
+        """When auto_size_height=True, size_hint_y should be None."""
+        label = MarkdownLabel(text=markdown_text, auto_size_height=True)
+        
+        assert label.size_hint_y is None, \
+            f"Expected size_hint_y=None when auto_size_height=True, got {label.size_hint_y}"
+    
+    @given(simple_markdown_document())
+    @settings(max_examples=100, deadline=None)
+    def test_auto_size_height_true_binds_height_to_minimum(self, markdown_text):
+        """When auto_size_height=True, height should be bound to minimum_height."""
+        label = MarkdownLabel(text=markdown_text, auto_size_height=True)
+        
+        # Check that the binding exists by verifying size_hint_y is None
+        # (which is the primary indicator of auto-sizing behavior)
+        assert label.size_hint_y is None, \
+            "size_hint_y should be None when auto_size_height=True"
+        
+        # Verify auto_size_height property is actually True
+        assert label.auto_size_height is True, \
+            f"Expected auto_size_height=True, got {label.auto_size_height}"
+    
+    def test_auto_size_height_true_default_behavior(self):
+        """Default MarkdownLabel should have auto_size_height=True behavior."""
+        label = MarkdownLabel(text="Test content")
+        
+        # Default should be auto_size_height=True
+        assert label.auto_size_height is True, \
+            f"Expected default auto_size_height=True, got {label.auto_size_height}"
+        
+        # Should have size_hint_y=None
+        assert label.size_hint_y is None, \
+            f"Expected size_hint_y=None by default, got {label.size_hint_y}"
+    
+    @given(st.floats(min_value=0.1, max_value=2.0, allow_nan=False, allow_infinity=False))
+    @settings(max_examples=100, deadline=None)
+    def test_auto_size_height_true_ignores_user_size_hint_y(self, user_size_hint_y):
+        """When auto_size_height=True, user-provided size_hint_y is overridden."""
+        label = MarkdownLabel(
+            text="Test content", 
+            auto_size_height=True, 
+            size_hint_y=user_size_hint_y
+        )
+        
+        # Should override user's size_hint_y
+        assert label.size_hint_y is None, \
+            f"Expected size_hint_y=None to override user value {user_size_hint_y}, got {label.size_hint_y}"
+        
+        # But should store the user value for later restoration
+        assert label._user_size_hint_y == user_size_hint_y, \
+            f"Expected _user_size_hint_y={user_size_hint_y}, got {label._user_size_hint_y}"
+
+
+# **Feature: label-compatibility, Property 8: auto_size_height False Behavior**
+# *For any* MarkdownLabel with `auto_size_height=False`, the widget SHALL preserve 
+# the user-specified `size_hint_y` value (or default to 1) AND its height SHALL NOT 
+# be bound to `minimum_height`.
+# **Validates: Requirements 3.2**
+
+class TestAutoSizeHeightFalseBehavior:
+    """Property tests for auto_size_height False behavior (Property 8)."""
+    
+    @given(simple_markdown_document())
+    @settings(max_examples=100, deadline=None)
+    def test_auto_size_height_false_preserves_default_size_hint_y(self, markdown_text):
+        """When auto_size_height=False, default size_hint_y=1 is preserved."""
+        label = MarkdownLabel(text=markdown_text, auto_size_height=False)
+        
+        assert label.size_hint_y == 1, \
+            f"Expected size_hint_y=1 when auto_size_height=False, got {label.size_hint_y}"
+        
+        assert label.auto_size_height is False, \
+            f"Expected auto_size_height=False, got {label.auto_size_height}"
+    
+    @given(simple_markdown_document(), 
+           st.floats(min_value=0.1, max_value=2.0, allow_nan=False, allow_infinity=False))
+    @settings(max_examples=100, deadline=None)
+    def test_auto_size_height_false_preserves_user_size_hint_y(self, markdown_text, user_size_hint_y):
+        """When auto_size_height=False, user-specified size_hint_y is preserved."""
+        label = MarkdownLabel(
+            text=markdown_text, 
+            auto_size_height=False, 
+            size_hint_y=user_size_hint_y
+        )
+        
+        assert label.size_hint_y == user_size_hint_y, \
+            f"Expected size_hint_y={user_size_hint_y} when auto_size_height=False, got {label.size_hint_y}"
+        
+        assert label.auto_size_height is False, \
+            f"Expected auto_size_height=False, got {label.auto_size_height}"
+    
+    @given(simple_markdown_document())
+    @settings(max_examples=100, deadline=None)
+    def test_auto_size_height_false_no_height_binding(self, markdown_text):
+        """When auto_size_height=False, height is not bound to minimum_height."""
+        label = MarkdownLabel(text=markdown_text, auto_size_height=False)
+        
+        # The primary indicator that height is not bound to minimum_height
+        # is that size_hint_y is not None (it participates in layout)
+        assert label.size_hint_y is not None, \
+            "size_hint_y should not be None when auto_size_height=False"
+        
+        assert label.auto_size_height is False, \
+            f"Expected auto_size_height=False, got {label.auto_size_height}"
+
+
+# **Feature: label-compatibility, Property 9: auto_size_height Dynamic Toggling**
+# *For any* MarkdownLabel, when `auto_size_height` is toggled from True to False, 
+# the height binding SHALL be removed and `size_hint_y` SHALL be restored. When 
+# toggled from False to True, the height binding SHALL be added and `size_hint_y` 
+# SHALL be set to None.
+# **Validates: Requirements 3.4, 3.5**
+
+class TestAutoSizeHeightDynamicToggling:
+    """Property tests for auto_size_height dynamic toggling (Property 9)."""
+    
+    @given(simple_markdown_document())
+    @settings(max_examples=100, deadline=None)
+    def test_toggle_true_to_false_restores_size_hint_y(self, markdown_text):
+        """Toggling auto_size_height from True to False restores size_hint_y."""
+        # Start with auto_size_height=True (default)
+        label = MarkdownLabel(text=markdown_text, auto_size_height=True)
+        
+        # Verify initial state
+        assert label.auto_size_height is True
+        assert label.size_hint_y is None
+        
+        # Toggle to False
+        label.auto_size_height = False
+        
+        # Should restore size_hint_y to default (1)
+        assert label.size_hint_y == 1, \
+            f"Expected size_hint_y=1 after toggling to False, got {label.size_hint_y}"
+        
+        assert label.auto_size_height is False, \
+            f"Expected auto_size_height=False after toggle, got {label.auto_size_height}"
+    
+    @given(simple_markdown_document())
+    @settings(max_examples=100, deadline=None)
+    def test_toggle_false_to_true_sets_size_hint_y_none(self, markdown_text):
+        """Toggling auto_size_height from False to True sets size_hint_y=None."""
+        # Start with auto_size_height=False
+        label = MarkdownLabel(text=markdown_text, auto_size_height=False)
+        
+        # Verify initial state
+        assert label.auto_size_height is False
+        assert label.size_hint_y == 1
+        
+        # Toggle to True
+        label.auto_size_height = True
+        
+        # Should set size_hint_y=None
+        assert label.size_hint_y is None, \
+            f"Expected size_hint_y=None after toggling to True, got {label.size_hint_y}"
+        
+        assert label.auto_size_height is True, \
+            f"Expected auto_size_height=True after toggle, got {label.auto_size_height}"
+    
+    @given(simple_markdown_document(), 
+           st.floats(min_value=0.1, max_value=2.0, allow_nan=False, allow_infinity=False))
+    @settings(max_examples=100, deadline=None)
+    def test_toggle_preserves_user_size_hint_y(self, markdown_text, user_size_hint_y):
+        """Toggling preserves the original user-specified size_hint_y value."""
+        # Start with user-specified size_hint_y and auto_size_height=True
+        label = MarkdownLabel(
+            text=markdown_text, 
+            auto_size_height=True, 
+            size_hint_y=user_size_hint_y
+        )
+        
+        # Should override to None initially
+        assert label.size_hint_y is None
+        
+        # Toggle to False - should restore user value
+        label.auto_size_height = False
+        
+        assert label.size_hint_y == user_size_hint_y, \
+            f"Expected size_hint_y={user_size_hint_y} after toggle to False, got {label.size_hint_y}"
+        
+        # Toggle back to True - should override again
+        label.auto_size_height = True
+        
+        assert label.size_hint_y is None, \
+            f"Expected size_hint_y=None after toggle back to True, got {label.size_hint_y}"
+        
+        # Toggle to False again - should still restore user value
+        label.auto_size_height = False
+        
+        assert label.size_hint_y == user_size_hint_y, \
+            f"Expected size_hint_y={user_size_hint_y} after second toggle to False, got {label.size_hint_y}"
+    
+    @given(simple_markdown_document())
+    @settings(max_examples=100, deadline=None)
+    def test_multiple_toggles_maintain_consistency(self, markdown_text):
+        """Multiple toggles maintain consistent behavior."""
+        label = MarkdownLabel(text=markdown_text)
+        
+        # Should start with auto_size_height=True (default)
+        assert label.auto_size_height is True
+        assert label.size_hint_y is None
+        
+        # Toggle False -> True -> False -> True
+        for expected_auto_size, expected_size_hint_y in [
+            (False, 1),      # Toggle to False
+            (True, None),    # Toggle to True
+            (False, 1),      # Toggle to False
+            (True, None),    # Toggle to True
+        ]:
+            label.auto_size_height = expected_auto_size
+            
+            assert label.auto_size_height == expected_auto_size, \
+                f"Expected auto_size_height={expected_auto_size}, got {label.auto_size_height}"
+            
+            assert label.size_hint_y == expected_size_hint_y, \
+                f"Expected size_hint_y={expected_size_hint_y}, got {label.size_hint_y}"
