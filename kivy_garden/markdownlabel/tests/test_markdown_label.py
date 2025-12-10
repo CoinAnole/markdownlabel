@@ -1716,17 +1716,32 @@ class TestValignForwarding:
     @given(valign_values)
     @settings(max_examples=100, deadline=None)
     def test_valign_applied_to_list_items(self, valign):
-        """valign is applied to list item Labels."""
+        """valign is applied to list item content Labels (not markers)."""
         markdown = '- Item 1\n- Item 2'
         label = MarkdownLabel(text=markdown, valign=valign)
         
         labels = self._find_labels_recursive(label)
         assert len(labels) >= 2, "Expected at least 2 Labels for list items"
         
-        # All labels should have the specified valign
+        # Filter out marker labels (bullets/numbers) - they should always be top-aligned
+        # Marker labels have width=30, halign='right', and contain bullet/number text
+        content_labels = []
         for lbl in labels:
+            # Skip marker labels - they have fixed width and right alignment
+            if (hasattr(lbl, 'width') and lbl.width == 30 and 
+                hasattr(lbl, 'halign') and lbl.halign == 'right'):
+                # This is a marker label - should always be top-aligned
+                assert lbl.valign == 'top', \
+                    f"Marker label should be top-aligned, got {lbl.valign}"
+            else:
+                # This is a content label - should respect user's valign
+                content_labels.append(lbl)
+        
+        # Content labels should have the specified valign
+        assert len(content_labels) >= 2, "Expected at least 2 content Labels"
+        for lbl in content_labels:
             assert lbl.valign == valign, \
-                f"Expected valign={valign}, got {lbl.valign}"
+                f"Expected content label valign={valign}, got {lbl.valign}"
     
     @given(valign_values)
     @settings(max_examples=100, deadline=None)
