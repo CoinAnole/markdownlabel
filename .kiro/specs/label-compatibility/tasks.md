@@ -16,19 +16,19 @@
     - **Property 3: text_size Dynamic Updates**
     - **Validates: Requirements 1.4**
 
-- [ ] 2. Checkpoint - Ensure all tests pass
+- [x] 2. Checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 3. Implement padding forwarding to child Labels
-  - [ ] 3.1 Add padding parameter to KivyRenderer
+- [-] 3. Implement padding forwarding to child Labels
+  - [x] 3.1 Add padding parameter to KivyRenderer
     - Add `padding` parameter to `__init__` method
     - Store padding value for use in Label creation
     - _Requirements: 2.1_
-  - [ ] 3.2 Forward padding to child Labels in KivyRenderer
+  - [x] 3.2 Forward padding to child Labels in KivyRenderer
     - Update `paragraph()`, `heading()`, `block_text()`, and `_render_table_cell()` to apply padding
     - Ensure padding is applied to Labels in nested structures (lists, tables, block quotes)
     - _Requirements: 2.1, 2.2, 2.4_
-  - [ ] 3.3 Update MarkdownLabel to pass padding to KivyRenderer
+  - [x] 3.3 Update MarkdownLabel to pass padding to KivyRenderer
     - Modify `_rebuild_widgets()` to pass padding to KivyRenderer constructor
     - _Requirements: 2.1, 2.3_
   - [ ] 3.4 Write property test for padding forwarding

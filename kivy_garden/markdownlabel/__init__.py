@@ -564,6 +564,7 @@ class MarkdownLabel(BoxLayout):
         self.bind(max_lines=self._on_style_changed)
         self.bind(shorten_from=self._on_style_changed)
         self.bind(split_str=self._on_style_changed)
+        self.bind(padding=self._on_style_changed)
         
         # Bind padding to the container (self is a BoxLayout)
         self.bind(padding=self._on_padding_changed)
@@ -629,7 +630,8 @@ class MarkdownLabel(BoxLayout):
             shorten=self.shorten,
             max_lines=int(self.max_lines),
             shorten_from=self.shorten_from,
-            split_str=self.split_str
+            split_str=self.split_str,
+            padding=list(self.padding)
         )
         
         # Render AST to widget tree

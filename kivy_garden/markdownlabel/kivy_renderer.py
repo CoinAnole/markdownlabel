@@ -64,7 +64,8 @@ class KivyRenderer:
                  shorten: bool = False,
                  max_lines: int = 0,
                  shorten_from: str = 'center',
-                 split_str: str = ''):
+                 split_str: str = '',
+                 padding: Optional[List[float]] = None):
         """Initialize the KivyRenderer.
         
         Args:
@@ -92,6 +93,7 @@ class KivyRenderer:
             max_lines: Maximum number of lines to display, 0 for no limit (default: 0)
             shorten_from: Direction to truncate from: 'left', 'center', 'right' (default: 'center')
             split_str: String used as word boundary for shortening (default: '')
+            padding: Padding values [left, top, right, bottom] for child Labels (default: [0, 0, 0, 0])
         """
         self.base_font_size = base_font_size
         self.code_font_name = code_font_name
@@ -118,6 +120,7 @@ class KivyRenderer:
         self.max_lines = max_lines
         self.shorten_from = shorten_from
         self.split_str = split_str
+        self.padding = padding or [0, 0, 0, 0]
         
         # Compute effective color based on disabled state
         self.effective_color = self.disabled_color if self.disabled else self.color
@@ -243,6 +246,7 @@ class KivyRenderer:
             'shorten': self.shorten,
             'shorten_from': self.shorten_from,
             'split_str': self.split_str,
+            'padding': self.padding,
         }
         
         # Add max_lines only if set (non-zero)
@@ -318,6 +322,7 @@ class KivyRenderer:
             'shorten': self.shorten,
             'shorten_from': self.shorten_from,
             'split_str': self.split_str,
+            'padding': self.padding,
         }
         
         # Add max_lines only if set (non-zero)
@@ -410,6 +415,7 @@ class KivyRenderer:
             'shorten': self.shorten,
             'shorten_from': self.shorten_from,
             'split_str': self.split_str,
+            'padding': self.padding,
         }
         
         # Add max_lines only if set (non-zero)
@@ -976,6 +982,7 @@ class KivyRenderer:
             'shorten': self.shorten,
             'shorten_from': self.shorten_from,
             'split_str': self.split_str,
+            'padding': self.padding,
         }
         
         # Add max_lines only if set (non-zero)
