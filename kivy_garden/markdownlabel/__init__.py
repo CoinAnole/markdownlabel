@@ -188,6 +188,67 @@ class MarkdownLabel(BoxLayout):
     and defaults to True.
     """
     
+    mipmap = BooleanProperty(False)
+    """No-op property for Label API compatibility.
+    
+    This property is accepted but has no effect on rendering.
+    MarkdownLabel does not use texture mipmapping.
+    
+    :attr:`mipmap` is a :class:`~kivy.properties.BooleanProperty`
+    and defaults to False.
+    """
+    
+    outline_width = NumericProperty(0)
+    """No-op property for Label API compatibility.
+    
+    This property is accepted but has no effect on rendering.
+    Text outline is not supported in MarkdownLabel.
+    
+    :attr:`outline_width` is a :class:`~kivy.properties.NumericProperty`
+    and defaults to 0.
+    """
+    
+    outline_color = ColorProperty([0, 0, 0, 1])
+    """No-op property for Label API compatibility.
+    
+    This property is accepted but has no effect on rendering.
+    Text outline is not supported in MarkdownLabel.
+    
+    :attr:`outline_color` is a :class:`~kivy.properties.ColorProperty`
+    and defaults to [0, 0, 0, 1].
+    """
+    
+    text_language = StringProperty(None, allownone=True)
+    """No-op property for Label API compatibility.
+    
+    This property is accepted but has no effect on rendering.
+    MarkdownLabel does not support language-specific text shaping.
+    
+    :attr:`text_language` is a :class:`~kivy.properties.StringProperty`
+    and defaults to None.
+    """
+    
+    base_direction = OptionProperty(
+        None,
+        options=[None, 'ltr', 'rtl', 'weak_ltr', 'weak_rtl'],
+        allownone=True
+    )
+    """No-op property for Label API compatibility.
+    
+    This property is accepted but has no effect on rendering.
+    MarkdownLabel does not support bidirectional text layout.
+    
+    Options:
+        - None: No direction specified (default)
+        - 'ltr': Left-to-right
+        - 'rtl': Right-to-left
+        - 'weak_ltr': Weak left-to-right
+        - 'weak_rtl': Weak right-to-left
+    
+    :attr:`base_direction` is an :class:`~kivy.properties.OptionProperty`
+    and defaults to None.
+    """
+    
     # Forwarding properties - these are passed to KivyRenderer and applied to internal Labels
     
     font_name = StringProperty('Roboto')

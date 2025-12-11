@@ -1,13 +1,13 @@
 # Implementation Plan
 
 - [ ] 1. Add no-op properties for Label API compatibility
-  - [ ] 1.1 Add mipmap, outline_width, outline_color properties to MarkdownLabel
+  - [x] 1.1 Add mipmap, outline_width, outline_color properties to MarkdownLabel
     - Add BooleanProperty for mipmap (default False)
     - Add NumericProperty for outline_width (default 0)
     - Add ColorProperty for outline_color (default [0, 0, 0, 1])
     - Add docstrings documenting these as no-op properties
     - _Requirements: 1.1, 1.2_
-  - [ ] 1.2 Add text_language, base_direction properties to MarkdownLabel
+  - [x] 1.2 Add text_language, base_direction properties to MarkdownLabel
     - Add StringProperty for text_language (default None, allownone=True)
     - Add OptionProperty for base_direction (options: None, 'ltr', 'rtl', 'weak_ltr', 'weak_rtl')
     - Add docstrings documenting these as no-op properties
