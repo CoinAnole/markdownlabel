@@ -2,7 +2,19 @@
 alwaysApply: true
 ---
 
-Project: Kivy Garden MarkdownLabel — a Kivy widget that parses Markdown with Mistune and renders it as interactive Kivy UI; meant as a drop-in Label replacement supporting links, headings, lists, tables, code blocks, and styling controls.
+Project: Kivy Garden MarkdownLabel — a Kivy Garden flower that renders Markdown documents as interactive Kivy UI. It offers a Label-compatible API for easy migration but extends BoxLayout (and is not a drop-in Label replacment) because Markdown rendering builds multiple widgets; supports full Markdown syntax, links, headings, lists, tables, code blocks, and styling controls.
+
+Purpose/target: Give Kivy apps rich formatted text without hand-building widget trees. Targeted at Kivy developers who need Markdown content with Label-like properties and link callbacks.
+
+Key features:
+- Full Markdown blocks: headings, paragraphs, lists, tables, quotes, fenced code, images.
+- Inline formatting: bold/italic/strike/code/links with markup escaping.
+- Interactive links via `on_ref_press`; configurable fonts/colors/sizes.
+- Built on mistune 3.x with plugins (tables, strikethrough).
+
+Architecture: Three-layer pipeline—mistune parses to AST; `KivyRenderer` builds block-level Kivy widgets (layouts, labels, images) with nesting depth safeguards; `InlineRenderer` turns inline tokens into safe Kivy markup strings. `MarkdownSerializer` supports AST→Markdown round-trips for tests.
+
+Package/namespace: Modern Kivy Garden flower using namespace package `kivy_garden.markdownlabel` (not legacy `garden.*`); import via `from kivy_garden.markdownlabel import MarkdownLabel`.
 
 Key modules:
 - `kivy_garden/markdownlabel/__init__.py`: exposes `MarkdownLabel` plus render/serialize helpers; builds AST with Mistune (tables + strikethrough plugins) and renders via `KivyRenderer`; serializes back to Markdown with `MarkdownSerializer`.
