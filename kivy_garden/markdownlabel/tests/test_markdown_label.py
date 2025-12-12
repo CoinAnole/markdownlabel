@@ -5103,3 +5103,325 @@ code = "block"
         # to texture_size even in headless mode
         assert ts_with_blanks[1] >= ts_no_blanks[1], \
             "Expected content with blank lines to have at least as much height"
+
+
+# **Feature: label-compatibility-phase2, Property 4: Shortening Property Forwarding**
+# *For any* shortening-related property (shorten, shorten_from, split_str, max_lines,
+# ellipsis_options), when set on MarkdownLabel, all child Labels (paragraphs, headings,
+# list items, table cells, quote text) SHALL have the same property value.
+# **Validates: Requirements 4.1, 4.2, 4.3, 4.4, 4.5**
+
+
+class TestShorteningPropertyForwarding:
+    """Property tests for shortening property forwarding (Property 4)."""
+    
+    def _find_labels_recursive(self, widget, labels=None):
+        """Recursively find all Label widgets in a widget tree."""
+        if labels is None:
+            labels = []
+        
+        if isinstance(widget, Label):
+            labels.append(widget)
+        
+        if hasattr(widget, 'children'):
+            for child in widget.children:
+                self._find_labels_recursive(child, labels)
+        
+        return labels
+    
+    @given(st.booleans())
+    @settings(max_examples=100, deadline=None)
+    def test_shorten_forwarded_to_paragraph(self, shorten_value):
+        """shorten property is forwarded to paragraph Labels."""
+        label = MarkdownLabel(text='Hello World', shorten=shorten_value)
+        
+        labels = self._find_labels_recursive(label)
+        assert len(labels) >= 1, "Expected at least one Label"
+        
+        for lbl in labels:
+            assert lbl.shorten == shorten_value, \
+                f"Expected shorten={shorten_value}, got {lbl.shorten}"
+    
+    @given(st.booleans())
+    @settings(max_examples=100, deadline=None)
+    def test_shorten_forwarded_to_heading(self, shorten_value):
+        """shorten property is forwarded to heading Labels."""
+        label = MarkdownLabel(text='# Heading', shorten=shorten_value)
+        
+        labels = self._find_labels_recursive(label)
+        assert len(labels) >= 1, "Expected at least one Label"
+        
+        for lbl in labels:
+            assert lbl.shorten == shorten_value, \
+                f"Expected shorten={shorten_value}, got {lbl.shorten}"
+    
+    @given(st.booleans())
+    @settings(max_examples=100, deadline=None)
+    def test_shorten_forwarded_to_list_items(self, shorten_value):
+        """shorten property is forwarded to list item Labels."""
+        markdown = '- Item 1\n- Item 2'
+        label = MarkdownLabel(text=markdown, shorten=shorten_value)
+        
+        labels = self._find_labels_recursive(label)
+        assert len(labels) >= 2, "Expected at least 2 Labels for list items"
+        
+        for lbl in labels:
+            assert lbl.shorten == shorten_value, \
+                f"Expected shorten={shorten_value}, got {lbl.shorten}"
+    
+    @given(st.booleans())
+    @settings(max_examples=100, deadline=None)
+    def test_shorten_forwarded_to_table_cells(self, shorten_value):
+        """shorten property is forwarded to table cell Labels."""
+        markdown = '| A | B |\n| --- | --- |\n| 1 | 2 |'
+        label = MarkdownLabel(text=markdown, shorten=shorten_value)
+        
+        labels = self._find_labels_recursive(label)
+        assert len(labels) >= 4, "Expected at least 4 Labels for table cells"
+        
+        for lbl in labels:
+            assert lbl.shorten == shorten_value, \
+                f"Expected shorten={shorten_value}, got {lbl.shorten}"
+    
+    @given(st.sampled_from(['left', 'center', 'right']))
+    @settings(max_examples=100, deadline=None)
+    def test_shorten_from_forwarded_to_paragraph(self, shorten_from_value):
+        """shorten_from property is forwarded to paragraph Labels."""
+        label = MarkdownLabel(text='Hello World', shorten_from=shorten_from_value)
+        
+        labels = self._find_labels_recursive(label)
+        assert len(labels) >= 1, "Expected at least one Label"
+        
+        for lbl in labels:
+            assert lbl.shorten_from == shorten_from_value, \
+                f"Expected shorten_from={shorten_from_value}, got {lbl.shorten_from}"
+    
+    @given(st.sampled_from(['left', 'center', 'right']))
+    @settings(max_examples=100, deadline=None)
+    def test_shorten_from_forwarded_to_heading(self, shorten_from_value):
+        """shorten_from property is forwarded to heading Labels."""
+        label = MarkdownLabel(text='# Heading', shorten_from=shorten_from_value)
+        
+        labels = self._find_labels_recursive(label)
+        assert len(labels) >= 1, "Expected at least one Label"
+        
+        for lbl in labels:
+            assert lbl.shorten_from == shorten_from_value, \
+                f"Expected shorten_from={shorten_from_value}, got {lbl.shorten_from}"
+    
+    @given(st.sampled_from(['left', 'center', 'right']))
+    @settings(max_examples=100, deadline=None)
+    def test_shorten_from_forwarded_to_list_items(self, shorten_from_value):
+        """shorten_from property is forwarded to list item Labels."""
+        markdown = '- Item 1\n- Item 2'
+        label = MarkdownLabel(text=markdown, shorten_from=shorten_from_value)
+        
+        labels = self._find_labels_recursive(label)
+        assert len(labels) >= 2, "Expected at least 2 Labels for list items"
+        
+        for lbl in labels:
+            assert lbl.shorten_from == shorten_from_value, \
+                f"Expected shorten_from={shorten_from_value}, got {lbl.shorten_from}"
+    
+    @given(st.text(min_size=0, max_size=5, alphabet='abc '))
+    @settings(max_examples=100, deadline=None)
+    def test_split_str_forwarded_to_paragraph(self, split_str_value):
+        """split_str property is forwarded to paragraph Labels."""
+        label = MarkdownLabel(text='Hello World', split_str=split_str_value)
+        
+        labels = self._find_labels_recursive(label)
+        assert len(labels) >= 1, "Expected at least one Label"
+        
+        for lbl in labels:
+            assert lbl.split_str == split_str_value, \
+                f"Expected split_str={split_str_value!r}, got {lbl.split_str!r}"
+    
+    @given(st.text(min_size=0, max_size=5, alphabet='abc '))
+    @settings(max_examples=100, deadline=None)
+    def test_split_str_forwarded_to_heading(self, split_str_value):
+        """split_str property is forwarded to heading Labels."""
+        label = MarkdownLabel(text='# Heading', split_str=split_str_value)
+        
+        labels = self._find_labels_recursive(label)
+        assert len(labels) >= 1, "Expected at least one Label"
+        
+        for lbl in labels:
+            assert lbl.split_str == split_str_value, \
+                f"Expected split_str={split_str_value!r}, got {lbl.split_str!r}"
+    
+    @given(st.integers(min_value=0, max_value=10))
+    @settings(max_examples=100, deadline=None)
+    def test_max_lines_forwarded_to_paragraph(self, max_lines_value):
+        """max_lines property is forwarded to paragraph Labels when non-zero."""
+        label = MarkdownLabel(text='Hello World', max_lines=max_lines_value)
+        
+        labels = self._find_labels_recursive(label)
+        assert len(labels) >= 1, "Expected at least one Label"
+        
+        for lbl in labels:
+            if max_lines_value > 0:
+                assert lbl.max_lines == max_lines_value, \
+                    f"Expected max_lines={max_lines_value}, got {lbl.max_lines}"
+            # When max_lines=0, it may not be set on child Labels (default behavior)
+    
+    @given(st.integers(min_value=1, max_value=10))
+    @settings(max_examples=100, deadline=None)
+    def test_max_lines_forwarded_to_heading(self, max_lines_value):
+        """max_lines property is forwarded to heading Labels when non-zero."""
+        label = MarkdownLabel(text='# Heading', max_lines=max_lines_value)
+        
+        labels = self._find_labels_recursive(label)
+        assert len(labels) >= 1, "Expected at least one Label"
+        
+        for lbl in labels:
+            assert lbl.max_lines == max_lines_value, \
+                f"Expected max_lines={max_lines_value}, got {lbl.max_lines}"
+    
+    @given(st.integers(min_value=1, max_value=10))
+    @settings(max_examples=100, deadline=None)
+    def test_max_lines_forwarded_to_list_items(self, max_lines_value):
+        """max_lines property is forwarded to list item Labels when non-zero."""
+        markdown = '- Item 1\n- Item 2'
+        label = MarkdownLabel(text=markdown, max_lines=max_lines_value)
+        
+        labels = self._find_labels_recursive(label)
+        assert len(labels) >= 2, "Expected at least 2 Labels for list items"
+        
+        for lbl in labels:
+            assert lbl.max_lines == max_lines_value, \
+                f"Expected max_lines={max_lines_value}, got {lbl.max_lines}"
+    
+    @given(st.fixed_dictionaries({
+        'markup_color': st.sampled_from([[1, 0, 0, 1], [0, 1, 0, 1], [0, 0, 1, 1]])
+    }))
+    @settings(max_examples=100, deadline=None)
+    def test_ellipsis_options_forwarded_to_paragraph(self, ellipsis_opts):
+        """ellipsis_options property is forwarded to paragraph Labels."""
+        label = MarkdownLabel(text='Hello World', ellipsis_options=ellipsis_opts)
+        
+        labels = self._find_labels_recursive(label)
+        assert len(labels) >= 1, "Expected at least one Label"
+        
+        for lbl in labels:
+            assert lbl.ellipsis_options == ellipsis_opts, \
+                f"Expected ellipsis_options={ellipsis_opts}, got {lbl.ellipsis_options}"
+    
+    @given(st.fixed_dictionaries({
+        'markup_color': st.sampled_from([[1, 0, 0, 1], [0, 1, 0, 1], [0, 0, 1, 1]])
+    }))
+    @settings(max_examples=100, deadline=None)
+    def test_ellipsis_options_forwarded_to_heading(self, ellipsis_opts):
+        """ellipsis_options property is forwarded to heading Labels."""
+        label = MarkdownLabel(text='# Heading', ellipsis_options=ellipsis_opts)
+        
+        labels = self._find_labels_recursive(label)
+        assert len(labels) >= 1, "Expected at least one Label"
+        
+        for lbl in labels:
+            assert lbl.ellipsis_options == ellipsis_opts, \
+                f"Expected ellipsis_options={ellipsis_opts}, got {lbl.ellipsis_options}"
+    
+    @given(st.fixed_dictionaries({
+        'markup_color': st.sampled_from([[1, 0, 0, 1], [0, 1, 0, 1], [0, 0, 1, 1]])
+    }))
+    @settings(max_examples=100, deadline=None)
+    def test_ellipsis_options_forwarded_to_list_items(self, ellipsis_opts):
+        """ellipsis_options property is forwarded to list item Labels."""
+        markdown = '- Item 1\n- Item 2'
+        label = MarkdownLabel(text=markdown, ellipsis_options=ellipsis_opts)
+        
+        labels = self._find_labels_recursive(label)
+        assert len(labels) >= 2, "Expected at least 2 Labels for list items"
+        
+        for lbl in labels:
+            assert lbl.ellipsis_options == ellipsis_opts, \
+                f"Expected ellipsis_options={ellipsis_opts}, got {lbl.ellipsis_options}"
+    
+    @given(st.fixed_dictionaries({
+        'markup_color': st.sampled_from([[1, 0, 0, 1], [0, 1, 0, 1], [0, 0, 1, 1]])
+    }))
+    @settings(max_examples=100, deadline=None)
+    def test_ellipsis_options_forwarded_to_table_cells(self, ellipsis_opts):
+        """ellipsis_options property is forwarded to table cell Labels."""
+        markdown = '| A | B |\n| --- | --- |\n| 1 | 2 |'
+        label = MarkdownLabel(text=markdown, ellipsis_options=ellipsis_opts)
+        
+        labels = self._find_labels_recursive(label)
+        assert len(labels) >= 4, "Expected at least 4 Labels for table cells"
+        
+        for lbl in labels:
+            assert lbl.ellipsis_options == ellipsis_opts, \
+                f"Expected ellipsis_options={ellipsis_opts}, got {lbl.ellipsis_options}"
+    
+    def test_empty_ellipsis_options_not_forwarded(self):
+        """Empty ellipsis_options dict is not forwarded (default behavior)."""
+        label = MarkdownLabel(text='Hello World', ellipsis_options={})
+        
+        labels = self._find_labels_recursive(label)
+        assert len(labels) >= 1, "Expected at least one Label"
+        
+        # Empty dict should result in default empty dict on child Labels
+        for lbl in labels:
+            assert lbl.ellipsis_options == {}, \
+                f"Expected empty ellipsis_options, got {lbl.ellipsis_options}"
+    
+    @given(st.booleans(), st.sampled_from(['left', 'center', 'right']),
+           st.text(min_size=0, max_size=3, alphabet='ab '),
+           st.integers(min_value=1, max_value=5))
+    @settings(max_examples=100, deadline=None)
+    def test_all_shortening_properties_forwarded_together(
+            self, shorten_val, shorten_from_val, split_str_val, max_lines_val):
+        """All shortening properties are forwarded together to child Labels."""
+        markdown = '''# Heading
+
+Paragraph text
+
+- List item 1
+- List item 2
+
+| A | B |
+| --- | --- |
+| 1 | 2 |
+'''
+        label = MarkdownLabel(
+            text=markdown,
+            shorten=shorten_val,
+            shorten_from=shorten_from_val,
+            split_str=split_str_val,
+            max_lines=max_lines_val
+        )
+        
+        labels = self._find_labels_recursive(label)
+        assert len(labels) >= 5, "Expected at least 5 Labels for various structures"
+        
+        for lbl in labels:
+            assert lbl.shorten == shorten_val, \
+                f"Expected shorten={shorten_val}, got {lbl.shorten}"
+            assert lbl.shorten_from == shorten_from_val, \
+                f"Expected shorten_from={shorten_from_val}, got {lbl.shorten_from}"
+            assert lbl.split_str == split_str_val, \
+                f"Expected split_str={split_str_val!r}, got {lbl.split_str!r}"
+            assert lbl.max_lines == max_lines_val, \
+                f"Expected max_lines={max_lines_val}, got {lbl.max_lines}"
+    
+    @given(st.booleans(), st.booleans())
+    @settings(max_examples=100, deadline=None)
+    def test_shorten_change_triggers_rebuild(self, shorten1, shorten2):
+        """Changing shorten triggers widget rebuild with new value."""
+        assume(shorten1 != shorten2)
+        
+        label = MarkdownLabel(text='Hello World', shorten=shorten1)
+        
+        # Verify initial value
+        labels = self._find_labels_recursive(label)
+        for lbl in labels:
+            assert lbl.shorten == shorten1
+        
+        # Change shorten
+        label.shorten = shorten2
+        
+        # Verify new value
+        labels = self._find_labels_recursive(label)
+        for lbl in labels:
+            assert lbl.shorten == shorten2, \
+                f"After change, expected shorten={shorten2}, got {lbl.shorten}"

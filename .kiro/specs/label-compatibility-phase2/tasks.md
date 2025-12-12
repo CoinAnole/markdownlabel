@@ -73,10 +73,10 @@
     - Update _render_list_item() marker label
     - Only add to label_kwargs if ellipsis_options is non-empty
     - _Requirements: 4.5_
-  - [ ] 5.3 Update MarkdownLabel._rebuild_widgets to pass ellipsis_options
+  - [x] 5.3 Update MarkdownLabel._rebuild_widgets to pass ellipsis_options
     - Pass ellipsis_options to KivyRenderer constructor
     - _Requirements: 4.5_
-  - [ ] 5.4 Write property test for shortening property forwarding
+  - [x] 5.4 Write property test for shortening property forwarding
     - **Property 4: Shortening Property Forwarding**
     - **Validates: Requirements 4.1, 4.2, 4.3, 4.4, 4.5**
 

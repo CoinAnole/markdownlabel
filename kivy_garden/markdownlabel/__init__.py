@@ -858,7 +858,8 @@ class MarkdownLabel(BoxLayout):
             shorten_from=self.shorten_from,
             split_str=self.split_str,
             padding=list(self.padding),
-            strict_label_mode=self.strict_label_mode
+            strict_label_mode=self.strict_label_mode,
+            ellipsis_options=dict(self.ellipsis_options)
         )
         
         # Render AST to widget tree
