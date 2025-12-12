@@ -48,7 +48,7 @@
 - [x] 3. Checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
-- [-] 4. Improve texture_size calculation
+- [x] 4. Improve texture_size calculation
   - [x] 4.1 Update _get_texture_size to include all widget types
     - Add handling for AsyncImage (use actual size)
     - Add handling for GridLayout (use minimum_size)
@@ -59,7 +59,7 @@
     - Bind to child widget size changes where applicable
     - Ensure texture_size updates when children resize
     - _Requirements: 3.3_
-  - [ ] 4.3 Write property test for comprehensive texture_size calculation
+  - [x] 4.3 Write property test for comprehensive texture_size calculation
     - **Property 3: Comprehensive texture_size Calculation**
     - **Validates: Requirements 3.1, 3.2, 3.3**
 
