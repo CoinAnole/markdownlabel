@@ -58,6 +58,12 @@ pytest --cov=kivy_garden.markdownlabel tests/
 pytest tests/test_markdown_label.py
 ```
 
+**CRITICAL TESTING RULES:**
+- **NEVER use `| head` with pytest commands** - this truncates test output and prevents tests from completing
+- **NEVER use `2>&1 | head -100`** or similar output truncation with pytest
+- Always let pytest run to completion to see full test results
+- Use pytest's built-in options like `-v`, `--tb=short`, `-x` for controlling output instead of shell pipes
+
 ### Code Quality
 ```bash
 # Check code style (flake8)
