@@ -69,6 +69,40 @@ class MarkdownLabel(BoxLayout):
         label.bind(on_ref_press=lambda instance, ref: print(f'Clicked: {ref}'))
     """
     
+    # Property categories for efficient updates
+    # Style-only properties can be updated in-place without rebuilding widgets
+    # Structure properties require a full widget tree rebuild
+    
+    STYLE_ONLY_PROPERTIES = frozenset({
+        'font_size',
+        'base_font_size',
+        'color',
+        'halign',
+        'valign',
+        'line_height',
+        'disabled',
+        'disabled_color',
+    })
+    """Properties that affect only visual styling and can be updated in-place.
+    
+    Changes to these properties can update existing child widgets without
+    rebuilding the entire widget tree, improving performance.
+    """
+    
+    STRUCTURE_PROPERTIES = frozenset({
+        'text',
+        'font_name',
+        'code_font_name',
+        'text_size',
+        'strict_label_mode',
+        'padding',
+    })
+    """Properties that affect widget structure and require a full rebuild.
+    
+    Changes to these properties require rebuilding the widget tree because
+    they affect the structure, layout, or fundamental rendering of content.
+    """
+    
     text = StringProperty('')
     """Markdown text to render.
     
