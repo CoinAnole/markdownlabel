@@ -20,7 +20,7 @@
     - **Property 1: No-op Property Acceptance and Storage**
     - **Validates: Requirements 1.1, 1.2, 1.3**
 
-- [ ] 2. Implement strict_label_mode
+- [x] 2. Implement strict_label_mode
   - [x] 2.1 Add strict_label_mode property to MarkdownLabel
     - Add BooleanProperty with default False
     - Add docstring explaining strict vs markdown-friendly behavior
@@ -38,10 +38,10 @@
     - Add strict_label_mode parameter to __init__
     - Modify Label creation to conditionally bind text_size based on mode
     - _Requirements: 2.2, 2.3_
-  - [ ] 2.5 Update MarkdownLabel._rebuild_widgets to pass strict_label_mode
+  - [x] 2.5 Update MarkdownLabel._rebuild_widgets to pass strict_label_mode
     - Pass strict_label_mode to KivyRenderer constructor
     - _Requirements: 2.2, 2.3_
-  - [ ] 2.6 Write property test for strict label mode sizing behavior
+  - [x] 2.6 Write property test for strict label mode sizing behavior
     - **Property 2: Strict Label Mode Sizing Behavior**
     - **Validates: Requirements 2.1, 2.2, 2.3, 2.4**
 

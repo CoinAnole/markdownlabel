@@ -803,7 +803,8 @@ class MarkdownLabel(BoxLayout):
             max_lines=int(self.max_lines),
             shorten_from=self.shorten_from,
             split_str=self.split_str,
-            padding=list(self.padding)
+            padding=list(self.padding),
+            strict_label_mode=self.strict_label_mode
         )
         
         # Render AST to widget tree

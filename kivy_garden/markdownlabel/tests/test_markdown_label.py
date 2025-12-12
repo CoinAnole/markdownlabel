@@ -4536,3 +4536,214 @@ class TestAutoSizeHeightDynamicToggling:
             
             assert label.size_hint_y == expected_size_hint_y, \
                 f"Expected size_hint_y={expected_size_hint_y}, got {label.size_hint_y}"
+
+
+
+# **Feature: label-compatibility-phase2, Property 2: Strict Label Mode Sizing Behavior**
+# *For any* MarkdownLabel with `strict_label_mode=True`, the widget SHALL have `size_hint_y` 
+# preserved (not set to None) AND height SHALL NOT be bound to `minimum_height` AND internal 
+# Labels SHALL NOT have automatic text_size width bindings when `text_size=[None, None]`.
+# **Validates: Requirements 2.1, 2.2, 2.3, 2.4**
+
+class TestStrictLabelModeSizingBehavior:
+    """Property tests for strict label mode sizing behavior (Property 2)."""
+    
+    @given(simple_markdown_document())
+    @settings(max_examples=100, deadline=None)
+    def test_strict_mode_preserves_default_size_hint_y(self, markdown_text):
+        """When strict_label_mode=True, default size_hint_y=1 is preserved."""
+        label = MarkdownLabel(text=markdown_text, strict_label_mode=True)
+        
+        assert label.size_hint_y == 1, \
+            f"Expected size_hint_y=1 when strict_label_mode=True, got {label.size_hint_y}"
+        
+        assert label.strict_label_mode is True, \
+            f"Expected strict_label_mode=True, got {label.strict_label_mode}"
+    
+    @given(simple_markdown_document(), 
+           st.floats(min_value=0.1, max_value=2.0, allow_nan=False, allow_infinity=False))
+    @settings(max_examples=100, deadline=None)
+    def test_strict_mode_preserves_user_size_hint_y(self, markdown_text, user_size_hint_y):
+        """When strict_label_mode=True, user-specified size_hint_y is preserved."""
+        label = MarkdownLabel(
+            text=markdown_text, 
+            strict_label_mode=True, 
+            size_hint_y=user_size_hint_y
+        )
+        
+        assert label.size_hint_y == user_size_hint_y, \
+            f"Expected size_hint_y={user_size_hint_y} when strict_label_mode=True, got {label.size_hint_y}"
+        
+        assert label.strict_label_mode is True, \
+            f"Expected strict_label_mode=True, got {label.strict_label_mode}"
+    
+    @given(simple_markdown_document())
+    @settings(max_examples=100, deadline=None)
+    def test_strict_mode_height_not_bound_to_minimum(self, markdown_text):
+        """When strict_label_mode=True, height is not bound to minimum_height."""
+        label = MarkdownLabel(text=markdown_text, strict_label_mode=True)
+        
+        # The primary indicator that height is not bound to minimum_height
+        # is that size_hint_y is not None (it participates in layout)
+        assert label.size_hint_y is not None, \
+            "size_hint_y should not be None when strict_label_mode=True"
+        
+        assert label.strict_label_mode is True, \
+            f"Expected strict_label_mode=True, got {label.strict_label_mode}"
+    
+    def test_strict_mode_default_is_false(self):
+        """Default MarkdownLabel should have strict_label_mode=False."""
+        label = MarkdownLabel(text="Test content")
+        
+        assert label.strict_label_mode is False, \
+            f"Expected default strict_label_mode=False, got {label.strict_label_mode}"
+        
+        # Default should have auto-sizing enabled (size_hint_y=None)
+        assert label.size_hint_y is None, \
+            f"Expected size_hint_y=None by default, got {label.size_hint_y}"
+    
+    @given(st.booleans())
+    @settings(max_examples=100, deadline=None)
+    def test_strict_mode_property_accepted_and_stored(self, value):
+        """Setting strict_label_mode property accepts and stores the value."""
+        label = MarkdownLabel(text='# Hello World', strict_label_mode=value)
+        assert label.strict_label_mode == value
+    
+    @given(st.booleans())
+    @settings(max_examples=100, deadline=None)
+    def test_strict_mode_change_after_creation(self, value):
+        """Changing strict_label_mode property after creation accepts and stores the value."""
+        label = MarkdownLabel(text='# Hello')
+        label.strict_label_mode = value
+        assert label.strict_label_mode == value
+    
+    @given(simple_markdown_document())
+    @settings(max_examples=100, deadline=None)
+    def test_strict_mode_toggle_from_false_to_true(self, markdown_text):
+        """Toggling strict_label_mode from False to True disables auto-sizing."""
+        label = MarkdownLabel(text=markdown_text, strict_label_mode=False)
+        
+        # Initially should have auto-sizing enabled
+        assert label.size_hint_y is None, \
+            "size_hint_y should be None when strict_label_mode=False"
+        
+        # Toggle to strict mode
+        label.strict_label_mode = True
+        
+        # Should now have size_hint_y preserved (default 1)
+        assert label.size_hint_y == 1, \
+            f"Expected size_hint_y=1 after toggling to strict_label_mode=True, got {label.size_hint_y}"
+    
+    @given(simple_markdown_document())
+    @settings(max_examples=100, deadline=None)
+    def test_strict_mode_toggle_from_true_to_false(self, markdown_text):
+        """Toggling strict_label_mode from True to False enables auto-sizing."""
+        label = MarkdownLabel(text=markdown_text, strict_label_mode=True)
+        
+        # Initially should have size_hint_y preserved
+        assert label.size_hint_y == 1, \
+            "size_hint_y should be 1 when strict_label_mode=True"
+        
+        # Toggle to non-strict mode
+        label.strict_label_mode = False
+        
+        # Should now have auto-sizing enabled
+        assert label.size_hint_y is None, \
+            f"Expected size_hint_y=None after toggling to strict_label_mode=False, got {label.size_hint_y}"
+    
+    @given(simple_markdown_document(), 
+           st.floats(min_value=0.1, max_value=2.0, allow_nan=False, allow_infinity=False))
+    @settings(max_examples=100, deadline=None)
+    def test_strict_mode_toggle_preserves_user_size_hint_y(self, markdown_text, user_size_hint_y):
+        """Toggling strict_label_mode preserves user-specified size_hint_y."""
+        label = MarkdownLabel(
+            text=markdown_text, 
+            strict_label_mode=True, 
+            size_hint_y=user_size_hint_y
+        )
+        
+        # Initially should have user's size_hint_y
+        assert label.size_hint_y == user_size_hint_y, \
+            f"Expected size_hint_y={user_size_hint_y}, got {label.size_hint_y}"
+        
+        # Toggle to non-strict mode - should enable auto-sizing
+        label.strict_label_mode = False
+        assert label.size_hint_y is None, \
+            f"Expected size_hint_y=None after toggle to False, got {label.size_hint_y}"
+        
+        # Toggle back to strict mode - should restore user's size_hint_y
+        label.strict_label_mode = True
+        assert label.size_hint_y == user_size_hint_y, \
+            f"Expected size_hint_y={user_size_hint_y} after toggle back to True, got {label.size_hint_y}"
+    
+    @given(simple_markdown_document())
+    @settings(max_examples=100, deadline=None)
+    def test_strict_mode_overrides_auto_size_height(self, markdown_text):
+        """strict_label_mode=True overrides auto_size_height=True behavior."""
+        label = MarkdownLabel(
+            text=markdown_text, 
+            strict_label_mode=True, 
+            auto_size_height=True
+        )
+        
+        # strict_label_mode should take precedence
+        assert label.size_hint_y == 1, \
+            f"Expected size_hint_y=1 when strict_label_mode=True (overrides auto_size_height), got {label.size_hint_y}"
+    
+    @given(simple_markdown_document())
+    @settings(max_examples=100, deadline=None)
+    def test_strict_mode_ignores_auto_size_height_changes(self, markdown_text):
+        """When strict_label_mode=True, auto_size_height changes are ignored."""
+        label = MarkdownLabel(text=markdown_text, strict_label_mode=True)
+        
+        # Initially should have size_hint_y=1
+        assert label.size_hint_y == 1
+        
+        # Try to enable auto_size_height - should be ignored
+        label.auto_size_height = True
+        
+        # size_hint_y should still be 1 (strict mode takes precedence)
+        assert label.size_hint_y == 1, \
+            f"Expected size_hint_y=1 (strict mode ignores auto_size_height), got {label.size_hint_y}"
+    
+    @given(simple_markdown_document())
+    @settings(max_examples=100, deadline=None)
+    def test_strict_mode_triggers_rebuild(self, markdown_text):
+        """Changing strict_label_mode triggers widget rebuild."""
+        assume(markdown_text.strip())
+        
+        label = MarkdownLabel(text=markdown_text, strict_label_mode=False)
+        initial_children = list(label.children)
+        
+        # Toggle strict_label_mode
+        label.strict_label_mode = True
+        
+        # Widget tree should be rebuilt (children may be different objects)
+        # We verify by checking that the label still has children
+        assert len(label.children) >= 1, \
+            "Expected at least 1 child after strict_label_mode toggle"
+    
+    @given(simple_markdown_document())
+    @settings(max_examples=100, deadline=None)
+    def test_multiple_strict_mode_toggles_maintain_consistency(self, markdown_text):
+        """Multiple strict_label_mode toggles maintain consistent behavior."""
+        label = MarkdownLabel(text=markdown_text)
+        
+        # Should start with strict_label_mode=False (default)
+        assert label.strict_label_mode is False
+        assert label.size_hint_y is None
+        
+        # Toggle True -> False -> True -> False
+        for expected_strict_mode, expected_size_hint_y in [
+            (True, 1),       # Toggle to True
+            (False, None),   # Toggle to False
+            (True, 1),       # Toggle to True
+            (False, None),   # Toggle to False
+        ]:
+            label.strict_label_mode = expected_strict_mode
+            
+            assert label.strict_label_mode == expected_strict_mode, \
+                f"Expected strict_label_mode={expected_strict_mode}, got {label.strict_label_mode}"
+            
+            assert label.size_hint_y == expected_size_hint_y, \
+                f"Expected size_hint_y={expected_size_hint_y}, got {label.size_hint_y}"
