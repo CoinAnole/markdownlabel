@@ -63,7 +63,7 @@
     - **Property 3: Comprehensive texture_size Calculation**
     - **Validates: Requirements 3.1, 3.2, 3.3**
 
-- [-] 5. Forward ellipsis_options to child Labels
+- [x] 5. Forward ellipsis_options to child Labels
   - [x] 5.1 Update KivyRenderer to accept ellipsis_options parameter
     - Add ellipsis_options parameter to __init__
     - Store for use in Label creation
@@ -80,7 +80,7 @@
     - **Property 4: Shortening Property Forwarding**
     - **Validates: Requirements 4.1, 4.2, 4.3, 4.4, 4.5**
 
-- [ ] 6. Checkpoint - Ensure all tests pass
+- [x] 6. Checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 7. Implement coordinate translation for refs and anchors
