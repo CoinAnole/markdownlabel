@@ -476,6 +476,14 @@ class MarkdownLabel(BoxLayout):
     and defaults to {}.
     """
     
+    # Internal property to trigger texture_size updates when children resize
+    _texture_size_version = NumericProperty(0)
+    """Internal version counter to trigger texture_size recalculation.
+    
+    This property is incremented when child widget sizes change,
+    causing the texture_size AliasProperty to be recalculated.
+    """
+    
     auto_size_height = BooleanProperty(True)
     """Control automatic height sizing behavior.
     
@@ -526,45 +534,91 @@ class MarkdownLabel(BoxLayout):
     # Read-only aggregated properties from child Labels
     
     def _get_texture_size(self):
-        """Compute aggregate texture_size from all child Labels.
+        """Compute aggregate texture_size from all descendant widgets.
         
-        Returns the bounding box size that encompasses all child Label textures.
-        Width is the maximum width of any child, height is the sum of all heights.
+        Returns the bounding box size that encompasses all content:
+        - Width: maximum width of any descendant
+        - Height: sum of all descendant heights
+        
+        Includes: Labels, AsyncImages, GridLayouts (tables),
+        BoxLayouts (code blocks, quotes), and Widgets (spacers, rules).
         """
+        from kivy.uix.image import AsyncImage
+        from kivy.uix.gridlayout import GridLayout
+        from kivy.uix.widget import Widget
+        
         if not self.children:
             return [0, 0]
         
         max_width = 0
         total_height = 0
         
-        def collect_sizes(widget):
+        def collect_sizes(widget, visited=None):
+            """Recursively collect sizes from widget tree.
+            
+            Args:
+                widget: Widget to collect size from
+                visited: Set of already visited widgets to prevent cycles
+            """
             nonlocal max_width, total_height
+            
+            if visited is None:
+                visited = set()
+            
+            # Prevent infinite loops from circular references
+            widget_id = id(widget)
+            if widget_id in visited:
+                return
+            visited.add(widget_id)
+            
+            # For Labels, use texture_size
             if isinstance(widget, Label) and hasattr(widget, 'texture_size'):
                 ts = widget.texture_size
                 if ts[0] > max_width:
                     max_width = ts[0]
                 total_height += ts[1]
-            if hasattr(widget, 'children'):
+            # For AsyncImage, use actual size
+            elif isinstance(widget, AsyncImage):
+                if widget.width > max_width:
+                    max_width = widget.width
+                total_height += widget.height
+            # For GridLayout (tables), use minimum_size
+            elif isinstance(widget, GridLayout):
+                if hasattr(widget, 'minimum_width') and widget.minimum_width:
+                    if widget.minimum_width > max_width:
+                        max_width = widget.minimum_width
+                if hasattr(widget, 'minimum_height') and widget.minimum_height:
+                    total_height += widget.minimum_height
+            # For BoxLayout containers (code blocks, quotes), recurse into children
+            elif isinstance(widget, BoxLayout):
                 for child in widget.children:
-                    collect_sizes(child)
+                    collect_sizes(child, visited)
+            # For plain Widgets (spacers, rules), use height
+            elif isinstance(widget, Widget):
+                total_height += widget.height
         
         for child in self.children:
             collect_sizes(child)
         
         return [max_width, total_height]
     
-    texture_size = AliasProperty(_get_texture_size, bind=['children', 'text'])
-    """Aggregated texture size from all child Label widgets.
+    texture_size = AliasProperty(
+        _get_texture_size,
+        bind=['children', 'text', '_texture_size_version']
+    )
+    """Aggregated texture size from all descendant widgets.
     
-    Returns the bounding box size [width, height] that encompasses all child
-    Label textures. Width is the maximum width of any child Label, height is
-    the sum of all child Label heights.
+    Returns the bounding box size [width, height] that encompasses all
+    descendant widgets including Labels, Images, Tables, Code blocks,
+    and spacer widgets.
+    
+    - Width: maximum width of any descendant
+    - Height: sum of all descendant heights
     
     Note:
         This is a read-only property. Unlike Kivy's Label.texture_size, it
-        represents the aggregate of multiple internal Labels, not a single
-        texture. The value may not update immediately after text changes
-        due to texture rendering being asynchronous.
+        represents the aggregate of multiple internal widgets, not a single
+        texture. The value updates when child widget sizes change.
     
     :attr:`texture_size` is a read-only :class:`~kivy.properties.AliasProperty`.
     """
@@ -818,6 +872,9 @@ class MarkdownLabel(BoxLayout):
         for child in reversed(list(content.children)):
             content.remove_widget(child)
             self.add_widget(child)
+        
+        # Bind to child widget size changes for texture_size updates
+        self._bind_child_size_changes(self)
     
     def _bind_ref_press_events(self, widget):
         """Recursively bind on_ref_press events from child Labels.
@@ -832,6 +889,41 @@ class MarkdownLabel(BoxLayout):
         if hasattr(widget, 'children'):
             for child in widget.children:
                 self._bind_ref_press_events(child)
+    
+    def _bind_child_size_changes(self, widget):
+        """Recursively bind to child widget size changes for texture_size updates.
+        
+        Args:
+            widget: Widget to bind size changes from
+        """
+        from kivy.uix.image import AsyncImage
+        from kivy.uix.gridlayout import GridLayout
+        from kivy.uix.widget import Widget
+        
+        def on_child_size_change(instance, value):
+            """Callback when a child widget's size changes."""
+            self._texture_size_version += 1
+        
+        # Bind to size changes for relevant widget types
+        if isinstance(widget, Label):
+            # For Labels, bind to texture_size changes
+            if hasattr(widget, 'texture_size'):
+                widget.bind(texture_size=on_child_size_change)
+        elif isinstance(widget, AsyncImage):
+            # For AsyncImage, bind to size changes
+            widget.bind(size=on_child_size_change)
+        elif isinstance(widget, GridLayout):
+            # For GridLayout (tables), bind to minimum_size changes
+            if hasattr(widget, 'minimum_size'):
+                widget.bind(minimum_size=on_child_size_change)
+        elif isinstance(widget, Widget):
+            # For plain Widgets (spacers, rules), bind to height changes
+            widget.bind(height=on_child_size_change)
+        
+        # Recursively bind for container widgets
+        if hasattr(widget, 'children'):
+            for child in widget.children:
+                self._bind_child_size_changes(child)
     
     def _on_child_ref_press(self, instance, ref):
         """Handle ref_press from child Label and bubble up.
