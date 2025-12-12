@@ -496,6 +496,33 @@ class MarkdownLabel(BoxLayout):
     and defaults to True.
     """
     
+    strict_label_mode = BooleanProperty(False)
+    """Enable strict Label API compatibility mode.
+    
+    This property controls how MarkdownLabel handles sizing and text_size
+    semantics, allowing it to behave more like Kivy's standard Label widget.
+    
+    When False (default, Markdown-friendly mode):
+        - auto_size_height behavior is enabled (widget auto-sizes to content)
+        - Internal Labels bind their width to the parent for text wrapping
+        - Widget uses Markdown-friendly auto-wrap and auto-size behavior
+        - Ideal for displaying Markdown content that should flow naturally
+    
+    When True (strict Label compatibility mode):
+        - auto_size_height behavior is disabled (size_hint_y is preserved)
+        - Internal Labels do NOT automatically bind width to parent
+        - text_size bindings only apply when text_size is explicitly set
+        - Widget follows Label's exact sizing semantics
+        - Ideal for drop-in replacement scenarios where Label sizing is expected
+    
+    Use strict_label_mode=True when you need MarkdownLabel to behave exactly
+    like a standard Label for layout purposes, such as when replacing Labels
+    in existing kv files or applications.
+    
+    :attr:`strict_label_mode` is a :class:`~kivy.properties.BooleanProperty`
+    and defaults to False.
+    """
+    
     # Read-only aggregated properties from child Labels
     
     def _get_texture_size(self):

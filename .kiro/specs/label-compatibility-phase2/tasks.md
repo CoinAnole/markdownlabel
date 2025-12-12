@@ -21,7 +21,7 @@
     - **Validates: Requirements 1.1, 1.2, 1.3**
 
 - [ ] 2. Implement strict_label_mode
-  - [ ] 2.1 Add strict_label_mode property to MarkdownLabel
+  - [x] 2.1 Add strict_label_mode property to MarkdownLabel
     - Add BooleanProperty with default False
     - Add docstring explaining strict vs markdown-friendly behavior
     - _Requirements: 2.1, 2.4_
