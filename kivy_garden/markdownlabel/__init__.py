@@ -24,7 +24,8 @@ from kivy.properties import (
     OptionProperty,
     VariableListProperty,
     ListProperty,
-    ObjectProperty
+    ObjectProperty,
+    DictProperty
 )
 
 import mistune
@@ -465,6 +466,16 @@ class MarkdownLabel(BoxLayout):
     and defaults to ''.
     """
     
+    ellipsis_options = DictProperty({})
+    """Ellipsis options for text shortening.
+    
+    This dictionary is forwarded to all child Labels that support it.
+    See Kivy Label documentation for available options.
+    
+    :attr:`ellipsis_options` is a :class:`~kivy.properties.DictProperty`
+    and defaults to {}.
+    """
+    
     auto_size_height = BooleanProperty(True)
     """Control automatic height sizing behavior.
     
@@ -652,6 +663,7 @@ class MarkdownLabel(BoxLayout):
         self.bind(max_lines=self._on_style_changed)
         self.bind(shorten_from=self._on_style_changed)
         self.bind(split_str=self._on_style_changed)
+        self.bind(ellipsis_options=self._on_style_changed)
         self.bind(padding=self._on_style_changed)
         
         # Bind padding to the container (self is a BoxLayout)

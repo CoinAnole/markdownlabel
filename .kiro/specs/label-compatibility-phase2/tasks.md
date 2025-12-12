@@ -1,6 +1,6 @@
 # Implementation Plan
 
-- [ ] 1. Add no-op properties for Label API compatibility
+- [x] 1. Add no-op properties for Label API compatibility
   - [x] 1.1 Add mipmap, outline_width, outline_color properties to MarkdownLabel
     - Add BooleanProperty for mipmap (default False)
     - Add NumericProperty for outline_width (default 0)
@@ -12,11 +12,11 @@
     - Add OptionProperty for base_direction (options: None, 'ltr', 'rtl', 'weak_ltr', 'weak_rtl')
     - Add docstrings documenting these as no-op properties
     - _Requirements: 1.1, 1.2_
-  - [ ] 1.3 Add ellipsis_options property to MarkdownLabel
+  - [x] 1.3 Add ellipsis_options property to MarkdownLabel
     - Add DictProperty for ellipsis_options (default {})
     - Bind to _on_style_changed for rebuild on change
     - _Requirements: 1.1, 4.5_
-  - [ ] 1.4 Write property test for no-op property acceptance and storage
+  - [x] 1.4 Write property test for no-op property acceptance and storage
     - **Property 1: No-op Property Acceptance and Storage**
     - **Validates: Requirements 1.1, 1.2, 1.3**
 

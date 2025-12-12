@@ -994,6 +994,189 @@ class TestNoOpPropertiesAcceptance:
         assert label.markup == value
 
 
+# **Feature: label-compatibility-phase2, Property 1: No-op Property Acceptance and Storage**
+# *For any* no-op property (mipmap, outline_width, outline_color, text_language, base_direction, ellipsis_options), 
+# when set to any valid value, the MarkdownLabel SHALL accept the value without raising an exception 
+# AND return the same value when accessed.
+# **Validates: Requirements 1.1, 1.2, 1.3**
+
+class TestNoOpPropertyAcceptanceAndStorage:
+    """Property tests for no-op property acceptance and storage (Property 1)."""
+    
+    @given(st.booleans())
+    @settings(max_examples=100, deadline=None)
+    def test_mipmap_property_accepted_and_stored(self, value):
+        """Setting mipmap property accepts and stores the value."""
+        label = MarkdownLabel(text='# Hello World', mipmap=value)
+        assert label.mipmap == value
+    
+    @given(st.floats(min_value=0, max_value=100, allow_nan=False, allow_infinity=False))
+    @settings(max_examples=100, deadline=None)
+    def test_outline_width_property_accepted_and_stored(self, value):
+        """Setting outline_width property accepts and stores the value."""
+        label = MarkdownLabel(text='# Hello World', outline_width=value)
+        assert label.outline_width == value
+    
+    @given(st.lists(
+        st.floats(min_value=0.0, max_value=1.0, allow_nan=False, allow_infinity=False),
+        min_size=4, max_size=4
+    ))
+    @settings(max_examples=100, deadline=None)
+    def test_outline_color_property_accepted_and_stored(self, value):
+        """Setting outline_color property accepts and stores the value."""
+        label = MarkdownLabel(text='# Hello World', outline_color=value)
+        # Compare colors with tolerance for floating point differences
+        assert all(abs(a - b) < 0.001 for a, b in zip(label.outline_color, value))
+    
+    @given(st.one_of(st.none(), st.text(min_size=1, max_size=10, alphabet=st.characters(
+        whitelist_categories=['L', 'N'],
+        blacklist_characters='\n\r'
+    ))))
+    @settings(max_examples=100, deadline=None)
+    def test_text_language_property_accepted_and_stored(self, value):
+        """Setting text_language property accepts and stores the value."""
+        label = MarkdownLabel(text='# Hello World', text_language=value)
+        assert label.text_language == value
+    
+    @given(st.sampled_from([None, 'ltr', 'rtl', 'weak_ltr', 'weak_rtl']))
+    @settings(max_examples=100, deadline=None)
+    def test_base_direction_property_accepted_and_stored(self, value):
+        """Setting base_direction property accepts and stores the value."""
+        label = MarkdownLabel(text='# Hello World', base_direction=value)
+        assert label.base_direction == value
+    
+    @given(st.dictionaries(
+        st.text(min_size=1, max_size=10, alphabet=st.characters(
+            whitelist_categories=['L', 'N']
+        )),
+        st.one_of(st.booleans(), st.integers(), st.text(max_size=20))
+    ))
+    @settings(max_examples=100, deadline=None)
+    def test_ellipsis_options_property_accepted_and_stored(self, value):
+        """Setting ellipsis_options property accepts and stores the value."""
+        label = MarkdownLabel(text='# Hello World', ellipsis_options=value)
+        assert label.ellipsis_options == value
+    
+    @given(st.booleans(), st.floats(min_value=0, max_value=10), 
+           st.lists(st.floats(min_value=0.0, max_value=1.0), min_size=4, max_size=4),
+           st.one_of(st.none(), st.text(min_size=1, max_size=5)),
+           st.sampled_from([None, 'ltr', 'rtl', 'weak_ltr', 'weak_rtl']),
+           st.dictionaries(st.text(min_size=1, max_size=5), st.booleans(), max_size=3))
+    @settings(max_examples=100, deadline=None)
+    def test_all_noop_properties_together_accepted_and_stored(self, mipmap, outline_width, 
+                                                              outline_color, text_language, 
+                                                              base_direction, ellipsis_options):
+        """Setting all no-op properties together accepts and stores all values."""
+        label = MarkdownLabel(
+            text='# Hello World',
+            mipmap=mipmap,
+            outline_width=outline_width,
+            outline_color=outline_color,
+            text_language=text_language,
+            base_direction=base_direction,
+            ellipsis_options=ellipsis_options
+        )
+        
+        assert label.mipmap == mipmap
+        assert label.outline_width == outline_width
+        assert all(abs(a - b) < 0.001 for a, b in zip(label.outline_color, outline_color))
+        assert label.text_language == text_language
+        assert label.base_direction == base_direction
+        assert label.ellipsis_options == ellipsis_options
+    
+    @given(st.booleans())
+    @settings(max_examples=100, deadline=None)
+    def test_mipmap_property_change_after_creation(self, value):
+        """Changing mipmap property after creation accepts and stores the value."""
+        label = MarkdownLabel(text='# Hello')
+        label.mipmap = value
+        assert label.mipmap == value
+    
+    @given(st.floats(min_value=0, max_value=100, allow_nan=False, allow_infinity=False))
+    @settings(max_examples=100, deadline=None)
+    def test_outline_width_property_change_after_creation(self, value):
+        """Changing outline_width property after creation accepts and stores the value."""
+        label = MarkdownLabel(text='# Hello')
+        label.outline_width = value
+        assert label.outline_width == value
+    
+    @given(st.lists(
+        st.floats(min_value=0.0, max_value=1.0, allow_nan=False, allow_infinity=False),
+        min_size=4, max_size=4
+    ))
+    @settings(max_examples=100, deadline=None)
+    def test_outline_color_property_change_after_creation(self, value):
+        """Changing outline_color property after creation accepts and stores the value."""
+        label = MarkdownLabel(text='# Hello')
+        label.outline_color = value
+        assert all(abs(a - b) < 0.001 for a, b in zip(label.outline_color, value))
+    
+    @given(st.one_of(st.none(), st.text(min_size=1, max_size=10, alphabet=st.characters(
+        whitelist_categories=['L', 'N'],
+        blacklist_characters='\n\r'
+    ))))
+    @settings(max_examples=100, deadline=None)
+    def test_text_language_property_change_after_creation(self, value):
+        """Changing text_language property after creation accepts and stores the value."""
+        label = MarkdownLabel(text='# Hello')
+        label.text_language = value
+        assert label.text_language == value
+    
+    @given(st.sampled_from([None, 'ltr', 'rtl', 'weak_ltr', 'weak_rtl']))
+    @settings(max_examples=100, deadline=None)
+    def test_base_direction_property_change_after_creation(self, value):
+        """Changing base_direction property after creation accepts and stores the value."""
+        label = MarkdownLabel(text='# Hello')
+        label.base_direction = value
+        assert label.base_direction == value
+    
+    @given(st.dictionaries(
+        st.text(min_size=1, max_size=10, alphabet=st.characters(
+            whitelist_categories=['L', 'N']
+        )),
+        st.one_of(st.booleans(), st.integers(), st.text(max_size=20))
+    ))
+    @settings(max_examples=100, deadline=None)
+    def test_ellipsis_options_property_change_after_creation(self, value):
+        """Changing ellipsis_options property after creation accepts and stores the value."""
+        label = MarkdownLabel(text='# Hello')
+        label.ellipsis_options = value
+        assert label.ellipsis_options == value
+    
+    @given(st.booleans(), st.floats(min_value=0, max_value=10), 
+           st.lists(st.floats(min_value=0.0, max_value=1.0), min_size=4, max_size=4),
+           st.one_of(st.none(), st.text(min_size=1, max_size=5)),
+           st.sampled_from([None, 'ltr', 'rtl', 'weak_ltr', 'weak_rtl']),
+           st.dictionaries(st.text(min_size=1, max_size=5), st.booleans(), max_size=3),
+           simple_markdown_document())
+    @settings(max_examples=100, deadline=None)
+    def test_noop_properties_do_not_affect_rendering(self, mipmap, outline_width, outline_color,
+                                                     text_language, base_direction, ellipsis_options,
+                                                     markdown_text):
+        """No-op properties do not affect the rendered output."""
+        assume(markdown_text.strip())
+        
+        # Create label with default no-op property values
+        label_default = MarkdownLabel(text=markdown_text)
+        default_child_count = len(label_default.children)
+        
+        # Create label with various no-op property values
+        label_with_props = MarkdownLabel(
+            text=markdown_text,
+            mipmap=mipmap,
+            outline_width=outline_width,
+            outline_color=outline_color,
+            text_language=text_language,
+            base_direction=base_direction,
+            ellipsis_options=ellipsis_options
+        )
+        props_child_count = len(label_with_props.children)
+        
+        # The number of children should be the same regardless of no-op properties
+        assert default_child_count == props_child_count, \
+            f"Expected {default_child_count} children, got {props_child_count} with no-op props"
+
+
 # **Feature: label-compatibility, Property 2: font_name Forwarding with Code Preservation**
 # *For any* Markdown text containing both regular text and code blocks, and any font_name value,
 # all non-code internal Labels SHALL have `font_name` set to the specified value, while code
