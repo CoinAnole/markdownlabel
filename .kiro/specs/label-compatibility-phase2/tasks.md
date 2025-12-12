@@ -98,12 +98,12 @@
     - **Property 5: Coordinate Translation for refs and anchors**
     - **Validates: Requirements 5.1, 5.2, 5.3**
 
-- [ ] 8. Verify font advanced property forwarding
-  - [ ] 8.1 Verify font_family exclusion from code blocks
+- [x] 8. Verify font advanced property forwarding
+  - [x] 8.1 Verify font_family exclusion from code blocks
     - Ensure code blocks in block_code() don't receive font_family
     - Document this behavior in code comments
     - _Requirements: 6.1_
-  - [ ] 8.2 Write property test for font advanced property forwarding
+  - [x] 8.2 Write property test for font advanced property forwarding
     - **Property 6: Font Advanced Property Forwarding**
     - **Validates: Requirements 6.1, 6.2, 6.3, 6.4, 6.5**
 

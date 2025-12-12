@@ -5796,3 +5796,248 @@ class TestCoordinateTranslation:
         # Verify translation
         assert translated_pos[0] == x + offset_x
         assert translated_pos[1] == y + offset_y
+
+
+# **Feature: label-compatibility-phase2, Property 6: Font Advanced Property Forwarding**
+# *For any* font advanced property (font_family, font_context, font_features, font_hinting,
+# font_kerning), when set on MarkdownLabel, all applicable child Labels SHALL have the same
+# property value (font_family excluded from code blocks).
+# **Validates: Requirements 6.1, 6.2, 6.3, 6.4, 6.5**
+
+class TestFontAdvancedPropertyForwardingPhase2:
+    """Property tests for font advanced property forwarding (Property 6).
+    
+    This test class verifies that font advanced properties are correctly
+    forwarded to child Labels, with the special case that font_family
+    is excluded from code blocks to preserve monospace appearance.
+    """
+    
+    def _find_labels_recursive(self, widget):
+        """Recursively find all Label widgets in the tree."""
+        labels = []
+        if isinstance(widget, Label):
+            labels.append(widget)
+        if hasattr(widget, 'children'):
+            for child in widget.children:
+                labels.extend(self._find_labels_recursive(child))
+        return labels
+    
+    def _find_code_block_labels(self, widget):
+        """Find Labels that are inside code block containers.
+        
+        Code block containers have a 'language_info' attribute.
+        """
+        code_labels = []
+        
+        def find_in_container(container):
+            if hasattr(container, 'language_info'):
+                # This is a code block container
+                for child in container.children:
+                    if isinstance(child, Label):
+                        code_labels.append(child)
+            if hasattr(container, 'children'):
+                for child in container.children:
+                    find_in_container(child)
+        
+        find_in_container(widget)
+        return code_labels
+    
+    def _find_non_code_labels(self, widget):
+        """Find Labels that are NOT inside code block containers."""
+        all_labels = self._find_labels_recursive(widget)
+        code_labels = self._find_code_block_labels(widget)
+        return [lbl for lbl in all_labels if lbl not in code_labels]
+    
+    @given(st.text(min_size=1, max_size=30, alphabet=st.characters(
+        whitelist_categories=['L', 'N'],
+        blacklist_characters='[]&\n\r'
+    )))
+    @settings(max_examples=100, deadline=None)
+    def test_font_family_excluded_from_code_blocks(self, font_family_value):
+        """font_family is NOT forwarded to code block Labels.
+        
+        **Feature: label-compatibility-phase2, Property 6: Font Advanced Property Forwarding**
+        **Validates: Requirements 6.1**
+        """
+        # Create markdown with both regular text and code block
+        markdown = f'Regular paragraph\n\n```python\ncode here\n```'
+        label = MarkdownLabel(text=markdown, font_family=font_family_value)
+        
+        # Find code block labels
+        code_labels = self._find_code_block_labels(label)
+        
+        # Code block labels should NOT have font_family set
+        for lbl in code_labels:
+            assert lbl.font_family is None, \
+                f"Code block should not have font_family, got {lbl.font_family!r}"
+    
+    @given(st.text(min_size=1, max_size=30, alphabet=st.characters(
+        whitelist_categories=['L', 'N'],
+        blacklist_characters='[]&\n\r'
+    )))
+    @settings(max_examples=100, deadline=None)
+    def test_font_family_forwarded_to_non_code_labels(self, font_family_value):
+        """font_family IS forwarded to non-code block Labels.
+        
+        **Feature: label-compatibility-phase2, Property 6: Font Advanced Property Forwarding**
+        **Validates: Requirements 6.1**
+        """
+        # Create markdown with both regular text and code block
+        markdown = f'Regular paragraph\n\n```python\ncode here\n```'
+        label = MarkdownLabel(text=markdown, font_family=font_family_value)
+        
+        # Find non-code labels
+        non_code_labels = self._find_non_code_labels(label)
+        assert len(non_code_labels) >= 1, "Expected at least 1 non-code Label"
+        
+        # Non-code labels should have font_family set
+        for lbl in non_code_labels:
+            assert lbl.font_family == font_family_value, \
+                f"Expected font_family={font_family_value!r}, got {lbl.font_family!r}"
+    
+    @given(st.text(min_size=1, max_size=30, alphabet=st.characters(
+        whitelist_categories=['L', 'N'],
+        blacklist_characters='[]&\n\r'
+    )))
+    @settings(max_examples=100, deadline=None)
+    def test_font_context_forwarded_to_all_labels_including_code(self, font_context_value):
+        """font_context IS forwarded to ALL Labels including code blocks.
+        
+        **Feature: label-compatibility-phase2, Property 6: Font Advanced Property Forwarding**
+        **Validates: Requirements 6.2**
+        """
+        # Create markdown with both regular text and code block
+        markdown = f'Regular paragraph\n\n```python\ncode here\n```'
+        label = MarkdownLabel(text=markdown, font_context=font_context_value)
+        
+        # Find all labels
+        all_labels = self._find_labels_recursive(label)
+        assert len(all_labels) >= 2, "Expected at least 2 Labels (paragraph + code)"
+        
+        # All labels should have font_context set
+        for lbl in all_labels:
+            assert lbl.font_context == font_context_value, \
+                f"Expected font_context={font_context_value!r}, got {lbl.font_context!r}"
+    
+    @given(st.text(min_size=0, max_size=50, alphabet=st.characters(
+        whitelist_categories=['L', 'N', 'P'],
+        blacklist_characters='[]&\n\r'
+    )))
+    @settings(max_examples=100, deadline=None)
+    def test_font_features_forwarded_to_all_labels_including_code(self, font_features_value):
+        """font_features IS forwarded to ALL Labels including code blocks.
+        
+        **Feature: label-compatibility-phase2, Property 6: Font Advanced Property Forwarding**
+        **Validates: Requirements 6.3**
+        """
+        # Create markdown with both regular text and code block
+        markdown = f'Regular paragraph\n\n```python\ncode here\n```'
+        label = MarkdownLabel(text=markdown, font_features=font_features_value)
+        
+        # Find all labels
+        all_labels = self._find_labels_recursive(label)
+        assert len(all_labels) >= 2, "Expected at least 2 Labels (paragraph + code)"
+        
+        # All labels should have font_features set
+        for lbl in all_labels:
+            assert lbl.font_features == font_features_value, \
+                f"Expected font_features={font_features_value!r}, got {lbl.font_features!r}"
+    
+    @given(st.sampled_from([None, 'normal', 'light', 'mono']))
+    @settings(max_examples=100, deadline=None)
+    def test_font_hinting_forwarded_to_all_labels_including_code(self, font_hinting_value):
+        """font_hinting IS forwarded to ALL Labels including code blocks.
+        
+        **Feature: label-compatibility-phase2, Property 6: Font Advanced Property Forwarding**
+        **Validates: Requirements 6.4**
+        """
+        # Create markdown with both regular text and code block
+        markdown = f'Regular paragraph\n\n```python\ncode here\n```'
+        label = MarkdownLabel(text=markdown, font_hinting=font_hinting_value)
+        
+        # Find all labels
+        all_labels = self._find_labels_recursive(label)
+        assert len(all_labels) >= 2, "Expected at least 2 Labels (paragraph + code)"
+        
+        # All labels should have font_hinting set (when not None)
+        for lbl in all_labels:
+            if font_hinting_value is not None:
+                assert lbl.font_hinting == font_hinting_value, \
+                    f"Expected font_hinting={font_hinting_value!r}, got {lbl.font_hinting!r}"
+    
+    @given(st.booleans())
+    @settings(max_examples=100, deadline=None)
+    def test_font_kerning_forwarded_to_all_labels_including_code(self, font_kerning_value):
+        """font_kerning IS forwarded to ALL Labels including code blocks.
+        
+        **Feature: label-compatibility-phase2, Property 6: Font Advanced Property Forwarding**
+        **Validates: Requirements 6.5**
+        """
+        # Create markdown with both regular text and code block
+        markdown = f'Regular paragraph\n\n```python\ncode here\n```'
+        label = MarkdownLabel(text=markdown, font_kerning=font_kerning_value)
+        
+        # Find all labels
+        all_labels = self._find_labels_recursive(label)
+        assert len(all_labels) >= 2, "Expected at least 2 Labels (paragraph + code)"
+        
+        # All labels should have font_kerning set
+        for lbl in all_labels:
+            assert lbl.font_kerning == font_kerning_value, \
+                f"Expected font_kerning={font_kerning_value}, got {lbl.font_kerning}"
+    
+    @given(st.text(min_size=1, max_size=20, alphabet=st.characters(
+        whitelist_categories=['L', 'N'],
+        blacklist_characters='[]&\n\r'
+    )),
+           st.text(min_size=1, max_size=20, alphabet=st.characters(
+        whitelist_categories=['L', 'N'],
+        blacklist_characters='[]&\n\r'
+    )),
+           st.sampled_from([None, 'normal', 'light', 'mono']),
+           st.booleans())
+    @settings(max_examples=100, deadline=None)
+    def test_combined_font_properties_with_code_block(self, font_family, font_context, 
+                                                       font_hinting, font_kerning):
+        """Combined font properties are correctly forwarded with code block exclusion.
+        
+        **Feature: label-compatibility-phase2, Property 6: Font Advanced Property Forwarding**
+        **Validates: Requirements 6.1, 6.2, 6.3, 6.4, 6.5**
+        """
+        # Create markdown with both regular text and code block
+        markdown = f'# Heading\n\nParagraph\n\n```python\ncode\n```'
+        label = MarkdownLabel(
+            text=markdown,
+            font_family=font_family,
+            font_context=font_context,
+            font_hinting=font_hinting,
+            font_kerning=font_kerning
+        )
+        
+        # Find code and non-code labels
+        code_labels = self._find_code_block_labels(label)
+        non_code_labels = self._find_non_code_labels(label)
+        
+        # Verify non-code labels have all properties
+        for lbl in non_code_labels:
+            assert lbl.font_family == font_family, \
+                f"Non-code label: Expected font_family={font_family!r}, got {lbl.font_family!r}"
+            assert lbl.font_context == font_context, \
+                f"Non-code label: Expected font_context={font_context!r}, got {lbl.font_context!r}"
+            if font_hinting is not None:
+                assert lbl.font_hinting == font_hinting, \
+                    f"Non-code label: Expected font_hinting={font_hinting!r}, got {lbl.font_hinting!r}"
+            assert lbl.font_kerning == font_kerning, \
+                f"Non-code label: Expected font_kerning={font_kerning}, got {lbl.font_kerning}"
+        
+        # Verify code labels have all properties EXCEPT font_family
+        for lbl in code_labels:
+            assert lbl.font_family is None, \
+                f"Code label: font_family should be None, got {lbl.font_family!r}"
+            assert lbl.font_context == font_context, \
+                f"Code label: Expected font_context={font_context!r}, got {lbl.font_context!r}"
+            if font_hinting is not None:
+                assert lbl.font_hinting == font_hinting, \
+                    f"Code label: Expected font_hinting={font_hinting!r}, got {lbl.font_hinting!r}"
+            assert lbl.font_kerning == font_kerning, \
+                f"Code label: Expected font_kerning={font_kerning}, got {lbl.font_kerning}"

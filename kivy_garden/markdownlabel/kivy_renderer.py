@@ -669,19 +669,33 @@ class KivyRenderer:
         
         # Create label with monospace font
         # Note: code blocks use code_font_name and fixed light color, not font_name/color
-        label = Label(
-            text=escaped_text,
-            markup=True,
-            font_name=self.code_font_name,
-            font_size=self.base_font_size,
-            line_height=self.line_height,
-            size_hint_y=None,
-            halign='left',
-            valign='top',
-            color=[0.9, 0.9, 0.9, 1],  # Light text on dark background
-            unicode_errors=self.unicode_errors,
-            strip=self.strip
-        )
+        # font_family is intentionally excluded from code blocks to preserve monospace
+        # appearance (Requirement 6.1). Other font properties (font_context, font_features,
+        # font_hinting, font_kerning, font_blended) are forwarded per Requirements 6.2-6.5.
+        label_kwargs = {
+            'text': escaped_text,
+            'markup': True,
+            'font_name': self.code_font_name,
+            'font_size': self.base_font_size,
+            'line_height': self.line_height,
+            'size_hint_y': None,
+            'halign': 'left',
+            'valign': 'top',
+            'color': [0.9, 0.9, 0.9, 1],  # Light text on dark background
+            'unicode_errors': self.unicode_errors,
+            'strip': self.strip,
+            'font_features': self.font_features,
+            'font_kerning': self.font_kerning,
+            'font_blended': self.font_blended,
+        }
+        
+        # Add optional font properties if set (excluding font_family for code blocks)
+        if self.font_context is not None:
+            label_kwargs['font_context'] = self.font_context
+        if self.font_hinting is not None:
+            label_kwargs['font_hinting'] = self.font_hinting
+        
+        label = Label(**label_kwargs)
         label.bind(texture_size=label.setter('size'))
         label.bind(size=lambda instance, value: setattr(instance, 'text_size', (value[0], None)))
         
