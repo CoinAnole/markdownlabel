@@ -838,28 +838,34 @@ class MarkdownLabel(BoxLayout):
         self.bind(text=self._on_text_changed)
         
         # Bind forwarding properties to trigger widget rebuild
-        self.bind(font_name=self._on_style_changed)
-        self.bind(color=self._on_style_changed)
-        self.bind(line_height=self._on_style_changed)
-        self.bind(halign=self._on_style_changed)
-        self.bind(valign=self._on_style_changed)
-        self.bind(text_size=self._on_style_changed)
-        self.bind(unicode_errors=self._on_style_changed)
-        self.bind(strip=self._on_style_changed)
-        self.bind(font_family=self._on_style_changed)
-        self.bind(font_context=self._on_style_changed)
-        self.bind(font_features=self._on_style_changed)
-        self.bind(font_hinting=self._on_style_changed)
-        self.bind(font_kerning=self._on_style_changed)
-        self.bind(font_blended=self._on_style_changed)
-        self.bind(disabled=self._on_style_changed)
-        self.bind(disabled_color=self._on_style_changed)
-        self.bind(shorten=self._on_style_changed)
-        self.bind(max_lines=self._on_style_changed)
-        self.bind(shorten_from=self._on_style_changed)
-        self.bind(split_str=self._on_style_changed)
-        self.bind(ellipsis_options=self._on_style_changed)
-        self.bind(padding=self._on_style_changed)
+        # Bind style-only properties (can be updated in-place)
+        self.bind(base_font_size=self._make_style_callback('base_font_size'))
+        self.bind(color=self._make_style_callback('color'))
+        self.bind(line_height=self._make_style_callback('line_height'))
+        self.bind(halign=self._make_style_callback('halign'))
+        self.bind(valign=self._make_style_callback('valign'))
+        self.bind(disabled=self._make_style_callback('disabled'))
+        self.bind(disabled_color=self._make_style_callback('disabled_color'))
+
+        # Bind structure properties (require full rebuild)
+        self.bind(font_name=self._make_style_callback('font_name'))
+        self.bind(text_size=self._make_style_callback('text_size'))
+        self.bind(padding=self._make_style_callback('padding'))
+
+        # Bind other properties (require full rebuild)
+        self.bind(unicode_errors=self._make_style_callback('unicode_errors'))
+        self.bind(strip=self._make_style_callback('strip'))
+        self.bind(font_family=self._make_style_callback('font_family'))
+        self.bind(font_context=self._make_style_callback('font_context'))
+        self.bind(font_features=self._make_style_callback('font_features'))
+        self.bind(font_hinting=self._make_style_callback('font_hinting'))
+        self.bind(font_kerning=self._make_style_callback('font_kerning'))
+        self.bind(font_blended=self._make_style_callback('font_blended'))
+        self.bind(shorten=self._make_style_callback('shorten'))
+        self.bind(max_lines=self._make_style_callback('max_lines'))
+        self.bind(shorten_from=self._make_style_callback('shorten_from'))
+        self.bind(split_str=self._make_style_callback('split_str'))
+        self.bind(ellipsis_options=self._make_style_callback('ellipsis_options'))
         
         # Bind padding to the container (self is a BoxLayout)
         self.bind(padding=self._on_padding_changed)
@@ -871,10 +877,53 @@ class MarkdownLabel(BoxLayout):
     def _on_text_changed(self, instance, value):
         """Callback when text property changes."""
         self._rebuild_widgets()
-    
-    def _on_style_changed(self, instance, value):
-        """Callback when a styling property changes."""
-        self._rebuild_widgets()
+
+    def _make_style_callback(self, prop_name):
+        """Create a callback for a specific property that tracks which changed.
+
+        This factory method creates callbacks that know which property
+        triggered them, enabling conditional updates based on property type.
+
+        Args:
+            prop_name: Name of the property this callback is for
+
+        Returns:
+            Callback function that handles the property change
+        """
+        def callback(instance, value):
+            self._on_style_changed(instance, value, prop_name)
+        return callback
+
+    def _on_style_changed(self, instance, value, prop_name=None):
+        """Callback when a styling property changes.
+
+        For style-only properties (font_size, color, halign, valign,
+        line_height, disabled, disabled_color), updates are applied
+        in-place without rebuilding the widget tree.
+
+        For structure properties (text, font_name, code_font_name,
+        text_size, strict_label_mode, padding) and other properties,
+        a full widget rebuild is performed.
+
+        Args:
+            instance: The widget instance (self)
+            value: The new property value
+            prop_name: Name of the property that changed (optional)
+        """
+        # If we don't know which property changed, do a full rebuild
+        if prop_name is None:
+            self._rebuild_widgets()
+            return
+
+        # Check if this is a style-only property that can be updated in-place
+        if prop_name in self.STYLE_ONLY_PROPERTIES:
+            # Only update in-place if we have children to update
+            if self.children:
+                self._update_styles_in_place()
+            # No rebuild needed for style-only changes
+        else:
+            # Structure property or other - requires full rebuild
+            self._rebuild_widgets()
 
     def _update_styles_in_place(self):
         """Update style properties on existing child widgets without rebuild.
