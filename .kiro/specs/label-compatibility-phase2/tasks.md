@@ -29,12 +29,12 @@
     - When strict_label_mode=True, preserve size_hint_y and don't bind height
     - Bind strict_label_mode changes to handler
     - _Requirements: 2.1, 2.2, 2.3_
-  - [ ] 2.3 Implement _on_strict_label_mode_changed handler
+  - [x] 2.3 Implement _on_strict_label_mode_changed handler
     - When True: unbind height, restore size_hint_y
     - When False: apply auto_size_height behavior if enabled
     - Trigger rebuild on mode change
     - _Requirements: 2.1, 2.4_
-  - [ ] 2.4 Update KivyRenderer to support strict_label_mode
+  - [-] 2.4 Update KivyRenderer to support strict_label_mode
     - Add strict_label_mode parameter to __init__
     - Modify Label creation to conditionally bind text_size based on mode
     - _Requirements: 2.2, 2.3_
