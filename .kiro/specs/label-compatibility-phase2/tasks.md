@@ -63,12 +63,12 @@
     - **Property 3: Comprehensive texture_size Calculation**
     - **Validates: Requirements 3.1, 3.2, 3.3**
 
-- [ ] 5. Forward ellipsis_options to child Labels
-  - [ ] 5.1 Update KivyRenderer to accept ellipsis_options parameter
+- [-] 5. Forward ellipsis_options to child Labels
+  - [x] 5.1 Update KivyRenderer to accept ellipsis_options parameter
     - Add ellipsis_options parameter to __init__
     - Store for use in Label creation
     - _Requirements: 4.5_
-  - [ ] 5.2 Forward ellipsis_options in all Label creation methods
+  - [x] 5.2 Forward ellipsis_options in all Label creation methods
     - Update paragraph(), heading(), block_text(), _render_table_cell()
     - Update _render_list_item() marker label
     - Only add to label_kwargs if ellipsis_options is non-empty

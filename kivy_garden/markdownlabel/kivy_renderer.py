@@ -66,7 +66,8 @@ class KivyRenderer:
                  shorten_from: str = 'center',
                  split_str: str = '',
                  padding: Optional[List[float]] = None,
-                 strict_label_mode: bool = False):
+                 strict_label_mode: bool = False,
+                 ellipsis_options: Optional[Dict] = None):
         """Initialize the KivyRenderer.
         
         Args:
@@ -97,6 +98,7 @@ class KivyRenderer:
             padding: Padding values [left, top, right, bottom] for child Labels (default: [0, 0, 0, 0])
             strict_label_mode: When True, only apply text_size bindings if text_size is
                 explicitly set. When False (default), auto-bind width for text wrapping.
+            ellipsis_options: Dictionary of ellipsis options for text shortening (default: {})
         """
         self.base_font_size = base_font_size
         self.code_font_name = code_font_name
@@ -125,6 +127,7 @@ class KivyRenderer:
         self.split_str = split_str
         self.padding = padding or [0, 0, 0, 0]
         self.strict_label_mode = strict_label_mode
+        self.ellipsis_options = ellipsis_options or {}
         
         # Compute effective color based on disabled state
         self.effective_color = self.disabled_color if self.disabled else self.color
@@ -306,6 +309,10 @@ class KivyRenderer:
         if self.font_hinting is not None:
             label_kwargs['font_hinting'] = self.font_hinting
         
+        # Add ellipsis_options if non-empty
+        if self.ellipsis_options:
+            label_kwargs['ellipsis_options'] = self.ellipsis_options
+        
         label = Label(**label_kwargs)
         
         # Apply text_size binding based on mode
@@ -359,6 +366,10 @@ class KivyRenderer:
             label_kwargs['font_context'] = self.font_context
         if self.font_hinting is not None:
             label_kwargs['font_hinting'] = self.font_hinting
+        
+        # Add ellipsis_options if non-empty
+        if self.ellipsis_options:
+            label_kwargs['ellipsis_options'] = self.ellipsis_options
         
         label = Label(**label_kwargs)
         
@@ -430,6 +441,10 @@ class KivyRenderer:
             label_kwargs['font_context'] = self.font_context
         if self.font_hinting is not None:
             label_kwargs['font_hinting'] = self.font_hinting
+        
+        # Add ellipsis_options if non-empty
+        if self.ellipsis_options:
+            label_kwargs['ellipsis_options'] = self.ellipsis_options
         
         label = Label(**label_kwargs)
         
@@ -561,6 +576,10 @@ class KivyRenderer:
             marker_kwargs['font_context'] = self.font_context
         if self.font_hinting is not None:
             marker_kwargs['font_hinting'] = self.font_hinting
+        
+        # Add ellipsis_options if non-empty
+        if self.ellipsis_options:
+            marker_kwargs['ellipsis_options'] = self.ellipsis_options
         
         marker = Label(**marker_kwargs)
         # Bind text_size to enable valign to work properly
@@ -976,6 +995,10 @@ class KivyRenderer:
             label_kwargs['font_context'] = self.font_context
         if self.font_hinting is not None:
             label_kwargs['font_hinting'] = self.font_hinting
+        
+        # Add ellipsis_options if non-empty
+        if self.ellipsis_options:
+            label_kwargs['ellipsis_options'] = self.ellipsis_options
         
         label = Label(**label_kwargs)
         
