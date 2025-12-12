@@ -650,12 +650,19 @@ class MarkdownLabel(BoxLayout):
         self._user_size_hint_y = kwargs.get('size_hint_y', 1)
         
         # Apply auto-sizing only when auto_size_height is True
-        if self.auto_size_height:
+        # AND strict_label_mode is False
+        if self.auto_size_height and not self.strict_label_mode:
             self.size_hint_y = None
             self.bind(minimum_height=self.setter('height'))
+        elif self.strict_label_mode:
+            # In strict mode, preserve size_hint_y and don't bind height
+            self.size_hint_y = self._user_size_hint_y
         
         # Bind auto_size_height changes to handler
         self.bind(auto_size_height=self._on_auto_size_height_changed)
+        
+        # Bind strict_label_mode changes to handler
+        self.bind(strict_label_mode=self._on_strict_label_mode_changed)
         
         # Store the parsed AST tokens
         self._ast_tokens = []
@@ -719,6 +726,10 @@ class MarkdownLabel(BoxLayout):
     
     def _on_auto_size_height_changed(self, instance, value):
         """Handle auto_size_height property changes."""
+        # In strict_label_mode, auto_size_height changes are ignored
+        if self.strict_label_mode:
+            return
+        
         if value:
             # Enable auto-sizing
             self.size_hint_y = None
@@ -727,6 +738,29 @@ class MarkdownLabel(BoxLayout):
             # Disable auto-sizing
             self.unbind(minimum_height=self.setter('height'))
             self.size_hint_y = self._user_size_hint_y
+    
+    def _on_strict_label_mode_changed(self, instance, value):
+        """Handle strict_label_mode property changes.
+        
+        When strict_label_mode is enabled:
+        - Disable auto-sizing (unbind height from minimum_height)
+        - Restore size_hint_y to user-specified value
+        
+        When strict_label_mode is disabled:
+        - Re-enable auto-sizing if auto_size_height is True
+        """
+        if value:
+            # Strict mode: disable auto-sizing, preserve size_hint_y
+            self.unbind(minimum_height=self.setter('height'))
+            self.size_hint_y = self._user_size_hint_y
+        else:
+            # Markdown-friendly mode: enable auto-sizing if auto_size_height
+            if self.auto_size_height:
+                self.size_hint_y = None
+                self.bind(minimum_height=self.setter('height'))
+        
+        # Trigger rebuild to apply new mode behavior
+        self._rebuild_widgets()
     
     def _rebuild_widgets(self):
         """Parse the Markdown text and rebuild the widget tree."""

@@ -25,7 +25,7 @@
     - Add BooleanProperty with default False
     - Add docstring explaining strict vs markdown-friendly behavior
     - _Requirements: 2.1, 2.4_
-  - [ ] 2.2 Modify MarkdownLabel __init__ to handle strict_label_mode
+  - [x] 2.2 Modify MarkdownLabel __init__ to handle strict_label_mode
     - When strict_label_mode=True, preserve size_hint_y and don't bind height
     - Bind strict_label_mode changes to handler
     - _Requirements: 2.1, 2.2, 2.3_
