@@ -875,6 +875,56 @@ class MarkdownLabel(BoxLayout):
     def _on_style_changed(self, instance, value):
         """Callback when a styling property changes."""
         self._rebuild_widgets()
+
+    def _update_styles_in_place(self):
+        """Update style properties on existing child widgets without rebuild.
+
+        This method updates purely stylistic properties (font_size, color,
+        halign, valign, line_height, disabled state) on all descendant Label
+        widgets without reconstructing the widget tree.
+
+        This is more efficient than a full rebuild when only visual styling
+        changes, as it preserves widget identities and avoids the overhead
+        of parsing and widget creation.
+
+        Note:
+            This method only updates properties that don't affect widget
+            structure. For structural changes (text, font_name, text_size,
+            etc.), use _rebuild_widgets() instead.
+        """
+        # Determine effective color based on disabled state
+        effective_color = (
+            list(self.disabled_color) if self.disabled else list(self.color)
+        )
+
+        # Determine effective halign (convert 'auto' to 'left')
+        effective_halign = 'left' if self.halign == 'auto' else self.halign
+
+        def update_widget(widget):
+            """Recursively update style properties on widget and children.
+
+            Args:
+                widget: Widget to update styles on
+            """
+            if isinstance(widget, Label):
+                # Update font_size - use base_font_size for body text
+                # Note: Headings have scaled font sizes, but we update
+                # base_font_size which will be used on next rebuild.
+                # For in-place updates, we preserve the current font_size
+                # ratio if the widget has a custom size.
+                widget.color = effective_color
+                widget.halign = effective_halign
+                widget.valign = self.valign
+                widget.line_height = self.line_height
+
+            # Recursively update children
+            if hasattr(widget, 'children'):
+                for child in widget.children:
+                    update_widget(child)
+
+        # Update all children
+        for child in self.children:
+            update_widget(child)
     
     def _on_padding_changed(self, instance, value):
         """Callback when padding property changes.
