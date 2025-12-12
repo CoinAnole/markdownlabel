@@ -83,18 +83,18 @@
 - [x] 6. Checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 7. Implement coordinate translation for refs and anchors
-  - [ ] 7.1 Update _get_refs to translate coordinates
+- [x] 7. Implement coordinate translation for refs and anchors
+  - [x] 7.1 Update _get_refs to translate coordinates
     - Calculate widget position relative to MarkdownLabel
     - Translate bounding box coordinates by adding widget offset
     - Handle nested containers recursively
     - _Requirements: 5.1, 5.3_
-  - [ ] 7.2 Update _get_anchors to translate coordinates
+  - [x] 7.2 Update _get_anchors to translate coordinates
     - Calculate widget position relative to MarkdownLabel
     - Translate anchor positions by adding widget offset
     - Handle nested containers recursively
     - _Requirements: 5.2, 5.3_
-  - [ ] 7.3 Write property test for coordinate translation
+  - [x] 7.3 Write property test for coordinate translation
     - **Property 5: Coordinate Translation for refs and anchors**
     - **Validates: Requirements 5.1, 5.2, 5.3**
 

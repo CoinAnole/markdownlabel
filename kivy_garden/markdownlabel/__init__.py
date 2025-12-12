@@ -624,19 +624,59 @@ class MarkdownLabel(BoxLayout):
     """
     
     def _get_refs(self):
-        """Aggregate refs from all child Labels.
+        """Aggregate refs from all child Labels with coordinate translation.
         
-        Returns a merged dictionary of all ref positions from child Labels.
-        Keys are ref names (URLs), values are lists of bounding box coordinates.
+        Returns a dictionary mapping ref names to bounding boxes in
+        MarkdownLabel's local coordinate space.
+        
+        Keys are ref names (URLs), values are lists of bounding box coordinates
+        [x1, y1, x2, y2] translated to MarkdownLabel's coordinate space.
         """
         refs = {}
         
+        def get_widget_offset(widget):
+            """Calculate widget's position relative to MarkdownLabel.
+            
+            Walks up the widget tree from the given widget to self,
+            accumulating position offsets.
+            
+            Args:
+                widget: Widget to calculate offset for
+                
+            Returns:
+                Tuple (offset_x, offset_y) relative to MarkdownLabel
+            """
+            offset_x = 0
+            offset_y = 0
+            current = widget
+            
+            while current is not None and current is not self:
+                offset_x += current.x
+                offset_y += current.y
+                current = current.parent
+            
+            return offset_x, offset_y
+        
         def collect_refs(widget):
             if isinstance(widget, Label) and hasattr(widget, 'refs'):
-                for ref_name, ref_boxes in widget.refs.items():
-                    if ref_name not in refs:
-                        refs[ref_name] = []
-                    refs[ref_name].extend(ref_boxes)
+                if widget.refs:
+                    # Calculate this widget's offset relative to MarkdownLabel
+                    offset_x, offset_y = get_widget_offset(widget)
+                    
+                    for ref_name, ref_boxes in widget.refs.items():
+                        if ref_name not in refs:
+                            refs[ref_name] = []
+                        # Translate each bounding box
+                        for box in ref_boxes:
+                            # box is [x1, y1, x2, y2] relative to Label
+                            translated_box = [
+                                box[0] + offset_x,
+                                box[1] + offset_y,
+                                box[2] + offset_x,
+                                box[3] + offset_y
+                            ]
+                            refs[ref_name].append(translated_box)
+            
             if hasattr(widget, 'children'):
                 for child in widget.children:
                     collect_refs(child)
@@ -653,25 +693,59 @@ class MarkdownLabel(BoxLayout):
     bounding box coordinates where those refs appear. This aggregates
     refs from all internal Label widgets.
     
-    Note:
-        Coordinates are relative to each child Label's position, not the
-        MarkdownLabel container. For hit testing, use the `on_ref_press`
-        event instead, which handles coordinate translation automatically.
+    Coordinates are translated to MarkdownLabel's local coordinate space,
+    making them suitable for hit testing and overlay positioning.
     
     :attr:`refs` is a read-only :class:`~kivy.properties.AliasProperty`.
     """
     
     def _get_anchors(self):
-        """Aggregate anchors from all child Labels.
+        """Aggregate anchors from all child Labels with coordinate translation.
         
-        Returns a merged dictionary of all anchor positions from child Labels.
-        Keys are anchor names, values are position tuples.
+        Returns a dictionary mapping anchor names to positions in
+        MarkdownLabel's local coordinate space.
+        
+        Keys are anchor names, values are position tuples (x, y) translated
+        to MarkdownLabel's coordinate space.
         """
         anchors = {}
         
+        def get_widget_offset(widget):
+            """Calculate widget's position relative to MarkdownLabel.
+            
+            Walks up the widget tree from the given widget to self,
+            accumulating position offsets.
+            
+            Args:
+                widget: Widget to calculate offset for
+                
+            Returns:
+                Tuple (offset_x, offset_y) relative to MarkdownLabel
+            """
+            offset_x = 0
+            offset_y = 0
+            current = widget
+            
+            while current is not None and current is not self:
+                offset_x += current.x
+                offset_y += current.y
+                current = current.parent
+            
+            return offset_x, offset_y
+        
         def collect_anchors(widget):
             if isinstance(widget, Label) and hasattr(widget, 'anchors'):
-                anchors.update(widget.anchors)
+                if widget.anchors:
+                    # Calculate this widget's offset relative to MarkdownLabel
+                    offset_x, offset_y = get_widget_offset(widget)
+                    
+                    for anchor_name, pos in widget.anchors.items():
+                        # pos is (x, y) relative to Label
+                        anchors[anchor_name] = (
+                            pos[0] + offset_x,
+                            pos[1] + offset_y
+                        )
+            
             if hasattr(widget, 'children'):
                 for child in widget.children:
                     collect_anchors(child)
@@ -687,9 +761,8 @@ class MarkdownLabel(BoxLayout):
     Returns a dictionary mapping anchor names to position tuples. This
     aggregates anchors from all internal Label widgets.
     
-    Note:
-        Coordinates are relative to each child Label's position, not the
-        MarkdownLabel container.
+    Coordinates are translated to MarkdownLabel's local coordinate space,
+    making them suitable for positioning and overlay calculations.
     
     :attr:`anchors` is a read-only :class:`~kivy.properties.AliasProperty`.
     """
