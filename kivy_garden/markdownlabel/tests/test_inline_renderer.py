@@ -124,9 +124,9 @@ class TestInlineFormattingConversion:
     
     @given(link_token())
     @settings(max_examples=100)
-    def test_link_produces_ref_tags(self, token):
-        """Link tokens produce [ref=url]...[/ref] markup with color and underline styling."""
-        renderer = InlineRenderer()
+    def test_link_produces_ref_tags_unstyled(self, token):
+        """Unstyled links produce [ref=url]...[/ref] without forced styling."""
+        renderer = InlineRenderer(link_style='unstyled')
         result = renderer.link(token)
         url = token['attrs']['url']
         
@@ -134,7 +134,24 @@ class TestInlineFormattingConversion:
         assert f'[ref={url}]' in result, f"Link should contain [ref={url}], got: {result}"
         assert '[/ref]' in result, f"Link should contain [/ref], got: {result}"
         
-        # Links should have color and underline styling applied
+        # Unstyled links should not inject color/underline markup
+        assert '[color=' not in result, f"Unstyled link should not add color, got: {result}"
+        assert '[u]' not in result and '[/u]' not in result, \
+            f"Unstyled link should not add underline, got: {result}"
+    
+    @given(link_token())
+    @settings(max_examples=100)
+    def test_link_produces_ref_tags_styled(self, token):
+        """Styled links wrap refs with color and underline."""
+        renderer = InlineRenderer(link_style='styled')
+        result = renderer.link(token)
+        url = token['attrs']['url']
+        
+        # Links should contain the ref tag with the URL
+        assert f'[ref={url}]' in result, f"Link should contain [ref={url}], got: {result}"
+        assert '[/ref]' in result, f"Link should contain [/ref], got: {result}"
+        
+        # Styled links apply color and underline styling
         assert '[color=' in result, f"Link should have color styling, got: {result}"
         assert '[u]' in result, f"Link should have underline styling, got: {result}"
         assert '[/u]' in result, f"Link should close underline styling, got: {result}"

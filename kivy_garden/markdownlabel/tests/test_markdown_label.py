@@ -329,18 +329,25 @@ class TestAutoSizingBehavior:
     
     @given(simple_markdown_document())
     @settings(max_examples=100, deadline=None)
-    def test_size_hint_y_is_none(self, markdown_text):
-        """MarkdownLabel has size_hint_y=None for auto-sizing."""
-        label = MarkdownLabel(text=markdown_text)
+    def test_auto_size_hint_enabled_sets_none(self, markdown_text):
+        """With auto_size_height=True, size_hint_y is None for auto-sizing."""
+        label = MarkdownLabel(text=markdown_text, auto_size_height=True)
         
         assert label.size_hint_y is None, \
             f"Expected size_hint_y=None, got {label.size_hint_y}"
     
+    def test_default_size_hint_y_preserved(self):
+        """Default sizing participates in layout (auto_size_height=False)."""
+        label = MarkdownLabel(text='Hello world')
+        
+        assert label.size_hint_y == 1, \
+            f"Expected default size_hint_y=1, got {label.size_hint_y}"
+    
     @given(markdown_heading())
     @settings(max_examples=100, deadline=None)
     def test_height_bound_to_minimum(self, heading):
-        """MarkdownLabel height is bound to minimum_height."""
-        label = MarkdownLabel(text=heading)
+        """auto_size_height=True binds height to minimum_height."""
+        label = MarkdownLabel(text=heading, auto_size_height=True)
         
         # The height should be bound to minimum_height
         # We can verify the binding exists by checking the property
@@ -349,7 +356,7 @@ class TestAutoSizingBehavior:
     
     def test_empty_label_has_zero_height(self):
         """Empty MarkdownLabel has zero or minimal height."""
-        label = MarkdownLabel(text='')
+        label = MarkdownLabel(text='', auto_size_height=True)
         
         assert label.size_hint_y is None, \
             "size_hint_y should be None even for empty label"
@@ -364,7 +371,7 @@ class TestAutoSizingBehavior:
         text = '\n\n'.join([f'Paragraph number {i} with some text content.' 
                            for i in range(num_paragraphs)])
         
-        label = MarkdownLabel(text=text)
+        label = MarkdownLabel(text=text, auto_size_height=True)
         
         # Verify auto-sizing is enabled
         assert label.size_hint_y is None
@@ -4018,8 +4025,8 @@ class TestPaddingForwardingToChildLabels:
     @given(padding_four)
     @settings(max_examples=100, deadline=None)
     def test_padding_forwarded_to_paragraph_labels(self, padding):
-        """Padding is forwarded to Labels in paragraphs."""
-        label = MarkdownLabel(text='Hello World', padding=padding)
+        """text_padding is forwarded to Labels in paragraphs."""
+        label = MarkdownLabel(text='Hello World', text_padding=padding)
         
         # Find all Label widgets
         labels = self._find_labels_recursive(label)
@@ -4033,8 +4040,8 @@ class TestPaddingForwardingToChildLabels:
     @given(padding_four)
     @settings(max_examples=100, deadline=None)
     def test_padding_forwarded_to_heading_labels(self, padding):
-        """Padding is forwarded to Labels in headings."""
-        label = MarkdownLabel(text='# Main Heading', padding=padding)
+        """text_padding is forwarded to Labels in headings."""
+        label = MarkdownLabel(text='# Main Heading', text_padding=padding)
         
         # Find all Label widgets
         labels = self._find_labels_recursive(label)
@@ -4048,13 +4055,13 @@ class TestPaddingForwardingToChildLabels:
     @given(padding_four)
     @settings(max_examples=100, deadline=None)
     def test_padding_forwarded_to_list_labels(self, padding):
-        """Padding is forwarded to Labels in list items."""
+        """text_padding is forwarded to Labels in list items."""
         markdown = '''
 - First item
 - Second item
 - Third item
 '''
-        label = MarkdownLabel(text=markdown, padding=padding)
+        label = MarkdownLabel(text=markdown, text_padding=padding)
         
         # Find all Label widgets
         labels = self._find_labels_recursive(label)
@@ -4068,14 +4075,14 @@ class TestPaddingForwardingToChildLabels:
     @given(padding_four)
     @settings(max_examples=100, deadline=None)
     def test_padding_forwarded_to_table_labels(self, padding):
-        """Padding is forwarded to Labels in table cells."""
+        """text_padding is forwarded to Labels in table cells."""
         markdown = '''
 | Header 1 | Header 2 |
 | --- | --- |
 | Cell 1 | Cell 2 |
 | Cell 3 | Cell 4 |
 '''
-        label = MarkdownLabel(text=markdown, padding=padding)
+        label = MarkdownLabel(text=markdown, text_padding=padding)
         
         # Find all Label widgets
         labels = self._find_labels_recursive(label)
@@ -4118,10 +4125,10 @@ class TestPaddingDynamicUpdates:
     @given(padding_four, padding_four)
     @settings(max_examples=100, deadline=None)
     def test_padding_change_updates_paragraph_labels(self, padding1, padding2):
-        """Changing padding updates Labels in paragraphs."""
+        """Changing text_padding updates Labels in paragraphs."""
         assume(padding1 != padding2)
         
-        label = MarkdownLabel(text='Hello World', padding=padding1)
+        label = MarkdownLabel(text='Hello World', text_padding=padding1)
         
         # Verify initial padding
         labels = self._find_labels_recursive(label)
@@ -4131,8 +4138,8 @@ class TestPaddingDynamicUpdates:
             assert self._padding_equal(list(lbl.padding), padding1), \
                 f"Initial: Expected padding={padding1}, got {list(lbl.padding)}"
         
-        # Change padding
-        label.padding = padding2
+        # Change text padding
+        label.text_padding = padding2
         
         # Verify new padding
         labels = self._find_labels_recursive(label)
@@ -4143,10 +4150,10 @@ class TestPaddingDynamicUpdates:
     @given(padding_four, padding_four)
     @settings(max_examples=100, deadline=None)
     def test_padding_change_updates_heading_labels(self, padding1, padding2):
-        """Changing padding updates Labels in headings."""
+        """Changing text_padding updates Labels in headings."""
         assume(padding1 != padding2)
         
-        label = MarkdownLabel(text='# Main Heading', padding=padding1)
+        label = MarkdownLabel(text='# Main Heading', text_padding=padding1)
         
         # Verify initial padding
         labels = self._find_labels_recursive(label)
@@ -4156,8 +4163,8 @@ class TestPaddingDynamicUpdates:
             assert self._padding_equal(list(lbl.padding), padding1), \
                 f"Initial: Expected padding={padding1}, got {list(lbl.padding)}"
         
-        # Change padding
-        label.padding = padding2
+        # Change text padding
+        label.text_padding = padding2
         
         # Verify new padding
         labels = self._find_labels_recursive(label)
@@ -4168,14 +4175,14 @@ class TestPaddingDynamicUpdates:
     @given(padding_four, padding_four)
     @settings(max_examples=100, deadline=None)
     def test_padding_change_updates_list_labels(self, padding1, padding2):
-        """Changing padding updates Labels in list items."""
+        """Changing text_padding updates Labels in list items."""
         assume(padding1 != padding2)
         
         markdown = '''
 - First item
 - Second item
 '''
-        label = MarkdownLabel(text=markdown, padding=padding1)
+        label = MarkdownLabel(text=markdown, text_padding=padding1)
         
         # Verify initial padding
         labels = self._find_labels_recursive(label)
@@ -4185,8 +4192,8 @@ class TestPaddingDynamicUpdates:
             assert self._padding_equal(list(lbl.padding), padding1), \
                 f"Initial: Expected padding={padding1}, got {list(lbl.padding)}"
         
-        # Change padding
-        label.padding = padding2
+        # Change text padding
+        label.text_padding = padding2
         
         # Verify new padding
         labels = self._find_labels_recursive(label)
@@ -4235,7 +4242,7 @@ class TestPaddingWithNestedStructures:
     - Deep nested item
 - Another top level item
 '''
-        label = MarkdownLabel(text=markdown, padding=padding)
+        label = MarkdownLabel(text=markdown, text_padding=padding)
         
         # Should have children for the list structure
         assert len(label.children) >= 1, "Expected at least one child for list structure"
@@ -4260,7 +4267,7 @@ class TestPaddingWithNestedStructures:
 > 
 > Back to the outer quote
 '''
-        label = MarkdownLabel(text=markdown, padding=padding)
+        label = MarkdownLabel(text=markdown, text_padding=padding)
         
         # Should have children for the quote structure
         assert len(label.children) >= 1, "Expected at least one child for quote structure"
@@ -4618,9 +4625,9 @@ class TestStrictLabelModeSizingBehavior:
         assert label.strict_label_mode is False, \
             f"Expected default strict_label_mode=False, got {label.strict_label_mode}"
         
-        # Default should have auto-sizing enabled (size_hint_y=None)
-        assert label.size_hint_y is None, \
-            f"Expected size_hint_y=None by default, got {label.size_hint_y}"
+        # Default participates in layout (auto_size_height=False)
+        assert label.size_hint_y == 1, \
+            f"Expected size_hint_y=1 by default, got {label.size_hint_y}"
     
     @given(st.booleans())
     @settings(max_examples=100, deadline=None)
@@ -4641,11 +4648,15 @@ class TestStrictLabelModeSizingBehavior:
     @settings(max_examples=100, deadline=None)
     def test_strict_mode_toggle_from_false_to_true(self, markdown_text):
         """Toggling strict_label_mode from False to True disables auto-sizing."""
-        label = MarkdownLabel(text=markdown_text, strict_label_mode=False)
+        label = MarkdownLabel(
+            text=markdown_text,
+            strict_label_mode=False,
+            auto_size_height=True
+        )
         
         # Initially should have auto-sizing enabled
         assert label.size_hint_y is None, \
-            "size_hint_y should be None when strict_label_mode=False"
+            "size_hint_y should be None when auto_size_height=True"
         
         # Toggle to strict mode
         label.strict_label_mode = True
@@ -4658,7 +4669,11 @@ class TestStrictLabelModeSizingBehavior:
     @settings(max_examples=100, deadline=None)
     def test_strict_mode_toggle_from_true_to_false(self, markdown_text):
         """Toggling strict_label_mode from True to False enables auto-sizing."""
-        label = MarkdownLabel(text=markdown_text, strict_label_mode=True)
+        label = MarkdownLabel(
+            text=markdown_text,
+            strict_label_mode=True,
+            auto_size_height=True
+        )
         
         # Initially should have size_hint_y preserved
         assert label.size_hint_y == 1, \
@@ -4679,7 +4694,8 @@ class TestStrictLabelModeSizingBehavior:
         label = MarkdownLabel(
             text=markdown_text, 
             strict_label_mode=True, 
-            size_hint_y=user_size_hint_y
+            size_hint_y=user_size_hint_y,
+            auto_size_height=True
         )
         
         # Initially should have user's size_hint_y
