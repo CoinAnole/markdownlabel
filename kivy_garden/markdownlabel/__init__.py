@@ -50,12 +50,11 @@ class MarkdownLabel(BoxLayout):
     tables, code blocks, block quotes, images, and inline formatting.
     
     Note:
-        MarkdownLabel is NOT a true Label subclass. It provides a Label-compatible
-        API for common styling properties, but because Markdown rendering requires
-        multiple widgets (headings, lists, tables, images, code blocks), it extends
-        BoxLayout instead. Some Label-specific APIs like `texture`, `mipmap`,
-        `outline_*`, `base_direction`, and `text_language` are not available.
-        
+        MarkdownLabel is NOT a true Label subclass. It mirrors most Label styling
+        properties (including outline, mipmap, base_direction, text_language)
+        but extends BoxLayout because Markdown rendering builds multiple widgets
+        (headings, lists, tables, images, code blocks). The `texture` property is
+        available as an aggregated texture when ``aggregate_texture_enabled`` is True.
         Properties like `texture_size`, `refs`, and `anchors` are provided as
         aggregated read-only properties from child Label widgets.
     
@@ -93,9 +92,18 @@ class MarkdownLabel(BoxLayout):
         'text',
         'font_name',
         'code_font_name',
+        'link_style',
         'text_size',
         'strict_label_mode',
         'padding',
+        'text_padding',
+        'outline_width',
+        'outline_color',
+        'disabled_outline_color',
+        'mipmap',
+        'base_direction',
+        'text_language',
+        'limit_render_to_text_bbox',
     })
     """Properties that affect widget structure and require a full rebuild.
     
@@ -137,6 +145,19 @@ class MarkdownLabel(BoxLayout):
     
     :attr:`link_color` is a :class:`~kivy.properties.ColorProperty`
     and defaults to [0, 0.5, 1, 1] (blue).
+    """
+
+    link_style = OptionProperty(
+        'unstyled',
+        options=['unstyled', 'styled']
+    )
+    """Link rendering style.
+    
+    - 'unstyled' (default): produces Label-like refs without forced color/underline.
+    - 'styled': applies link_color and underline for visual emphasis.
+    
+    :attr:`link_style` is a :class:`~kivy.properties.OptionProperty`
+    and defaults to 'unstyled'.
     """
     
     code_bg_color = ColorProperty([0.15, 0.15, 0.15, 1])
@@ -223,67 +244,6 @@ class MarkdownLabel(BoxLayout):
     and defaults to True.
     """
     
-    mipmap = BooleanProperty(False)
-    """No-op property for Label API compatibility.
-    
-    This property is accepted but has no effect on rendering.
-    MarkdownLabel does not use texture mipmapping.
-    
-    :attr:`mipmap` is a :class:`~kivy.properties.BooleanProperty`
-    and defaults to False.
-    """
-    
-    outline_width = NumericProperty(0)
-    """No-op property for Label API compatibility.
-    
-    This property is accepted but has no effect on rendering.
-    Text outline is not supported in MarkdownLabel.
-    
-    :attr:`outline_width` is a :class:`~kivy.properties.NumericProperty`
-    and defaults to 0.
-    """
-    
-    outline_color = ColorProperty([0, 0, 0, 1])
-    """No-op property for Label API compatibility.
-    
-    This property is accepted but has no effect on rendering.
-    Text outline is not supported in MarkdownLabel.
-    
-    :attr:`outline_color` is a :class:`~kivy.properties.ColorProperty`
-    and defaults to [0, 0, 0, 1].
-    """
-    
-    text_language = StringProperty(None, allownone=True)
-    """No-op property for Label API compatibility.
-    
-    This property is accepted but has no effect on rendering.
-    MarkdownLabel does not support language-specific text shaping.
-    
-    :attr:`text_language` is a :class:`~kivy.properties.StringProperty`
-    and defaults to None.
-    """
-    
-    base_direction = OptionProperty(
-        None,
-        options=[None, 'ltr', 'rtl', 'weak_ltr', 'weak_rtl'],
-        allownone=True
-    )
-    """No-op property for Label API compatibility.
-    
-    This property is accepted but has no effect on rendering.
-    MarkdownLabel does not support bidirectional text layout.
-    
-    Options:
-        - None: No direction specified (default)
-        - 'ltr': Left-to-right
-        - 'rtl': Right-to-left
-        - 'weak_ltr': Weak left-to-right
-        - 'weak_rtl': Weak right-to-left
-    
-    :attr:`base_direction` is an :class:`~kivy.properties.OptionProperty`
-    and defaults to None.
-    """
-    
     # Forwarding properties - these are passed to KivyRenderer and applied to internal Labels
     
     font_name = StringProperty('Roboto')
@@ -342,6 +302,17 @@ class MarkdownLabel(BoxLayout):
     two values [horizontal, vertical], or four values [left, top, right, bottom].
     
     :attr:`padding` is a :class:`~kivy.properties.VariableListProperty`
+    and defaults to [0, 0, 0, 0].
+    """
+
+    text_padding = VariableListProperty([0, 0, 0, 0])
+    """Padding applied to internal Label widgets.
+    
+    This mirrors :attr:`kivy.uix.label.Label.padding` without affecting the
+    MarkdownLabel container layout. Use this to inset rendered text while
+    keeping outer BoxLayout padding independent.
+    
+    :attr:`text_padding` is a :class:`~kivy.properties.VariableListProperty`
     and defaults to [0, 0, 0, 0].
     """
     
@@ -455,6 +426,31 @@ class MarkdownLabel(BoxLayout):
     :attr:`disabled_color` is a :class:`~kivy.properties.ColorProperty`
     and defaults to [1, 1, 1, 0.3] (semi-transparent white).
     """
+
+    outline_width = NumericProperty(None, allownone=True)
+    """Outline width for text rendering (mirrors Label.outline_width)."""
+
+    outline_color = ColorProperty([0, 0, 0, 1])
+    """Outline color for text (mirrors Label.outline_color)."""
+
+    disabled_outline_color = ColorProperty([0, 0, 0, 1])
+    """Outline color when the widget is disabled (Label.disabled_outline_color)."""
+
+    mipmap = BooleanProperty(False)
+    """Enable mipmapping on text textures (Label.mipmap)."""
+
+    base_direction = OptionProperty(
+        None,
+        options=['ltr', 'rtl', 'weak_rtl', 'weak_ltr', None],
+        allownone=True
+    )
+    """Base text direction hint (Label.base_direction)."""
+
+    text_language = StringProperty(None, allownone=True)
+    """Language tag for text shaping (Label.text_language)."""
+
+    limit_render_to_text_bbox = BooleanProperty(False)
+    """Limit rendering to text bounding box (Label.limit_render_to_text_bbox)."""
     
     # Truncation properties
     
@@ -518,10 +514,10 @@ class MarkdownLabel(BoxLayout):
     causing the texture_size AliasProperty to be recalculated.
     """
     
-    auto_size_height = BooleanProperty(True)
+    auto_size_height = BooleanProperty(False)
     """Control automatic height sizing behavior.
     
-    When True (default):
+    When True:
         - size_hint_y is set to None
         - height is bound to minimum_height
         - Widget auto-sizes to fit content
@@ -533,9 +529,8 @@ class MarkdownLabel(BoxLayout):
     
     This property allows MarkdownLabel to be used in layouts that expect
     widgets to participate in size hints by setting auto_size_height=False.
-    
     :attr:`auto_size_height` is a :class:`~kivy.properties.BooleanProperty`
-    and defaults to True.
+    and defaults to False for Label-like sizing semantics.
     """
     
     strict_label_mode = BooleanProperty(False)
@@ -544,11 +539,10 @@ class MarkdownLabel(BoxLayout):
     This property controls how MarkdownLabel handles sizing and text_size
     semantics, allowing it to behave more like Kivy's standard Label widget.
     
-    When False (default, Markdown-friendly mode):
-        - auto_size_height behavior is enabled (widget auto-sizes to content)
+    When False (default):
+        - auto_size_height can be toggled on explicitly (default is off)
         - Internal Labels bind their width to the parent for text wrapping
-        - Widget uses Markdown-friendly auto-wrap and auto-size behavior
-        - Ideal for displaying Markdown content that should flow naturally
+        - Widget uses Markdown-friendly auto-wrap behavior by default
     
     When True (strict Label compatibility mode):
         - auto_size_height behavior is disabled (size_hint_y is preserved)
@@ -656,60 +650,78 @@ class MarkdownLabel(BoxLayout):
     
     :attr:`texture_size` is a read-only :class:`~kivy.properties.AliasProperty`.
     """
+
+    aggregate_texture_enabled = BooleanProperty(False)
+    """Enable rendering the entire widget tree to a single texture.
+    
+    When True, the :attr:`texture` property returns an aggregated texture
+    produced via :meth:`export_as_image`. This is opt-in and may be
+    expensive; it is disabled by default to avoid unnecessary FBO work.
+    """
+
+    def _get_texture(self):
+        """Return an aggregated texture when enabled."""
+        if not self.aggregate_texture_enabled:
+            return None
+        
+        try:
+            image = self.export_as_image()
+        except Exception:
+            return None
+        
+        return getattr(image, 'texture', None)
+    
+    texture = AliasProperty(
+        _get_texture,
+        bind=['aggregate_texture_enabled', '_texture_size_version', 'size', 'pos', 'children', 'text']
+    )
+    """Aggregated texture mirroring Label.texture when enabled."""
     
     def _get_refs(self):
-        """Aggregate refs from all child Labels with coordinate translation.
+        """Aggregate refs from child Labels using Label-style coordinates.
         
-        Returns a dictionary mapping ref names to bounding boxes in
-        MarkdownLabel's local coordinate space.
-        
-        Keys are ref names (URLs), values are lists of bounding box coordinates
-        [x1, y1, x2, y2] translated to MarkdownLabel's coordinate space.
+        Returned bounding boxes are translated from each Label's texture space
+        into the MarkdownLabel's local coordinate system, mirroring how
+        ``Label.refs`` is interpreted when converted to widget coordinates.
         """
         refs = {}
         
-        def get_widget_offset(widget):
-            """Calculate widget's position relative to MarkdownLabel.
-            
-            Walks up the widget tree from the given widget to self,
-            accumulating position offsets.
-            
-            Args:
-                widget: Widget to calculate offset for
-                
-            Returns:
-                Tuple (offset_x, offset_y) relative to MarkdownLabel
-            """
+        def get_parent_offset(widget):
+            """Return cumulative parent offset relative to MarkdownLabel."""
             offset_x = 0
             offset_y = 0
-            current = widget
-            
+            current = widget.parent
             while current is not None and current is not self:
                 offset_x += current.x
                 offset_y += current.y
                 current = current.parent
-            
             return offset_x, offset_y
         
+        def translate_box(label, box):
+            """Translate a ref box from label texture space to local coords."""
+            tex_w, tex_h = getattr(label, 'texture_size', (0, 0))
+            if not tex_w and not tex_h:
+                tex_w, tex_h = label.width, label.height
+            
+            parent_offset_x, parent_offset_y = get_parent_offset(label)
+            base_x = parent_offset_x + (label.center_x - tex_w / 2.0)
+            base_y = parent_offset_y + (label.center_y + tex_h / 2.0)
+            
+            x1, y1, x2, y2 = box
+            return [
+                base_x + x1,
+                base_y - y1,
+                base_x + x2,
+                base_y - y2,
+            ]
+        
         def collect_refs(widget):
-            if isinstance(widget, Label) and hasattr(widget, 'refs'):
-                if widget.refs:
-                    # Calculate this widget's offset relative to MarkdownLabel
-                    offset_x, offset_y = get_widget_offset(widget)
-                    
-                    for ref_name, ref_boxes in widget.refs.items():
-                        if ref_name not in refs:
-                            refs[ref_name] = []
-                        # Translate each bounding box
-                        for box in ref_boxes:
-                            # box is [x1, y1, x2, y2] relative to Label
-                            translated_box = [
-                                box[0] + offset_x,
-                                box[1] + offset_y,
-                                box[2] + offset_x,
-                                box[3] + offset_y
-                            ]
-                            refs[ref_name].append(translated_box)
+            if isinstance(widget, Label) and hasattr(widget, 'refs') and widget.refs:
+                for ref_name, ref_boxes in widget.refs.items():
+                    if ref_name not in refs:
+                        refs[ref_name] = []
+                    for box in ref_boxes:
+                        refs[ref_name].append(translate_box(widget, box))
             
             if hasattr(widget, 'children'):
                 for child in widget.children:
@@ -720,7 +732,10 @@ class MarkdownLabel(BoxLayout):
         
         return refs
     
-    refs = AliasProperty(_get_refs, bind=['children', 'text'])
+    refs = AliasProperty(
+        _get_refs,
+        bind=['children', 'text', '_texture_size_version']
+    )
     """Aggregated refs from all child Label widgets.
     
     Returns a dictionary mapping ref names (typically URLs) to lists of
@@ -734,51 +749,43 @@ class MarkdownLabel(BoxLayout):
     """
     
     def _get_anchors(self):
-        """Aggregate anchors from all child Labels with coordinate translation.
+        """Aggregate anchors from child Labels using Label-style coordinates.
         
-        Returns a dictionary mapping anchor names to positions in
-        MarkdownLabel's local coordinate space.
-        
-        Keys are anchor names, values are position tuples (x, y) translated
-        to MarkdownLabel's coordinate space.
+        Anchor positions are translated from each Label's texture space into
+        MarkdownLabel's local coordinates to mirror ``Label.anchors`` usage.
         """
         anchors = {}
         
-        def get_widget_offset(widget):
-            """Calculate widget's position relative to MarkdownLabel.
-            
-            Walks up the widget tree from the given widget to self,
-            accumulating position offsets.
-            
-            Args:
-                widget: Widget to calculate offset for
-                
-            Returns:
-                Tuple (offset_x, offset_y) relative to MarkdownLabel
-            """
+        def get_parent_offset(widget):
+            """Return cumulative parent offset relative to MarkdownLabel."""
             offset_x = 0
             offset_y = 0
-            current = widget
-            
+            current = widget.parent
             while current is not None and current is not self:
                 offset_x += current.x
                 offset_y += current.y
                 current = current.parent
-            
             return offset_x, offset_y
         
+        def translate_anchor(label, pos):
+            """Translate an anchor point from label texture space to local coords."""
+            tex_w, tex_h = getattr(label, 'texture_size', (0, 0))
+            if not tex_w and not tex_h:
+                tex_w, tex_h = label.width, label.height
+            
+            parent_offset_x, parent_offset_y = get_parent_offset(label)
+            base_x = parent_offset_x + (label.center_x - tex_w / 2.0)
+            base_y = parent_offset_y + (label.center_y + tex_h / 2.0)
+            
+            return (
+                base_x + pos[0],
+                base_y - pos[1],
+            )
+        
         def collect_anchors(widget):
-            if isinstance(widget, Label) and hasattr(widget, 'anchors'):
-                if widget.anchors:
-                    # Calculate this widget's offset relative to MarkdownLabel
-                    offset_x, offset_y = get_widget_offset(widget)
-                    
-                    for anchor_name, pos in widget.anchors.items():
-                        # pos is (x, y) relative to Label
-                        anchors[anchor_name] = (
-                            pos[0] + offset_x,
-                            pos[1] + offset_y
-                        )
+            if isinstance(widget, Label) and hasattr(widget, 'anchors') and widget.anchors:
+                for anchor_name, pos in widget.anchors.items():
+                    anchors[anchor_name] = translate_anchor(widget, pos)
             
             if hasattr(widget, 'children'):
                 for child in widget.children:
@@ -789,7 +796,10 @@ class MarkdownLabel(BoxLayout):
         
         return anchors
     
-    anchors = AliasProperty(_get_anchors, bind=['children', 'text'])
+    anchors = AliasProperty(
+        _get_anchors,
+        bind=['children', 'text', '_texture_size_version']
+    )
     """Aggregated anchors from all child Label widgets.
     
     Returns a dictionary mapping anchor names to position tuples. This
@@ -849,8 +859,17 @@ class MarkdownLabel(BoxLayout):
 
         # Bind structure properties (require full rebuild)
         self.bind(font_name=self._make_style_callback('font_name'))
+        self.bind(link_style=self._make_style_callback('link_style'))
         self.bind(text_size=self._make_style_callback('text_size'))
         self.bind(padding=self._make_style_callback('padding'))
+        self.bind(text_padding=self._make_style_callback('text_padding'))
+        self.bind(outline_width=self._make_style_callback('outline_width'))
+        self.bind(outline_color=self._make_style_callback('outline_color'))
+        self.bind(disabled_outline_color=self._make_style_callback('disabled_outline_color'))
+        self.bind(mipmap=self._make_style_callback('mipmap'))
+        self.bind(base_direction=self._make_style_callback('base_direction'))
+        self.bind(text_language=self._make_style_callback('text_language'))
+        self.bind(limit_render_to_text_bbox=self._make_style_callback('limit_render_to_text_bbox'))
 
         # Bind other properties (require full rebuild)
         self.bind(unicode_errors=self._make_style_callback('unicode_errors'))
@@ -945,6 +964,9 @@ class MarkdownLabel(BoxLayout):
         effective_color = (
             list(self.disabled_color) if self.disabled else list(self.color)
         )
+        effective_outline_color = (
+            list(self.disabled_outline_color) if self.disabled else list(self.outline_color)
+        )
 
         # Determine effective halign (convert 'auto' to 'left')
         effective_halign = 'left' if self.halign == 'auto' else self.halign
@@ -965,6 +987,20 @@ class MarkdownLabel(BoxLayout):
                 widget.halign = effective_halign
                 widget.valign = self.valign
                 widget.line_height = self.line_height
+                if hasattr(widget, 'outline_color'):
+                    widget.outline_color = effective_outline_color
+                if hasattr(widget, 'disabled_outline_color'):
+                    widget.disabled_outline_color = list(self.disabled_outline_color)
+                if hasattr(widget, 'mipmap'):
+                    widget.mipmap = self.mipmap
+                if hasattr(widget, 'base_direction'):
+                    widget.base_direction = self.base_direction
+                if hasattr(widget, 'text_language'):
+                    widget.text_language = self.text_language
+                if hasattr(widget, 'limit_render_to_text_bbox'):
+                    widget.limit_render_to_text_bbox = self.limit_render_to_text_bbox
+                if hasattr(widget, 'ellipsis_options'):
+                    widget.ellipsis_options = dict(self.ellipsis_options)
 
             # Recursively update children
             if hasattr(widget, 'children'):
@@ -1042,9 +1078,13 @@ class MarkdownLabel(BoxLayout):
             base_font_size=self.base_font_size,
             code_font_name=self.code_font_name,
             link_color=list(self.link_color),
+            link_style=self.link_style,
             code_bg_color=list(self.code_bg_color),
             font_name=self.font_name,
             color=list(self.color),
+            outline_width=self.outline_width,
+            outline_color=list(self.outline_color),
+            disabled_outline_color=list(self.disabled_outline_color),
             line_height=self.line_height,
             halign=self.halign,
             valign=self.valign,
@@ -1059,13 +1099,17 @@ class MarkdownLabel(BoxLayout):
             font_blended=self.font_blended,
             disabled=self.disabled,
             disabled_color=list(self.disabled_color),
+            mipmap=self.mipmap,
+            base_direction=self.base_direction,
+            text_language=self.text_language,
             shorten=self.shorten,
             max_lines=int(self.max_lines),
             shorten_from=self.shorten_from,
             split_str=self.split_str,
-            padding=list(self.padding),
+            text_padding=list(self.text_padding),
             strict_label_mode=self.strict_label_mode,
-            ellipsis_options=dict(self.ellipsis_options)
+            ellipsis_options=dict(self.ellipsis_options),
+            limit_render_to_text_bbox=self.limit_render_to_text_bbox
         )
         
         # Render AST to widget tree

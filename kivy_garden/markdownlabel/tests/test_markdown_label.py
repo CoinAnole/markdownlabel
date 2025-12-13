@@ -1351,10 +1351,11 @@ class TestFontNameForwarding:
                 f"Expected font_name={font_name}, got {lbl.font_name}"
 
 
-# **Feature: label-compatibility, Property 3: color Forwarding with Link Preservation**
+# **Feature: label-compatibility, Property 3: color Forwarding with Optional Link Styling**
 # *For any* Markdown text containing both regular text and links, and any color value,
-# all body text Labels SHALL have `color` set to the specified value, while link text
-# SHALL retain `link_color` styling.
+# all body text Labels SHALL have `color` set to the specified value. When
+# ``link_style='styled'``, link text SHALL retain `link_color` styling; when
+# ``link_style='unstyled'`` (default) links inherit the body color.
 # **Validates: Requirements 3.1, 3.2**
 
 # Strategy for generating valid RGBA colors
@@ -1503,6 +1504,30 @@ class TestColorForwarding:
         # Should have both body and code labels
         assert len(body_labels) >= 1, "Expected at least one body text label with specified color"
         assert len(code_labels) >= 1, "Expected at least one code label with light color"
+
+    def test_links_unstyled_by_default(self):
+        """Default links remain unstyled while keeping ref markup."""
+        markdown = 'Click [here](https://kivy.org)'
+        label = MarkdownLabel(text=markdown)
+        
+        labels = self._find_labels_recursive(label)
+        assert len(labels) >= 1, "Expected at least one Label"
+        
+        assert any('[ref=' in getattr(lbl, 'text', '') for lbl in labels), \
+            "Expected ref markup for link"
+        assert not any('[color=' in getattr(lbl, 'text', '') for lbl in labels), \
+            "Default links should not inject color markup"
+    
+    def test_links_styled_when_enabled(self):
+        """Links gain color markup when link_style='styled'."""
+        markdown = 'Click [here](https://kivy.org)'
+        label = MarkdownLabel(text=markdown, link_style='styled')
+        
+        labels = self._find_labels_recursive(label)
+        assert len(labels) >= 1, "Expected at least one Label"
+        
+        assert any('[color=' in getattr(lbl, 'text', '') for lbl in labels), \
+            "Expected colored markup when link_style='styled'"
 
 
 # **Feature: label-compatibility, Property 4: line_height Forwarding**
@@ -3529,13 +3554,13 @@ class TestReactiveRebuildOnPropertyChange:
                 f"After change, expected font_blended={blended2}, got {lbl.font_blended}"
 
 
-# **Feature: label-compatibility, Property 4: Padding Forwarding to Child Labels**
-# *For any* MarkdownLabel with `padding` set to value P, all child Labels that display text content
+# **Feature: label-compatibility, Property 4: Text Padding Forwarding to Child Labels**
+# *For any* MarkdownLabel with `text_padding` set to value P, all child Labels that display text content
 # SHALL have their `padding` property equal to P.
 # **Validates: Requirements 2.1, 2.2**
 
 # Strategy for generating valid padding values
-padding_strategy = st.lists(
+text_padding_strategy = st.lists(
     st.floats(min_value=0.0, max_value=50.0, allow_nan=False, allow_infinity=False),
     min_size=4, max_size=4
 )
@@ -3564,11 +3589,11 @@ class TestPaddingForwarding:
             return False
         return all(abs(a - b) < tolerance for a, b in zip(p1, p2))
     
-    @given(padding_strategy)
+    @given(text_padding_strategy)
     @settings(max_examples=100, deadline=None)
     def test_padding_applied_to_paragraph(self, padding):
         """padding is applied to paragraph Labels."""
-        label = MarkdownLabel(text='Hello World', padding=padding)
+        label = MarkdownLabel(text='Hello World', text_padding=padding)
         
         labels = self._find_labels_recursive(label)
         assert len(labels) >= 1, "Expected at least one Label"
@@ -3578,11 +3603,11 @@ class TestPaddingForwarding:
             assert self._padding_equal(list(lbl.padding), padding), \
                 f"Expected padding={padding}, got {list(lbl.padding)}"
     
-    @given(padding_strategy)
+    @given(text_padding_strategy)
     @settings(max_examples=100, deadline=None)
     def test_padding_applied_to_heading(self, padding):
         """padding is applied to heading Labels."""
-        label = MarkdownLabel(text='# Heading', padding=padding)
+        label = MarkdownLabel(text='# Heading', text_padding=padding)
         
         labels = self._find_labels_recursive(label)
         assert len(labels) >= 1, "Expected at least one Label"
@@ -3592,12 +3617,12 @@ class TestPaddingForwarding:
             assert self._padding_equal(list(lbl.padding), padding), \
                 f"Expected padding={padding}, got {list(lbl.padding)}"
     
-    @given(padding_strategy)
+    @given(text_padding_strategy)
     @settings(max_examples=100, deadline=None)
     def test_padding_applied_to_list_items(self, padding):
         """padding is applied to list item Labels."""
         markdown = '- Item 1\n- Item 2'
-        label = MarkdownLabel(text=markdown, padding=padding)
+        label = MarkdownLabel(text=markdown, text_padding=padding)
         
         labels = self._find_labels_recursive(label)
         assert len(labels) >= 2, "Expected at least 2 Labels for list items"
@@ -3607,12 +3632,12 @@ class TestPaddingForwarding:
             assert self._padding_equal(list(lbl.padding), padding), \
                 f"Expected padding={padding}, got {list(lbl.padding)}"
     
-    @given(padding_strategy)
+    @given(text_padding_strategy)
     @settings(max_examples=100, deadline=None)
     def test_padding_applied_to_table_cells(self, padding):
         """padding is applied to table cell Labels."""
         markdown = '| A | B |\n| --- | --- |\n| 1 | 2 |'
-        label = MarkdownLabel(text=markdown, padding=padding)
+        label = MarkdownLabel(text=markdown, text_padding=padding)
         
         labels = self._find_labels_recursive(label)
         assert len(labels) >= 4, "Expected at least 4 Labels for table cells"
@@ -3622,7 +3647,7 @@ class TestPaddingForwarding:
             assert self._padding_equal(list(lbl.padding), padding), \
                 f"Expected padding={padding}, got {list(lbl.padding)}"
     
-    @given(padding_strategy)
+    @given(text_padding_strategy)
     @settings(max_examples=100, deadline=None)
     def test_padding_applied_to_nested_structures(self, padding):
         """padding is applied to Labels in nested structures (lists, tables, block quotes)."""
@@ -3641,7 +3666,7 @@ Regular paragraph
 | --- | --- |
 | Cell 1 | Cell 2 |
 '''
-        label = MarkdownLabel(text=markdown, padding=padding)
+        label = MarkdownLabel(text=markdown, text_padding=padding)
         
         labels = self._find_labels_recursive(label)
         assert len(labels) >= 5, "Expected at least 5 Labels for various structures"
@@ -3651,13 +3676,13 @@ Regular paragraph
             assert self._padding_equal(list(lbl.padding), padding), \
                 f"Expected padding={padding}, got {list(lbl.padding)}"
     
-    @given(padding_strategy, padding_strategy)
+    @given(text_padding_strategy, text_padding_strategy)
     @settings(max_examples=100, deadline=None)
     def test_padding_change_triggers_rebuild(self, padding1, padding2):
-        """Changing padding triggers widget rebuild with new padding."""
+        """Changing text_padding triggers widget rebuild with new padding."""
         assume(not self._padding_equal(padding1, padding2))
         
-        label = MarkdownLabel(text='Hello World', padding=padding1)
+        label = MarkdownLabel(text='Hello World', text_padding=padding1)
         
         # Verify initial padding
         labels = self._find_labels_recursive(label)
@@ -3665,7 +3690,7 @@ Regular paragraph
             assert self._padding_equal(list(lbl.padding), padding1)
         
         # Change padding
-        label.padding = padding2
+        label.text_padding = padding2
         
         # Verify new padding
         labels = self._find_labels_recursive(label)
@@ -3686,13 +3711,13 @@ Regular paragraph
                 f"Expected default padding=[0, 0, 0, 0], got {list(lbl.padding)}"
 
 
-# **Feature: label-compatibility, Property 5: Padding Dynamic Updates**
-# *For any* MarkdownLabel, when `padding` is changed from value A to value B, all child Labels
-# SHALL be updated to reflect the new `padding` value B.
+# **Feature: label-compatibility, Property 5: Text Padding Dynamic Updates**
+# *For any* MarkdownLabel, when `text_padding` is changed from value A to value B, all child Labels
+# SHALL be updated to reflect the new padding value B.
 # **Validates: Requirements 2.3**
 
 class TestPaddingDynamicUpdates:
-    """Property tests for padding dynamic updates (Property 5)."""
+    """Property tests for text_padding dynamic updates (Property 5)."""
     
     def _find_labels_recursive(self, widget, labels=None):
         """Recursively find all Label widgets in a widget tree."""
@@ -3714,13 +3739,13 @@ class TestPaddingDynamicUpdates:
             return False
         return all(abs(a - b) < tolerance for a, b in zip(p1, p2))
     
-    @given(padding_strategy, padding_strategy)
+    @given(text_padding_strategy, text_padding_strategy)
     @settings(max_examples=100, deadline=None)
     def test_padding_update_paragraph(self, initial_padding, new_padding):
-        """Updating padding on paragraph updates all child Labels."""
+        """Updating text_padding on paragraph updates all child Labels."""
         assume(not self._padding_equal(initial_padding, new_padding))
         
-        label = MarkdownLabel(text='Hello World', padding=initial_padding)
+        label = MarkdownLabel(text='Hello World', text_padding=initial_padding)
         
         # Verify initial padding
         labels = self._find_labels_recursive(label)
@@ -3729,7 +3754,7 @@ class TestPaddingDynamicUpdates:
             assert self._padding_equal(list(lbl.padding), initial_padding)
         
         # Update padding
-        label.padding = new_padding
+        label.text_padding = new_padding
         
         # Verify all labels have new padding
         labels = self._find_labels_recursive(label)
@@ -3737,10 +3762,10 @@ class TestPaddingDynamicUpdates:
             assert self._padding_equal(list(lbl.padding), new_padding), \
                 f"After update, expected padding={new_padding}, got {list(lbl.padding)}"
     
-    @given(padding_strategy, padding_strategy)
+    @given(text_padding_strategy, text_padding_strategy)
     @settings(max_examples=100, deadline=None)
     def test_padding_update_complex_content(self, initial_padding, new_padding):
-        """Updating padding on complex content updates all child Labels."""
+        """Updating text_padding on complex content updates all child Labels."""
         assume(not self._padding_equal(initial_padding, new_padding))
         
         markdown = '''
@@ -3756,7 +3781,7 @@ Paragraph with text.
 | 1 | 2 |
 '''
         
-        label = MarkdownLabel(text=markdown, padding=initial_padding)
+        label = MarkdownLabel(text=markdown, text_padding=initial_padding)
         
         # Verify initial padding
         labels = self._find_labels_recursive(label)
@@ -3765,7 +3790,7 @@ Paragraph with text.
             assert self._padding_equal(list(lbl.padding), initial_padding)
         
         # Update padding
-        label.padding = new_padding
+        label.text_padding = new_padding
         
         # Verify all labels have new padding
         labels = self._find_labels_recursive(label)
@@ -3781,7 +3806,7 @@ Paragraph with text.
         
         for i in range(num_updates):
             new_padding = [i * 5.0, i * 5.0, i * 5.0, i * 5.0]
-            label.padding = new_padding
+            label.text_padding = new_padding
             
             # Verify all labels have the current padding
             labels = self._find_labels_recursive(label)
@@ -3818,7 +3843,7 @@ class TestPaddingWithNestedStructures:
             return False
         return all(abs(a - b) < tolerance for a, b in zip(p1, p2))
     
-    @given(padding_strategy)
+    @given(text_padding_strategy)
     @settings(max_examples=100, deadline=None)
     def test_padding_in_nested_lists(self, padding):
         """padding is applied to Labels in nested lists without breaking structure."""
@@ -3831,7 +3856,7 @@ class TestPaddingWithNestedStructures:
   - Nested item 2.1
 '''
         
-        label = MarkdownLabel(text=markdown, padding=padding)
+        label = MarkdownLabel(text=markdown, text_padding=padding)
         
         # Should have multiple children for the nested list structure
         assert len(label.children) >= 1, "Expected at least one child for list structure"
@@ -3844,7 +3869,7 @@ class TestPaddingWithNestedStructures:
             assert self._padding_equal(list(lbl.padding), padding), \
                 f"Expected padding={padding}, got {list(lbl.padding)}"
     
-    @given(padding_strategy)
+    @given(text_padding_strategy)
     @settings(max_examples=100, deadline=None)
     def test_padding_in_nested_quotes(self, padding):
         """padding is applied to Labels in nested block quotes without breaking structure."""
@@ -3857,7 +3882,7 @@ class TestPaddingWithNestedStructures:
 > Back to first level quote
 '''
         
-        label = MarkdownLabel(text=markdown, padding=padding)
+        label = MarkdownLabel(text=markdown, text_padding=padding)
         
         # Should have children for the quote structure
         assert len(label.children) >= 1, "Expected at least one child for quote structure"
@@ -3870,7 +3895,7 @@ class TestPaddingWithNestedStructures:
             assert self._padding_equal(list(lbl.padding), padding), \
                 f"Expected padding={padding}, got {list(lbl.padding)}"
     
-    @given(padding_strategy)
+    @given(text_padding_strategy)
     @settings(max_examples=100, deadline=None)
     def test_padding_in_complex_table(self, padding):
         """padding is applied to Labels in complex tables without breaking structure."""
@@ -3882,7 +3907,7 @@ class TestPaddingWithNestedStructures:
 | Multi word cell | Another cell | Final cell |
 '''
         
-        label = MarkdownLabel(text=markdown, padding=padding)
+        label = MarkdownLabel(text=markdown, text_padding=padding)
         
         # Should have children for the table structure
         assert len(label.children) >= 1, "Expected at least one child for table structure"
@@ -3895,7 +3920,7 @@ class TestPaddingWithNestedStructures:
             assert self._padding_equal(list(lbl.padding), padding), \
                 f"Expected padding={padding}, got {list(lbl.padding)}"
     
-    @given(padding_strategy)
+    @given(text_padding_strategy)
     @settings(max_examples=100, deadline=None)
     def test_padding_in_mixed_nested_structures(self, padding):
         """padding is applied to Labels in mixed nested structures without breaking layout."""
@@ -3923,7 +3948,7 @@ Regular paragraph text.
 Final paragraph.
 '''
         
-        label = MarkdownLabel(text=markdown, padding=padding)
+        label = MarkdownLabel(text=markdown, text_padding=padding)
         
         # Should have multiple children for the complex structure
         assert len(label.children) >= 3, "Expected at least 3 children for complex structure"
@@ -3936,7 +3961,7 @@ Final paragraph.
             assert self._padding_equal(list(lbl.padding), padding), \
                 f"Expected padding={padding}, got {list(lbl.padding)}"
     
-    @given(padding_strategy)
+    @given(text_padding_strategy)
     @settings(max_examples=100, deadline=None)
     def test_padding_preserves_widget_hierarchy(self, padding):
         """padding application preserves the widget hierarchy structure."""
@@ -3946,7 +3971,7 @@ Final paragraph.
 - Item 2
 '''
         
-        label = MarkdownLabel(text=markdown, padding=padding)
+        label = MarkdownLabel(text=markdown, text_padding=padding)
         
         # Verify the basic structure is preserved
         assert len(label.children) >= 1, "Expected at least one child for list"
@@ -4250,8 +4275,8 @@ class TestPaddingWithNestedStructures:
     
     @given(padding_four)
     @settings(max_examples=100, deadline=None)
-    def test_padding_in_table_within_list(self, padding):
-        """Padding is applied to Labels in tables within lists without breaking layout."""
+    def test_text_padding_in_table_within_list(self, padding):
+        """text_padding is applied to Labels in tables within lists without breaking layout."""
         markdown = '''
 - List item with table:
 
@@ -4262,12 +4287,12 @@ class TestPaddingWithNestedStructures:
 
 - Another list item
 '''
-        label = MarkdownLabel(text=markdown, padding=padding)
+        label = MarkdownLabel(text=markdown, text_padding=padding)
         
         # Should have children for the complex structure
         assert len(label.children) >= 1, "Expected at least one child for list+table structure"
         
-        # All Labels should have the specified padding
+        # All Labels should have the specified text padding
         labels = self._find_labels_recursive(label)
         # Note: Table within list is rendered as plain text, so we expect 5 Labels:
         # 2 list item texts + 2 bullet points + 1 table (as plain text)
@@ -4275,12 +4300,12 @@ class TestPaddingWithNestedStructures:
         
         for lbl in labels:
             assert self._padding_equal(list(lbl.padding), padding), \
-                f"Expected padding={padding}, got {list(lbl.padding)}"
+                f"Expected text_padding={padding}, got {list(lbl.padding)}"
     
     @given(padding_four)
     @settings(max_examples=100, deadline=None)
-    def test_padding_preserves_nested_structure_integrity(self, padding):
-        """Padding application preserves the integrity of nested widget structures."""
+    def test_text_padding_preserves_nested_structure_integrity(self, padding):
+        """text_padding preserves the integrity of nested widget structures."""
         markdown = '''
 # Heading
 
@@ -4295,18 +4320,18 @@ class TestPaddingWithNestedStructures:
 
 Final paragraph.
 '''
-        label = MarkdownLabel(text=markdown, padding=padding)
+        label = MarkdownLabel(text=markdown, text_padding=padding)
         
         # Should have multiple children for the complex structure
         assert len(label.children) >= 3, "Expected at least 3 children for complex structure"
         
-        # All Labels should have the specified padding
+        # All Labels should have the specified text padding
         labels = self._find_labels_recursive(label)
         assert len(labels) >= 6, "Expected at least 6 Labels for mixed nested content"
         
         for lbl in labels:
             assert self._padding_equal(list(lbl.padding), padding), \
-                f"Expected padding={padding}, got {list(lbl.padding)}"
+                f"Expected text_padding={padding}, got {list(lbl.padding)}"
             # Verify the label is still properly embedded in the widget tree
             assert lbl.parent is not None, "Label should have a parent widget"
 
@@ -4343,17 +4368,15 @@ class TestAutoSizeHeightTrueBehavior:
         assert label.auto_size_height is True, \
             f"Expected auto_size_height=True, got {label.auto_size_height}"
     
-    def test_auto_size_height_true_default_behavior(self):
-        """Default MarkdownLabel should have auto_size_height=True behavior."""
+    def test_auto_size_height_default_is_false(self):
+        """Default MarkdownLabel leaves auto_size_height disabled for Label parity."""
         label = MarkdownLabel(text="Test content")
         
-        # Default should be auto_size_height=True
-        assert label.auto_size_height is True, \
-            f"Expected default auto_size_height=True, got {label.auto_size_height}"
+        assert label.auto_size_height is False, \
+            f"Expected default auto_size_height=False, got {label.auto_size_height}"
         
-        # Should have size_hint_y=None
-        assert label.size_hint_y is None, \
-            f"Expected size_hint_y=None by default, got {label.size_hint_y}"
+        assert label.size_hint_y == 1, \
+            f"Expected size_hint_y=1 by default, got {label.size_hint_y}"
     
     @given(st.floats(min_value=0.1, max_value=2.0, allow_nan=False, allow_infinity=False))
     @settings(max_examples=100, deadline=None)
@@ -4441,10 +4464,9 @@ class TestAutoSizeHeightDynamicToggling:
     @settings(max_examples=100, deadline=None)
     def test_toggle_true_to_false_restores_size_hint_y(self, markdown_text):
         """Toggling auto_size_height from True to False restores size_hint_y."""
-        # Start with auto_size_height=True (default)
+        # Start with auto_size_height=True (explicit)
         label = MarkdownLabel(text=markdown_text, auto_size_height=True)
         
-        # Verify initial state
         assert label.auto_size_height is True
         assert label.size_hint_y is None
         
@@ -4462,10 +4484,9 @@ class TestAutoSizeHeightDynamicToggling:
     @settings(max_examples=100, deadline=None)
     def test_toggle_false_to_true_sets_size_hint_y_none(self, markdown_text):
         """Toggling auto_size_height from False to True sets size_hint_y=None."""
-        # Start with auto_size_height=False
+        # Start with auto_size_height=False (default)
         label = MarkdownLabel(text=markdown_text, auto_size_height=False)
         
-        # Verify initial state
         assert label.auto_size_height is False
         assert label.size_hint_y == 1
         
@@ -4518,13 +4539,12 @@ class TestAutoSizeHeightDynamicToggling:
         """Multiple toggles maintain consistent behavior."""
         label = MarkdownLabel(text=markdown_text)
         
-        # Should start with auto_size_height=True (default)
-        assert label.auto_size_height is True
-        assert label.size_hint_y is None
+        # Should start with auto_size_height=False (default)
+        assert label.auto_size_height is False
+        assert label.size_hint_y == 1
         
-        # Toggle False -> True -> False -> True
+        # Toggle True -> False -> True
         for expected_auto_size, expected_size_hint_y in [
-            (False, 1),      # Toggle to False
             (True, None),    # Toggle to True
             (False, 1),      # Toggle to False
             (True, None),    # Toggle to True
@@ -4727,18 +4747,17 @@ class TestStrictLabelModeSizingBehavior:
     @settings(max_examples=100, deadline=None)
     def test_multiple_strict_mode_toggles_maintain_consistency(self, markdown_text):
         """Multiple strict_label_mode toggles maintain consistent behavior."""
-        label = MarkdownLabel(text=markdown_text)
+        label = MarkdownLabel(text=markdown_text, auto_size_height=True)
         
-        # Should start with strict_label_mode=False (default)
         assert label.strict_label_mode is False
         assert label.size_hint_y is None
         
         # Toggle True -> False -> True -> False
         for expected_strict_mode, expected_size_hint_y in [
             (True, 1),       # Toggle to True
-            (False, None),   # Toggle to False
+            (False, None),   # Toggle to False (auto_size_height=True)
             (True, 1),       # Toggle to True
-            (False, None),   # Toggle to False
+            (False, None),   # Toggle to False (auto_size_height=True)
         ]:
             label.strict_label_mode = expected_strict_mode
             

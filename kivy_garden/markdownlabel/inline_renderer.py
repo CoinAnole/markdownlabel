@@ -18,15 +18,18 @@ class InlineRenderer:
     
     def __init__(self, 
                  link_color: Optional[List[float]] = None,
-                 code_font_name: str = 'RobotoMono-Regular'):
+                 code_font_name: str = 'RobotoMono-Regular',
+                 link_style: str = 'unstyled'):
         """Initialize the InlineRenderer.
         
         Args:
             link_color: RGBA color list for link text (default: blue)
             code_font_name: Font name for inline code spans
+            link_style: 'unstyled' (Label-like) or 'styled' (color + underline)
         """
         self.link_color = link_color or [0, 0.5, 1, 1]
         self.code_font_name = code_font_name
+        self.link_style = link_style
     
     def render(self, children: List[Dict[str, Any]]) -> str:
         """Render inline tokens to a Kivy markup string.
@@ -144,11 +147,12 @@ class InlineRenderer:
         url = attrs.get('url', '')
         inner = self.render(children)
         
-        # Convert RGBA color list to hex format for Kivy markup
+        if self.link_style == 'unstyled':
+            return f'[ref={url}]{inner}[/ref]'
+        
+        # Styled links: apply color and underline to make links visually distinct
         r, g, b, a = self.link_color
         color_hex = f'{int(r*255):02x}{int(g*255):02x}{int(b*255):02x}{int(a*255):02x}'
-        
-        # Apply color and underline to make links visually distinct
         return f'[color={color_hex}][u][ref={url}]{inner}[/ref][/u][/color]'
     
     def softbreak(self, token: Dict[str, Any]) -> str:
