@@ -34,7 +34,7 @@
   - Update imports and ensure all tests pass
   - _Requirements: 1.1, 1.4, 2.1, 2.2_
 
-- [ ] 3.1 Write property test for import functionality
+- [x] 3.1 Write property test for import functionality
   - **Property 4: Import Functionality**
   - **Validates: Requirements 2.4**
 
