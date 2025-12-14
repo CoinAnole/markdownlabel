@@ -83,27 +83,27 @@
     - **Property 2: No clipping when unconstrained**
     - **Validates: Requirements 1.4**
 
-- [ ] 5. Implement padding property improvements
-  - [ ] 5.1 Add `label_padding` AliasProperty
+- [x] 5. Implement padding property improvements
+  - [x] 5.1 Add `label_padding` AliasProperty
     - Create getter that returns `text_padding`
     - Create setter that sets `text_padding`
     - Bind to `text_padding` for updates
     - _Requirements: 4.3, 4.4_
-  - [ ] 5.2 Verify `text_padding` applies to child Labels
+  - [x] 5.2 Verify `text_padding` applies to child Labels
     - Ensure KivyRenderer passes `text_padding` to Label `padding` parameter
     - Verify in `_update_styles_in_place()` if needed
     - _Requirements: 4.1_
-  - [ ] 5.3 Verify `padding` applies to container only
+  - [x] 5.3 Verify `padding` applies to container only
     - Ensure BoxLayout padding is separate from child Label padding
     - Document the distinction in docstrings
     - _Requirements: 4.2_
-  - [ ] 5.4 Write property test for text_padding applies to child Labels
+  - [x] 5.4 Write property test for text_padding applies to child Labels
     - **Property 8: text_padding applies to child Labels**
     - **Validates: Requirements 4.1**
-  - [ ] 5.5 Write property test for padding applies to container
+  - [x] 5.5 Write property test for padding applies to container
     - **Property 9: padding applies to container**
     - **Validates: Requirements 4.2**
-  - [ ] 5.6 Write property test for label_padding alias synchronization
+  - [x] 5.6 Write property test for label_padding alias synchronization
     - **Property 10: label_padding alias synchronization**
     - **Validates: Requirements 4.4**
 

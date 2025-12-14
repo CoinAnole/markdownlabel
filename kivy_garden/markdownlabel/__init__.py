@@ -317,7 +317,14 @@ class MarkdownLabel(BoxLayout):
     """
     
     padding = VariableListProperty([0, 0, 0, 0])
-    """Padding for the MarkdownLabel container.
+    """Padding for the MarkdownLabel container (BoxLayout).
+    
+    This padding is applied to the outer BoxLayout container and affects
+    the spacing between the container edges and its child widgets. It does
+    NOT affect the padding of individual Label widgets within the content.
+    
+    For padding that applies to the text content within Labels, use
+    :attr:`text_padding` or :attr:`label_padding` instead.
     
     Can be specified as a single value (applied to all sides),
     two values [horizontal, vertical], or four values [left, top, right, bottom].
@@ -335,6 +342,30 @@ class MarkdownLabel(BoxLayout):
     
     :attr:`text_padding` is a :class:`~kivy.properties.VariableListProperty`
     and defaults to [0, 0, 0, 0].
+    """
+    
+    def _get_label_padding(self):
+        """Getter for label_padding alias property."""
+        return self.text_padding
+    
+    def _set_label_padding(self, value):
+        """Setter for label_padding alias property."""
+        self.text_padding = value
+    
+    label_padding = AliasProperty(
+        _get_label_padding,
+        _set_label_padding,
+        bind=['text_padding']
+    )
+    """Alias for :attr:`text_padding` for Label API compatibility.
+    
+    Setting this property updates :attr:`text_padding`, and reading it
+    returns the current :attr:`text_padding` value. This provides an
+    alternative name that clearly indicates this padding applies to
+    child Label widgets, not the container.
+    
+    :attr:`label_padding` is an :class:`~kivy.properties.AliasProperty` that
+    maps to :attr:`text_padding`.
     """
     
     text_size = ListProperty([None, None])
