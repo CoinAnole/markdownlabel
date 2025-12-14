@@ -1327,6 +1327,7 @@ class TestFontNameForwarding:
         
         # Change font_name
         label.font_name = font2
+        label.force_rebuild()  # Force immediate rebuild for test
         
         # Verify new font
         labels = self._find_labels_recursive(label)
@@ -2408,6 +2409,7 @@ class TestTextSizeDynamicUpdates:
         
         # Change text_size height
         label.text_size = [None, height2]
+        label.force_rebuild()  # Force immediate rebuild for test
         
         # Verify new height
         labels = self._find_labels_recursive(label)
@@ -2429,6 +2431,7 @@ class TestTextSizeDynamicUpdates:
         
         # Change text_size height to None
         label.text_size = [None, None]
+        label.force_rebuild()  # Force immediate rebuild for test
         
         # Verify height is now None
         labels = self._find_labels_recursive(label)
@@ -2452,6 +2455,7 @@ class TestTextSizeDynamicUpdates:
         
         # Change text_size height to specific value
         label.text_size = [None, height]
+        label.force_rebuild()  # Force immediate rebuild for test
         
         # Verify new height
         labels = self._find_labels_recursive(label)
@@ -2583,6 +2587,7 @@ class TestUnicodeErrorsForwarding:
         
         # Change unicode_errors
         label.unicode_errors = errors2
+        label.force_rebuild()  # Force immediate rebuild for test
         
         # Verify new unicode_errors
         labels = self._find_labels_recursive(label)
@@ -2720,6 +2725,7 @@ class TestStripForwarding:
         
         # Change strip
         label.strip = strip2
+        label.force_rebuild()  # Force immediate rebuild for test
         
         # Verify new strip
         labels = self._find_labels_recursive(label)
@@ -2885,6 +2891,7 @@ class TestAdvancedFontPropertiesForwarding:
         
         # Change value
         label.font_kerning = kerning2
+        label.force_rebuild()  # Force immediate rebuild for test
         
         # Verify new value
         labels = self._find_labels_recursive(label)
@@ -2907,6 +2914,7 @@ class TestAdvancedFontPropertiesForwarding:
         
         # Change value
         label.font_blended = blended2
+        label.force_rebuild()  # Force immediate rebuild for test
         
         # Verify new value
         labels = self._find_labels_recursive(label)
@@ -3242,6 +3250,7 @@ class TestReactiveRebuildOnPropertyChange:
         
         # Change font_name
         label.font_name = font2
+        label.force_rebuild()  # Force immediate rebuild for test
         
         # Verify widgets were rebuilt with new font
         labels_after = self._find_labels_recursive(label)
@@ -3342,6 +3351,7 @@ class TestReactiveRebuildOnPropertyChange:
         
         # Change font_name
         label.font_name = font_name
+        label.force_rebuild()  # Force immediate rebuild for test
         labels = self._find_labels_recursive(label)
         for lbl in labels:
             assert lbl.font_name == font_name, \
@@ -3349,6 +3359,7 @@ class TestReactiveRebuildOnPropertyChange:
         
         # Change color
         label.color = color
+        # Note: color is a style-only property, no rebuild needed
         labels = self._find_labels_recursive(label)
         for lbl in labels:
             assert self._colors_equal(list(lbl.color), color), \
@@ -3356,6 +3367,7 @@ class TestReactiveRebuildOnPropertyChange:
         
         # Change line_height
         label.line_height = line_height
+        # Note: line_height is a style-only property, no rebuild needed
         labels = self._find_labels_recursive(label)
         for lbl in labels:
             assert self._floats_equal(lbl.line_height, line_height), \
@@ -3428,6 +3440,8 @@ class TestReactiveRebuildOnPropertyChange:
         
         # Change unicode_errors
         label.unicode_errors = errors2
+
+        label.force_rebuild()  # Force immediate rebuild for test
         
         # Verify widgets were rebuilt with new unicode_errors
         labels_after = self._find_labels_recursive(label)
@@ -3452,6 +3466,8 @@ class TestReactiveRebuildOnPropertyChange:
         
         # Change strip
         label.strip = strip2
+
+        label.force_rebuild()  # Force immediate rebuild for test
         
         # Verify widgets were rebuilt with new strip
         labels_after = self._find_labels_recursive(label)
@@ -3535,6 +3551,8 @@ class TestReactiveRebuildOnPropertyChange:
         
         # Change font_kerning
         label.font_kerning = kerning2
+
+        label.force_rebuild()  # Force immediate rebuild for test
         
         # Verify widgets were rebuilt with new font_kerning
         labels_after = self._find_labels_recursive(label)
@@ -3559,6 +3577,8 @@ class TestReactiveRebuildOnPropertyChange:
         
         # Change font_blended
         label.font_blended = blended2
+
+        label.force_rebuild()  # Force immediate rebuild for test
         
         # Verify widgets were rebuilt with new font_blended
         labels_after = self._find_labels_recursive(label)
@@ -3705,6 +3725,8 @@ Regular paragraph
         
         # Change padding
         label.text_padding = padding2
+
+        label.force_rebuild()  # Force immediate rebuild for test
         
         # Verify new padding
         labels = self._find_labels_recursive(label)
@@ -3769,6 +3791,8 @@ class TestPaddingDynamicUpdates:
         
         # Update padding
         label.text_padding = new_padding
+
+        label.force_rebuild()  # Force immediate rebuild for test
         
         # Verify all labels have new padding
         labels = self._find_labels_recursive(label)
@@ -3805,6 +3829,8 @@ Paragraph with text.
         
         # Update padding
         label.text_padding = new_padding
+
+        label.force_rebuild()  # Force immediate rebuild for test
         
         # Verify all labels have new padding
         labels = self._find_labels_recursive(label)
@@ -3821,6 +3847,8 @@ Paragraph with text.
         for i in range(num_updates):
             new_padding = [i * 5.0, i * 5.0, i * 5.0, i * 5.0]
             label.text_padding = new_padding
+
+            label.force_rebuild()  # Force immediate rebuild for test
             
             # Verify all labels have the current padding
             labels = self._find_labels_recursive(label)
@@ -4147,6 +4175,8 @@ class TestPaddingDynamicUpdates:
         
         # Change text padding
         label.text_padding = padding2
+
+        label.force_rebuild()  # Force immediate rebuild for test
         
         # Verify new padding
         labels = self._find_labels_recursive(label)
@@ -4172,6 +4202,8 @@ class TestPaddingDynamicUpdates:
         
         # Change text padding
         label.text_padding = padding2
+
+        label.force_rebuild()  # Force immediate rebuild for test
         
         # Verify new padding
         labels = self._find_labels_recursive(label)
@@ -4201,6 +4233,8 @@ class TestPaddingDynamicUpdates:
         
         # Change text padding
         label.text_padding = padding2
+
+        label.force_rebuild()  # Force immediate rebuild for test
         
         # Verify new padding
         labels = self._find_labels_recursive(label)
@@ -5463,6 +5497,8 @@ Paragraph text
         
         # Change shorten
         label.shorten = shorten2
+
+        label.force_rebuild()  # Force immediate rebuild for test
         
         # Verify new value
         labels = self._find_labels_recursive(label)
@@ -6436,6 +6472,7 @@ class TestEfficientStyleUpdates:
         
         # Change font_name (structure property)
         label.font_name = 'RobotoMono-Regular'
+        label.force_rebuild()  # Force immediate rebuild for test
         
         # Collect widget ids after change
         ids_after = self._collect_widget_ids(label)
@@ -6717,7 +6754,10 @@ class TestDeferredRebuildScheduling:
         **Feature: label-compatibility, Property 7: Deferred rebuild scheduling**
         **Validates: Requirements 3.2**
         """
-        label = MarkdownLabel(text='Test content', font_name='Roboto')
+        # Use a different initial font to ensure the change is detected
+        # Use fonts that are known to be available in Kivy
+        initial_font = 'RobotoMono-Regular' if font_name != 'RobotoMono-Regular' else 'Roboto'
+        label = MarkdownLabel(text='Test content', font_name=initial_font)
         
         # Clear any pending state from initialization
         label._pending_rebuild = False
