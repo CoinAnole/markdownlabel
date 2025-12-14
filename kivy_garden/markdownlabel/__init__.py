@@ -102,6 +102,7 @@ class MarkdownLabel(BoxLayout):
         'line_height',
         'disabled',
         'disabled_color',
+        'base_direction',
     })
     """Properties that affect only visual styling and can be updated in-place.
     
@@ -122,7 +123,6 @@ class MarkdownLabel(BoxLayout):
         'outline_color',
         'disabled_outline_color',
         'mipmap',
-        'base_direction',
         'text_language',
         'limit_render_to_text_bbox',
     })
@@ -917,6 +917,7 @@ class MarkdownLabel(BoxLayout):
         self.bind(valign=self._make_style_callback('valign'))
         self.bind(disabled=self._make_style_callback('disabled'))
         self.bind(disabled_color=self._make_style_callback('disabled_color'))
+        self.bind(base_direction=self._make_style_callback('base_direction'))
 
         # Bind structure properties (require full rebuild)
         self.bind(font_name=self._make_style_callback('font_name'))
@@ -928,7 +929,6 @@ class MarkdownLabel(BoxLayout):
         self.bind(outline_color=self._make_style_callback('outline_color'))
         self.bind(disabled_outline_color=self._make_style_callback('disabled_outline_color'))
         self.bind(mipmap=self._make_style_callback('mipmap'))
-        self.bind(base_direction=self._make_style_callback('base_direction'))
         self.bind(text_language=self._make_style_callback('text_language'))
         self.bind(limit_render_to_text_bbox=self._make_style_callback('limit_render_to_text_bbox'))
 
@@ -1051,6 +1051,19 @@ class MarkdownLabel(BoxLayout):
         for child in self.children:
             update_font_size(child)
 
+    def _get_effective_halign(self):
+        """Compute effective halign based on auto and base_direction.
+        
+        Returns:
+            str: The effective horizontal alignment ('left', 'center', 'right', 'justify')
+        """
+        if self.halign != 'auto':
+            return self.halign
+        
+        if self.base_direction in ('rtl', 'weak_rtl'):
+            return 'right'
+        return 'left'
+
     def _update_styles_in_place(self):
         """Update style properties on existing child widgets without rebuild.
 
@@ -1076,8 +1089,8 @@ class MarkdownLabel(BoxLayout):
             list(self.disabled_outline_color) if self.disabled else list(self.outline_color)
         )
 
-        # Determine effective halign (convert 'auto' to 'left')
-        effective_halign = 'left' if self.halign == 'auto' else self.halign
+        # Determine effective halign using the new method
+        effective_halign = self._get_effective_halign()
 
         def update_widget(widget):
             """Recursively update style properties on widget and children.
@@ -1258,7 +1271,7 @@ class MarkdownLabel(BoxLayout):
             outline_color=list(self.outline_color),
             disabled_outline_color=list(self.disabled_outline_color),
             line_height=self.line_height,
-            halign=self.halign,
+            halign=self._get_effective_halign(),
             valign=self.valign,
             text_size=list(self.text_size) if self.text_size else [None, None],
             unicode_errors=self.unicode_errors,

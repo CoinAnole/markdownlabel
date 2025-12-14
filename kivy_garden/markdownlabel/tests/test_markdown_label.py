@@ -7808,3 +7808,545 @@ class TestLabelPaddingAliasSynchronization:
             f"Expected default label_padding=[0, 0, 0, 0], got {list(label.label_padding)}"
         assert self._padding_equal(list(label.text_padding), [0, 0, 0, 0]), \
             f"Expected default text_padding=[0, 0, 0, 0], got {list(label.text_padding)}"
+
+
+# **Feature: label-compatibility, Property 11: Auto alignment respects direction**
+# *For any* MarkdownLabel with halign='auto', when base_direction is 'rtl' or 'weak_rtl',
+# all child Labels SHALL have halign='right'; when base_direction is 'ltr', 'weak_ltr',
+# or None, all child Labels SHALL have halign='left'.
+# **Validates: Requirements 5.1, 5.2**
+
+class TestAutoAlignmentRespectsDirection:
+    """Property tests for auto alignment respecting direction (Property 11)."""
+    
+    def _find_labels_recursive(self, widget, labels=None):
+        """Recursively find all Label widgets in a widget tree."""
+        if labels is None:
+            labels = []
+        
+        if isinstance(widget, Label):
+            labels.append(widget)
+        
+        if hasattr(widget, 'children'):
+            for child in widget.children:
+                self._find_labels_recursive(child, labels)
+        
+        return labels
+    
+    @given(st.sampled_from(['rtl', 'weak_rtl']))
+    @settings(max_examples=100, deadline=None)
+    def test_auto_alignment_rtl_directions_use_right(self, base_direction):
+        """Auto alignment uses 'right' for RTL ban}"ctive_haligot {effet_halign}, giciexpllign()={effective_haget_pected _Ex      f"  , \
+    align= explicit_he_halign =ert effectiv    ass   align()
+ _effective_h._get labellign =ive_ha     effect  e
+ t valu the expliciould returnod shlign methve_haet_effecti_gThe # 
+        "
+        halign} {label., gotalign}it_hign={explic.halownLabelarkd"Expected M    f       gn, \
+ icit_halipl= exign =rt label.halasse
+        gn valueplicit hali exheuld store tbel shoownLakdThe Mar     #   
+   
+           )
+   ion_directbasedirection=se_          ba_halign,
+  ign=explicital      h       World',
+ext='Hello         tbel(
+    MarkdownLael =      lab"""
+          nts 5.4**
+equiremetes: R  **Valida      des auto**
+rrignment ovealicit  13: Expli Propertyatibility,abel-compature: l      **Fe 
+  et.
+        widgnLabelMarkdowectly on stored corr is align hplicit """Ex   ion):
+    base_directt_halign, pliciexself, get(ly_on_widorrectt_stored_calignmenexplicit_ test_ def)
+   eadline=None0, d10s=_examplengs(max@setti
+    )
+    ])ltr', Noneeak_r', 'w, 'lt'weak_rtl'rtl', om(['.sampled_fr        stfy']),
+justiht', ', 'rigenter''left', 'cmpled_from([sa    st.  (
+  
+    @given  align}"
+  lbl.ht {n change, goctior direfte) aicitgn} (explicit_halin={explpected halig   f"Ex          \
+   ign, xplicit_hal.halign == ert lbl     asse    fter:
+   n labels_a lbl i       forve(label)
+ bels_recursifind_laf._ter = selabels_af      lt value
+   explici remains thealignment# Verify 
+          
+      _directiontion = newse_direcel.ba    labtion
+     base_direcChange
+        #         .halign}"
+t {lbl golicit),expit_halign} (icexplal halign={tiinied "Expect         f      \
+ halign, plicit_align == exrt lbl.h        asseels:
+    l in lab  for lbign)
+      t hale explicid b(shoulnment  aligify initial# Ver               
+ el"
+e Labast onpected at leEx, ">= 1s) belsert len(la  asl)
+      labesive(recurels__labelf._findels = s
+        lab)
+                ection
+initial_dirtion=base_direc          lign,
+  t_halign=explici          ha
+  World',ext='Hello         tbel(
+     MarkdownLael =     lab"
+      ""    5.4**
+ rements s: Requiate **Valid     
+  **ides autooverrt alignment  ExpliciProperty 13:tibility, compa label-eature:    **F  
+  
+        s.n changeectioen base_dirunchanged whn remains it halig""Explic      "ection):
+  ew_direction, ntial_dirign, inihalplicit_self, exchange(y_direction_nchanged_blignment_uxplicit_aef test_e
+    de)=Non deadlineles=100,_examp(maxtings @set
+    )
+   tr', None]), 'weak_lltr'd_from(['mple       st.sa']),
+ _rtl 'weakl',m(['rtroampled_f        st.sfy']),
+, 'justit'gh'ri, 'center', eft'om(['lsampled_fr    st.iven(
+        @g 
+ign}"
+   halbl., got {ldirection}e_basection={se_dirtent with bad confor mixet) n} (expliciicit_halign={expl halig f"Expected           \
+    it_halign, gn == explic.halit lblasser           abels:
+ t_lntenbl in coor l  fn
+      ectiobase_dirf less ord, regacit haligne expli have thls shouldt labecontenll 
+        # A     
+   2.')], '', '1.'t not in ('•f lbl.tex ilsl in labe for lbels = [lbltent_lab  con     y design)
+ n='right' b have haligrkers (whichlist ma out ter    # Fil      
+    
+  nt" mixed contefor 2 Labels east l atected2, "Exp(labels) >=  lenassert
+        e(label)rsivls_recuf._find_labelabels = sel
+                       )
+n
+ _directioasection=b   base_dire    lign,
+     =explicit_hagnhali           text,
+ xt=markdown_        te    downLabel(
+label = Mark       tem'
+ \n- List itext\n\nParagraph ning\ = '# Headarkdown_text   m""
+     
+        " 5.4**rementss: Requi **Validate
+       auto**overrides alignment t 13: Expliciy, Property litompatibi label-c**Feature:
+              types.
+  content r mixed ction fobase_direes  overridalignplicit h"""Ex     ):
+   ction base_direign,cit_halxplit(self, ed_contenion_for_mixerectrrides_dient_ovet_alignmiciexpl test_def
+    line=None)0, dead10mples=(max_exattings    @see])
+    )
+Non_ltr', 'ltr', 'weak'weak_rtl', ['rtl', pled_from(      st.samfy']),
+  justight', 'rier', 'ft', 'centfrom(['led_le.samp  stn(
+      ive   @g"
+    
+ n}alig.hlblion}, got {base_directirection={e_dL basng with RTadior heit) fign} (explicalxplicit_halign={eExpected h         f"      lign, \
+ xplicit_haalign == eassert lbl.h           labels:
+ bl in       for lRTL
+  ight' from lign, not 'rexplicit had have the  shoul labelsAll       #        
+ "
+  Labelt least oneExpected als) >= 1, "n(labe assert le       )
+ursive(labellabels_rec self._find_abels =  l  
+      
+      
+        )ctione_diren=basectio   base_dir,
+         cit_halignli  halign=exp   
+       ext,g_teadint=h  tex   
+       bel(Lal = Markdown labe   
+    ading'st Hevel + ' Teing_lehead '#' * t =ng_tex      headi"
+         ""s 5.4**
+  Requirementalidates:
+        **Vs auto** overrideignmentxplicit alperty 13: Eility, Procompatibl-re: labe **Featu       
+        
+r headings.direction fo base_ides RTLrrgn ovelihaxplicit "E    ""evel):
+    eading_ln, hiose_directban, icit_haligf, explselngs(_for_headi_rtlridesert_ovalignmencit_xplit_edef tes)
+    ine=Nonedeadlamples=100, ings(max_exett
+    @s)
+    )=6alue, max_vue=1n_vals(mieger  st.int),
+      ak_rtl'] 'wertl',led_from(['  st.samp      y']),
+t', 'justifer', 'righ 'cent',ftom(['lempled_fr     st.saven(
+   
+    @gin}"
+    ligt {lbl.haection}, go={base_dirse_directionth baplicit) wihalign} (ex={explicit_ected halign"Exp    f          n, \
+  haligplicit_align == ex lbl.hrtse          asabels:
+  l in lor lb   f   
+  e_direction of basdlessn, regarcit haligthe explihave bels should # All la               
+ abel"
+e L on at leastxpected >= 1, "Eels)t len(lab    asser
+    ive(label)curs_labels_reself._findls =      labe
+              )
+   
+  ction_direction=base_dire    basen,
+        t_haligplici  halign=ex
+          llo World','Hext=     te
+       wnLabel(el = Markdo lab    """
+   
+        ents 5.4**es: Requiremdat**Vali      
+  es auto**overrident gnmplicit ali13: Exroperty ty, Patibililabel-comp**Feature:        
+ t.
+         all contenion forirectdes base_derriovhalign xplicit ""E      "ection):
+  dirn, base__halig, explicitselfrection(es_base_di_overridentt_alignmst_explici te
+    defne)eadline=No d00,les=1max_examps(ngsetti    )
+    @', None])
+weak_ltr, '_rtl', 'ltr'rtl', 'weak(['romsampled_f    st.    ),
+ify'] 'just 'right',enter',', 'cfrom(['leftmpled_     st.saen(
+   @giv  ls
+    
+  n labe    retur     
+    
+    labels)ld,ive(chirecurslabels_ self._find_              ildren:
+ et.chwidgn or child i           f
+ dren'):il(widget, 'chtrif hasat  
+              t)
+pend(widgeabels.ap      ll):
+      , Labedgetnce(wi if isinsta             
+  ls = []
+   labe   one:
+      is Nls labe if      """
+  e.idget tres in a wl widgetLabe all indecursively f"""R):
+        ls=Nonelabe widget, sive(self,_recurnd_labels_fif    de 
+ """
+   perty 13).g auto (Prot overridinignmen explicit alfor tests perty"Pro"
+    "Auto:idesverrignmentOExplicitAllass Test4**
+
+cents 5.rem: Requidatesalialue.
+# **Vtion vrec_dibases of rdlesgnment rega that aliseels SHALL uhild Labtify', all cor 'jusht',
+#  'rigter',t', 'cen 'lefy set toexplicitlhalign th wirkdownLabel r any* MaFouto**
+# *rides a overit alignmentExplic3: rty 1ity, Prope-compatibilelFeature: lab"
+
+
+# **halign} got {lbl.ection},_dir={newse_directionnging to bat after chaencontor mixed ' fign='rightpected hal f"Ex           , \
+    ight'gn == 'r.halirt lbl asse           after:
+labels_nt_ontebl in c for l           
+    )]
+.', '2.' ('•', '1in.text not after if lbln labels_ for lbl ir = [lbl_afteent_labels   cont
+     (label)ls_recursiveabef._find_lselfter = bels_ala        
+ for RTLd to 'right'nment updateify alig      # Ver
+        tion
+  rec= new_din irectiol.base_d labe     L
+  ion to RTse_directge bahan  # C
+      "
+        gn}{lbl.hali got _direction},itialction={inase_direntent with bed co' for mix='leftgninitial hali"Expected        f         ', \
+ 'leftign == lbl.halssert          alabels:
+  ent_in contlbl      for 
+   /None)ft' for LTRld be 'leent (shoulignmnitial aify i       # Ver       
+ '2.')]
+ , '1.', t in ('•'text nos if lbl.bell in la lbl forlabels = [lb    content_esign)
+    t' by dlign='righe ha(which hav markers t list Filter ou
+        #       ent"
+ nt mixed coabels forast 2 Lt leed aect>= 2, "Expls) ert len(labe ass  
+     abel)cursive(lbels_reind_la= self._flabels              
+
+         )irection
+  itial_don=inrectise_di      bato',
+      gn='au    hali     
+   xt,down_te=mark    text   
+     Label( = Markdownel     lab
+   ist item'\n\n- Lh text\nParagrap# Heading\n= 'text wn_kdomar"
+           ""     ents 5.3**
+es: Requirematid **Val       t**
+tes alignmenge updaanion chirect: Dy 12Propertlity, l-compatibiature: labeFe  **    
+      types.
+    t mixed contenfor  alignment esange updatn chDirectio     """ction):
+   w_diren, nerectio, initial_dilflignment(seates_aupdntent_xed_conge_mi_chaionst_direct   def teone)
+ ine=Ndldea0, ples=10amngs(max_exti
+    @set   )])
+ eak_rtl'', 'w['rtled_from(   st.sampl     ne]),
+, No_ltr''ltr', 'weakpled_from([sam st.
+       en(  
+    @giv after"
+  ter)}n(ids_affore, {le_before)} been(idschange: {lrection ing did durities change identf"Widget            ter, \
+af== ids_e beforssert ids_    a
+    t rebuild)note, ace updan-pl(ied rvseuld be preities shodent Widget i   #
+      el)
+       (labidget_ids= collect_wr     ids_afte    change
+ IDs after widget llect       # Co     
+ n
+   irectionew_direction = l.base_dbe    laion
+    se_directange ba    # Ch  
+        l)
+  ds(labewidget_illect_ coe =befor      ids_       
+  s)
+ urn set(id     ret
+       hild))widget_ids(ct_d(collec   ids.exten           n:
+      dget.childreild in wi     for ch
+           ildren'):get, 'chid(wsattr ha      if      widget)]
+s = [id(   id
+         dget):et_ids(wict_widg colle
+        defgere chanDs befot widget Illec       # Co       
+        )
+ rection
+ n=initial_ditio_direcase     b',
+       utolign='a     ha
+        World',t='Hello         texabel(
+   ownL= Markdl be
+        la  """*
+      5.3*s nt: Requiremees   **Validat   
+  gnment**aliates e upd changection12: Direrty y, Proppatibilit-combelature: la*Fe  *          
+
+    d).(no rebuilentities idget idserves whange preirection c""D       "ection):
+  new_dirdirection,l_, initiaies(selfdentitves_widget_ipreserion_change_rectdif test_)
+    deone=N0, deadlineamples=10gs(max_exttin  )
+    @sek_rtl'])
+  tl', 'wealed_from(['rt.samp s
+       ),', None]_ltr, 'weak(['ltr'ampled_from      st.s(
+  @given    
+}"
+    halignl. {lbgoton}, {new_directiction=ase_direing to bchangading after  he fort'n='righected halig"Exp        f       ht', \
+ == 'rign ig lbl.halrt asse           ls_after:
+abe in l   for lbl
+     bel)rsive(la_recu_find_labelsf.r = selte labels_af       for RTL
+ 'right'  toment updatedy align   # Verif 
+     on
+       ctiren = new_directiol.base_di    labeRTL
+    ction to direge base_ Chan       #  
+    n}"
+   t {lbl.haligction}, go_dire={initialrectionth base_diheading wieft' for 'lial halign=ted initec     f"Exp      \
+       == 'left',t lbl.halign    asser:
+        in labelsfor lbl     
+    None)' for LTR/ld be 'leftment (shouignl aly initia# Verif               
+Label"
+ t least one ted a= 1, "Expec(labels) >ert lenass
+        ive(label)recurss_elabf._find_ls = selbel   la            
+       )
+ tion
+ irecn=initial_dectioase_dir        b
+    o',halign='aut       t,
+     ng_tex  text=headi     l(
+     MarkdownLabel =    labe   eading'
+  l + ' Test Hng_leve headitext = '#' *  heading_     """
+         ents 5.3**
+Requiremes: Validat     **nt**
+   alignmeupdates e  changon: DirectiProperty 12ility, tibel-compa labFeature:  **      
+        
+t.ing alignmentes heade updaon chang"""Directi
+        on):rectidin, new__directio initialevel,ng_leadiment(self, hading_aligne_updates_heangtion_cht_direces    def te)
+ine=Nons=100, deadl(max_example   @settings   )
+ k_rtl'])
+ ['rtl', 'weaom(d_frample   st.s  
+   one]),, N 'weak_ltr'tr',['lfrom(sampled_st.),
+         max_value=6alue=1,s(min_vnteger.i  stven(
+         @gi    
+ 
+halign}"got {lbl.ction}, ew_direirection={nse_d bahanging to' after cleftalign='Expected h         f"
+       t', \n == 'lefaligrt lbl.h     asse    fter:
+   s_albl in label    for    e(label)
+ sivels_recurf._find_laber = sellabels_aft       /None
+ TR' for L 'leftd to updategnmenterify ali      # V  
+        
+ionectew_dirirection = n_del.base lab       e
+/Nonon to LTRase_directiange b# Ch 
+             
+  l.halign}"}, got {lbctionnitial_direirection={ifor base_dt' ghign='riinitial halxpected  f"E             
+  ght', \= 'rihalign =bl.assert l       :
+      labelsor lbl in)
+        for RTL'right' fshould be ignment (al aly initiVerif    #        
+ "
+    lone Labeast d at le"Expectels) >= 1, en(labessert l        ave(label)
+els_recursiind_lablf._fsels =        labe 
+          )
+  ion
+    tial_directniction=i   base_dire
+         o',halign='aut           o World',
+  text='Hell        l(
+   arkdownLabe  label = M   
+   """
+        nts 5.3**emes: Requiridate*Val    **
+    ment*ignupdates alge ion chan2: Direct 1ertyility, Prop-compatibelature: lab**Fe 
+             nment.
+  ates alig LTR upd tom RTLection fro base_dir""Changing      ":
+  _direction)rection, newitial_dient(self, ingnmtes_ali_to_ltr_updae_rtlction_chang test_dire def
+   e=None)deadlinples=100, xamngs(max_e
+    @setti )  None])
+ eak_ltr', ', 'wtr'lrom([.sampled_f        st,
+'])rtlak_['rtl', 'weom(t.sampled_fr       sen(
+  
+    @giv"
+   .halign}lbl got {n},ctioren={new_ditio base_direcg toinfter changt' arighhalign='xpected "E     f         , \
+  right' 'align ==.ht lbler      assr:
+       labels_aftelbl inor     f   l)
+ e(labeels_recursivlf._find_lab se =afterlabels_
+        for RTL' to 'rightent updated  alignmerify V       #
+        n
+ ew_directioction = nrebase_di     label.o RTL
+   ction tase_direnge b    # Cha           
+}"
+ l.halignn}, got {lbrectio_di{initialirection=ase_d bleft' forlign='nitial haected if"Exp               ', \
+  == 'leftignt lbl.hal    asser
+         labels: for lbl in  None)
+     r LTR/eft' fohould be 'lgnment (sial ali Verify init        #      
+Label"
+  east one ted at l"Expec= 1, bels) >rt len(la     asse   label)
+s_recursive(nd_labels = self._fi       label       
+       )
+ on
+  ectidirl_ction=initiabase_dire        to',
+    'au     halign=     
+  d', Worlllo='Hext         te   wnLabel(
+bel = Markdo     la
+   "    ""
+    ments 5.3**s: RequirelidateVa
+        ***alignment*es datange upDirection chy 12: ty, Propertatibiliabel-comp: l   **Feature 
+           gnment.
+ updates aliR to RTL tion from LTbase_direcg Changin"""    ):
+    direction, new_al_directionitient(self, inlignmates_a_to_rtl_updhange_ltrction_c test_dire    def=None)
+dline0, deaples=10ngs(max_exam   @setti
+    )
+ weak_rtl'])m(['rtl', 'pled_frot.sam        s
+, None]),tr''weak_lm(['ltr', rompled_fst.sa(
+        
+    @given   n labels
+        retur
+  )
+        labelsve(child,ls_recursid_labelf._fin      se     
+     children:n widget.ild ir ch fo         en'):
+  , 'childret(widgtr  if hasat       
+  dget)
+     d(wiappenls.  labe           Label):
+ance(widget,inst     if is     
+   ls = []
+          labe:
+     ls is None if labe
+       ee."""et tr in a widgabel widgetsd all Lely fin""Recursiv      "e):
+  , labels=Nonelf, widgetive(sbels_recursfind_la   def _ 
+ ""
+   ."12)ty ropergnment (P ali updatingion changes for directperty test  """Proignment:
+  pdatesAlngeUectionChass TestDir3**
+
+claments 5.uiretes: ReqValidament.
+# **lignfective aef
+# ect the newo refln updated tir haligLL have thes SHAetbel widgld Lal chianges, alction
+# ch base_direwhenent, dered contto' and renau halign='ithel wwnLab* Markdo
+# *For anygnment**li apdatesion change uct2: Direroperty 1ty, Pmpatibilibel-coature: la# **Fe
+
+n}"
+bl.halig {lon}, gotdirectise_ection={bath base_dirent wi contfor mixedeft' lign='lpected ha  f"Ex              \
+= 'left', lbl.halign =ssert           a_labels:
+  ntcontel in   for lbNone
+      ctions and or LTR direeft' flign='le hahavshould els abent l All cont  #    
+         ', '2.')]
+ in ('•', '1.not lbl.text labels if  in  for lblels = [lbllabtent_       con
+ ' by design)ghte halign='riwhich havt markers ( lislter out      # Fi
+         nt"
+  mixed conte forast 2 Labelsed at leExpects) >= 2, "belert len(la  ass    abel)
+  ive(ls_recursd_labelinself._fabels =    l   
+               )
+  irection
+ =base_d_direction   base     
+    gn='auto',    hali        n_text,
+ext=markdow       t   abel(
+  downL = Mark      labelem'
+  - List it text\n\naragraphn\nPding\xt = '# Hearkdown_te    ma"""
+            1, 5.2**
+rements 5. Requiidates:*Val        *rection**
+respects di alignment 11: Autooperty  Prmpatibility,label-coFeature: 
+        **       types.
+  contentes to mixed tion applith LTR direcnt winme"Auto alig ""  on):
+     se_directient(self, baixed_contto_mapplies_t_ltr_alignmento_audef test_
+    e=None)lin0, dead_examples=10settings(max @one]))
+   weak_ltr', Nltr', 'rom(['t.sampled_fven(s   @gi"
+    
+ .halign}n}, got {lblase_direction={base_directiotent with bed con mixor' fightgn='rted hali    f"Expec          
+  'right', \lign == bl.haert l       ass   :
+  t_labelsl in conten for lbons
+       L directi' for RTlign='rightuld have haels shoontent lab     # All c     
+  )]
+    '2.'', '1.',  in ('•l.text notabels if lbl in lbl for lb[l = elsntent_lab     co  
+ sign)' by derightign='ch have halrs (whist markeout liter      # Fil   
+   ent"
+      contor mixed2 Labels f least d atpecte"Ex >= 2, els)en(lab assert ll)
+       sive(laberecurfind_labels_lf._= selabels      
+       )
+        ction
+    iretion=base_d_direc base     
+      ',autohalign='      t,
+      down_texrk    text=ma        (
+arkdownLabel  label = M
+       item' List text\n\n-aragraphn\nPding\'# Heat = n_texrkdow ma         """
+ 5.2**
+     nts 5.1, : Requiremeidates    **Val**
+    s directionnt respectalignme11: Auto  Property atibility,-compure: label**Feat         
+    
+   s. typexed contentmipplies to ection air dRTLnt with meto align   """Au    tion):
+ rece_dif, basnt(seled_contemixto_s_rtl_appliegnment_uto_ali test_a   def=None)
+ , deadlinemples=100max_exatings(@settl']))
+    k_r', 'wead_from(['rtlmplesaiven(st.@g
+       gn}"
+ bl.hali, got {lction}ase_direrection={bth base_diheading wior ' falign='leftcted h"Expe        f  , \
+      t'== 'lefign bl.halrt lsse  a        
+  bels:in lar lbl 
+        fo Noneanddirections ' for LTR n='lefte haliguld havs sho All label  #            
+ l"
+ e Labeast oncted at le"Expe >= 1, len(labels)    assert )
+    sive(labels_recurd_labelf._finbels = sella          
+  )
+      tion
+      ece_dirn=basdirectioe_as       bto',
+     'au   halign=      ,
+   eading_textext=h   t         nLabel(
+dowrkbel = Ma la  ding'
+      ' Test Heal +_leveading = '#' * he_textng      headi"
+         "" 5.2**
+ rements 5.1,: Requiateslid       **Va
+ direction**spects nt remegno aliAut 11: tyProperibility, ompature: label-cat        **Fe  
+   
+   bels.ading La to hen applies directioTRment with Lign al"""Auto  el):
+      ng_levheadition, direc base_(self,ngsdilies_to_heatr_applignment_lest_auto_a)
+    def teadline=None100, dxamples=s(max_eetting)
+    @se=6)
+    _valualue=1, maxers(min_v    st.intege]),
+    _ltr', Non', 'weakm(['ltrfrompled_   st.sa     (
+
+    @given   "
+ lbl.halign}got {direction}, se_rection={baith base_di heading w' for'rightd halign=f"Expecte           , \
+     ight' 'rlign ==rt lbl.ha  asse         n labels:
+  ior lbl     fections
+   RTL diror ht' figign='r haluld have labels sho# All
+         l"
+       ne Labed at least ote 1, "Expecabels) >=n(l assert leel)
+       ive(laburs_rec_labelsself._findabels =       l       
+
+   
+        )ection=base_dirtiondirece_        bas  
+  o', halign='aut          g_text,
+ t=headin    tex       
+ (ownLabelrkdabel = Ma     lng'
+   Headi + ' Test elheading_levxt = '#' * heading_te        """
+ *
+        5.1, 5.2*uirementsates: Req   **Validon**
+     ts directispecnment re: Auto alig11roperty ibility, Pmpatel-coeature: lab**F
+        
+        ls.eading Labepplies to hirection awith RTL dent nmligo a  """Aut
+      l):eveeading_ldirection, h(self, base_ingseadapplies_to_hrtl_ment_lignuto_a def test_a=None)
+   dlinees=100, deax_exampl@settings(ma   
+    )
+ ue=6)ale=1, max_valus(min_vst.integer        ),
+_rtl']l', 'weak['rted_from( st.sampl       @given(
+   
+    "
+ n}haligot {lbl.}, gdirectione_{base_direction=ft' for basn='lealigd hte f"Expec          
+     t', \ == 'lefbl.halign assert l     :
+      elsin lab    for lbl     nd None
+ons arectiLTR difor t' halign='lefhave should labels   # All   
+        bel"
+    t one Lacted at leas 1, "Expeels) >=len(lab  assert )
+      abelve(lsi_recurabelsf._find_lellabels = s          
+             )
+ction
+ ase_diretion=bdirec  base_      auto',
+    lign='ha      ,
+      ld'llo WorHe      text='el(
+      kdownLablabel = Mar"
+            ""  2**
+  1, 5.ments 5.uiredates: ReqliVa   **
+     **ction diretsspect reeno alignm1: AutProperty 1atibility, : label-comp**Feature        
+     one.
+    and Nrections base di for LTRses 'left'lignment u"Auto a    ""ion):
+    ectbase_dirlf, _use_left(se_directionsent_ltr_auto_alignm   def teste)
+ =Non00, deadlinees=1max_examplsettings(e]))
+    @ontr', Nak_l'we, r'ed_from(['lt(st.sampl   @given  
+ gn}"
+  t {lbl.hali}, gotion={base_direcondirectibase_for gn='right'  hali"Expected  f         \
+      ight', 'rl.halign ==  assert lb    :
+      lsbebl in laor l   ftions
+      RTL direcght' fore halign='rishould havlabels     # All       
+    
+  one Label"st ea lpected at, "Ex) >= 1t len(labels    asserabel)
+    ve(lls_recursiabed_l._fin = self    labels    
+     )
+       ction
+    on=base_direse_directi          ba
+  uto', halign='a           lo World',
+Hel='   text
+         (abelMarkdownL  label = 
+      """
+        2**.1, 5.ments 5quire Relidates:        **Vaon**
+directipects ent reslignmy 11: Auto a Propertlity,-compatibi: labelture  **Fea       
+  ns.
+     tioirecse d

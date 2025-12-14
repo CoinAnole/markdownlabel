@@ -127,8 +127,8 @@ class KivyRenderer:
         self.outline_color = outline_color or [0, 0, 0, 1]
         self.disabled_outline_color = disabled_outline_color or [0, 0, 0, 1]
         self.line_height = line_height
-        # Convert 'auto' to 'left' for actual rendering
-        self.halign = 'left' if halign == 'auto' else halign
+        # Use the effective halign passed from MarkdownLabel
+        self.halign = halign
         self.valign = valign
         self.text_size = text_size or [None, None]
         self.unicode_errors = unicode_errors

@@ -110,25 +110,25 @@
 - [x] 6. Checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 7. Implement RTL-aware auto alignment
-  - [ ] 7.1 Add `_get_effective_halign()` method
+- [-] 7. Implement RTL-aware auto alignment
+  - [x] 7.1 Add `_get_effective_halign()` method
     - Return explicit halign if not 'auto'
     - Return 'right' if base_direction is 'rtl' or 'weak_rtl'
     - Return 'left' otherwise
     - _Requirements: 5.1, 5.2, 5.4_
-  - [ ] 7.2 Update KivyRenderer to use effective halign
+  - [x] 7.2 Update KivyRenderer to use effective halign
     - Pass effective halign instead of raw halign
     - Apply to all child Labels
     - _Requirements: 5.1, 5.2_
-  - [ ] 7.3 Update `_update_styles_in_place()` for alignment
+  - [x] 7.3 Update `_update_styles_in_place()` for alignment
     - Use `_get_effective_halign()` when updating child Labels
     - Handle base_direction changes
     - _Requirements: 5.3_
-  - [ ] 7.4 Bind base_direction changes to style update
+  - [x] 7.4 Bind base_direction changes to style update
     - Ensure alignment updates when base_direction changes
     - Use in-place update, not full rebuild
     - _Requirements: 5.3_
-  - [ ] 7.5 Write property test for auto alignment respects direction
+  - [x] 7.5 Write property test for auto alignment respects direction
     - **Property 11: Auto alignment respects direction**
     - **Validates: Requirements 5.1, 5.2**
   - [ ] 7.6 Write property test for direction change updates alignment
