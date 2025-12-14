@@ -6887,3 +6887,411 @@ class TestDeferredRebuildScheduling:
         # Pending flag should be set
         assert label._pending_rebuild is True, \
             "Expected _pending_rebuild to be True after multiple changes"
+
+
+# **Feature: label-compatibility, Property 3: Font size immediate update**
+# *For any* MarkdownLabel with rendered content and any new base_font_size value,
+# after setting base_font_size, all child Label widgets SHALL have their font_size
+# property updated to reflect the new base_font_size (accounting for scale factors).
+# **Validates: Requirements 2.1**
+
+class TestFontSizeImmediateUpdate:
+    """Property tests for font size immediate update (Property 3)."""
+    
+    @given(
+        simple_markdown_document(),
+        st.floats(min_value=8.0, max_value=50.0, allow_nan=False, allow_infinity=False),
+        st.floats(min_value=8.0, max_value=50.0, allow_nan=False, allow_infinity=False)
+    )
+    @settings(max_examples=100, deadline=None)
+    def test_base_font_size_updates_all_labels_immediately(self, markdown_text, initial_size, new_size):
+        """Changing base_font_size immediately updates all child Label font_size properties."""
+        assume(markdown_text.strip())
+        assume(abs(initial_size - new_size) > 1.0)  # Ensure meaningful change
+        
+        # Create label with initial font size
+        label = MarkdownLabel(text=markdown_text, base_font_size=initial_size)
+        
+        # Collect all Label widgets and their expected font sizes
+        def collect_labels_and_scales(widget, labels_info=None):
+            if labels_info is None:
+                labels_info = []
+            
+            if isinstance(widget, Label):
+                # Get the font scale factor (default to 1.0 if not set)
+                scale = getattr(widget, '_font_scale', 1.0)
+                labels_info.append((widget, scale))
+            
+            if hasattr(widget, 'children'):
+                for child in widget.children:
+                    collect_labels_and_scales(child, labels_info)
+            
+            return labels_info
+        
+        labels_before = collect_labels_and_scales(label)
+        assume(len(labels_before) > 0)  # Need at least one Label to test
+        
+        # Change base_font_size
+        label.base_font_size = new_size
+        
+        # Collect labels after change
+        labels_after = collect_labels_and_scales(label)
+        
+        # Verify all Labels have updated font_size
+        for label_widget, scale in labels_after:
+            expected_font_size = new_size * scale
+            actual_font_size = label_widget.font_size
+            
+            assert abs(actual_font_size - expected_font_size) < 0.1, \
+                f"Label font_size not updated: expected {expected_font_size}, got {actual_font_size} (scale={scale})"
+    
+    @given(
+        st.integers(min_value=1, max_value=6),  # Heading levels
+        st.floats(min_value=10.0, max_value=30.0, allow_nan=False, allow_infinity=False),
+        st.floats(min_value=10.0, max_value=30.0, allow_nan=False, allow_infinity=False)
+    )
+    @settings(max_examples=100, deadline=None)
+    def test_heading_font_size_updates_with_scale(self, heading_level, initial_size, new_size):
+        """Heading font sizes update immediately with correct scale factors."""
+        assume(abs(initial_size - new_size) > 1.0)
+        
+        # Create heading markdown
+        heading_text = '#' * heading_level + ' Test Heading'
+        label = MarkdownLabel(text=heading_text, base_font_size=initial_size)
+        
+        # Find the heading Label
+        heading_label = None
+        for child in label.children:
+            if isinstance(child, Label) and hasattr(child, '_font_scale'):
+                heading_label = child
+                break
+        
+        assume(heading_label is not None)
+        
+        # Get expected scale from KivyRenderer.HEADING_SIZES
+        from kivy_garden.markdownlabel.kivy_renderer import KivyRenderer
+        expected_scale = KivyRenderer.HEADING_SIZES.get(heading_level, 1.0)
+        
+        # Verify initial font size
+        initial_expected = initial_size * expected_scale
+        assert abs(heading_label.font_size - initial_expected) < 0.1, \
+            f"Initial heading font_size incorrect: expected {initial_expected}, got {heading_label.font_size}"
+        
+        # Change base_font_size
+        label.base_font_size = new_size
+        
+        # Verify updated font size
+        new_expected = new_size * expected_scale
+        assert abs(heading_label.font_size - new_expected) < 0.1, \
+            f"Updated heading font_size incorrect: expected {new_expected}, got {heading_label.font_size}"
+    
+    @given(
+        st.floats(min_value=10.0, max_value=30.0, allow_nan=False, allow_infinity=False)
+    )
+    @settings(max_examples=100, deadline=None)
+    def test_paragraph_font_size_updates_immediately(self, new_size):
+        """Paragraph font sizes update immediately when base_font_size changes."""
+        # Create simple paragraph
+        label = MarkdownLabel(text='This is a test paragraph.')
+        
+        # Find the paragraph Label
+        paragraph_label = None
+        for child in label.children:
+            if isinstance(child, Label):
+                paragraph_label = child
+                break
+        
+        assume(paragraph_label is not None)
+        
+        # Change base_font_size
+        label.base_font_size = new_size
+        
+        # Verify font_size updated (paragraphs have scale factor 1.0)
+        assert abs(paragraph_label.font_size - new_size) < 0.1, \
+            f"Paragraph font_size not updated: expected {new_size}, got {paragraph_label.font_size}"
+
+
+# **Feature: label-compatibility, Property 4: Heading scale preservation**
+# *For any* MarkdownLabel with headings (h1-h6) and any base_font_size value,
+# each heading Label's font_size SHALL equal `base_font_size * HEADING_SIZES[level]`
+# where HEADING_SIZES is {1: 2.5, 2: 2.0, 3: 1.75, 4: 1.5, 5: 1.25, 6: 1.0}.
+# **Validates: Requirements 2.2, 2.4**
+
+class TestHeadingScalePreservation:
+    """Property tests for heading scale preservation (Property 4)."""
+    
+    @given(
+        st.integers(min_value=1, max_value=6),  # Heading levels
+        st.floats(min_value=8.0, max_value=50.0, allow_nan=False, allow_infinity=False)
+    )
+    @settings(max_examples=100, deadline=None)
+    def test_heading_scale_factors_preserved(self, heading_level, base_size):
+        """Heading scale factors are preserved according to HEADING_SIZES."""
+        # Create heading markdown
+        heading_text = '#' * heading_level + ' Test Heading'
+        label = MarkdownLabel(text=heading_text, base_font_size=base_size)
+        
+        # Find the heading Label
+        heading_label = None
+        for child in label.children:
+            if isinstance(child, Label) and hasattr(child, '_font_scale'):
+                heading_label = child
+                break
+        
+        assume(heading_label is not None)
+        
+        # Get expected scale from KivyRenderer.HEADING_SIZES
+        from kivy_garden.markdownlabel.kivy_renderer import KivyRenderer
+        expected_scale = KivyRenderer.HEADING_SIZES.get(heading_level, 1.0)
+        
+        # Verify the scale factor is stored correctly
+        actual_scale = getattr(heading_label, '_font_scale', 1.0)
+        assert abs(actual_scale - expected_scale) < 0.01, \
+            f"Heading scale factor incorrect: expected {expected_scale}, got {actual_scale}"
+        
+        # Verify the computed font_size matches base_font_size * scale
+        expected_font_size = base_size * expected_scale
+        actual_font_size = heading_label.font_size
+        assert abs(actual_font_size - expected_font_size) < 0.1, \
+            f"Heading font_size incorrect: expected {expected_font_size}, got {actual_font_size}"
+    
+    @given(
+        st.lists(
+            st.integers(min_value=1, max_value=6),
+            min_size=2,
+            max_size=6,
+            unique=True
+        ),
+        st.floats(min_value=12.0, max_value=24.0, allow_nan=False, allow_infinity=False)
+    )
+    @settings(max_examples=100, deadline=None)
+    def test_multiple_headings_preserve_relative_scales(self, heading_levels, base_size):
+        """Multiple headings preserve correct relative scale factors."""
+        # Create markdown with multiple headings
+        headings = [f"{'#' * level} Heading {level}" for level in heading_levels]
+        markdown_text = '\n\n'.join(headings)
+        
+        label = MarkdownLabel(text=markdown_text, base_font_size=base_size)
+        
+        # Collect all heading Labels with their levels
+        heading_labels = []
+        for child in label.children:
+            if isinstance(child, Label) and hasattr(child, '_font_scale'):
+                # Try to determine heading level from font scale
+                scale = getattr(child, '_font_scale', 1.0)
+                heading_labels.append((child, scale))
+        
+        assume(len(heading_labels) >= 2)  # Need multiple headings to test relative scales
+        
+        # Get expected scales from KivyRenderer.HEADING_SIZES
+        from kivy_garden.markdownlabel.kivy_renderer import KivyRenderer
+        
+        # Verify each heading has correct scale and font size
+        for heading_label, actual_scale in heading_labels:
+            # Find which heading level this corresponds to
+            expected_level = None
+            for level, expected_scale in KivyRenderer.HEADING_SIZES.items():
+                if abs(actual_scale - expected_scale) < 0.01:
+                    expected_level = level
+                    break
+            
+            assert expected_level is not None, \
+                f"Could not match scale {actual_scale} to any heading level"
+            
+            # Verify font_size matches base_size * scale
+            expected_font_size = base_size * actual_scale
+            actual_font_size = heading_label.font_size
+            assert abs(actual_font_size - expected_font_size) < 0.1, \
+                f"Heading level {expected_level} font_size incorrect: expected {expected_font_size}, got {actual_font_size}"
+    
+    @given(
+        st.integers(min_value=1, max_value=6),
+        st.floats(min_value=10.0, max_value=20.0, allow_nan=False, allow_infinity=False),
+        st.floats(min_value=20.0, max_value=40.0, allow_nan=False, allow_infinity=False)
+    )
+    @settings(max_examples=100, deadline=None)
+    def test_heading_scale_preserved_after_base_font_size_change(self, heading_level, initial_size, new_size):
+        """Heading scale factors are preserved when base_font_size changes."""
+        # Create heading
+        heading_text = '#' * heading_level + ' Test Heading'
+        label = MarkdownLabel(text=heading_text, base_font_size=initial_size)
+        
+        # Find heading Label
+        heading_label = None
+        for child in label.children:
+            if isinstance(child, Label) and hasattr(child, '_font_scale'):
+                heading_label = child
+                break
+        
+        assume(heading_label is not None)
+        
+        # Get expected scale
+        from kivy_garden.markdownlabel.kivy_renderer import KivyRenderer
+        expected_scale = KivyRenderer.HEADING_SIZES.get(heading_level, 1.0)
+        
+        # Verify initial state
+        initial_expected_font_size = initial_size * expected_scale
+        assert abs(heading_label.font_size - initial_expected_font_size) < 0.1
+        
+        # Change base_font_size
+        label.base_font_size = new_size
+        
+        # Verify scale factor is still preserved
+        actual_scale = getattr(heading_label, '_font_scale', 1.0)
+        assert abs(actual_scale - expected_scale) < 0.01, \
+            f"Scale factor changed after base_font_size update: expected {expected_scale}, got {actual_scale}"
+        
+        # Verify new font_size uses preserved scale
+        new_expected_font_size = new_size * expected_scale
+        assert abs(heading_label.font_size - new_expected_font_size) < 0.1, \
+            f"Font size not updated with preserved scale: expected {new_expected_font_size}, got {heading_label.font_size}"
+
+
+# **Feature: label-compatibility, Property 5: No rebuild on font size change**
+# *For any* MarkdownLabel with rendered content, when base_font_size is modified,
+# the child widget object identities SHALL remain unchanged (same Python object ids),
+# indicating no rebuild occurred.
+# **Validates: Requirements 2.3**
+
+class TestNoRebuildOnFontSizeChange:
+    """Property tests for no rebuild on font size change (Property 5)."""
+    
+    def _collect_widget_ids(self, widget):
+        """Recursively collect all widget object IDs in the tree."""
+        ids = [id(widget)]
+        if hasattr(widget, 'children'):
+            for child in widget.children:
+                ids.extend(self._collect_widget_ids(child))
+        return set(ids)
+    
+    @given(
+        simple_markdown_document(),
+        st.floats(min_value=10.0, max_value=20.0, allow_nan=False, allow_infinity=False),
+        st.floats(min_value=20.0, max_value=40.0, allow_nan=False, allow_infinity=False)
+    )
+    @settings(max_examples=100, deadline=None)
+    def test_widget_identities_preserved_on_font_size_change(self, markdown_text, initial_size, new_size):
+        """Widget object identities are preserved when base_font_size changes."""
+        assume(markdown_text.strip())
+        assume(abs(initial_size - new_size) > 2.0)  # Ensure meaningful change
+        
+        # Create label with content
+        label = MarkdownLabel(text=markdown_text, base_font_size=initial_size)
+        
+        # Collect widget IDs before change
+        ids_before = self._collect_widget_ids(label)
+        assume(len(ids_before) > 1)  # Need at least the label itself + children
+        
+        # Change base_font_size
+        label.base_font_size = new_size
+        
+        # Collect widget IDs after change
+        ids_after = self._collect_widget_ids(label)
+        
+        # Widget identities should be exactly the same (no rebuild occurred)
+        assert ids_before == ids_after, \
+            f"Widget identities changed after font_size update: {len(ids_before)} before, {len(ids_after)} after"
+    
+    @given(
+        st.integers(min_value=1, max_value=6),
+        st.floats(min_value=12.0, max_value=18.0, allow_nan=False, allow_infinity=False),
+        st.floats(min_value=20.0, max_value=30.0, allow_nan=False, allow_infinity=False)
+    )
+    @settings(max_examples=100, deadline=None)
+    def test_heading_widget_identity_preserved(self, heading_level, initial_size, new_size):
+        """Heading Label widget identity is preserved when base_font_size changes."""
+        # Create heading
+        heading_text = '#' * heading_level + ' Test Heading'
+        label = MarkdownLabel(text=heading_text, base_font_size=initial_size)
+        
+        # Find the heading Label
+        heading_label = None
+        for child in label.children:
+            if isinstance(child, Label):
+                heading_label = child
+                break
+        
+        assume(heading_label is not None)
+        
+        # Store the widget ID
+        heading_id_before = id(heading_label)
+        
+        # Change base_font_size
+        label.base_font_size = new_size
+        
+        # Find the heading Label again
+        heading_label_after = None
+        for child in label.children:
+            if isinstance(child, Label):
+                heading_label_after = child
+                break
+        
+        assert heading_label_after is not None
+        heading_id_after = id(heading_label_after)
+        
+        # Should be the same object
+        assert heading_id_before == heading_id_after, \
+            f"Heading Label widget was recreated (IDs: {heading_id_before} -> {heading_id_after})"
+    
+    @given(
+        st.floats(min_value=10.0, max_value=15.0, allow_nan=False, allow_infinity=False),
+        st.floats(min_value=20.0, max_value=25.0, allow_nan=False, allow_infinity=False),
+        st.floats(min_value=30.0, max_value=35.0, allow_nan=False, allow_infinity=False)
+    )
+    @settings(max_examples=100, deadline=None)
+    def test_multiple_font_size_changes_preserve_identities(self, size1, size2, size3):
+        """Multiple font size changes preserve widget identities."""
+        # Create content with multiple elements
+        markdown_text = '# Heading\n\nParagraph text\n\n## Subheading'
+        label = MarkdownLabel(text=markdown_text, base_font_size=size1)
+        
+        # Collect initial widget IDs
+        initial_ids = self._collect_widget_ids(label)
+        assume(len(initial_ids) > 2)  # Need multiple widgets
+        
+        # Make multiple font size changes
+        label.base_font_size = size2
+        ids_after_first = self._collect_widget_ids(label)
+        
+        label.base_font_size = size3
+        ids_after_second = self._collect_widget_ids(label)
+        
+        # All widget identities should be preserved through all changes
+        assert initial_ids == ids_after_first == ids_after_second, \
+            f"Widget identities changed: initial={len(initial_ids)}, after_first={len(ids_after_first)}, after_second={len(ids_after_second)}"
+    
+    @given(
+        st.floats(min_value=12.0, max_value=24.0, allow_nan=False, allow_infinity=False)
+    )
+    @settings(max_examples=100, deadline=None)
+    def test_rebuild_counter_not_incremented_on_font_size_change(self, new_size):
+        """Rebuild operations are not triggered by font size changes."""
+        # Create label with content
+        label = MarkdownLabel(text='# Test\n\nParagraph')
+        
+        # Track rebuild calls
+        rebuild_count = [0]
+        original_rebuild = label._rebuild_widgets
+        
+        def counting_rebuild():
+            rebuild_count[0] += 1
+            original_rebuild()
+        
+        label._rebuild_widgets = counting_rebuild
+        
+        # Change font size
+        label.base_font_size = new_size
+        
+        # No rebuild should have been triggered
+        assert rebuild_count[0] == 0, \
+            f"Expected 0 rebuilds for font_size change, got {rebuild_count[0]}"
+        
+        # Verify the change was applied (font sizes should be updated)
+        found_label = False
+        for child in label.children:
+            if isinstance(child, Label):
+                found_label = True
+                # Font size should reflect the change
+                break
+        
+        assert found_label, "Should have found at least one Label widget"

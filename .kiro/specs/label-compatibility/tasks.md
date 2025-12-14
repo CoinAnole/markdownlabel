@@ -29,7 +29,7 @@
     - **Property 7: Deferred rebuild scheduling**
     - **Validates: Requirements 3.2**
 
-- [ ] 2. Implement font scale metadata and in-place font size updates
+- [x] 2. Implement font scale metadata and in-place font size updates
   - [x] 2.1 Add `_font_scale` attribute to Labels in KivyRenderer
     - Set `_font_scale = 1.0` for body text Labels
     - Set `_font_scale = HEADING_SIZES[level]` for heading Labels
@@ -44,17 +44,17 @@
     - Ensure font size changes don't trigger rebuild
     - Verify heading scales are preserved
     - _Requirements: 2.3_
-  - [ ] 2.4 Write property test for font size immediate update
+  - [x] 2.4 Write property test for font size immediate update
     - **Property 3: Font size immediate update**
     - **Validates: Requirements 2.1**
-  - [ ] 2.5 Write property test for heading scale preservation
+  - [x] 2.5 Write property test for heading scale preservation
     - **Property 4: Heading scale preservation**
     - **Validates: Requirements 2.2, 2.4**
-  - [ ] 2.6 Write property test for no rebuild on font size change
+  - [x] 2.6 Write property test for no rebuild on font size change
     - **Property 5: No rebuild on font size change**
     - **Validates: Requirements 2.3**
 
-- [ ] 3. Checkpoint - Ensure all tests pass
+- [x] 3. Checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 4. Implement content clipping with StencilView
