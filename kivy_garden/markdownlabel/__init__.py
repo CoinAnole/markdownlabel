@@ -74,7 +74,6 @@ class MarkdownLabel(BoxLayout):
     # Structure properties require a full widget tree rebuild
     
     STYLE_ONLY_PROPERTIES = frozenset({
-        'font_size',
         'color',
         'halign',
         'valign',
