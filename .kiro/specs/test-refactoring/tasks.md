@@ -1,16 +1,16 @@
 # Implementation Plan
 
-- [ ] 1. Set up shared test infrastructure
+- [x] 1. Set up shared test infrastructure
   - Create `test_utils.py` with shared Hypothesis strategies and helper functions
   - Create `conftest.py` for shared fixtures and pytest configuration
   - Extract and consolidate common test utilities from the original file
   - _Requirements: 3.1, 3.4_
 
-- [ ] 1.1 Write property test for shared strategy availability
+- [x] 1.1 Write property test for shared strategy availability
   - **Property 6: Shared Strategy Availability**
   - **Validates: Requirements 3.2**
 
-- [ ] 1.2 Write property test for helper function consolidation
+- [x] 1.2 Write property test for helper function consolidation
   - **Property 7: Helper Function Consolidation**
   - **Validates: Requirements 3.3**
 
