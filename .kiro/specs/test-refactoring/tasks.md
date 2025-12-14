@@ -14,17 +14,17 @@
   - **Property 7: Helper Function Consolidation**
   - **Validates: Requirements 3.3**
 
-- [ ] 2. Create core functionality test module
+- [x] 2. Create core functionality test module
   - Create `test_core_functionality.py`
   - Move `TestWidgetTreeGeneration`, `TestReactiveTextUpdates`, `TestLinkRefMarkup`, `TestDeepNestingStability` classes
   - Update imports to use shared utilities
   - _Requirements: 1.1, 1.4, 2.1, 2.2_
 
-- [ ] 2.1 Write property test for test name preservation
+- [x] 2.1 Write property test for test name preservation
   - **Property 2: Test Name Preservation**
   - **Validates: Requirements 2.2**
 
-- [ ] 2.2 Write property test for module line count constraint
+- [x] 2.2 Write property test for module line count constraint
   - **Property 1: Module Line Count Constraint**
   - **Validates: Requirements 1.3**
 
