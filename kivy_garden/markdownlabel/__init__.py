@@ -33,11 +33,33 @@ import mistune
 from mistune.plugins.table import table
 from mistune.plugins.formatting import strikethrough
 
+from kivy.uix.stencilview import StencilView
+
 from .inline_renderer import InlineRenderer
 from .kivy_renderer import KivyRenderer
 from .markdown_serializer import MarkdownSerializer
 
 __all__ = ('MarkdownLabel', 'InlineRenderer', 'KivyRenderer', 'MarkdownSerializer')
+
+
+class _ClippingContainer(StencilView):
+    """Internal container that clips content to its bounds.
+    
+    This class extends StencilView to provide content clipping when:
+    - text_size[1] is not None (height-constrained), OR
+    - strict_label_mode is True with a fixed height
+    
+    The StencilView uses stencil graphics instructions to efficiently clip
+    any drawing outside its bounding box.
+    
+    Note: StencilView is not a Layout, so it doesn't have minimum_height.
+    The height must be set explicitly by the parent MarkdownLabel.
+    """
+    
+    def __init__(self, **kwargs):
+        super(_ClippingContainer, self).__init__(**kwargs)
+        # Disable size_hint_y so we can set explicit height
+        self.size_hint_y = None
 
 from ._version import __version__
 
@@ -1157,6 +1179,26 @@ class MarkdownLabel(BoxLayout):
         self._pending_rebuild = False
         self._rebuild_widgets()
 
+    def _needs_clipping(self):
+        """Determine if content clipping is needed.
+        
+        Clipping is needed when:
+        - text_size[1] is not None (height-constrained), OR
+        - strict_label_mode is True AND height is explicitly set
+        
+        Returns:
+            bool: True if clipping should be applied
+        """
+        # Check if text_size height is constrained
+        if self.text_size and self.text_size[1] is not None:
+            return True
+        
+        # Check if strict_label_mode is True with explicit height
+        if self.strict_label_mode and self.size_hint_y is None:
+            return True
+        
+        return False
+
     def _rebuild_widgets(self):
         """Parse the Markdown text and rebuild the widget tree."""
         # Clear existing children
@@ -1217,11 +1259,40 @@ class MarkdownLabel(BoxLayout):
         # Bind ref_press events from child Labels to bubble up
         self._bind_ref_press_events(content)
         
-        # Add rendered content
-        # Note: content.children is in reverse order, so we reverse it to maintain document order
-        for child in reversed(list(content.children)):
-            content.remove_widget(child)
-            self.add_widget(child)
+        # Determine if clipping is needed
+        needs_clipping = self._needs_clipping()
+        
+        if needs_clipping:
+            # Wrap content in a clipping container
+            clipping_container = _ClippingContainer()
+            
+            # Set the clipping container height based on constraints
+            if self.text_size and self.text_size[1] is not None:
+                # Use text_size height as the clipping height
+                clipping_container.height = self.text_size[1]
+            elif self.strict_label_mode and self.height:
+                # Use widget height as the clipping height
+                clipping_container.height = self.height
+                # Bind to parent height changes
+                self.bind(height=clipping_container.setter('height'))
+            
+            # Bind width to parent for proper layout
+            clipping_container.size_hint_x = None
+            self.bind(width=clipping_container.setter('width'))
+            clipping_container.width = self.width
+            
+            # Add rendered content to clipping container
+            for child in reversed(list(content.children)):
+                content.remove_widget(child)
+                clipping_container.add_widget(child)
+            
+            # Add clipping container to self
+            self.add_widget(clipping_container)
+        else:
+            # No clipping needed - add content directly
+            for child in reversed(list(content.children)):
+                content.remove_widget(child)
+                self.add_widget(child)
         
         # Bind to child widget size changes for texture_size updates
         self._bind_child_size_changes(self)

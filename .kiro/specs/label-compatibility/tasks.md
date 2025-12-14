@@ -57,21 +57,21 @@
 - [x] 3. Checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 4. Implement content clipping with StencilView
-  - [ ] 4.1 Create `_ClippingContainer` class
+- [-] 4. Implement content clipping with StencilView
+  - [x] 4.1 Create `_ClippingContainer` class
     - Extend StencilView
     - Add size_hint_y=None and bind minimum_height
     - _Requirements: 1.3_
-  - [ ] 4.2 Add clipping logic to `_rebuild_widgets()`
+  - [x] 4.2 Add clipping logic to `_rebuild_widgets()`
     - Check if `text_size[1]` is not None OR `strict_label_mode` is True
     - Wrap content in `_ClippingContainer` when clipping needed
     - Set container height to `text_size[1]` or widget height
     - _Requirements: 1.1, 1.2_
-  - [ ] 4.3 Update `_on_strict_label_mode_changed()` to handle clipping
+  - [x] 4.3 Update `_on_strict_label_mode_changed()` to handle clipping
     - Trigger rebuild when strict_label_mode changes
     - Ensure clipping container is added/removed appropriately
     - _Requirements: 1.2_
-  - [ ] 4.4 Handle no-clipping case
+  - [x] 4.4 Handle no-clipping case
     - When `text_size[1]` is None and `strict_label_mode` is False
     - Ensure no StencilView wrapper is added
     - Allow content to expand naturally
