@@ -9,7 +9,7 @@
     - Set `_pending_rebuild` flag
     - Trigger the deferred rebuild
     - _Requirements: 3.2_
-  - [-] 1.3 Implement `_do_rebuild()` callback
+  - [x] 1.3 Implement `_do_rebuild()` callback
     - Check and clear `_pending_rebuild` flag
     - Call `_rebuild_widgets()` if rebuild was pending
     - _Requirements: 3.1, 3.3_
