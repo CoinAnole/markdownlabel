@@ -1,0 +1,179 @@
+# Implementation Plan
+
+- [ ] 1. Add deferred rebuild system with Clock.create_trigger
+  - [ ] 1.1 Implement `_rebuild_trigger` and `_pending_rebuild` in `__init__`
+    - Create Clock.create_trigger for deferred rebuilds
+    - Add `_pending_rebuild` flag to track pending state
+    - _Requirements: 3.1, 3.2, 3.3_
+  - [ ] 1.2 Implement `_schedule_rebuild()` method
+    - Set `_pending_rebuild` flag
+    - Trigger the deferred rebuild
+    - _Requirements: 3.2_
+  - [ ] 1.3 Implement `_do_rebuild()` callback
+    - Check and clear `_pending_rebuild` flag
+    - Call `_rebuild_widgets()` if rebuild was pending
+    - _Requirements: 3.1, 3.3_
+  - [ ] 1.4 Implement `force_rebuild()` public method
+    - Cancel pending trigger
+    - Clear `_pending_rebuild` flag
+    - Execute `_rebuild_widgets()` synchronously
+    - _Requirements: 3.4_
+  - [ ] 1.5 Update property callbacks to use `_schedule_rebuild()`
+    - Replace direct `_rebuild_widgets()` calls with `_schedule_rebuild()`
+    - Keep `_on_text_changed` using deferred rebuild
+    - _Requirements: 3.1, 3.2, 3.3_
+  - [ ] 1.6 Write property test for batched rebuilds
+    - **Property 6: Batched rebuilds**
+    - **Validates: Requirements 3.1, 3.3**
+  - [ ] 1.7 Write property test for deferred rebuild scheduling
+    - **Property 7: Deferred rebuild scheduling**
+    - **Validates: Requirements 3.2**
+
+- [ ] 2. Implement font scale metadata and in-place font size updates
+  - [ ] 2.1 Add `_font_scale` attribute to Labels in KivyRenderer
+    - Set `_font_scale = 1.0` for body text Labels
+    - Set `_font_scale = HEADING_SIZES[level]` for heading Labels
+    - Set `_font_scale` appropriately for code blocks
+    - _Requirements: 2.2, 2.4_
+  - [ ] 2.2 Update `_update_styles_in_place()` to handle font sizes
+    - Iterate all child Labels
+    - Update `font_size = base_font_size * widget._font_scale`
+    - Skip code blocks (use base_font_size directly)
+    - _Requirements: 2.1, 2.2, 2.3_
+  - [ ] 2.3 Move `base_font_size` from STYLE_ONLY to proper in-place handling
+    - Ensure font size changes don't trigger rebuild
+    - Verify heading scales are preserved
+    - _Requirements: 2.3_
+  - [ ] 2.4 Write property test for font size immediate update
+    - **Property 3: Font size immediate update**
+    - **Validates: Requirements 2.1**
+  - [ ] 2.5 Write property test for heading scale preservation
+    - **Property 4: Heading scale preservation**
+    - **Validates: Requirements 2.2, 2.4**
+  - [ ] 2.6 Write property test for no rebuild on font size change
+    - **Property 5: No rebuild on font size change**
+    - **Validates: Requirements 2.3**
+
+- [ ] 3. Checkpoint - Ensure all tests pass
+  - Ensure all tests pass, ask the user if questions arise.
+
+- [ ] 4. Implement content clipping with StencilView
+  - [ ] 4.1 Create `_ClippingContainer` class
+    - Extend StencilView
+    - Add size_hint_y=None and bind minimum_height
+    - _Requirements: 1.3_
+  - [ ] 4.2 Add clipping logic to `_rebuild_widgets()`
+    - Check if `text_size[1]` is not None OR `strict_label_mode` is True
+    - Wrap content in `_ClippingContainer` when clipping needed
+    - Set container height to `text_size[1]` or widget height
+    - _Requirements: 1.1, 1.2_
+  - [ ] 4.3 Update `_on_strict_label_mode_changed()` to handle clipping
+    - Trigger rebuild when strict_label_mode changes
+    - Ensure clipping container is added/removed appropriately
+    - _Requirements: 1.2_
+  - [ ] 4.4 Handle no-clipping case
+    - When `text_size[1]` is None and `strict_label_mode` is False
+    - Ensure no StencilView wrapper is added
+    - Allow content to expand naturally
+    - _Requirements: 1.4_
+  - [ ] 4.5 Write property test for content clipping when height-constrained
+    - **Property 1: Content clipping when height-constrained**
+    - **Validates: Requirements 1.1, 1.2, 1.3**
+  - [ ] 4.6 Write property test for no clipping when unconstrained
+    - **Property 2: No clipping when unconstrained**
+    - **Validates: Requirements 1.4**
+
+- [ ] 5. Implement padding property improvements
+  - [ ] 5.1 Add `label_padding` AliasProperty
+    - Create getter that returns `text_padding`
+    - Create setter that sets `text_padding`
+    - Bind to `text_padding` for updates
+    - _Requirements: 4.3, 4.4_
+  - [ ] 5.2 Verify `text_padding` applies to child Labels
+    - Ensure KivyRenderer passes `text_padding` to Label `padding` parameter
+    - Verify in `_update_styles_in_place()` if needed
+    - _Requirements: 4.1_
+  - [ ] 5.3 Verify `padding` applies to container only
+    - Ensure BoxLayout padding is separate from child Label padding
+    - Document the distinction in docstrings
+    - _Requirements: 4.2_
+  - [ ] 5.4 Write property test for text_padding applies to child Labels
+    - **Property 8: text_padding applies to child Labels**
+    - **Validates: Requirements 4.1**
+  - [ ] 5.5 Write property test for padding applies to container
+    - **Property 9: padding applies to container**
+    - **Validates: Requirements 4.2**
+  - [ ] 5.6 Write property test for label_padding alias synchronization
+    - **Property 10: label_padding alias synchronization**
+    - **Validates: Requirements 4.4**
+
+- [ ] 6. Checkpoint - Ensure all tests pass
+  - Ensure all tests pass, ask the user if questions arise.
+
+- [ ] 7. Implement RTL-aware auto alignment
+  - [ ] 7.1 Add `_get_effective_halign()` method
+    - Return explicit halign if not 'auto'
+    - Return 'right' if base_direction is 'rtl' or 'weak_rtl'
+    - Return 'left' otherwise
+    - _Requirements: 5.1, 5.2, 5.4_
+  - [ ] 7.2 Update KivyRenderer to use effective halign
+    - Pass effective halign instead of raw halign
+    - Apply to all child Labels
+    - _Requirements: 5.1, 5.2_
+  - [ ] 7.3 Update `_update_styles_in_place()` for alignment
+    - Use `_get_effective_halign()` when updating child Labels
+    - Handle base_direction changes
+    - _Requirements: 5.3_
+  - [ ] 7.4 Bind base_direction changes to style update
+    - Ensure alignment updates when base_direction changes
+    - Use in-place update, not full rebuild
+    - _Requirements: 5.3_
+  - [ ] 7.5 Write property test for auto alignment respects direction
+    - **Property 11: Auto alignment respects direction**
+    - **Validates: Requirements 5.1, 5.2**
+  - [ ] 7.6 Write property test for direction change updates alignment
+    - **Property 12: Direction change updates alignment**
+    - **Validates: Requirements 5.3**
+  - [ ] 7.7 Write property test for explicit alignment overrides auto
+    - **Property 13: Explicit alignment overrides auto**
+    - **Validates: Requirements 5.4**
+
+- [ ] 8. Implement texture render mode
+  - [ ] 8.1 Add `render_mode` OptionProperty
+    - Options: 'widgets', 'texture', 'auto'
+    - Default: 'widgets'
+    - _Requirements: 6.1, 6.3, 6.4_
+  - [ ] 8.2 Implement `_render_as_texture()` method
+    - Render widget tree off-screen
+    - Use `export_as_image()` to create texture
+    - Create Image widget to display texture
+    - Store aggregated refs for hit-testing
+    - _Requirements: 6.1_
+  - [ ] 8.3 Update `_rebuild_widgets()` for render mode
+    - Check render_mode property
+    - Call `_render_as_texture()` for 'texture' mode
+    - Use existing widget rendering for 'widgets' mode
+    - Implement auto-selection logic for 'auto' mode
+    - _Requirements: 6.1, 6.3, 6.4_
+  - [ ] 8.4 Implement touch handling for texture mode
+    - Override `on_touch_down()` for texture mode
+    - Hit-test against `_aggregated_refs`
+    - Dispatch `on_ref_press` for link clicks
+    - _Requirements: 6.2_
+  - [ ] 8.5 Implement auto mode selection logic
+    - Use 'texture' when strict_label_mode with height constraints
+    - Use 'widgets' for simple content
+    - Consider content complexity metrics
+    - _Requirements: 6.4_
+  - [ ] 8.6 Write property test for texture render mode structure
+    - **Property 14: Texture render mode structure**
+    - **Validates: Requirements 6.1**
+  - [ ] 8.7 Write property test for texture mode link handling
+    - **Property 15: Texture mode link handling**
+    - **Validates: Requirements 6.2**
+  - [ ] 8.8 Write property test for auto render mode selection
+    - **Property 16: Auto render mode selection**
+    - **Validates: Requirements 6.4**
+
+- [ ] 9. Final Checkpoint - Ensure all tests pass
+  - Ensure all tests pass, ask the user if questions arise.
