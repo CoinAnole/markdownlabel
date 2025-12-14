@@ -75,7 +75,6 @@ class MarkdownLabel(BoxLayout):
     
     STYLE_ONLY_PROPERTIES = frozenset({
         'font_size',
-        'base_font_size',
         'color',
         'halign',
         'valign',
@@ -948,8 +947,14 @@ class MarkdownLabel(BoxLayout):
             self._schedule_rebuild()
             return
 
+        # Check if this is a font size property that can be updated in-place
+        if prop_name in ('base_font_size', 'font_size'):
+            # Only update in-place if we have children to update
+            if self.children:
+                self._update_font_sizes_in_place()
+            # No rebuild needed for font size changes
         # Check if this is a style-only property that can be updated in-place
-        if prop_name in self.STYLE_ONLY_PROPERTIES:
+        elif prop_name in self.STYLE_ONLY_PROPERTIES:
             # Only update in-place if we have children to update
             if self.children:
                 self._update_styles_in_place()
@@ -958,10 +963,46 @@ class MarkdownLabel(BoxLayout):
             # Structure property or other - schedule deferred rebuild
             self._schedule_rebuild()
 
+    def _update_font_sizes_in_place(self):
+        """Update font sizes on existing child widgets without rebuild.
+
+        This method updates font_size properties on all descendant Label
+        widgets using their stored _font_scale metadata to preserve
+        heading scale factors. This is more efficient than a full rebuild
+        when only font size changes.
+
+        Note:
+            This method preserves widget identities and only updates
+            font_size properties, leaving all other styling unchanged.
+        """
+        def update_font_size(widget):
+            """Recursively update font_size on widget and children.
+
+            Args:
+                widget: Widget to update font size on
+            """
+            if isinstance(widget, Label):
+                # Update font_size using base_font_size and scale metadata
+                if hasattr(widget, '_font_scale'):
+                    # Use the stored scale factor to compute font size
+                    widget.font_size = self.base_font_size * widget._font_scale
+                else:
+                    # Fallback for Labels without scale metadata (use base_font_size)
+                    widget.font_size = self.base_font_size
+
+            # Recursively update children
+            if hasattr(widget, 'children'):
+                for child in widget.children:
+                    update_font_size(child)
+
+        # Update all children
+        for child in self.children:
+            update_font_size(child)
+
     def _update_styles_in_place(self):
         """Update style properties on existing child widgets without rebuild.
 
-        This method updates purely stylistic properties (font_size, color,
+        This method updates purely stylistic properties (color,
         halign, valign, line_height, disabled state) on all descendant Label
         widgets without reconstructing the widget tree.
 
@@ -972,7 +1013,8 @@ class MarkdownLabel(BoxLayout):
         Note:
             This method only updates properties that don't affect widget
             structure. For structural changes (text, font_name, text_size,
-            etc.), use _rebuild_widgets() instead.
+            etc.), use _rebuild_widgets() instead. For font size changes,
+            use _update_font_sizes_in_place() instead.
         """
         # Determine effective color based on disabled state
         effective_color = (
@@ -992,14 +1034,6 @@ class MarkdownLabel(BoxLayout):
                 widget: Widget to update styles on
             """
             if isinstance(widget, Label):
-                # Update font_size using base_font_size and scale metadata
-                if hasattr(widget, '_font_scale'):
-                    # Use the stored scale factor to compute font size
-                    widget.font_size = self.base_font_size * widget._font_scale
-                else:
-                    # Fallback for Labels without scale metadata (use base_font_size)
-                    widget.font_size = self.base_font_size
-                
                 widget.color = effective_color
                 widget.halign = effective_halign
                 widget.valign = self.valign

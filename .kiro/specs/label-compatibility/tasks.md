@@ -40,7 +40,7 @@
     - Update `font_size = base_font_size * widget._font_scale`
     - Skip code blocks (use base_font_size directly)
     - _Requirements: 2.1, 2.2, 2.3_
-  - [ ] 2.3 Move `base_font_size` from STYLE_ONLY to proper in-place handling
+  - [x] 2.3 Move `base_font_size` from STYLE_ONLY to proper in-place handling
     - Ensure font size changes don't trigger rebuild
     - Verify heading scales are preserved
     - _Requirements: 2.3_
