@@ -904,8 +904,12 @@ class MarkdownLabel(BoxLayout):
             self._rebuild_widgets()
     
     def _on_text_changed(self, instance, value):
-        """Callback when text property changes."""
-        self._rebuild_widgets()
+        """Callback when text property changes.
+        
+        Uses deferred rebuild to batch multiple text changes within the
+        same frame into a single rebuild operation.
+        """
+        self._schedule_rebuild()
 
     def _make_style_callback(self, prop_name):
         """Create a callback for a specific property that tracks which changed.
@@ -932,16 +936,16 @@ class MarkdownLabel(BoxLayout):
 
         For structure properties (text, font_name, code_font_name,
         text_size, strict_label_mode, padding) and other properties,
-        a full widget rebuild is performed.
+        a deferred widget rebuild is scheduled to batch multiple changes.
 
         Args:
             instance: The widget instance (self)
             value: The new property value
             prop_name: Name of the property that changed (optional)
         """
-        # If we don't know which property changed, do a full rebuild
+        # If we don't know which property changed, schedule a rebuild
         if prop_name is None:
-            self._rebuild_widgets()
+            self._schedule_rebuild()
             return
 
         # Check if this is a style-only property that can be updated in-place
@@ -951,8 +955,8 @@ class MarkdownLabel(BoxLayout):
                 self._update_styles_in_place()
             # No rebuild needed for style-only changes
         else:
-            # Structure property or other - requires full rebuild
-            self._rebuild_widgets()
+            # Structure property or other - schedule deferred rebuild
+            self._schedule_rebuild()
 
     def _update_styles_in_place(self):
         """Update style properties on existing child widgets without rebuild.
@@ -1065,8 +1069,8 @@ class MarkdownLabel(BoxLayout):
                 self.size_hint_y = None
                 self.bind(minimum_height=self.setter('height'))
         
-        # Trigger rebuild to apply new mode behavior
-        self._rebuild_widgets()
+        # Schedule deferred rebuild to apply new mode behavior
+        self._schedule_rebuild()
     
     def _schedule_rebuild(self):
         """Schedule a rebuild for the next frame.
@@ -1094,7 +1098,29 @@ class MarkdownLabel(BoxLayout):
         if self._pending_rebuild:
             self._pending_rebuild = False
             self._rebuild_widgets()
-    
+
+    def force_rebuild(self):
+        """Force an immediate synchronous rebuild.
+        
+        This method cancels any pending deferred rebuild and executes
+        the rebuild synchronously. Use this when you need the widget
+        tree to be updated immediately rather than waiting for the
+        next frame.
+        
+        This is useful in scenarios where:
+        - You need to query widget properties immediately after changes
+        - You're performing measurements that depend on the rebuilt tree
+        - You need deterministic timing for testing
+        
+        Note:
+            In most cases, you should let the deferred rebuild system
+            handle updates automatically. Use force_rebuild() only when
+            immediate synchronous updates are required.
+        """
+        self._rebuild_trigger.cancel()
+        self._pending_rebuild = False
+        self._rebuild_widgets()
+
     def _rebuild_widgets(self):
         """Parse the Markdown text and rebuild the widget tree."""
         # Clear existing children

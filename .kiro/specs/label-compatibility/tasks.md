@@ -1,6 +1,6 @@
 # Implementation Plan
 
-- [ ] 1. Add deferred rebuild system with Clock.create_trigger
+- [x] 1. Add deferred rebuild system with Clock.create_trigger
   - [x] 1.1 Implement `_rebuild_trigger` and `_pending_rebuild` in `__init__`
     - Create Clock.create_trigger for deferred rebuilds
     - Add `_pending_rebuild` flag to track pending state
@@ -13,19 +13,19 @@
     - Check and clear `_pending_rebuild` flag
     - Call `_rebuild_widgets()` if rebuild was pending
     - _Requirements: 3.1, 3.3_
-  - [ ] 1.4 Implement `force_rebuild()` public method
+  - [x] 1.4 Implement `force_rebuild()` public method
     - Cancel pending trigger
     - Clear `_pending_rebuild` flag
     - Execute `_rebuild_widgets()` synchronously
     - _Requirements: 3.4_
-  - [ ] 1.5 Update property callbacks to use `_schedule_rebuild()`
+  - [x] 1.5 Update property callbacks to use `_schedule_rebuild()`
     - Replace direct `_rebuild_widgets()` calls with `_schedule_rebuild()`
     - Keep `_on_text_changed` using deferred rebuild
     - _Requirements: 3.1, 3.2, 3.3_
-  - [ ] 1.6 Write property test for batched rebuilds
+  - [x] 1.6 Write property test for batched rebuilds
     - **Property 6: Batched rebuilds**
     - **Validates: Requirements 3.1, 3.3**
-  - [ ] 1.7 Write property test for deferred rebuild scheduling
+  - [x] 1.7 Write property test for deferred rebuild scheduling
     - **Property 7: Deferred rebuild scheduling**
     - **Validates: Requirements 3.2**
 
