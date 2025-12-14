@@ -57,7 +57,7 @@
 - [x] 3. Checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
-- [-] 4. Implement content clipping with StencilView
+- [x] 4. Implement content clipping with StencilView
   - [x] 4.1 Create `_ClippingContainer` class
     - Extend StencilView
     - Add size_hint_y=None and bind minimum_height
@@ -76,10 +76,10 @@
     - Ensure no StencilView wrapper is added
     - Allow content to expand naturally
     - _Requirements: 1.4_
-  - [ ] 4.5 Write property test for content clipping when height-constrained
+  - [x] 4.5 Write property test for content clipping when height-constrained
     - **Property 1: Content clipping when height-constrained**
     - **Validates: Requirements 1.1, 1.2, 1.3**
-  - [ ] 4.6 Write property test for no clipping when unconstrained
+  - [x] 4.6 Write property test for no clipping when unconstrained
     - **Property 2: No clipping when unconstrained**
     - **Validates: Requirements 1.4**
 
