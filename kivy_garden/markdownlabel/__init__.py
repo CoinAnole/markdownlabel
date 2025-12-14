@@ -1068,6 +1068,20 @@ class MarkdownLabel(BoxLayout):
         # Trigger rebuild to apply new mode behavior
         self._rebuild_widgets()
     
+    def _schedule_rebuild(self):
+        """Schedule a rebuild for the next frame.
+        
+        This method sets the _pending_rebuild flag and triggers the deferred
+        rebuild via Clock.create_trigger. Multiple calls within the same frame
+        will result in only one rebuild operation, enabling efficient batching
+        of property changes.
+        
+        Use this method instead of calling _rebuild_widgets() directly when
+        you want to batch multiple property changes into a single rebuild.
+        """
+        self._pending_rebuild = True
+        self._rebuild_trigger()
+    
     def _do_rebuild(self, dt=None):
         """Execute the deferred rebuild.
         

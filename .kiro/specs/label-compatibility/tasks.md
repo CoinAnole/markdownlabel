@@ -5,7 +5,7 @@
     - Create Clock.create_trigger for deferred rebuilds
     - Add `_pending_rebuild` flag to track pending state
     - _Requirements: 3.1, 3.2, 3.3_
-  - [ ] 1.2 Implement `_schedule_rebuild()` method
+  - [x] 1.2 Implement `_schedule_rebuild()` method
     - Set `_pending_rebuild` flag
     - Trigger the deferred rebuild
     - _Requirements: 3.2_
