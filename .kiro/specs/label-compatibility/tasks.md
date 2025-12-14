@@ -1,7 +1,7 @@
 # Implementation Plan
 
 - [ ] 1. Add deferred rebuild system with Clock.create_trigger
-  - [ ] 1.1 Implement `_rebuild_trigger` and `_pending_rebuild` in `__init__`
+  - [x] 1.1 Implement `_rebuild_trigger` and `_pending_rebuild` in `__init__`
     - Create Clock.create_trigger for deferred rebuilds
     - Add `_pending_rebuild` flag to track pending state
     - _Requirements: 3.1, 3.2, 3.3_

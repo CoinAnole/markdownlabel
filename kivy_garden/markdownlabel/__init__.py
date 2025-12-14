@@ -15,6 +15,7 @@ Example usage::
 
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label import Label
+from kivy.clock import Clock
 from kivy.properties import (
     StringProperty, 
     NumericProperty, 
@@ -817,6 +818,15 @@ class MarkdownLabel(BoxLayout):
         super(MarkdownLabel, self).__init__(**kwargs)
         self.orientation = 'vertical'
         
+        # Deferred rebuild system for batching property changes
+        # _pending_rebuild tracks whether a rebuild is scheduled
+        self._pending_rebuild = False
+        # _rebuild_trigger is a Clock trigger for deferred rebuilds
+        # timeout=-1 means it fires on the next frame
+        self._rebuild_trigger = Clock.create_trigger(
+            self._do_rebuild, timeout=-1
+        )
+        
         # Store user's size_hint_y value before potential override
         self._user_size_hint_y = kwargs.get('size_hint_y', 1)
         
@@ -1057,6 +1067,19 @@ class MarkdownLabel(BoxLayout):
         
         # Trigger rebuild to apply new mode behavior
         self._rebuild_widgets()
+    
+    def _do_rebuild(self, dt=None):
+        """Execute the deferred rebuild.
+        
+        This is the callback for _rebuild_trigger. It checks if a rebuild
+        is actually pending and executes it if so.
+        
+        Args:
+            dt: Delta time from Clock (unused but required by Clock API)
+        """
+        if self._pending_rebuild:
+            self._pending_rebuild = False
+            self._rebuild_widgets()
     
     def _rebuild_widgets(self):
         """Parse the Markdown text and rebuild the widget tree."""
