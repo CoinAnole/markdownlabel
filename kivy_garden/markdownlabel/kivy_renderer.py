@@ -354,6 +354,9 @@ class KivyRenderer:
         # Apply text_size binding based on mode
         self._apply_text_size_binding(label)
         
+        # Set font scale metadata for body text
+        label._font_scale = 1.0
+        
         return label
     
     def block_text(self, token: Dict[str, Any], state: Any = None) -> Label:
@@ -419,6 +422,9 @@ class KivyRenderer:
         
         # Apply text_size binding based on mode
         self._apply_text_size_binding(label)
+        
+        # Set font scale metadata for body text
+        label._font_scale = 1.0
         
         return label
     
@@ -505,6 +511,9 @@ class KivyRenderer:
         
         # Store heading level as metadata
         label.heading_level = level
+        
+        # Set font scale metadata for headings
+        label._font_scale = multiplier
         
         return label
     
@@ -645,6 +654,9 @@ class KivyRenderer:
         # Bind text_size to enable valign to work properly
         marker.bind(size=lambda inst, val: setattr(inst, 'text_size', val))
         
+        # Set font scale metadata for list markers
+        marker._font_scale = 1.0
+        
         item_layout.add_widget(marker)
         
         # Create content container
@@ -766,6 +778,9 @@ class KivyRenderer:
         label = Label(**label_kwargs)
         label.bind(texture_size=label.setter('size'))
         label.bind(size=lambda instance, value: setattr(instance, 'text_size', (value[0], None)))
+        
+        # Set font scale metadata for code blocks
+        label._font_scale = 1.0
         
         container.add_widget(label)
         container.bind(minimum_height=container.setter('height'))
@@ -1098,6 +1113,9 @@ class KivyRenderer:
         # Store alignment as metadata
         label.cell_align = cell_halign
         label.is_header = is_head
+        
+        # Set font scale metadata for table cells
+        label._font_scale = 1.0
         
         return label
     
