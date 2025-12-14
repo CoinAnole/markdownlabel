@@ -30,7 +30,7 @@
     - **Validates: Requirements 3.2**
 
 - [ ] 2. Implement font scale metadata and in-place font size updates
-  - [ ] 2.1 Add `_font_scale` attribute to Labels in KivyRenderer
+  - [x] 2.1 Add `_font_scale` attribute to Labels in KivyRenderer
     - Set `_font_scale = 1.0` for body text Labels
     - Set `_font_scale = HEADING_SIZES[level]` for heading Labels
     - Set `_font_scale` appropriately for code blocks
