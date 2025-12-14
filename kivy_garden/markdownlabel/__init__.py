@@ -992,11 +992,14 @@ class MarkdownLabel(BoxLayout):
                 widget: Widget to update styles on
             """
             if isinstance(widget, Label):
-                # Update font_size - use base_font_size for body text
-                # Note: Headings have scaled font sizes, but we update
-                # base_font_size which will be used on next rebuild.
-                # For in-place updates, we preserve the current font_size
-                # ratio if the widget has a custom size.
+                # Update font_size using base_font_size and scale metadata
+                if hasattr(widget, '_font_scale'):
+                    # Use the stored scale factor to compute font size
+                    widget.font_size = self.base_font_size * widget._font_scale
+                else:
+                    # Fallback for Labels without scale metadata (use base_font_size)
+                    widget.font_size = self.base_font_size
+                
                 widget.color = effective_color
                 widget.halign = effective_halign
                 widget.valign = self.valign

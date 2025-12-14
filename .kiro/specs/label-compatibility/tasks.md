@@ -35,7 +35,7 @@
     - Set `_font_scale = HEADING_SIZES[level]` for heading Labels
     - Set `_font_scale` appropriately for code blocks
     - _Requirements: 2.2, 2.4_
-  - [ ] 2.2 Update `_update_styles_in_place()` to handle font sizes
+  - [x] 2.2 Update `_update_styles_in_place()` to handle font sizes
     - Iterate all child Labels
     - Update `font_size = base_font_size * widget._font_scale`
     - Skip code blocks (use base_font_size directly)

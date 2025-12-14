@@ -781,6 +781,7 @@ class KivyRenderer:
         
         # Set font scale metadata for code blocks
         label._font_scale = 1.0
+        label._is_code = True
         
         container.add_widget(label)
         container.bind(minimum_height=container.setter('height'))
