@@ -131,10 +131,10 @@
   - [x] 7.5 Write property test for auto alignment respects direction
     - **Property 11: Auto alignment respects direction**
     - **Validates: Requirements 5.1, 5.2**
-  - [ ] 7.6 Write property test for direction change updates alignment
+  - [x] 7.6 Write property test for direction change updates alignment
     - **Property 12: Direction change updates alignment**
     - **Validates: Requirements 5.3**
-  - [ ] 7.7 Write property test for explicit alignment overrides auto
+  - [x] 7.7 Write property test for explicit alignment overrides auto
     - **Property 13: Explicit alignment overrides auto**
     - **Validates: Requirements 5.4**
 
