@@ -97,7 +97,7 @@
 - [x] 12. Checkpoint - Verify all tests are migrated and passing
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 12.1 Write property test for test discovery completeness
+- [x] 12.1 Write property test for test discovery completeness
   - **Property 5: Test Discovery Completeness**
   - **Validates: Requirements 2.5**
 
