@@ -78,7 +78,7 @@
   - Update imports and ensure all tests pass
   - _Requirements: 1.1, 1.4, 2.1, 2.2_
 
-- [ ] 10. Create serialization test module
+- [x] 10. Create serialization test module
   - Create `test_serialization.py`
   - Move `TestRoundTripSerialization` class
   - Update imports and ensure all tests pass
