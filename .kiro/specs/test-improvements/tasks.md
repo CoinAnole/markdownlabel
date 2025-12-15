@@ -1,26 +1,26 @@
 # Implementation Plan
 
-- [ ] 1. Remove timing-based assertions and fix meta-test reliability
-  - [ ] 1.1 Replace timing assertions in test_refactoring_properties.py
+- [x] 1. Remove timing-based assertions and fix meta-test reliability
+  - [x] 1.1 Replace timing assertions in test_refactoring_properties.py
     - Remove all timing assertions with lower bounds (>= 0.5s) and upper bounds (<= 15s)
     - Replace with functional checks: return codes, test collection counts, output verification
     - Add PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 to subprocess environment
     - _Requirements: 1.1, 1.2, 1.3, 1.4_
-  - [ ] 1.2 Fix silent-pass patterns in test_core_functionality_properties.py
+  - [x] 1.2 Fix silent-pass patterns in test_core_functionality_properties.py
     - Replace "if os.path.exists(...): ..." with "assert Path(...).exists()"
     - Remove broad "except Exception: pass" statements
     - Replace with specific exception handling or let exceptions propagate
     - _Requirements: 2.1, 2.2, 2.4_
-  - [ ] 1.3 Write property test for no timing assertions
+  - [x] 1.3 Write property test for no timing assertions
     - **Property 1: No timing assertions in tests**
     - **Validates: Requirements 1.1, 1.2**
-  - [ ] 1.4 Write property test for subprocess pytest configuration
+  - [x] 1.4 Write property test for subprocess pytest configuration
     - **Property 2: Subprocess pytest uses stable configuration**
     - **Validates: Requirements 1.3, 1.4**
-  - [ ] 1.5 Write property test for no silent-pass file checks
+  - [x] 1.5 Write property test for no silent-pass file checks
     - **Property 3: No silent-pass file existence checks**
     - **Validates: Requirements 2.1**
-  - [ ] 1.6 Write property test for no broad exception handling
+  - [x] 1.6 Write property test for no broad exception handling
     - **Property 4: No broad exception handling**
     - **Validates: Requirements 2.2, 2.4**
 
