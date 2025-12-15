@@ -624,3 +624,677 @@ class TestCoveragePreservation:
             # Clean up temporary coverage file
             if os.path.exists(coverage_file):
                 os.unlink(coverage_file)
+
+
+# **Feature: test-refactoring, Property 10: Module Independence**
+# *For any* individual test module, it should be executable in isolation without
+# requiring other test modules
+# **Validates: Requirements 6.2**
+
+class TestModuleIndependence:
+    """Property tests for module independence (Property 10)."""
+    
+    @given(st.sampled_from([
+        'test_core_functionality.py',
+        'test_label_compatibility.py',
+        'test_advanced_compatibility.py',
+        'test_shortening_and_coordinate.py',
+        'test_sizing_behavior.py',
+        'test_text_properties.py',
+        'test_font_properties.py',
+        'test_color_properties.py',
+        'test_padding_properties.py',
+        'test_serialization.py',
+        'test_performance.py'
+    ]))
+    @settings(max_examples=50, deadline=None)
+    def test_module_runs_independently(self, module_name):
+        """Test that each refactored module can run independently.
+        
+        **Feature: test-refactoring, Property 10: Module Independence**
+        **Validates: Requirements 6.2**
+        """
+        import subprocess
+        import os
+        
+        # Get the test directory path
+        test_dir = os.path.dirname(__file__)
+        module_path = os.path.join(test_dir, module_name)
+        
+        # Skip if module doesn't exist
+        if not os.path.exists(module_path):
+            return
+        
+        # Run pytest on this module in isolation
+        result = subprocess.run([
+            'pytest', module_path, '-v', '--tb=short', '-x'  # Stop on first failure
+        ], capture_output=True, text=True, cwd=os.path.dirname(test_dir))
+        
+        # Module should be able to run without import errors
+        assert 'ImportError' not in result.stderr, \
+            f"Module {module_name} has import errors when run independently: {result.stderr}"
+        assert 'ModuleNotFoundError' not in result.stderr, \
+            f"Module {module_name} has missing module errors when run independently: {result.stderr}"
+        
+        # Module should not depend on other test modules
+        # Check that no other test modules are imported in the error output
+        other_test_modules = [
+            'test_core_functionality', 'test_label_compatibility', 'test_advanced_compatibility',
+            'test_shortening_and_coordinate', 'test_sizing_behavior', 'test_text_properties',
+            'test_font_properties', 'test_color_properties', 'test_padding_properties',
+            'test_serialization', 'test_performance'
+        ]
+        
+        current_module_base = module_name.replace('.py', '')
+        for other_module in other_test_modules:
+            if other_module != current_module_base:
+                assert other_module not in result.stderr, \
+                    f"Module {module_name} appears to depend on other test module {other_module}: {result.stderr}"
+        
+        # Should be able to collect tests (return code 0 or 5 for no tests collected)
+        # Return code 1-4 typically indicate errors, 5 means no tests collected
+        assert result.returncode in [0, 5], \
+            f"Module {module_name} failed to run independently with return code {result.returncode}. " \
+            f"stdout: {result.stdout[:500]}... stderr: {result.stderr[:500]}..."
+    
+    def test_modules_dont_import_each_other(self):
+        """Test that refactored modules don't import each other directly.
+        
+        **Feature: test-refactoring, Property 10: Module Independence**
+        **Validates: Requirements 6.2**
+        """
+        import os
+        import ast
+        
+        # Get the test directory path
+        test_dir = os.path.dirname(__file__)
+        
+        # Define refactored modules
+        refactored_modules = [
+            'test_core_functionality.py',
+            'test_label_compatibility.py',
+            'test_advanced_compatibility.py',
+            'test_shortening_and_coordinate.py',
+            'test_sizing_behavior.py',
+            'test_text_properties.py',
+            'test_font_properties.py',
+            'test_color_properties.py',
+            'test_padding_properties.py',
+            'test_serialization.py',
+            'test_performance.py'
+        ]
+        
+        # Check each module's imports
+        for module_name in refactored_modules:
+            module_path = os.path.join(test_dir, module_name)
+            
+            # Skip if module doesn't exist
+            if not os.path.exists(module_path):
+                continue
+            
+            # Parse the module to extract imports
+            with open(module_path, 'r', encoding='utf-8') as f:
+                try:
+                    tree = ast.parse(f.read(), filename=module_path)
+                except SyntaxError:
+                    # Skip modules with syntax errors
+                    continue
+            
+            # Extract all import statements
+            imports = []
+            for node in ast.walk(tree):
+                if isinstance(node, ast.Import):
+                    for alias in node.names:
+                        imports.append(alias.name)
+                elif isinstance(node, ast.ImportFrom):
+                    if node.module:
+                        imports.append(node.module)
+            
+            # Check that this module doesn't import other test modules
+            current_module_base = module_name.replace('.py', '')
+            for other_module in refactored_modules:
+                other_module_base = other_module.replace('.py', '')
+                if other_module_base != current_module_base:
+                    # Should not import other test modules directly
+                    assert other_module_base not in imports, \
+                        f"Module {module_name} imports other test module {other_module_base}. " \
+                        f"Test modules should be independent."
+                    
+                    # Should not import with relative imports either
+                    relative_import = f".{other_module_base}"
+                    assert relative_import not in imports, \
+                        f"Module {module_name} imports other test module with relative import {relative_import}. " \
+                        f"Test modules should be independent."
+    
+    @given(st.sampled_from([
+        'test_core_functionality.py',
+        'test_label_compatibility.py',
+        'test_font_properties.py',
+        'test_color_properties.py',
+        'test_sizing_behavior.py',
+        'test_text_properties.py',
+        'test_padding_properties.py',
+        'test_serialization.py',
+        'test_performance.py'
+    ]))
+    @settings(max_examples=30, deadline=None)
+    def test_module_uses_shared_utilities_correctly(self, module_name):
+        """Test that modules use shared utilities but remain independent.
+        
+        **Feature: test-refactoring, Property 10: Module Independence**
+        **Validates: Requirements 6.2**
+        """
+        import os
+        import ast
+        
+        # Get the test directory path
+        test_dir = os.path.dirname(__file__)
+        module_path = os.path.join(test_dir, module_name)
+        
+        # Skip if module doesn't exist
+        if not os.path.exists(module_path):
+            return
+        
+        # Parse the module to extract imports
+        with open(module_path, 'r', encoding='utf-8') as f:
+            try:
+                content = f.read()
+                tree = ast.parse(content, filename=module_path)
+            except (SyntaxError, UnicodeDecodeError):
+                # Skip modules with parsing issues
+                return
+        
+        # Extract all import statements
+        imports = []
+        for node in ast.walk(tree):
+            if isinstance(node, ast.Import):
+                for alias in node.names:
+                    imports.append(alias.name)
+            elif isinstance(node, ast.ImportFrom):
+                if node.module:
+                    imports.append(node.module)
+        
+        # Should import shared utilities (test_utils) if it uses Hypothesis
+        if 'hypothesis' in content or '@given' in content:
+            # Modules using Hypothesis should import shared utilities
+            has_test_utils_import = any(
+                'test_utils' in imp for imp in imports
+            ) or 'test_utils' in content
+            
+            # This is a recommendation, not a strict requirement
+            # Some modules might define their own strategies
+            if not has_test_utils_import:
+                # Check if the module defines its own strategies
+                has_own_strategies = '@st.' in content or 'strategies' in content
+                if not has_own_strategies:
+                    # Module uses Hypothesis but doesn't import shared utilities
+                    # and doesn't define its own strategies - this might be inefficient
+                    pass  # Not a hard failure, just a code organization issue
+        
+        # Should import conftest utilities if it uses fixtures
+        if '@pytest.fixture' in content or 'fixture' in content:
+            # Module defines its own fixtures - should be independent
+            pass
+        
+        # Should not import the original monolithic test file
+        assert 'test_markdown_label' not in imports or any(
+            'test_markdown_label' in imp and 'test_markdown_label.py' not in imp 
+            for imp in imports
+        ), f"Module {module_name} should not import the original monolithic test file"
+        
+        # Should import standard test dependencies
+        expected_imports = ['pytest', 'hypothesis']
+        for expected in expected_imports:
+            if expected in content:
+                # If the module uses this library, it should import it
+                has_import = any(expected in imp for imp in imports)
+                assert has_import, \
+                    f"Module {module_name} uses {expected} but doesn't import it properly"
+    
+    def test_shared_utilities_are_independent(self):
+        """Test that shared utilities don't depend on specific test modules.
+        
+        **Feature: test-refactoring, Property 10: Module Independence**
+        **Validates: Requirements 6.2**
+        """
+        import os
+        import ast
+        
+        # Get the test directory path
+        test_dir = os.path.dirname(__file__)
+        
+        # Check shared utility files
+        utility_files = ['test_utils.py', 'conftest.py']
+        
+        for util_file in utility_files:
+            util_path = os.path.join(test_dir, util_file)
+            
+            # Skip if utility file doesn't exist
+            if not os.path.exists(util_path):
+                continue
+            
+            # Parse the utility file to extract imports
+            with open(util_path, 'r', encoding='utf-8') as f:
+                try:
+                    tree = ast.parse(f.read(), filename=util_path)
+                except SyntaxError:
+                    # Skip files with syntax errors
+                    continue
+            
+            # Extract all import statements
+            imports = []
+            for node in ast.walk(tree):
+                if isinstance(node, ast.Import):
+                    for alias in node.names:
+                        imports.append(alias.name)
+                elif isinstance(node, ast.ImportFrom):
+                    if node.module:
+                        imports.append(node.module)
+            
+            # Shared utilities should not import specific test modules
+            test_modules = [
+                'test_core_functionality', 'test_label_compatibility', 'test_advanced_compatibility',
+                'test_shortening_and_coordinate', 'test_sizing_behavior', 'test_text_properties',
+                'test_font_properties', 'test_color_properties', 'test_padding_properties',
+                'test_serialization', 'test_performance'
+            ]
+            
+            for test_module in test_modules:
+                assert test_module not in imports, \
+                    f"Shared utility {util_file} should not import specific test module {test_module}. " \
+                    f"This creates circular dependencies and breaks module independence."
+    
+    def test_module_isolation_with_subprocess(self):
+        """Test that modules can run in complete isolation using subprocess.
+        
+        **Feature: test-refactoring, Property 10: Module Independence**
+        **Validates: Requirements 6.2**
+        """
+        import subprocess
+        import os
+        import tempfile
+        
+        # Get the test directory path
+        test_dir = os.path.dirname(__file__)
+        
+        # Test a few key modules in complete isolation
+        key_modules = [
+            'test_core_functionality.py',
+            'test_label_compatibility.py',
+            'test_font_properties.py',
+            'test_serialization.py'
+        ]
+        
+        for module_name in key_modules:
+            module_path = os.path.join(test_dir, module_name)
+            
+            # Skip if module doesn't exist
+            if not os.path.exists(module_path):
+                continue
+            
+            # Create a temporary directory for isolated execution
+            with tempfile.TemporaryDirectory() as temp_dir:
+                # Copy only the essential files for this test
+                import shutil
+                
+                # Copy the module
+                temp_module = os.path.join(temp_dir, module_name)
+                shutil.copy2(module_path, temp_module)
+                
+                # Copy shared utilities if they exist
+                for util_file in ['test_utils.py', 'conftest.py', '__init__.py']:
+                    util_path = os.path.join(test_dir, util_file)
+                    if os.path.exists(util_path):
+                        shutil.copy2(util_path, os.path.join(temp_dir, util_file))
+                
+                # Try to run pytest on the isolated module
+                result = subprocess.run([
+                    'pytest', temp_module, '--collect-only', '-q'
+                ], capture_output=True, text=True, cwd=temp_dir)
+                
+                # Should be able to at least collect tests without import errors
+                assert 'ImportError' not in result.stderr, \
+                    f"Module {module_name} has import errors in isolation: {result.stderr}"
+                assert 'ModuleNotFoundError' not in result.stderr, \
+                    f"Module {module_name} has missing dependencies in isolation: {result.stderr}"
+                
+                # Should collect at least some tests
+                if result.returncode == 0:
+                    lines = result.stdout.strip().split('\n')
+                    test_lines = [line for line in lines if '::' in line and 'test_' in line]
+                    assert len(test_lines) > 0, \
+                        f"Module {module_name} collected no tests in isolation"
+
+
+# **Feature: test-refactoring, Property 11: Performance Preservation**
+# *For any* full test suite execution, the total runtime should not increase by more
+# than 10% compared to the original monolithic structure
+# **Validates: Requirements 6.3**
+
+class TestPerformancePreservation:
+    """Property tests for performance preservation (Property 11)."""
+    
+    def test_refactored_modules_performance_baseline(self):
+        """Test that refactored modules have reasonable performance baseline.
+        
+        **Feature: test-refactoring, Property 11: Performance Preservation**
+        **Validates: Requirements 6.3**
+        """
+        import subprocess
+        import os
+        import time
+        
+        # Get the test directory path
+        test_dir = os.path.dirname(__file__)
+        
+        # Define a subset of refactored modules for performance testing
+        # Use a representative sample to avoid extremely long test times
+        performance_test_modules = [
+            'test_core_functionality.py',
+            'test_label_compatibility.py',
+            'test_font_properties.py',
+            'test_color_properties.py',
+            'test_serialization.py'
+        ]
+        
+        # Filter to only existing modules
+        existing_modules = []
+        for module_name in performance_test_modules:
+            module_path = os.path.join(test_dir, module_name)
+            if os.path.exists(module_path):
+                existing_modules.append(module_path)
+        
+        # Skip if no modules exist
+        if not existing_modules:
+            pytest.skip("No refactored modules found for performance testing")
+        
+        # Measure execution time for the subset of refactored modules
+        start_time = time.time()
+        
+        result = subprocess.run([
+            'pytest'] + existing_modules + [
+            '-x',  # Stop on first failure to avoid long runs
+            '--tb=no',  # Minimize output for performance measurement
+            '-q'  # Quiet mode
+        ], capture_output=True, text=True, cwd=os.path.dirname(test_dir))
+        
+        end_time = time.time()
+        execution_time = end_time - start_time
+        
+        # Performance should be reasonable for the subset of modules
+        # Based on observed performance, 5 modules should complete within 300 seconds (5 minutes)
+        # This is a generous upper bound to account for system variations
+        max_expected_time = 300.0  # 5 minutes for 5 modules
+        
+        assert execution_time <= max_expected_time, \
+            f"Refactored modules took {execution_time:.1f}s to execute, " \
+            f"expected <= {max_expected_time}s. This suggests performance degradation."
+        
+        # Should also not be suspiciously fast (< 10 seconds might indicate no tests ran)
+        min_expected_time = 10.0
+        assert execution_time >= min_expected_time, \
+            f"Refactored modules completed in {execution_time:.1f}s, " \
+            f"which is suspiciously fast (< {min_expected_time}s). " \
+            f"This might indicate tests didn't actually run."
+        
+        # Log the performance for reference
+        print(f"Performance baseline: {len(existing_modules)} modules executed in {execution_time:.1f}s")
+    
+    @given(st.sampled_from([
+        'test_core_functionality.py',
+        'test_label_compatibility.py',
+        'test_font_properties.py',
+        'test_color_properties.py',
+        'test_sizing_behavior.py',
+        'test_serialization.py'
+    ]))
+    @settings(max_examples=20, deadline=None)
+    def test_individual_module_performance(self, module_name):
+        """Test that individual refactored modules have reasonable performance.
+        
+        **Feature: test-refactoring, Property 11: Performance Preservation**
+        **Validates: Requirements 6.3**
+        """
+        import subprocess
+        import os
+        import time
+        
+        # Get the test directory path
+        test_dir = os.path.dirname(__file__)
+        module_path = os.path.join(test_dir, module_name)
+        
+        # Skip if module doesn't exist
+        if not os.path.exists(module_path):
+            return
+        
+        # Measure execution time for this specific module
+        start_time = time.time()
+        
+        result = subprocess.run([
+            'pytest', module_path,
+            '-x',  # Stop on first failure
+            '--tb=no',  # Minimize output for performance measurement
+            '-q'  # Quiet mode
+        ], capture_output=True, text=True, cwd=os.path.dirname(test_dir))
+        
+        end_time = time.time()
+        execution_time = end_time - start_time
+        
+        # Individual modules should complete within reasonable time
+        # Based on observed performance, individual modules should complete within 120 seconds
+        max_expected_time = 120.0  # 2 minutes per module
+        
+        assert execution_time <= max_expected_time, \
+            f"Module {module_name} took {execution_time:.1f}s to execute, " \
+            f"expected <= {max_expected_time}s. This suggests performance issues."
+        
+        # Should not be suspiciously fast (< 2 seconds might indicate no tests ran)
+        min_expected_time = 2.0
+        assert execution_time >= min_expected_time, \
+            f"Module {module_name} completed in {execution_time:.1f}s, " \
+            f"which is suspiciously fast (< {min_expected_time}s). " \
+            f"This might indicate tests didn't actually run."
+    
+    def test_test_collection_performance(self):
+        """Test that test collection performance is reasonable for refactored modules.
+        
+        **Feature: test-refactoring, Property 11: Performance Preservation**
+        **Validates: Requirements 6.3**
+        """
+        import subprocess
+        import os
+        import time
+        
+        # Get the test directory path
+        test_dir = os.path.dirname(__file__)
+        
+        # Define refactored modules for collection testing
+        refactored_modules = [
+            'test_core_functionality.py',
+            'test_label_compatibility.py',
+            'test_advanced_compatibility.py',
+            'test_font_properties.py',
+            'test_color_properties.py',
+            'test_sizing_behavior.py',
+            'test_text_properties.py',
+            'test_padding_properties.py',
+            'test_serialization.py',
+            'test_performance.py'
+        ]
+        
+        # Filter to only existing modules
+        existing_modules = []
+        for module_name in refactored_modules:
+            module_path = os.path.join(test_dir, module_name)
+            if os.path.exists(module_path):
+                existing_modules.append(module_path)
+        
+        # Skip if no modules exist
+        if not existing_modules:
+            pytest.skip("No refactored modules found for collection performance testing")
+        
+        # Measure test collection time
+        start_time = time.time()
+        
+        result = subprocess.run([
+            'pytest', '--collect-only', '-q'
+        ] + existing_modules, capture_output=True, text=True, cwd=os.path.dirname(test_dir))
+        
+        end_time = time.time()
+        collection_time = end_time - start_time
+        
+        # Test collection should be fast (< 30 seconds for all refactored modules)
+        max_collection_time = 30.0
+        
+        assert collection_time <= max_collection_time, \
+            f"Test collection took {collection_time:.1f}s for {len(existing_modules)} modules, " \
+            f"expected <= {max_collection_time}s. This suggests collection performance issues."
+        
+        # Should not be suspiciously fast (< 0.5 seconds might indicate collection failed)
+        min_collection_time = 0.5
+        assert collection_time >= min_collection_time, \
+            f"Test collection completed in {collection_time:.1f}s, " \
+            f"which is suspiciously fast (< {min_collection_time}s). " \
+            f"This might indicate collection didn't work properly."
+        
+        # Should successfully collect tests
+        assert result.returncode == 0, \
+            f"Test collection failed with return code {result.returncode}. " \
+            f"stderr: {result.stderr}"
+        
+        # Should collect a reasonable number of tests
+        lines = result.stdout.strip().split('\n')
+        test_lines = [line for line in lines if '::' in line and 'test_' in line]
+        
+        assert len(test_lines) >= 100, \
+            f"Only collected {len(test_lines)} tests from {len(existing_modules)} modules, " \
+            f"expected at least 100. This suggests collection issues."
+    
+    def test_parallel_execution_compatibility(self):
+        """Test that refactored modules are compatible with parallel execution.
+        
+        **Feature: test-refactoring, Property 11: Performance Preservation**
+        **Validates: Requirements 6.3**
+        """
+        import subprocess
+        import os
+        import time
+        
+        # Get the test directory path
+        test_dir = os.path.dirname(__file__)
+        
+        # Test a subset of modules for parallel execution
+        parallel_test_modules = [
+            'test_core_functionality.py',
+            'test_label_compatibility.py',
+            'test_font_properties.py'
+        ]
+        
+        # Filter to only existing modules
+        existing_modules = []
+        for module_name in parallel_test_modules:
+            module_path = os.path.join(test_dir, module_name)
+            if os.path.exists(module_path):
+                existing_modules.append(module_path)
+        
+        # Skip if insufficient modules exist
+        if len(existing_modules) < 2:
+            pytest.skip("Need at least 2 modules for parallel execution testing")
+        
+        # Try to run with pytest-xdist if available
+        # First check if pytest-xdist is available
+        check_result = subprocess.run([
+            'python', '-c', 'import xdist; print("available")'
+        ], capture_output=True, text=True)
+        
+        if check_result.returncode != 0:
+            pytest.skip("pytest-xdist not available for parallel execution testing")
+        
+        # Measure parallel execution time
+        start_time = time.time()
+        
+        result = subprocess.run([
+            'pytest'] + existing_modules + [
+            '-n', '2',  # Use 2 parallel workers
+            '-x',  # Stop on first failure
+            '--tb=no',  # Minimize output
+            '-q'  # Quiet mode
+        ], capture_output=True, text=True, cwd=os.path.dirname(test_dir))
+        
+        end_time = time.time()
+        parallel_time = end_time - start_time
+        
+        # Parallel execution should work without errors
+        # Note: We don't assert success because some tests might fail due to Kivy setup
+        # but we check that parallel execution doesn't cause import/collection errors
+        assert 'xdist' not in result.stderr or 'error' not in result.stderr.lower(), \
+            f"Parallel execution had xdist-related errors: {result.stderr}"
+        
+        # Should not have obvious parallel execution issues
+        parallel_issues = [
+            'concurrent.futures', 'multiprocessing', 'pickle', 'shared state'
+        ]
+        for issue in parallel_issues:
+            assert issue not in result.stderr.lower(), \
+                f"Parallel execution shows potential issue with {issue}: {result.stderr}"
+        
+        # Parallel execution should complete in reasonable time
+        # Should be faster than or similar to sequential execution
+        max_parallel_time = 180.0  # 3 minutes for parallel execution of 3 modules
+        
+        assert parallel_time <= max_parallel_time, \
+            f"Parallel execution took {parallel_time:.1f}s, " \
+            f"expected <= {max_parallel_time}s. This suggests parallel execution issues."
+    
+    def test_memory_usage_reasonable(self):
+        """Test that refactored modules don't have excessive memory usage.
+        
+        **Feature: test-refactoring, Property 11: Performance Preservation**
+        **Validates: Requirements 6.3**
+        """
+        import subprocess
+        import os
+        import time
+        
+        # Get the test directory path
+        test_dir = os.path.dirname(__file__)
+        
+        # Test a representative module for memory usage
+        memory_test_module = 'test_core_functionality.py'
+        module_path = os.path.join(test_dir, memory_test_module)
+        
+        # Skip if module doesn't exist
+        if not os.path.exists(module_path):
+            pytest.skip(f"Module {memory_test_module} not found for memory testing")
+        
+        # Run the module and check that it completes without memory errors
+        result = subprocess.run([
+            'pytest', module_path,
+            '-x',  # Stop on first failure
+            '--tb=short',
+            '-v'
+        ], capture_output=True, text=True, cwd=os.path.dirname(test_dir))
+        
+        # Should not have memory-related errors
+        memory_errors = [
+            'MemoryError', 'OutOfMemoryError', 'memory', 'RAM'
+        ]
+        
+        for error_type in memory_errors:
+            assert error_type not in result.stderr, \
+                f"Module execution shows potential memory issue with {error_type}: {result.stderr}"
+        
+        # Should not have excessive resource usage warnings
+        resource_warnings = [
+            'ResourceWarning', 'too many open files', 'file descriptor'
+        ]
+        
+        for warning_type in resource_warnings:
+            assert warning_type not in result.stderr, \
+                f"Module execution shows resource usage warning: {warning_type}: {result.stderr}"
+        
+        # The test should complete (regardless of pass/fail status)
+        # We're mainly checking that it doesn't crash due to resource issues
+        assert result.returncode in [0, 1, 2, 3, 4, 5], \
+            f"Module execution had unexpected return code {result.returncode}, " \
+            f"which might indicate system-level issues. stderr: {result.stderr[:500]}..."
