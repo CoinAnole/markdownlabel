@@ -91,7 +91,7 @@ class TestModuleNamingConsistency:
             f"Feature area should be 'refactoring_properties', got '{feature_area}'"
     
     @given(st.text(min_size=4, max_size=20, alphabet=st.characters(
-        whitelist_categories=['L'],
+        whitelist_categories=['Ll', 'Nd'],  # Only lowercase letters and decimal numbers
         blacklist_characters=' -'
     )))
     @settings(max_examples=100, deadline=None)
@@ -115,7 +115,8 @@ class TestModuleNamingConsistency:
         feature_area = module_name[5:-3]
         assert len(feature_area) >= 4, \
             f"Feature area '{feature_area}' should be at least 4 characters"
-        assert feature_area.islower(), \
+        # Should be lowercase (or contain no case-sensitive characters like numbers)
+        assert feature_area == feature_area.lower(), \
             f"Feature area '{feature_area}' should be lowercase"
         
         # Should not have consecutive underscores

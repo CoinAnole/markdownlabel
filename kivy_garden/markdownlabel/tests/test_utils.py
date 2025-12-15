@@ -33,11 +33,16 @@ def markdown_paragraph(draw):
     """Generate a Markdown paragraph."""
     # Exclude backslash as it's an escape character in Markdown
     # that gets consumed during parsing (e.g., \: becomes :)
+    # Also exclude < and > to avoid HTML-like tags that might not parse as paragraphs
     text = draw(st.text(min_size=1, max_size=100, alphabet=st.characters(
         whitelist_categories=['L', 'N', 'P', 'S', 'Z'],
-        blacklist_characters='#[]&\n\r*_`~\\'
+        blacklist_characters='#[]&\n\r*_`~\\<>'
     )))
-    return text.strip()
+    text = text.strip()
+    # Ensure we have some actual content that will render as a paragraph
+    if not text or len(text.strip()) == 0:
+        text = "sample text"
+    return text
 
 
 @st.composite
