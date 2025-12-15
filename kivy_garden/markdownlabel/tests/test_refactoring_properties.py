@@ -1298,3 +1298,301 @@ class TestPerformancePreservation:
         assert result.returncode in [0, 1, 2, 3, 4, 5], \
             f"Module execution had unexpected return code {result.returncode}, " \
             f"which might indicate system-level issues. stderr: {result.stderr[:500]}..."
+
+
+# **Feature: test-refactoring, Property 12: Test Discovery Performance**
+# *For any* test discovery operation, the time to discover all tests should not
+# increase significantly compared to the original structure
+# **Validates: Requirements 6.4, 6.5**
+
+class TestDiscoveryPerformance:
+    """Property tests for test discovery performance (Property 12)."""
+    
+    def test_full_test_discovery_performance(self):
+        """Test that full test discovery completes within reasonable time.
+        
+        **Feature: test-refactoring, Property 12: Test Discovery Performance**
+        **Validates: Requirements 6.4, 6.5**
+        """
+        import subprocess
+        import os
+        import time
+        
+        # Get the test directory path
+        test_dir = os.path.dirname(__file__)
+        
+        # Measure test discovery time for all refactored modules
+        start_time = time.time()
+        
+        result = subprocess.run([
+            'pytest', '--collect-only', test_dir, '-q'
+        ], capture_output=True, text=True, cwd=os.path.dirname(test_dir))
+        
+        end_time = time.time()
+        discovery_time = end_time - start_time
+        
+        # Test discovery should be fast (< 60 seconds for all modules)
+        # This is generous to account for system variations and large test suites
+        max_discovery_time = 60.0
+        
+        assert discovery_time <= max_discovery_time, \
+            f"Test discovery took {discovery_time:.1f}s, " \
+            f"expected <= {max_discovery_time}s. This suggests discovery performance degradation."
+        
+        # Should not be suspiciously fast (< 1 second might indicate discovery failed)
+        min_discovery_time = 1.0
+        assert discovery_time >= min_discovery_time, \
+            f"Test discovery completed in {discovery_time:.1f}s, " \
+            f"which is suspiciously fast (< {min_discovery_time}s). " \
+            f"This might indicate discovery didn't work properly."
+        
+        # Should successfully discover tests
+        assert result.returncode == 0, \
+            f"Test discovery failed with return code {result.returncode}. " \
+            f"stderr: {result.stderr}"
+        
+        # Should discover a substantial number of tests
+        lines = result.stdout.strip().split('\n')
+        test_lines = [line for line in lines if '::' in line and 'test_' in line]
+        
+        assert len(test_lines) >= 500, \
+            f"Only discovered {len(test_lines)} tests, expected at least 500. " \
+            f"This suggests incomplete test discovery."
+        
+        # Log the performance for reference
+        print(f"Discovery performance: {len(test_lines)} tests discovered in {discovery_time:.1f}s")
+    
+    @given(st.sampled_from([
+        'test_core_functionality.py',
+        'test_label_compatibility.py',
+        'test_advanced_compatibility.py',
+        'test_font_properties.py',
+        'test_color_properties.py',
+        'test_sizing_behavior.py',
+        'test_text_properties.py',
+        'test_padding_properties.py',
+        'test_serialization.py',
+        'test_performance.py'
+    ]))
+    @settings(max_examples=30, deadline=None)
+    def test_individual_module_discovery_performance(self, module_name):
+        """Test that individual module discovery is fast.
+        
+        **Feature: test-refactoring, Property 12: Test Discovery Performance**
+        **Validates: Requirements 6.4, 6.5**
+        """
+        import subprocess
+        import os
+        import time
+        
+        # Get the test directory path
+        test_dir = os.path.dirname(__file__)
+        module_path = os.path.join(test_dir, module_name)
+        
+        # Skip if module doesn't exist
+        if not os.path.exists(module_path):
+            return
+        
+        # Measure discovery time for this specific module
+        start_time = time.time()
+        
+        result = subprocess.run([
+            'pytest', '--collect-only', module_path, '-q'
+        ], capture_output=True, text=True, cwd=os.path.dirname(test_dir))
+        
+        end_time = time.time()
+        discovery_time = end_time - start_time
+        
+        # Individual module discovery should be very fast (< 10 seconds)
+        max_module_discovery_time = 10.0
+        
+        assert discovery_time <= max_module_discovery_time, \
+            f"Module {module_name} discovery took {discovery_time:.1f}s, " \
+            f"expected <= {max_module_discovery_time}s. This suggests discovery performance issues."
+        
+        # Should not be suspiciously fast (< 0.1 seconds might indicate discovery failed)
+        min_module_discovery_time = 0.1
+        assert discovery_time >= min_module_discovery_time, \
+            f"Module {module_name} discovery completed in {discovery_time:.1f}s, " \
+            f"which is suspiciously fast (< {min_module_discovery_time}s). " \
+            f"This might indicate discovery didn't work properly."
+        
+        # Should successfully discover tests
+        assert result.returncode == 0, \
+            f"Discovery failed for {module_name} with return code {result.returncode}. " \
+            f"stderr: {result.stderr}"
+        
+        # Should discover at least some tests from this module
+        lines = result.stdout.strip().split('\n')
+        test_lines = [line for line in lines if '::' in line and 'test_' in line]
+        
+        assert len(test_lines) > 0, \
+            f"No tests discovered in {module_name}. Module may be empty or have issues."
+    
+    def test_discovery_scales_linearly_with_modules(self):
+        """Test that discovery time scales reasonably with number of modules.
+        
+        **Feature: test-refactoring, Property 12: Test Discovery Performance**
+        **Validates: Requirements 6.4, 6.5**
+        """
+        import subprocess
+        import os
+        import time
+        
+        # Get the test directory path
+        test_dir = os.path.dirname(__file__)
+        
+        # Define sets of modules to test scaling
+        module_sets = [
+            ['test_core_functionality.py'],
+            ['test_core_functionality.py', 'test_label_compatibility.py'],
+            ['test_core_functionality.py', 'test_label_compatibility.py', 'test_font_properties.py'],
+            ['test_core_functionality.py', 'test_label_compatibility.py', 'test_font_properties.py', 'test_color_properties.py']
+        ]
+        
+        discovery_times = []
+        test_counts = []
+        
+        for module_set in module_sets:
+            # Filter to only existing modules
+            existing_modules = []
+            for module_name in module_set:
+                module_path = os.path.join(test_dir, module_name)
+                if os.path.exists(module_path):
+                    existing_modules.append(module_path)
+            
+            # Skip if no modules in this set exist
+            if not existing_modules:
+                continue
+            
+            # Measure discovery time for this set
+            start_time = time.time()
+            
+            result = subprocess.run([
+                'pytest', '--collect-only', '-q'
+            ] + existing_modules, capture_output=True, text=True, cwd=os.path.dirname(test_dir))
+            
+            end_time = time.time()
+            discovery_time = end_time - start_time
+            
+            # Count discovered tests
+            if result.returncode == 0:
+                lines = result.stdout.strip().split('\n')
+                test_lines = [line for line in lines if '::' in line and 'test_' in line]
+                test_count = len(test_lines)
+                
+                discovery_times.append(discovery_time)
+                test_counts.append(test_count)
+        
+        # Need at least 2 data points to check scaling
+        if len(discovery_times) < 2:
+            pytest.skip("Insufficient modules for scaling test")
+        
+        # Discovery time should not grow exponentially
+        # Check that the ratio of time to tests doesn't increase dramatically
+        time_per_test_ratios = [t / c if c > 0 else 0 for t, c in zip(discovery_times, test_counts)]
+        
+        # The time per test should not increase by more than 5x from smallest to largest set
+        # This is a generous bound to account for system variations and test complexity
+        if len(time_per_test_ratios) >= 2:
+            min_ratio = min(time_per_test_ratios)
+            max_ratio = max(time_per_test_ratios)
+            
+            if min_ratio > 0:
+                scaling_factor = max_ratio / min_ratio
+                assert scaling_factor <= 5.0, \
+                    f"Discovery time per test increased by {scaling_factor:.1f}x, " \
+                    f"expected <= 5.0x. This suggests poor scaling performance."
+    
+    def test_discovery_with_pattern_matching(self):
+        """Test that discovery with pattern matching is efficient.
+        
+        **Feature: test-refactoring, Property 12: Test Discovery Performance**
+        **Validates: Requirements 6.4, 6.5**
+        """
+        import subprocess
+        import os
+        import time
+        
+        # Get the test directory path
+        test_dir = os.path.dirname(__file__)
+        
+        # Test discovery with different test name patterns (using -k for test names)
+        test_patterns = [
+            'test_font',
+            'test_color',
+            'properties',
+            'compatibility'
+        ]
+        
+        for pattern in test_patterns:
+            # Measure discovery time with pattern
+            start_time = time.time()
+            
+            result = subprocess.run([
+                'pytest', '--collect-only', '-q', '-k', pattern, test_dir
+            ], capture_output=True, text=True, cwd=os.path.dirname(test_dir))
+            
+            end_time = time.time()
+            discovery_time = end_time - start_time
+            
+            # Pattern-based discovery should be fast (< 30 seconds)
+            max_pattern_discovery_time = 30.0
+            
+            assert discovery_time <= max_pattern_discovery_time, \
+                f"Pattern '{pattern}' discovery took {discovery_time:.1f}s, " \
+                f"expected <= {max_pattern_discovery_time}s. This suggests pattern matching performance issues."
+            
+            # Should complete successfully (may find 0 tests, which is OK)
+            assert result.returncode in [0, 5], \
+                f"Pattern '{pattern}' discovery failed with return code {result.returncode}. " \
+                f"stderr: {result.stderr}"
+    
+    def test_discovery_startup_overhead(self):
+        """Test that discovery startup overhead is reasonable.
+        
+        **Feature: test-refactoring, Property 12: Test Discovery Performance**
+        **Validates: Requirements 6.4, 6.5**
+        """
+        import subprocess
+        import os
+        import time
+        
+        # Get the test directory path
+        test_dir = os.path.dirname(__file__)
+        
+        # Measure discovery time for a minimal test (just to measure overhead)
+        simple_test = os.path.join(test_dir, 'test_import.py')
+        
+        # Skip if simple test doesn't exist
+        if not os.path.exists(simple_test):
+            pytest.skip("Simple test file not found for startup overhead measurement")
+        
+        # Measure discovery time for the simple test
+        start_time = time.time()
+        
+        result = subprocess.run([
+            'pytest', '--collect-only', simple_test, '-q'
+        ], capture_output=True, text=True, cwd=os.path.dirname(test_dir))
+        
+        end_time = time.time()
+        startup_time = end_time - start_time
+        
+        # Startup overhead should be minimal (< 5 seconds)
+        max_startup_time = 5.0
+        
+        assert startup_time <= max_startup_time, \
+            f"Discovery startup took {startup_time:.1f}s, " \
+            f"expected <= {max_startup_time}s. This suggests excessive startup overhead."
+        
+        # Should complete successfully
+        assert result.returncode == 0, \
+            f"Simple discovery failed with return code {result.returncode}. " \
+            f"stderr: {result.stderr}"
+        
+        # Should discover at least one test
+        lines = result.stdout.strip().split('\n')
+        test_lines = [line for line in lines if '::' in line and 'test_' in line]
+        
+        assert len(test_lines) >= 1, \
+            f"Simple test discovery found {len(test_lines)} tests, expected at least 1."
