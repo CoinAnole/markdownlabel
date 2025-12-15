@@ -253,8 +253,7 @@ class TestNoOpPropertyAcceptanceAndStorage:
         label = MarkdownLabel(text='# Hello World', text_language=value)
         assert label.text_language == value
     
-    @given(st.sampled_from([None, 'ltr', 'rtl', 'weak_ltr', 'weak_rtl']))
-    @settings(max_examples=100, deadline=None)
+    @pytest.mark.parametrize('value', [None, 'ltr', 'rtl', 'weak_ltr', 'weak_rtl'])
     def test_base_direction_property_accepted_and_stored(self, value):
         """Setting base_direction property accepts and stores the value."""
         label = MarkdownLabel(text='# Hello World', base_direction=value)
@@ -337,8 +336,7 @@ class TestNoOpPropertyAcceptanceAndStorage:
         label.text_language = value
         assert label.text_language == value
     
-    @given(st.sampled_from([None, 'ltr', 'rtl', 'weak_ltr', 'weak_rtl']))
-    @settings(max_examples=100, deadline=None)
+    @pytest.mark.parametrize('value', [None, 'ltr', 'rtl', 'weak_ltr', 'weak_rtl'])
     def test_base_direction_property_change_after_creation(self, value):
         """Changing base_direction property after creation accepts and stores the value."""
         label = MarkdownLabel(text='# Hello')

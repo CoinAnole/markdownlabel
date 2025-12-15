@@ -9,7 +9,7 @@ import os
 import ast
 import re
 from pathlib import Path
-from hypothesis import given, strategies as st, settings
+import pytest
 from typing import Set, List
 
 
@@ -90,13 +90,12 @@ class TestNamePreservation:
                         f"Test name '{name}' found in both {all_test_names[name]} and {test_file.name}"
                 all_test_names[name] = test_file.name
     
-    @given(st.sampled_from([
+    @pytest.mark.parametrize('class_name', [
         'TestWidgetTreeGeneration',
         'TestReactiveTextUpdates', 
         'TestLinkRefMarkup',
         'TestDeepNestingStability'
-    ]))
-    @settings(max_examples=4, deadline=None)
+    ])
     def test_specific_class_exists_in_core_module(self, class_name):
         """Each specific core functionality class exists in the core module."""
         core_module_path = Path('kivy_garden/markdownlabel/tests/test_core_functionality.py')
@@ -135,7 +134,7 @@ class TestModuleLineCountConstraint:
         assert line_count <= 1000, \
             f"Core functionality module has {line_count} lines, exceeds 1000 line limit"
     
-    @given(st.sampled_from([
+    @pytest.mark.parametrize('module_name', [
         'test_core_functionality.py',
         'test_label_compatibility.py',
         'test_font_properties.py',
@@ -148,8 +147,7 @@ class TestModuleLineCountConstraint:
         'test_serialization.py',
         'test_performance.py',
         'test_refactoring_properties.py'
-    ]))
-    @settings(max_examples=10, deadline=None)
+    ])
     def test_any_refactored_module_line_count(self, module_name):
         """Any refactored test module should not exceed 1000 lines."""
         module_path = Path(f'kivy_garden/markdownlabel/tests/{module_name}')
@@ -217,7 +215,7 @@ class TestNoTimingAssertions:
         
         return timing_patterns
     
-    @given(st.sampled_from([
+    @pytest.mark.parametrize('module_name', [
         'test_core_functionality.py',
         'test_label_compatibility.py',
         'test_font_properties.py',
@@ -230,8 +228,7 @@ class TestNoTimingAssertions:
         'test_performance.py',
         'test_refactoring_properties.py',
         'test_core_functionality_properties.py'
-    ]))
-    @settings(max_examples=100, deadline=None)
+    ])
     def test_no_timing_assertions_in_test_files(self, module_name):
         """Test files should not contain timing assertions.
         
@@ -309,7 +306,7 @@ class TestSubprocessPytestConfiguration:
         
         return issues
     
-    @given(st.sampled_from([
+    @pytest.mark.parametrize('module_name', [
         'test_core_functionality.py',
         'test_label_compatibility.py',
         'test_font_properties.py',
@@ -322,8 +319,7 @@ class TestSubprocessPytestConfiguration:
         'test_performance.py',
         'test_refactoring_properties.py',
         'test_core_functionality_properties.py'
-    ]))
-    @settings(max_examples=100, deadline=None)
+    ])
     def test_subprocess_pytest_uses_stable_configuration(self, module_name):
         """Subprocess pytest calls should use stable configuration.
         
@@ -380,7 +376,7 @@ class TestNoSilentPassFileChecks:
         
         return silent_pass_patterns
     
-    @given(st.sampled_from([
+    @pytest.mark.parametrize('module_name', [
         'test_core_functionality.py',
         'test_label_compatibility.py',
         'test_font_properties.py',
@@ -393,8 +389,7 @@ class TestNoSilentPassFileChecks:
         'test_performance.py',
         'test_refactoring_properties.py',
         'test_core_functionality_properties.py'
-    ]))
-    @settings(max_examples=100, deadline=None)
+    ])
     def test_no_silent_pass_file_existence_checks(self, module_name):
         """Test files should not contain silent-pass file existence checks.
         
@@ -448,7 +443,7 @@ class TestNoBroadExceptionHandling:
         
         return broad_exception_patterns
     
-    @given(st.sampled_from([
+    @pytest.mark.parametrize('module_name', [
         'test_core_functionality.py',
         'test_label_compatibility.py',
         'test_font_properties.py',
@@ -461,8 +456,7 @@ class TestNoBroadExceptionHandling:
         'test_performance.py',
         'test_refactoring_properties.py',
         'test_core_functionality_properties.py'
-    ]))
-    @settings(max_examples=100, deadline=None)
+    ])
     def test_no_broad_exception_handling(self, module_name):
         """Test files should not contain broad exception handling.
         

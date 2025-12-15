@@ -13,6 +13,7 @@ os.environ["KIVY_NO_ARGS"] = "1"
 os.environ["KIVY_NO_CONSOLELOG"] = "1"
 
 from hypothesis import given, strategies as st, settings
+import pytest
 
 from kivy_garden.markdownlabel import MarkdownLabel
 
@@ -191,8 +192,7 @@ class TestDeferredRebuildScheduling:
             "Rebuild should be pending, not executed synchronously"
         )
 
-    @given(st.sampled_from(["Roboto", "RobotoMono-Regular", "Arial"]))
-    @settings(max_examples=100, deadline=None)
+    @pytest.mark.parametrize('font_name', ["Roboto", "RobotoMono-Regular", "Arial"])
     def test_font_name_change_schedules_deferred_rebuild(self, font_name):
         """font_name property change schedules deferred rebuild.
 

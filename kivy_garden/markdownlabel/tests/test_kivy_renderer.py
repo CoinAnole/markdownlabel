@@ -430,8 +430,7 @@ class TestCodeBlockLanguageMetadata:
         assert widget.language_info == expected_language, \
             f"Expected language '{expected_language}', got '{widget.language_info}'"
     
-    @given(st.sampled_from(['python', 'javascript', 'rust', 'go', 'java', 'c', 'cpp']))
-    @settings(max_examples=100)
+    @pytest.mark.parametrize('language', ['python', 'javascript', 'rust', 'go', 'java', 'c', 'cpp'])
     def test_specific_languages_stored_correctly(self, language):
         """Specific language identifiers are stored correctly."""
         renderer = KivyRenderer()

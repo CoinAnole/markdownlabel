@@ -153,8 +153,7 @@ class TestEfficientStyleUpdates:
             assert list(child_label.color) == new_color_list, \
                 f"Expected color {new_color_list}, got {list(child_label.color)}"
 
-    @given(st.sampled_from(['left', 'center', 'right', 'justify']))
-    @settings(max_examples=100, deadline=None)
+    @pytest.mark.parametrize('new_halign', ['left', 'center', 'right', 'justify'])
     def test_halign_change_preserves_widget_tree(self, new_halign):
         """Changing halign preserves widget tree structure (widget identities).
         
@@ -178,8 +177,7 @@ class TestEfficientStyleUpdates:
         assert ids_before == ids_after, \
             "Widget tree changed after halign update"
 
-    @given(st.sampled_from(['left', 'center', 'right', 'justify']))
-    @settings(max_examples=100, deadline=None)
+    @pytest.mark.parametrize('new_halign', ['left', 'center', 'right', 'justify'])
     def test_halign_change_updates_descendant_labels(self, new_halign):
         """Changing halign updates all descendant Label widgets.
         
@@ -201,8 +199,7 @@ class TestEfficientStyleUpdates:
             assert child_label.halign == new_halign, \
                 f"Expected halign {new_halign}, got {child_label.halign}"
 
-    @given(st.sampled_from(['top', 'middle', 'bottom']))
-    @settings(max_examples=100, deadline=None)
+    @pytest.mark.parametrize('new_valign', ['top', 'middle', 'bottom'])
     def test_valign_change_preserves_widget_tree(self, new_valign):
         """Changing valign preserves widget tree structure (widget identities).
         
@@ -226,8 +223,7 @@ class TestEfficientStyleUpdates:
         assert ids_before == ids_after, \
             "Widget tree changed after valign update"
 
-    @given(st.sampled_from(['top', 'middle', 'bottom']))
-    @settings(max_examples=100, deadline=None)
+    @pytest.mark.parametrize('new_valign', ['top', 'middle', 'bottom'])
     def test_valign_change_updates_descendant_labels(self, new_valign):
         """Changing valign updates all descendant Label widgets.
         

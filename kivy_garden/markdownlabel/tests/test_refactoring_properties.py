@@ -11,7 +11,6 @@ os.environ['KIVY_NO_ARGS'] = '1'
 os.environ['KIVY_NO_CONSOLELOG'] = '1'
 
 import pytest
-from hypothesis import given, strategies as st, settings
 
 
 # **Feature: test-refactoring, Property 8: Module Naming Consistency**
@@ -23,7 +22,7 @@ from hypothesis import given, strategies as st, settings
 class TestModuleNamingConsistency:
     """Property tests for module naming consistency (Property 8)."""
     
-    @given(st.sampled_from([
+    @pytest.mark.parametrize('module_name', [
         'test_core_functionality.py',
         'test_label_compatibility.py', 
         'test_advanced_compatibility.py',
@@ -36,8 +35,7 @@ class TestModuleNamingConsistency:
         'test_serialization.py',
         'test_performance.py',
         'test_refactoring_properties.py'
-    ]))
-    @settings(max_examples=100, deadline=None)
+    ])
     def test_module_names_follow_pattern(self, module_name):
         """Test module names follow the test_<feature_area>.py pattern.
         
@@ -112,7 +110,7 @@ class TestDiscoveryPerformance:
             f"Discovery output doesn't contain 'collected', suggesting discovery failed. " \
             f"Output: {result.stdout}"
     
-    @given(st.sampled_from([
+    @pytest.mark.parametrize('module_name', [
         'test_core_functionality.py',
         'test_label_compatibility.py',
         'test_advanced_compatibility.py',
@@ -123,8 +121,7 @@ class TestDiscoveryPerformance:
         'test_padding_properties.py',
         'test_serialization.py',
         'test_performance.py'
-    ]))
-    @settings(max_examples=20, deadline=None)
+    ])
     def test_individual_module_discovery_functionality(self, module_name):
         """Test that individual modules can be discovered correctly.
         

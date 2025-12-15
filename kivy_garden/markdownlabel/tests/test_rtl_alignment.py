@@ -41,8 +41,7 @@ class TestAutoAlignmentRespectsDirection:
         
         return labels
     
-    @given(st.sampled_from(['rtl', 'weak_rtl']))
-    @settings(max_examples=100, deadline=None)
+    @pytest.mark.parametrize('base_direction', ['rtl', 'weak_rtl'])
     def test_auto_alignment_rtl_directions_use_right(self, base_direction):
         """Auto alignment uses 'right' for RTL base directions.
         
@@ -63,8 +62,7 @@ class TestAutoAlignmentRespectsDirection:
             assert lbl.halign == 'right', \
                 f"Expected halign='right' for base_direction={base_direction}, got {lbl.halign}"
     
-    @given(st.sampled_from(['ltr', 'weak_ltr', None]))
-    @settings(max_examples=100, deadline=None)
+    @pytest.mark.parametrize('base_direction', ['ltr', 'weak_ltr', None])
     def test_auto_alignment_ltr_directions_use_left(self, base_direction):
         """Auto alignment uses 'left' for LTR base directions and None.
         
@@ -137,8 +135,7 @@ class TestAutoAlignmentRespectsDirection:
             assert lbl.halign == 'left', \
                 f"Expected halign='left' for heading with base_direction={base_direction}, got {lbl.halign}"
     
-    @given(st.sampled_from(['rtl', 'weak_rtl']))
-    @settings(max_examples=100, deadline=None)
+    @pytest.mark.parametrize('base_direction', ['rtl', 'weak_rtl'])
     def test_auto_alignment_rtl_applies_to_mixed_content(self, base_direction):
         """Auto alignment with RTL direction applies to mixed content types.
         
@@ -163,8 +160,7 @@ class TestAutoAlignmentRespectsDirection:
             assert lbl.halign == 'right', \
                 f"Expected halign='right' for mixed content with base_direction={base_direction}, got {lbl.halign}"
     
-    @given(st.sampled_from(['ltr', 'weak_ltr', None]))
-    @settings(max_examples=100, deadline=None)
+    @pytest.mark.parametrize('base_direction', ['ltr', 'weak_ltr', None])
     def test_auto_alignment_ltr_applies_to_mixed_content(self, base_direction):
         """Auto alignment with LTR direction applies to mixed content types.
         

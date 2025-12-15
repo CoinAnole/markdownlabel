@@ -50,8 +50,7 @@ class TestFontNameForwarding:
         """
         return label.font_name == code_font_name
     
-    @given(st.sampled_from(KIVY_FONTS))
-    @settings(max_examples=100, deadline=None)
+    @pytest.mark.parametrize('font_name', KIVY_FONTS)
     def test_font_name_applied_to_paragraph(self, font_name):
         """font_name is applied to paragraph Labels."""
         label = MarkdownLabel(text='Hello World', font_name=font_name)
@@ -64,8 +63,7 @@ class TestFontNameForwarding:
             assert lbl.font_name == font_name, \
                 f"Expected font_name={font_name}, got {lbl.font_name}"
     
-    @given(st.sampled_from(KIVY_FONTS))
-    @settings(max_examples=100, deadline=None)
+    @pytest.mark.parametrize('font_name', KIVY_FONTS)
     def test_font_name_applied_to_heading(self, font_name):
         """font_name is applied to heading Labels."""
         label = MarkdownLabel(text='# Heading', font_name=font_name)
@@ -78,8 +76,7 @@ class TestFontNameForwarding:
             assert lbl.font_name == font_name, \
                 f"Expected font_name={font_name}, got {lbl.font_name}"
     
-    @given(st.sampled_from(KIVY_FONTS))
-    @settings(max_examples=100, deadline=None)
+    @pytest.mark.parametrize('font_name', KIVY_FONTS)
     def test_code_block_preserves_code_font_name(self, font_name):
         """Code blocks preserve code_font_name regardless of font_name setting."""
         code_font = 'RobotoMono-Regular'
@@ -99,8 +96,7 @@ class TestFontNameForwarding:
             assert lbl.font_name == code_font, \
                 f"Code label should use code_font_name={code_font}, got {lbl.font_name}"
     
-    @given(st.sampled_from(['Roboto', 'Roboto-Bold', 'Roboto-Italic']))
-    @settings(max_examples=100, deadline=None)
+    @pytest.mark.parametrize('font_name', ['Roboto', 'Roboto-Bold', 'Roboto-Italic'])
     def test_mixed_content_font_separation(self, font_name):
         """Mixed content correctly separates font_name and code_font_name."""
         code_font = 'RobotoMono-Regular'
@@ -123,12 +119,14 @@ class TestFontNameForwarding:
         assert len(body_labels) >= 1, "Expected at least one body text label"
         assert len(code_labels) >= 1, "Expected at least one code label"
     
-    @given(st.sampled_from(['Roboto', 'Roboto-Bold', 'Roboto-Italic']),
-           st.sampled_from(['Roboto', 'Roboto-Bold', 'Roboto-Italic']))
-    @settings(max_examples=100, deadline=None)
+    @pytest.mark.parametrize('font1,font2', [
+        ('Roboto', 'Roboto-Bold'), ('Roboto', 'Roboto-Italic'),
+        ('Roboto-Bold', 'Roboto'), ('Roboto-Bold', 'Roboto-Italic'),
+        ('Roboto-Italic', 'Roboto'), ('Roboto-Italic', 'Roboto-Bold')
+    ])
     def test_font_name_change_triggers_rebuild(self, font1, font2):
         """Changing font_name triggers widget rebuild with new font."""
-        assume(font1 != font2)
+
         
         label = MarkdownLabel(text='Hello World', font_name=font1)
         
@@ -147,8 +145,7 @@ class TestFontNameForwarding:
             assert lbl.font_name == font2, \
                 f"After change, expected font_name={font2}, got {lbl.font_name}"
     
-    @given(st.sampled_from(KIVY_FONTS))
-    @settings(max_examples=100, deadline=None)
+    @pytest.mark.parametrize('font_name', KIVY_FONTS)
     def test_font_name_applied_to_list_items(self, font_name):
         """font_name is applied to list item Labels."""
         markdown = '- Item 1\n- Item 2'
@@ -162,8 +159,7 @@ class TestFontNameForwarding:
             assert lbl.font_name == font_name, \
                 f"Expected font_name={font_name}, got {lbl.font_name}"
     
-    @given(st.sampled_from(KIVY_FONTS))
-    @settings(max_examples=100, deadline=None)
+    @pytest.mark.parametrize('font_name', KIVY_FONTS)
     def test_font_name_applied_to_table_cells(self, font_name):
         """font_name is applied to table cell Labels."""
         markdown = '| A | B |\n| --- | --- |\n| 1 | 2 |'
@@ -434,8 +430,7 @@ class TestFontAdvancedPropertyForwardingPhase2:
             assert lbl.font_features == font_features_value, \
                 f"Expected font_features={font_features_value!r}, got {lbl.font_features!r}"
     
-    @given(st.sampled_from([None, 'normal', 'light', 'mono']))
-    @settings(max_examples=100, deadline=None)
+    @pytest.mark.parametrize('font_hinting_value', [None, 'normal', 'light', 'mono'])
     def test_font_hinting_forwarded_to_all_labels_including_code(self, font_hinting_value):
         """font_hinting IS forwarded to ALL Labels including code blocks.
         

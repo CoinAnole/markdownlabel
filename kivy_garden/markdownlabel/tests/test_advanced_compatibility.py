@@ -88,8 +88,7 @@ class TestAdvancedFontPropertiesForwarding:
             assert lbl.font_features == font_features_value, \
                 f"Expected font_features={font_features_value!r}, got {lbl.font_features!r}"
     
-    @given(st.sampled_from([None, 'normal', 'light', 'mono']))
-    @settings(max_examples=100, deadline=None)
+    @pytest.mark.parametrize('font_hinting_value', [None, 'normal', 'light', 'mono'])
     def test_font_hinting_forwarded_to_labels(self, font_hinting_value):
         """font_hinting is forwarded to all internal Labels."""
         label = MarkdownLabel(text='Hello World', font_hinting=font_hinting_value)
@@ -129,10 +128,12 @@ class TestAdvancedFontPropertiesForwarding:
             assert lbl.font_blended == font_blended_value, \
                 f"Expected font_blended={font_blended_value}, got {lbl.font_blended}"
     
-    @given(st.sampled_from([None, 'normal', 'light', 'mono']),
-           st.booleans(),
-           st.booleans())
-    @settings(max_examples=100, deadline=None)
+    @pytest.mark.parametrize('font_hinting,font_kerning,font_blended', [
+        (None, True, True), (None, True, False), (None, False, True), (None, False, False),
+        ('normal', True, True), ('normal', True, False), ('normal', False, True), ('normal', False, False),
+        ('light', True, True), ('light', True, False), ('light', False, True), ('light', False, False),
+        ('mono', True, True), ('mono', True, False), ('mono', False, True), ('mono', False, False)
+    ])
     def test_multiple_advanced_font_properties_forwarded(self, font_hinting, font_kerning, font_blended):
         """Multiple advanced font properties are forwarded together."""
         label = MarkdownLabel(
@@ -611,12 +612,15 @@ class TestReactiveRebuildOnPropertyChange:
             assert floats_equal(lbl.line_height, line_height), \
                 f"After line_height change, expected {line_height}, got {lbl.line_height}"
     
-    @given(st.sampled_from(['left', 'center', 'right', 'justify']),
-           st.sampled_from(['left', 'center', 'right', 'justify']))
-    @settings(max_examples=100, deadline=None)
+    @pytest.mark.parametrize('halign1,halign2', [
+        ('left', 'center'), ('left', 'right'), ('left', 'justify'),
+        ('center', 'left'), ('center', 'right'), ('center', 'justify'),
+        ('right', 'left'), ('right', 'center'), ('right', 'justify'),
+        ('justify', 'left'), ('justify', 'center'), ('justify', 'right')
+    ])
     def test_halign_change_rebuilds_widgets(self, halign1, halign2):
         """Changing halign after initial rendering rebuilds widgets with new alignment."""
-        assume(halign1 != halign2)
+
         
         label = MarkdownLabel(text='Hello World', halign=halign1)
         
@@ -636,12 +640,15 @@ class TestReactiveRebuildOnPropertyChange:
             assert lbl.halign == halign2, \
                 f"After change, expected halign={halign2}, got {lbl.halign}"
     
-    @given(st.sampled_from(['bottom', 'middle', 'center', 'top']),
-           st.sampled_from(['bottom', 'middle', 'center', 'top']))
-    @settings(max_examples=100, deadline=None)
+    @pytest.mark.parametrize('valign1,valign2', [
+        ('bottom', 'middle'), ('bottom', 'center'), ('bottom', 'top'),
+        ('middle', 'bottom'), ('middle', 'center'), ('middle', 'top'),
+        ('center', 'bottom'), ('center', 'middle'), ('center', 'top'),
+        ('top', 'bottom'), ('top', 'middle'), ('top', 'center')
+    ])
     def test_valign_change_rebuilds_widgets(self, valign1, valign2):
         """Changing valign after initial rendering rebuilds widgets with new alignment."""
-        assume(valign1 != valign2)
+
         
         label = MarkdownLabel(text='Hello World', valign=valign1)
         
@@ -661,12 +668,14 @@ class TestReactiveRebuildOnPropertyChange:
             assert lbl.valign == valign2, \
                 f"After change, expected valign={valign2}, got {lbl.valign}"
     
-    @given(st.sampled_from(['strict', 'replace', 'ignore']),
-           st.sampled_from(['strict', 'replace', 'ignore']))
-    @settings(max_examples=100, deadline=None)
+    @pytest.mark.parametrize('errors1,errors2', [
+        ('strict', 'replace'), ('strict', 'ignore'),
+        ('replace', 'strict'), ('replace', 'ignore'),
+        ('ignore', 'strict'), ('ignore', 'replace')
+    ])
     def test_unicode_errors_change_rebuilds_widgets(self, errors1, errors2):
         """Changing unicode_errors after initial rendering rebuilds widgets."""
-        assume(errors1 != errors2)
+
         
         label = MarkdownLabel(text='Hello World', unicode_errors=errors1)
         

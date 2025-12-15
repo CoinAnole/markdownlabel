@@ -92,8 +92,7 @@ class TestShorteningPropertyForwarding:
             assert lbl.shorten == shorten_value, \
                 f"Expected shorten={shorten_value}, got {lbl.shorten}"
     
-    @given(st.sampled_from(['left', 'center', 'right']))
-    @settings(max_examples=100, deadline=None)
+    @pytest.mark.parametrize('shorten_from_value', ['left', 'center', 'right'])
     def test_shorten_from_forwarded_to_paragraph(self, shorten_from_value):
         """shorten_from property is forwarded to paragraph Labels."""
         label = MarkdownLabel(text='Hello World', shorten_from=shorten_from_value)
@@ -105,8 +104,7 @@ class TestShorteningPropertyForwarding:
             assert lbl.shorten_from == shorten_from_value, \
                 f"Expected shorten_from={shorten_from_value}, got {lbl.shorten_from}"
     
-    @given(st.sampled_from(['left', 'center', 'right']))
-    @settings(max_examples=100, deadline=None)
+    @pytest.mark.parametrize('shorten_from_value', ['left', 'center', 'right'])
     def test_shorten_from_forwarded_to_heading(self, shorten_from_value):
         """shorten_from property is forwarded to heading Labels."""
         label = MarkdownLabel(text='# Heading', shorten_from=shorten_from_value)
@@ -118,8 +116,7 @@ class TestShorteningPropertyForwarding:
             assert lbl.shorten_from == shorten_from_value, \
                 f"Expected shorten_from={shorten_from_value}, got {lbl.shorten_from}"
     
-    @given(st.sampled_from(['left', 'center', 'right']))
-    @settings(max_examples=100, deadline=None)
+    @pytest.mark.parametrize('shorten_from_value', ['left', 'center', 'right'])
     def test_shorten_from_forwarded_to_list_items(self, shorten_from_value):
         """shorten_from property is forwarded to list item Labels."""
         markdown = '- Item 1\n- Item 2'

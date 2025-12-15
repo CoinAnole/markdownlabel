@@ -24,13 +24,13 @@
     - **Property 4: No broad exception handling**
     - **Validates: Requirements 2.2, 2.4**
 
-- [ ] 2. Convert inappropriate property tests to parametrized tests
-  - [ ] 2.1 Identify fixed-list property tests in test suite
+- [-] 2. Convert inappropriate property tests to parametrized tests
+  - [x] 2.1 Identify fixed-list property tests in test suite
     - Scan all test files for @given(st.sampled_from(...)) patterns
     - Create list of tests that should be converted to parametrized
     - Document conversion mapping for each identified test
     - _Requirements: 3.1_
-  - [ ] 2.2 Convert fixed-list property tests to parametrized tests
+  - [-] 2.2 Convert fixed-list property tests to parametrized tests
     - Replace @given(st.sampled_from([...])) with @pytest.mark.parametrize
     - Ensure parameter names are descriptive and clear
     - Maintain same test coverage and edge cases

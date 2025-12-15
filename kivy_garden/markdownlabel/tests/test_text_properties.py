@@ -404,11 +404,14 @@ class TestUnicodeErrorsForwarding:
             assert lbl.unicode_errors == unicode_errors, \
                 f"Expected unicode_errors={unicode_errors}, got {lbl.unicode_errors}"
     
-    @given(st.sampled_from(['strict', 'replace']), st.sampled_from(['replace', 'ignore']))
-    @settings(max_examples=100, deadline=None)
+    @pytest.mark.parametrize('errors1,errors2', [
+        ('strict', 'replace'), ('strict', 'ignore'),
+        ('replace', 'strict'), ('replace', 'ignore'),
+        ('ignore', 'strict'), ('ignore', 'replace')
+    ])
     def test_unicode_errors_change_triggers_rebuild(self, errors1, errors2):
         """Changing unicode_errors triggers widget rebuild with new value."""
-        assume(errors1 != errors2)
+
         
         label = MarkdownLabel(text='Hello World', unicode_errors=errors1)
         
