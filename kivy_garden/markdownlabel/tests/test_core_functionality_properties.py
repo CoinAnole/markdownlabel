@@ -81,7 +81,7 @@ class TestNamePreservation:
         
         # Scan all test files
         for test_file in test_dir.glob('test_*.py'):
-            if test_file.name in ['test_core_functionality_properties.py', 'test_markdown_label.py']:
+            if test_file.name in ['test_core_functionality_properties.py', 'test_markdown_label_DEPRECATED.py']:
                 continue  # Skip property test file and original monolithic file during refactoring
             
             test_names = self._extract_test_names_from_file(str(test_file))
@@ -169,7 +169,7 @@ class TestModuleLineCountConstraint:
         
         for test_file in test_dir.glob('test_*.py'):
             # Skip the original monolithic file and property test files
-            if test_file.name in ['test_markdown_label.py', 'test_core_functionality_properties.py']:
+            if test_file.name in ['test_markdown_label_DEPRECATED.py', 'test_core_functionality_properties.py']:
                 continue
             
             line_count = self._count_lines_in_file(str(test_file))

@@ -17,7 +17,17 @@ kivy_garden/
         ├── test_import.py
         ├── test_inline_renderer.py
         ├── test_kivy_renderer.py
-        └── test_markdown_label.py
+        ├── test_core_functionality.py    # Core markdown parsing and rendering
+        ├── test_label_compatibility.py   # Basic label property forwarding
+        ├── test_font_properties.py       # Font-related property forwarding
+        ├── test_color_properties.py      # Color and styling properties
+        ├── test_text_properties.py       # Text-related property forwarding
+        ├── test_padding_properties.py    # Padding and spacing properties
+        ├── test_sizing_behavior.py       # Auto-sizing and layout behavior
+        ├── test_advanced_compatibility.py # Advanced label features
+        ├── test_serialization.py         # Round-trip serialization
+        ├── test_performance.py           # Performance and stability tests
+        └── test_utils.py                 # Shared test utilities and strategies
 ```
 
 ## Architecture

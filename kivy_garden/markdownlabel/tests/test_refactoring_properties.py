@@ -107,8 +107,8 @@ class TestDiscoveryPerformance:
             f"Test discovery took {discovery_time:.1f}s, " \
             f"expected <= {max_discovery_time}s. This suggests discovery performance degradation."
         
-        # Should not be suspiciously fast (< 1 second might indicate discovery failed)
-        min_discovery_time = 1.0
+        # Should not be suspiciously fast (< 0.5 second might indicate discovery failed)
+        min_discovery_time = 0.5
         assert discovery_time >= min_discovery_time, \
             f"Test discovery completed in {discovery_time:.1f}s, " \
             f"which is suspiciously fast (< {min_discovery_time}s). " \

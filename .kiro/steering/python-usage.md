@@ -55,7 +55,7 @@ pytest tests/
 pytest --cov=kivy_garden.markdownlabel tests/
 
 # Run specific test file
-pytest tests/test_markdown_label.py
+pytest tests/test_core_functionality.py
 ```
 
 **CRITICAL TESTING RULES:**
