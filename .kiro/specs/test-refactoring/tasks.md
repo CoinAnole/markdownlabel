@@ -38,7 +38,7 @@
   - **Property 4: Import Functionality**
   - **Validates: Requirements 2.4**
 
-- [ ] 4. Create font properties test module
+- [x] 4. Create font properties test module
   - Create `test_font_properties.py`
   - Move `TestFontNameForwarding`, `TestLineHeightForwarding`, `TestFontAdvancedPropertyForwardingPhase2`, `TestFontSizeImmediateUpdate`, `TestHeadingScalePreservation`, `TestNoRebuildOnFontSizeChange` classes
   - Update imports and ensure all tests pass
