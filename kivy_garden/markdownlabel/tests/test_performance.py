@@ -33,13 +33,13 @@ class TestEfficientStyleUpdates:
     in place without rebuilding the widget tree, while structure property
     changes trigger a full rebuild.
     """
-    
+
     def _collect_widget_ids(self, widget):
         """Collect Python object ids of all widgets in the tree.
         
         Args:
             widget: Root widget to collect from
-            
+        
         Returns:
             Set of widget object ids
         """
@@ -48,13 +48,13 @@ class TestEfficientStyleUpdates:
             for child in widget.children:
                 ids.update(self._collect_widget_ids(child))
         return ids
-    
+
     def _find_labels_recursive(self, widget):
         """Find all Label widgets recursively.
         
         Args:
             widget: Root widget to search from
-            
+        
         Returns:
             List of Label widgets
         """
@@ -65,7 +65,7 @@ class TestEfficientStyleUpdates:
             for child in widget.children:
                 labels.extend(self._find_labels_recursive(child))
         return labels
-    
+
     @given(st.floats(min_value=10, max_value=50, allow_nan=False, allow_infinity=False),
            st.floats(min_value=10, max_value=50, allow_nan=False, allow_infinity=False))
     @settings(max_examples=100, deadline=None)
@@ -93,7 +93,7 @@ class TestEfficientStyleUpdates:
         # Widget tree structure should be preserved (same widget objects)
         assert ids_before == ids_after, \
             f"Widget tree changed after font_size update. Before: {len(ids_before)}, After: {len(ids_after)}"
-    
+
     @given(st.tuples(
         st.floats(min_value=0, max_value=1, allow_nan=False, allow_infinity=False),
         st.floats(min_value=0, max_value=1, allow_nan=False, allow_infinity=False),
@@ -123,7 +123,7 @@ class TestEfficientStyleUpdates:
         # Widget tree structure should be preserved
         assert ids_before == ids_after, \
             "Widget tree changed after color update"
-    
+
     @given(st.tuples(
         st.floats(min_value=0, max_value=1, allow_nan=False, allow_infinity=False),
         st.floats(min_value=0, max_value=1, allow_nan=False, allow_infinity=False),
@@ -152,7 +152,7 @@ class TestEfficientStyleUpdates:
         for child_label in child_labels:
             assert list(child_label.color) == new_color_list, \
                 f"Expected color {new_color_list}, got {list(child_label.color)}"
-    
+
     @given(st.sampled_from(['left', 'center', 'right', 'justify']))
     @settings(max_examples=100, deadline=None)
     def test_halign_change_preserves_widget_tree(self, new_halign):
@@ -177,7 +177,7 @@ class TestEfficientStyleUpdates:
         # Widget tree structure should be preserved
         assert ids_before == ids_after, \
             "Widget tree changed after halign update"
-    
+
     @given(st.sampled_from(['left', 'center', 'right', 'justify']))
     @settings(max_examples=100, deadline=None)
     def test_halign_change_updates_descendant_labels(self, new_halign):
@@ -200,7 +200,7 @@ class TestEfficientStyleUpdates:
         for child_label in child_labels:
             assert child_label.halign == new_halign, \
                 f"Expected halign {new_halign}, got {child_label.halign}"
-    
+
     @given(st.sampled_from(['top', 'middle', 'bottom']))
     @settings(max_examples=100, deadline=None)
     def test_valign_change_preserves_widget_tree(self, new_valign):
@@ -225,7 +225,7 @@ class TestEfficientStyleUpdates:
         # Widget tree structure should be preserved
         assert ids_before == ids_after, \
             "Widget tree changed after valign update"
-    
+
     @given(st.sampled_from(['top', 'middle', 'bottom']))
     @settings(max_examples=100, deadline=None)
     def test_valign_change_updates_descendant_labels(self, new_valign):
@@ -248,7 +248,7 @@ class TestEfficientStyleUpdates:
         for child_label in child_labels:
             assert child_label.valign == new_valign, \
                 f"Expected valign {new_valign}, got {child_label.valign}"
-    
+
     @given(st.floats(min_value=0.5, max_value=3.0, allow_nan=False, allow_infinity=False))
     @settings(max_examples=100, deadline=None)
     def test_line_height_change_preserves_widget_tree(self, new_line_height):
@@ -273,7 +273,7 @@ class TestEfficientStyleUpdates:
         # Widget tree structure should be preserved
         assert ids_before == ids_after, \
             "Widget tree changed after line_height update"
-    
+
     @given(st.floats(min_value=0.5, max_value=3.0, allow_nan=False, allow_infinity=False))
     @settings(max_examples=100, deadline=None)
     def test_line_height_change_updates_descendant_labels(self, new_line_height):
@@ -296,7 +296,7 @@ class TestEfficientStyleUpdates:
         for child_label in child_labels:
             assert child_label.line_height == new_line_height, \
                 f"Expected line_height {new_line_height}, got {child_label.line_height}"
-    
+
     @given(st.booleans())
     @settings(max_examples=100, deadline=None)
     def test_disabled_change_preserves_widget_tree(self, new_disabled):
@@ -321,7 +321,7 @@ class TestEfficientStyleUpdates:
         # Widget tree structure should be preserved
         assert ids_before == ids_after, \
             "Widget tree changed after disabled update"
-    
+
     def test_text_change_rebuilds_widget_tree(self):
         """Changing text (structure property) rebuilds the widget tree.
         
@@ -350,7 +350,7 @@ class TestEfficientStyleUpdates:
         
         assert children_before != children_after, \
             "Widget tree should be rebuilt after text change"
-    
+
     def test_font_name_change_rebuilds_widget_tree(self):
         """Changing font_name (structure property) rebuilds the widget tree.
         
@@ -377,7 +377,7 @@ class TestEfficientStyleUpdates:
         
         assert children_before != children_after, \
             "Widget tree should be rebuilt after font_name change"
-    
+
     @given(
         st.floats(min_value=10, max_value=30, allow_nan=False, allow_infinity=False),
         st.tuples(
@@ -418,7 +418,7 @@ class TestEfficientStyleUpdates:
         # Widget tree structure should be preserved through all changes
         assert ids_before == ids_after, \
             "Widget tree changed after multiple style updates"
-    
+
     @given(
         st.tuples(
             st.floats(min_value=0, max_value=1, allow_nan=False, allow_infinity=False),
@@ -484,7 +484,7 @@ class TestBatchedRebuilds:
     Tests verify that multiple property changes within the same frame
     result in at most one rebuild operation.
     """
-    
+
     @given(st.integers(min_value=2, max_value=5))
     @settings(max_examples=100, deadline=None)
     def test_multiple_text_changes_batch_to_single_rebuild(self, num_changes):
@@ -520,7 +520,7 @@ class TestBatchedRebuilds:
         # Should have exactly 1 rebuild (from force_rebuild)
         assert rebuild_count[0] == 1, \
             f"Expected exactly 1 rebuild after force_rebuild, got {rebuild_count[0]}"
-    
+
     @given(
         st.text(min_size=1, max_size=20, alphabet=st.characters(
             whitelist_categories=['L', 'N'],
@@ -563,7 +563,7 @@ class TestBatchedRebuilds:
         # Should have exactly 1 rebuild
         assert rebuild_count[0] == 1, \
             f"Expected exactly 1 rebuild, got {rebuild_count[0]}"
-    
+
     def test_pending_rebuild_flag_prevents_duplicate_scheduling(self):
         """_pending_rebuild flag prevents duplicate rebuild scheduling.
         
@@ -603,7 +603,7 @@ class TestDeferredRebuildScheduling:
     Tests verify that property changes trigger deferred rebuilds via
     Clock.create_trigger rather than synchronous rebuilds.
     """
-    
+
     @given(st.text(min_size=1, max_size=50, alphabet=st.characters(
         whitelist_categories=['L', 'N'],
         blacklist_characters='#[]&\n\r'
@@ -630,7 +630,7 @@ class TestDeferredRebuildScheduling:
         # Note: We compare by checking the rebuild hasn't happened yet
         assert label._pending_rebuild is True, \
             "Rebuild should be pending, not executed synchronously"
-    
+
     @given(st.sampled_from(['Roboto', 'RobotoMono-Regular', 'Arial']))
     @settings(max_examples=100, deadline=None)
     def test_font_name_change_schedules_deferred_rebuild(self, font_name):
@@ -653,7 +653,7 @@ class TestDeferredRebuildScheduling:
         # Should have scheduled a deferred rebuild
         assert label._pending_rebuild is True, \
             "Expected _pending_rebuild to be True after font_name change"
-    
+
     def test_rebuild_trigger_is_clock_trigger(self):
         """_rebuild_trigger is a Clock.create_trigger instance.
         
@@ -669,7 +669,7 @@ class TestDeferredRebuildScheduling:
             "Expected _rebuild_trigger attribute"
         assert isinstance(label._rebuild_trigger, ClockEvent), \
             f"Expected ClockEvent, got {type(label._rebuild_trigger)}"
-    
+
     def test_schedule_rebuild_sets_pending_flag(self):
         """_schedule_rebuild() sets _pending_rebuild flag.
         
@@ -687,7 +687,7 @@ class TestDeferredRebuildScheduling:
         # Flag should be set
         assert label._pending_rebuild is True, \
             "Expected _pending_rebuild to be True after _schedule_rebuild()"
-    
+
     def test_do_rebuild_clears_pending_flag(self):
         """_do_rebuild() clears _pending_rebuild flag when executing.
         
@@ -705,7 +705,7 @@ class TestDeferredRebuildScheduling:
         # Flag should be cleared
         assert label._pending_rebuild is False, \
             "Expected _pending_rebuild to be False after _do_rebuild()"
-    
+
     def test_do_rebuild_skips_when_not_pending(self):
         """_do_rebuild() skips rebuild when _pending_rebuild is False.
         
@@ -733,7 +733,7 @@ class TestDeferredRebuildScheduling:
         # Should not have called _rebuild_widgets
         assert rebuild_count[0] == 0, \
             f"Expected 0 rebuilds when not pending, got {rebuild_count[0]}"
-    
+
     @given(st.lists(
         st.text(min_size=1, max_size=20, alphabet=st.characters(
             whitelist_categories=['L', 'N'],
@@ -776,7 +776,7 @@ class TestDeferredRebuildScheduling:
 
 class TestContentClippingWhenHeightConstrained:
     """Property tests for content clipping when height-constrained (Property 1)."""
-    
+
     def _has_clipping_container(self, widget):
         """Check if widget contains a _ClippingContainer (StencilView).
         
@@ -810,7 +810,7 @@ class TestContentClippingWhenHeightConstrained:
         
         assert self._has_clipping_container(label), \
             f"Expected clipping container when text_size[1]={height}"
-    
+
     @given(
         st.text(min_size=1, max_size=100, alphabet=st.characters(
             whitelist_categories=['L', 'N', 'P', 'S', 'Z'],
@@ -833,7 +833,7 @@ class TestContentClippingWhenHeightConstrained:
         
         assert self._has_clipping_container(label), \
             f"Expected clipping container when strict_label_mode=True and height={height}"
-    
+
     @given(
         st.floats(min_value=10.0, max_value=500.0, allow_nan=False, allow_infinity=False)
     )
@@ -858,7 +858,7 @@ class TestContentClippingWhenHeightConstrained:
         assert clipping_container is not None, "Expected clipping container"
         assert clipping_container.height == height, \
             f"Expected container height={height}, got {clipping_container.height}"
-    
+
     @given(
         st.integers(min_value=1, max_value=6),
         st.floats(min_value=50.0, max_value=200.0, allow_nan=False, allow_infinity=False)
@@ -873,7 +873,7 @@ class TestContentClippingWhenHeightConstrained:
         
         assert self._has_clipping_container(label), \
             f"Expected clipping for heading level {level} with height={height}"
-    
+
     def test_clipping_uses_stencil_view(self):
         """Clipping mechanism uses StencilView."""
         from kivy.uix.stencilview import StencilView
@@ -896,7 +896,7 @@ class TestContentClippingWhenHeightConstrained:
 
 class TestNoClippingWhenUnconstrained:
     """Property tests for no clipping when unconstrained (Property 2)."""
-    
+
     def _has_clipping_container(self, widget):
         """Check if widget contains a _ClippingContainer (StencilView).
         
@@ -1004,4 +1004,3 @@ class TestNoClippingWhenUnconstrained:
         
         assert not self._has_clipping_container(label), \
             f"Expected no clipping when only text_size width={width} is set"
-

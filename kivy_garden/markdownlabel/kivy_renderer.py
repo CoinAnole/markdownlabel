@@ -1051,9 +1051,13 @@ class KivyRenderer:
         attrs = cell.get('attrs', {})
         
         # Get alignment from attrs - table cells use their own alignment from markdown
-        # but fall back to the renderer's halign if not specified
+        # but fall back to the renderer's halign if not specified or invalid
         align = attrs.get('align', None)
-        cell_halign = align if align in ('left', 'center', 'right') else self.halign
+        if align in ('left', 'center', 'right'):
+            cell_halign = align
+        else:
+            # Fall back to renderer's halign, but convert 'auto' to 'left' for table cells
+            cell_halign = 'left' if self.halign == 'auto' else self.halign
         
         # Render inline content
         text = self._render_inline(children) if children else ''
