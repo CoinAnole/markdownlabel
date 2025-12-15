@@ -50,13 +50,13 @@
   - Update imports and ensure all tests pass
   - _Requirements: 1.1, 1.4, 2.1, 2.2_
 
-- [ ] 6. Create sizing behavior test module
+- [x] 6. Create sizing behavior test module
   - Create `test_sizing_behavior.py`
   - Move `TestAutoSizingBehavior`, `TestAutoSizeHeightTrueBehavior`, `TestAutoSizeHeightFalseBehavior`, `TestAutoSizeHeightDynamicToggling`, `TestStrictLabelModeSizingBehavior`, `TestComprehensiveTextureSizeCalculation` classes
   - Update imports and ensure all tests pass
   - _Requirements: 1.1, 1.4, 2.1, 2.2_
 
-- [ ] 6.1 Write property test for logical test grouping
+- [x] 6.1 Write property test for logical test grouping
   - **Property 9: Logical Test Grouping**
   - **Validates: Requirements 1.4, 4.3, 4.4**
 
