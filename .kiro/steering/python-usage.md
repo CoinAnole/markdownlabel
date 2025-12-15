@@ -49,13 +49,13 @@ pip install -e ".[dev]"
 ### Testing
 ```bash
 # Run all tests
-pytest tests/
+pytest kivy_garden/markdownlabel/tests/
 
 # Run with coverage
-pytest --cov=kivy_garden.markdownlabel tests/
+pytest --cov=kivy_garden.markdownlabel kivy_garden/markdownlabel/tests/
 
 # Run specific test file
-pytest tests/test_core_functionality.py
+pytest kivy_garden/markdownlabel/tests/test_core_functionality.py
 ```
 
 **CRITICAL TESTING RULES:**
