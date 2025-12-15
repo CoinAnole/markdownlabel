@@ -84,17 +84,17 @@
   - Update imports and ensure all tests pass
   - _Requirements: 1.1, 1.4, 2.1, 2.2_
 
-- [ ] 11. Create performance test module
+- [x] 11. Create performance test module
   - Create `test_performance.py`
   - Move `TestEfficientStyleUpdates`, `TestBatchedRebuilds`, `TestDeferredRebuildScheduling`, `TestContentClippingWhenHeightConstrained`, `TestNoClippingWhenUnconstrained` classes
   - Update imports and ensure all tests pass
   - _Requirements: 1.1, 1.4, 2.1, 2.2_
 
-- [ ] 11.1 Write property test for module naming consistency
+- [x] 11.1 Write property test for module naming consistency
   - **Property 8: Module Naming Consistency**
   - **Validates: Requirements 1.2, 4.1**
 
-- [ ] 12. Checkpoint - Verify all tests are migrated and passing
+- [x] 12. Checkpoint - Verify all tests are migrated and passing
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 12.1 Write property test for test discovery completeness

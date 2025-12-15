@@ -147,8 +147,10 @@ class TestModuleLineCountConstraint:
         'test_text_properties.py',
         'test_padding_properties.py',
         'test_advanced_compatibility.py',
+        'test_shortening_and_coordinate.py',
         'test_serialization.py',
-        'test_performance.py'
+        'test_performance.py',
+        'test_refactoring_properties.py'
     ]))
     @settings(max_examples=10, deadline=None)
     def test_any_refactored_module_line_count(self, module_name):
