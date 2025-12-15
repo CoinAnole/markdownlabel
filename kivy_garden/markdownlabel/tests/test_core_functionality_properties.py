@@ -135,8 +135,8 @@ class TestModuleLineCountConstraint:
         core_module_path = 'kivy_garden/markdownlabel/tests/test_core_functionality.py'
         if os.path.exists(core_module_path):
             line_count = self._count_lines_in_file(core_module_path)
-            assert line_count <= 1010, \
-                f"Core functionality module has {line_count} lines, exceeds 1010 line limit"
+            assert line_count <= 1000, \
+                f"Core functionality module has {line_count} lines, exceeds 1000 line limit"
     
     @given(st.sampled_from([
         'test_core_functionality.py',
@@ -158,8 +158,8 @@ class TestModuleLineCountConstraint:
         module_path = f'kivy_garden/markdownlabel/tests/{module_name}'
         if os.path.exists(module_path):
             line_count = self._count_lines_in_file(module_path)
-            assert line_count <= 1010, \
-                f"Module {module_name} has {line_count} lines, exceeds 1010 line limit"
+            assert line_count <= 1000, \
+                f"Module {module_name} has {line_count} lines, exceeds 1000 line limit"
     
     def test_all_existing_test_modules_line_count(self):
         """All existing test modules should respect the line count constraint."""
@@ -173,5 +173,5 @@ class TestModuleLineCountConstraint:
                 continue
             
             line_count = self._count_lines_in_file(str(test_file))
-            assert line_count <= 1010, \
-                f"Module {test_file.name} has {line_count} lines, exceeds 1010 line limit"
+            assert line_count <= 1000, \
+                f"Module {test_file.name} has {line_count} lines, exceeds 1000 line limit"
