@@ -97,7 +97,7 @@ from hypothesis import given, strategies as st, settings
 
 class TestExample:
     @given(st.booleans())
-    @settings(max_examples=2, deadline=None)
+    @settings(max_examples=100, deadline=None)
     def test_boolean_property(self, value):
         """Test with over-testing."""
         assert isinstance(value, bool)
@@ -129,7 +129,7 @@ class TestExample:
 from hypothesis import given, strategies as st, settings
 
 @given(st.integers(min_value=0, max_value=4))
-@settings(max_examples=5, deadline=None)
+@settings(max_examples=100, deadline=None)
 def test_small_range_property(self, value):
     """Test with over-testing."""
     assert 0 <= value <= 4
@@ -153,8 +153,8 @@ def test_small_range_property(self, value):
         finally:
             os.unlink(temp_file)
     
-    def test_appropriate_examples_not_flagged(self):
-        """Appropriate max_examples values are not flagged."""
+    def test_appropriate_examples_not_flagged_file_analyzer(self):
+        """Appropriate max_examples values are not flagged by file analyzer."""
         content = '''
 from hypothesis import given, strategies as st, settings
 
@@ -248,7 +248,7 @@ class TestValidationReport:
 from hypothesis import given, strategies as st, settings
 
 @given(st.booleans())
-@settings(max_examples=2, deadline=None)
+@settings(max_examples=100, deadline=None)
 def test_boolean_over(self, value):
     assert isinstance(value, bool)
 ''')

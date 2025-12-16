@@ -181,7 +181,14 @@ class TestMaxExamplesCalculation:
         **Validates: Requirements 2.5, 3.5**
         """
         import os
-        from kivy_garden.markdownlabel.strategy_classifier import StrategyAnalysis
+        import sys
+        from pathlib import Path
+        
+        # Add tools directory to path
+        tools_path = Path(__file__).parent.parent.parent.parent / 'tools'
+        sys.path.insert(0, str(tools_path))
+        
+        from test_optimization.strategy_classifier import StrategyAnalysis
         
         # Create a strategy analysis that benefits from CI optimization
         if strategy_type == StrategyType.COMPLEX:
@@ -344,13 +351,13 @@ from hypothesis import given, strategies as st, settings
 
 class TestExample:
     @given(st.booleans())
-    @settings(max_examples=2, deadline=None)
+    @settings(max_examples=100, deadline=None)
     def test_boolean_property(self, value):
         """Test with over-testing."""
         assert isinstance(value, bool)
     
     @given(st.integers(min_value=0, max_value=2))
-    @settings(max_examples=3, deadline=None)
+    @settings(max_examples=100, deadline=None)
     def test_small_range_property(self, value):
         """Test with over-testing."""
         assert 0 <= value <= 2
