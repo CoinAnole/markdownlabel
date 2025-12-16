@@ -11,9 +11,6 @@ compatibility while maintaining proper Markdown rendering functionality.
 """
 
 import os
-# Set environment variable to use headless mode for Kivy
-os.environ['KIVY_NO_ARGS'] = '1'
-os.environ['KIVY_NO_CONSOLELOG'] = '1'
 
 import pytest
 from hypothesis import given, strategies as st, settings, assume

@@ -7,9 +7,6 @@ through parse-serialize-parse cycles.
 """
 
 import os
-# Set environment variable to use headless mode for Kivy
-os.environ['KIVY_NO_ARGS'] = '1'
-os.environ['KIVY_NO_CONSOLELOG'] = '1'
 
 from hypothesis import given, settings, assume
 from hypothesis import strategies as st

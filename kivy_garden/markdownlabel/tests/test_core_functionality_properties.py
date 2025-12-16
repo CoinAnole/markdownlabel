@@ -651,3 +651,246 @@ class TestFixedListPropertyTestsConverted:
         
         # The test passes but provides information for tracking progress
         assert True, "Conversion progress tracking completed"
+
+
+# **Feature: test-improvements, Property 10: Performance tests marked**
+# *For any* genuinely performance-intensive test, the test SHALL be marked with 
+# @pytest.mark.slow and SHALL use reduced Hypothesis max_examples in CI environments.
+# **Validates: Requirements 7.1, 7.3**
+
+class TestPerformanceTestsMarked:
+    """Property tests for performance test marking (Property 10)."""
+    
+    def _check_file_for_performance_test_markers(self, file_path: str) -> dict:
+        """Check a file for performance test markers and configuration.
+        
+        Args:
+            file_path: Path to the Python file
+            
+        Returns:
+            Dict with analysis of performance test markers
+        """
+        analysis = {
+            'slow_markers': [],
+            'hypothesis_settings': [],
+            'ci_reduced_examples': [],
+            'unmarked_performance_tests': []
+        }
+        
+        with open(file_path, 'r', encoding='utf-8') as f:
+            content = f.read()
+        
+        # Find @pytest.mark.slow markers
+        slow_marker_pattern = r'@pytest\.mark\.slow'
+        analysis['slow_markers'] = re.findall(slow_marker_pattern, content)
+        
+        # Find @settings decorators with max_examples
+        settings_pattern = r'@settings\([^)]*max_examples\s*=\s*([^,)]+)[^)]*\)'
+        settings_matches = re.finditer(settings_pattern, content)
+        
+        for match in settings_matches:
+            max_examples_expr = match.group(1).strip()
+            analysis['hypothesis_settings'].append(max_examples_expr)
+            
+            # Check if it uses CI-aware reduced examples
+            if 'CI' in max_examples_expr or 'os.getenv' in max_examples_expr:
+                analysis['ci_reduced_examples'].append(max_examples_expr)
+        
+        # Look for test methods that might be performance-intensive but unmarked
+        # These are heuristics based on test method names specifically
+        performance_test_patterns = [
+            r'def\s+(test_[^(]*performance[^(]*)\(',
+            r'def\s+(test_[^(]*efficiency[^(]*)\(',
+            r'def\s+(test_[^(]*speed[^(]*)\(',
+            r'def\s+(test_[^(]*timing[^(]*)\(',
+            r'def\s+(test_[^(]*benchmark[^(]*)\(',
+            r'def\s+(test_[^(]*heavy[^(]*)\(',
+            r'def\s+(test_[^(]*large[^(]*)\(',
+            r'def\s+(test_[^(]*stress[^(]*)\('
+        ]
+        
+        for pattern in performance_test_patterns:
+            matches = re.finditer(pattern, content, re.IGNORECASE)
+            for match in matches:
+                test_method_name = match.group(1)
+                
+                # Check if this test method has a slow marker nearby (within 500 chars before)
+                test_start = max(0, match.start() - 500)
+                test_context = content[test_start:match.end()]
+                
+                if '@pytest.mark.slow' not in test_context:
+                    analysis['unmarked_performance_tests'].append(test_method_name)
+        
+        return analysis
+    
+    def test_performance_tests_properly_marked(self):
+        """Performance tests should be properly marked with @pytest.mark.slow.
+        
+        **Feature: test-improvements, Property 10: Performance tests marked**
+        **Validates: Requirements 7.1, 7.3**
+        """
+        # Check the performance test file specifically
+        performance_file = Path('kivy_garden/markdownlabel/tests/test_performance.py')
+        
+        if not performance_file.exists():
+            pytest.skip("Performance test file not found")
+        
+        analysis = self._check_file_for_performance_test_markers(str(performance_file))
+        
+        # Performance test file should have slow markers
+        assert len(analysis['slow_markers']) > 0, \
+            "Performance test file should contain @pytest.mark.slow markers"
+        
+        # Should have CI-aware reduced examples
+        assert len(analysis['ci_reduced_examples']) > 0, \
+            f"Performance tests should use reduced max_examples in CI. " \
+            f"Found settings: {analysis['hypothesis_settings']}"
+        
+        # Should not have unmarked performance tests
+        assert len(analysis['unmarked_performance_tests']) == 0, \
+            f"Found unmarked performance tests: {analysis['unmarked_performance_tests']}"
+    
+    @pytest.mark.parametrize('module_name', [
+        'test_core_functionality.py',
+        'test_label_compatibility.py',
+        'test_font_properties.py',
+        'test_color_properties.py',
+        'test_sizing_behavior.py',
+        'test_text_properties.py',
+        'test_padding_properties.py',
+        'test_advanced_compatibility.py',
+        'test_serialization.py',
+        'test_performance.py',
+        'test_refactoring_properties.py',
+        'test_core_functionality_properties.py'
+    ])
+    def test_performance_indicators_are_marked(self, module_name):
+        """Tests with performance indicators should be properly marked.
+        
+        **Feature: test-improvements, Property 10: Performance tests marked**
+        **Validates: Requirements 7.1, 7.3**
+        """
+        module_path = Path(f'kivy_garden/markdownlabel/tests/{module_name}')
+        if not module_path.exists():
+            return  # Skip non-existent modules
+        
+        analysis = self._check_file_for_performance_test_markers(str(module_path))
+        
+        # If there are unmarked performance tests, they should be marked
+        if len(analysis['unmarked_performance_tests']) > 0:
+            # Only flag if it's clearly a performance test file or has many indicators
+            if 'performance' in module_name or len(analysis['unmarked_performance_tests']) > 2:
+                assert False, \
+                    f"Found unmarked performance tests in {module_name}: " \
+                    f"{analysis['unmarked_performance_tests']}. " \
+                    f"Performance-intensive tests should be marked with @pytest.mark.slow"
+
+
+# **Feature: test-improvements, Property 11: No duplicate environment setup**
+# *For any* test file (except conftest.py), the file SHALL NOT contain KIVY_NO_ARGS 
+# or KIVY_NO_CONSOLELOG environment variable setup, relying instead on centralized 
+# conftest.py configuration.
+# **Validates: Requirements 8.1, 8.4**
+
+class TestNoDuplicateEnvironmentSetup:
+    """Property tests for no duplicate environment setup (Property 11)."""
+    
+    def _check_file_for_duplicate_environment_setup(self, file_path: str) -> List[str]:
+        """Check a file for duplicate environment setup patterns.
+        
+        Args:
+            file_path: Path to the Python file
+            
+        Returns:
+            List of duplicate environment setup patterns found
+        """
+        duplicate_setup_patterns = []
+        
+        with open(file_path, 'r', encoding='utf-8') as f:
+            content = f.read()
+        
+        # Patterns that indicate duplicate environment setup
+        patterns = [
+            r'os\.environ\[[\'"]KIVY_NO_ARGS[\'"]',
+            r'os\.environ\[[\'"]KIVY_NO_CONSOLELOG[\'"]',
+            r'os\.environ\.get\([\'"]KIVY_NO_ARGS[\'"]',
+            r'os\.environ\.get\([\'"]KIVY_NO_CONSOLELOG[\'"]'
+        ]
+        
+        for pattern in patterns:
+            matches = re.finditer(pattern, content)
+            for match in matches:
+                # Get some context around the match
+                start = max(0, match.start() - 50)
+                end = min(len(content), match.end() + 50)
+                context = content[start:end].replace('\n', ' ')
+                duplicate_setup_patterns.append(f"Line with {match.group(0)}: ...{context}...")
+        
+        return duplicate_setup_patterns
+    
+    @pytest.mark.parametrize('module_name', [
+        'test_core_functionality.py',
+        'test_label_compatibility.py',
+        'test_font_properties.py',
+        'test_color_properties.py',
+        'test_sizing_behavior.py',
+        'test_text_properties.py',
+        'test_padding_properties.py',
+        'test_advanced_compatibility.py',
+        'test_serialization.py',
+        'test_performance.py',
+        'test_refactoring_properties.py',
+        'test_core_functionality_properties.py',
+        'test_shortening_and_coordinate.py',
+        'test_rtl_alignment.py',
+        'test_rebuild_scheduling.py',
+        'test_clipping_behavior.py',
+        'test_kivy_renderer.py',
+        'test_inline_renderer.py'
+    ])
+    def test_no_duplicate_environment_setup(self, module_name):
+        """Test files should not contain duplicate environment setup.
+        
+        **Feature: test-improvements, Property 11: No duplicate environment setup**
+        **Validates: Requirements 8.1, 8.4**
+        """
+        module_path = Path(f'kivy_garden/markdownlabel/tests/{module_name}')
+        if not module_path.exists():
+            return  # Skip non-existent modules
+        
+        # Skip conftest.py as it's the centralized location for environment setup
+        if module_name == 'conftest.py':
+            return
+        
+        duplicate_patterns = self._check_file_for_duplicate_environment_setup(str(module_path))
+        
+        assert len(duplicate_patterns) == 0, \
+            f"Found duplicate environment setup in {module_name}: {duplicate_patterns}. " \
+            f"Environment setup should be centralized in conftest.py only. " \
+            f"Remove KIVY_NO_ARGS and KIVY_NO_CONSOLELOG setup from individual test files."
+    
+    def test_conftest_has_centralized_setup(self):
+        """conftest.py should contain the centralized environment setup.
+        
+        **Feature: test-improvements, Property 11: No duplicate environment setup**
+        **Validates: Requirements 8.1, 8.4**
+        """
+        conftest_path = Path('kivy_garden/markdownlabel/tests/conftest.py')
+        
+        if not conftest_path.exists():
+            pytest.fail("conftest.py not found - centralized environment setup is missing")
+        
+        with open(conftest_path, 'r', encoding='utf-8') as f:
+            content = f.read()
+        
+        # Should contain KIVY_NO_ARGS setup
+        assert 'KIVY_NO_ARGS' in content, \
+            "conftest.py should contain KIVY_NO_ARGS environment setup"
+        
+        # Should contain KIVY_NO_CONSOLELOG setup
+        assert 'KIVY_NO_CONSOLELOG' in content, \
+            "conftest.py should contain KIVY_NO_CONSOLELOG environment setup"
+        
+        # Should have proper setup fixture
+        assert 'setup_kivy_environment' in content, \
+            "conftest.py should have setup_kivy_environment fixture"

@@ -87,29 +87,29 @@
     - **Property 9: HTML content escaping**
     - **Validates: Requirements 6.1, 6.2, 6.4**
 
-- [ ] 6. Checkpoint - Ensure all tests pass
+- [x] 6. Checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 7. Mark performance tests and clean up configuration
-  - [ ] 7.1 Add @pytest.mark.slow to performance-intensive tests
+- [-] 7. Mark performance tests and clean up configuration
+  - [x] 7.1 Add @pytest.mark.slow to performance-intensive tests
     - Identify genuinely heavy tests in test_performance.py
     - Add slow marker to appropriate tests
     - Configure reduced Hypothesis max_examples for CI
     - _Requirements: 7.1, 7.3_
-  - [ ] 7.2 Configure CI to skip slow tests by default
+  - [x] 7.2 Configure CI to skip slow tests by default
     - Update pytest configuration to skip slow tests unless requested
     - Document how to run slow tests explicitly
     - Ensure fast feedback loop for default CI runs
     - _Requirements: 7.2_
-  - [ ] 7.3 Remove duplicate environment setup from test files
+  - [x] 7.3 Remove duplicate environment setup from test files
     - Remove KIVY_NO_ARGS and KIVY_NO_CONSOLELOG from individual test files
     - Ensure all setup is centralized in conftest.py
     - Verify no test functionality is broken by centralization
     - _Requirements: 8.1, 8.4_
-  - [ ] 7.4 Write property test for performance test marking
+  - [x] 7.4 Write property test for performance test marking
     - **Property 10: Performance tests marked**
     - **Validates: Requirements 7.1, 7.3**
-  - [ ] 7.5 Write property test for no duplicate environment setup
+  - [-] 7.5 Write property test for no duplicate environment setup
     - **Property 11: No duplicate environment setup**
     - **Validates: Requirements 8.1, 8.4**
 

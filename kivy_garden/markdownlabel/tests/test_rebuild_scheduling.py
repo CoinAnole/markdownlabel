@@ -8,9 +8,7 @@ This module focuses on the rebuild scheduler behavior:
 
 import os
 
-# Set environment variable to use headless mode for Kivy
-os.environ["KIVY_NO_ARGS"] = "1"
-os.environ["KIVY_NO_CONSOLELOG"] = "1"
+
 
 from hypothesis import given, strategies as st, settings
 import pytest
