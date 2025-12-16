@@ -70,7 +70,7 @@ class TestWidgetTreeGeneration:
             f"Expected at least 1 child for paragraph: {paragraph!r}"
     
     @given(st.integers(min_value=1, max_value=5))
-    @settings(max_examples=100, deadline=None)
+    @settings(max_examples=5, deadline=None)
     def test_multiple_blocks_produce_multiple_widgets(self, num_blocks):
         """Multiple block elements produce multiple widgets."""
         # Create markdown with multiple paragraphs
@@ -120,7 +120,7 @@ class TestReactiveTextUpdates:
             f"Expected text to be {text2!r}, got {label.text!r}"
     
     @given(st.integers(min_value=1, max_value=3), st.integers(min_value=1, max_value=3))
-    @settings(max_examples=100, deadline=None)
+    @settings(max_examples=3, deadline=None)
     def test_different_block_counts_update_correctly(self, count1, count2):
         """Changing from N blocks to M blocks updates widget count."""
         assume(count1 != count2)

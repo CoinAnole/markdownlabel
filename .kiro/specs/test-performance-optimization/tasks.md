@@ -64,33 +64,33 @@
   - Add validation to ensure syntax correctness after changes
   - _Requirements: 3.4_
 
-- [ ] 3. Optimize boolean and simple finite strategy tests
+- [x] 3. Optimize boolean and simple finite strategy tests
   - Apply optimizations to boolean tests (max_examples=100 → 2)
   - Optimize small integer range tests (max_examples=100 → range size)
   - Update small sampled_from tests (max_examples=100 → list length)
   - _Requirements: 1.1, 1.2, 1.3, 2.1, 2.2_
 
-- [ ] 3.1 Optimize boolean strategy tests
+- [x] 3.1 Optimize boolean strategy tests
   - Update all st.booleans() tests to use max_examples=2
   - Verify tests still pass with reduced examples
   - Measure time savings for boolean test category
   - _Requirements: 1.1, 2.1, 5.2_
 
-- [ ] 3.2 Write property test for boolean optimization
+- [x] 3.2 Write property test for boolean optimization
   - **Property 1: Boolean tests use exactly 2 examples**
   - **Validates: Requirements 1.1, 2.1**
 
-- [ ] 3.3 Optimize small integer range tests
+- [x] 3.3 Optimize small integer range tests
   - Update st.integers() tests with small ranges to use appropriate max_examples
   - Calculate range size and set max_examples accordingly
   - Verify coverage is maintained with exact value testing
   - _Requirements: 1.2, 2.2, 5.3_
 
-- [ ] 3.4 Write property test for finite strategy optimization
+- [x] 3.4 Write property test for finite strategy optimization
   - **Property 2: Small finite strategies use input space size**
   - **Validates: Requirements 1.2, 1.3, 2.2**
 
-- [ ] 3.5 Optimize sampled_from strategy tests
+- [x] 3.5 Optimize sampled_from strategy tests
   - Update st.sampled_from() tests to use list length as max_examples
   - Ensure each item in the list is tested exactly once
   - Verify test behavior is preserved

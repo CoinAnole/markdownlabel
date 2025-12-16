@@ -449,7 +449,7 @@ class TestFontAdvancedPropertyForwardingPhase2:
                     f"Expected font_hinting={font_hinting_value!r}, got {lbl.font_hinting!r}"
     
     @given(st.booleans())
-    @settings(max_examples=100, deadline=None)
+    @settings(max_examples=2, deadline=None)
     def test_font_kerning_forwarded_to_all_labels_including_code(self, font_kerning_value):
         """font_kerning IS forwarded to ALL Labels including code blocks.
         

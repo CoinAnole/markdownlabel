@@ -368,14 +368,14 @@ class TestStrictLabelModeSizingBehavior:
             f"Expected size_hint_y=1 by default, got {label.size_hint_y}"
     
     @given(st.booleans())
-    @settings(max_examples=100, deadline=None)
+    @settings(max_examples=2, deadline=None)
     def test_strict_mode_property_accepted_and_stored(self, value):
         """Setting strict_label_mode property accepts and stores the value."""
         label = MarkdownLabel(text='# Hello World', strict_label_mode=value)
         assert label.strict_label_mode == value
     
     @given(st.booleans())
-    @settings(max_examples=100, deadline=None)
+    @settings(max_examples=2, deadline=None)
     def test_strict_mode_change_after_creation(self, value):
         """Changing strict_label_mode property after creation accepts and stores the value."""
         label = MarkdownLabel(text='# Hello')

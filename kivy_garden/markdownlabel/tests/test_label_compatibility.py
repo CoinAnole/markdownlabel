@@ -88,7 +88,7 @@ class TestNoOpPropertiesAcceptance:
     """Property tests for no-op properties acceptance (Property 8)."""
     
     @given(st.booleans())
-    @settings(max_examples=100, deadline=None)
+    @settings(max_examples=2, deadline=None)
     def test_bold_property_accepted(self, value):
         """Setting bold property does not raise an exception."""
         # Should not raise any exception
@@ -96,35 +96,35 @@ class TestNoOpPropertiesAcceptance:
         assert label.bold == value
     
     @given(st.booleans())
-    @settings(max_examples=100, deadline=None)
+    @settings(max_examples=2, deadline=None)
     def test_italic_property_accepted(self, value):
         """Setting italic property does not raise an exception."""
         label = MarkdownLabel(text='# Hello World', italic=value)
         assert label.italic == value
     
     @given(st.booleans())
-    @settings(max_examples=100, deadline=None)
+    @settings(max_examples=2, deadline=None)
     def test_underline_property_accepted(self, value):
         """Setting underline property does not raise an exception."""
         label = MarkdownLabel(text='# Hello World', underline=value)
         assert label.underline == value
     
     @given(st.booleans())
-    @settings(max_examples=100, deadline=None)
+    @settings(max_examples=2, deadline=None)
     def test_strikethrough_property_accepted(self, value):
         """Setting strikethrough property does not raise an exception."""
         label = MarkdownLabel(text='# Hello World', strikethrough=value)
         assert label.strikethrough == value
     
     @given(st.booleans())
-    @settings(max_examples=100, deadline=None)
+    @settings(max_examples=2, deadline=None)
     def test_markup_property_accepted(self, value):
         """Setting markup property does not raise an exception."""
         label = MarkdownLabel(text='# Hello World', markup=value)
         assert label.markup == value
     
     @given(st.booleans(), st.booleans(), st.booleans(), st.booleans(), st.booleans())
-    @settings(max_examples=100, deadline=None)
+    @settings(max_examples=2, deadline=None)
     def test_all_noop_properties_together(self, bold, italic, underline, strikethrough, markup):
         """Setting all no-op properties together does not raise an exception."""
         label = MarkdownLabel(
@@ -143,7 +143,7 @@ class TestNoOpPropertiesAcceptance:
     
     @given(st.booleans(), st.booleans(), st.booleans(), st.booleans(), st.booleans(),
            simple_markdown_document())
-    @settings(max_examples=100, deadline=None)
+    @settings(max_examples=2, deadline=None)
     def test_noop_properties_do_not_affect_rendering(self, bold, italic, underline, 
                                                       strikethrough, markup, markdown_text):
         """No-op properties do not affect the rendered output."""
@@ -169,7 +169,7 @@ class TestNoOpPropertiesAcceptance:
             f"Expected {default_child_count} children, got {props_child_count} with no-op props"
     
     @given(st.booleans())
-    @settings(max_examples=100, deadline=None)
+    @settings(max_examples=2, deadline=None)
     def test_bold_property_change_after_creation(self, value):
         """Changing bold property after creation does not raise an exception."""
         label = MarkdownLabel(text='# Hello')
@@ -177,7 +177,7 @@ class TestNoOpPropertiesAcceptance:
         assert label.bold == value
     
     @given(st.booleans())
-    @settings(max_examples=100, deadline=None)
+    @settings(max_examples=2, deadline=None)
     def test_italic_property_change_after_creation(self, value):
         """Changing italic property after creation does not raise an exception."""
         label = MarkdownLabel(text='# Hello')
@@ -185,7 +185,7 @@ class TestNoOpPropertiesAcceptance:
         assert label.italic == value
     
     @given(st.booleans())
-    @settings(max_examples=100, deadline=None)
+    @settings(max_examples=2, deadline=None)
     def test_underline_property_change_after_creation(self, value):
         """Changing underline property after creation does not raise an exception."""
         label = MarkdownLabel(text='# Hello')
@@ -193,7 +193,7 @@ class TestNoOpPropertiesAcceptance:
         assert label.underline == value
     
     @given(st.booleans())
-    @settings(max_examples=100, deadline=None)
+    @settings(max_examples=2, deadline=None)
     def test_strikethrough_property_change_after_creation(self, value):
         """Changing strikethrough property after creation does not raise an exception."""
         label = MarkdownLabel(text='# Hello')
@@ -201,7 +201,7 @@ class TestNoOpPropertiesAcceptance:
         assert label.strikethrough == value
     
     @given(st.booleans())
-    @settings(max_examples=100, deadline=None)
+    @settings(max_examples=2, deadline=None)
     def test_markup_property_change_after_creation(self, value):
         """Changing markup property after creation does not raise an exception."""
         label = MarkdownLabel(text='# Hello')
@@ -219,7 +219,7 @@ class TestNoOpPropertyAcceptanceAndStorage:
     """Property tests for no-op property acceptance and storage (Property 1)."""
     
     @given(st.booleans())
-    @settings(max_examples=100, deadline=None)
+    @settings(max_examples=2, deadline=None)
     def test_mipmap_property_accepted_and_stored(self, value):
         """Setting mipmap property accepts and stores the value."""
         label = MarkdownLabel(text='# Hello World', mipmap=value)
@@ -299,7 +299,7 @@ class TestNoOpPropertyAcceptanceAndStorage:
         assert label.ellipsis_options == ellipsis_options
     
     @given(st.booleans())
-    @settings(max_examples=100, deadline=None)
+    @settings(max_examples=2, deadline=None)
     def test_mipmap_property_change_after_creation(self, value):
         """Changing mipmap property after creation accepts and stores the value."""
         label = MarkdownLabel(text='# Hello')

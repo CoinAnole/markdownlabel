@@ -378,7 +378,7 @@ Paragraph with text.
                 f"After update, expected padding={new_padding}, got {list(lbl.padding)}"
     
     @given(st.integers(min_value=1, max_value=5))
-    @settings(max_examples=100, deadline=None)
+    @settings(max_examples=5, deadline=None)
     def test_multiple_padding_updates(self, num_updates):
         """Multiple padding updates all work correctly."""
         label = MarkdownLabel(text='Hello World')

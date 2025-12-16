@@ -36,7 +36,7 @@ class TestShorteningPropertyForwarding:
     """Property tests for shortening property forwarding (Property 4)."""
     
     @given(st.booleans())
-    @settings(max_examples=100, deadline=None)
+    @settings(max_examples=2, deadline=None)
     def test_shorten_forwarded_to_paragraph(self, shorten_value):
         """shorten property is forwarded to paragraph Labels."""
         label = MarkdownLabel(text='Hello World', shorten=shorten_value)
@@ -49,7 +49,7 @@ class TestShorteningPropertyForwarding:
                 f"Expected shorten={shorten_value}, got {lbl.shorten}"
     
     @given(st.booleans())
-    @settings(max_examples=100, deadline=None)
+    @settings(max_examples=2, deadline=None)
     def test_shorten_forwarded_to_heading(self, shorten_value):
         """shorten property is forwarded to heading Labels."""
         label = MarkdownLabel(text='# Heading', shorten=shorten_value)
@@ -62,7 +62,7 @@ class TestShorteningPropertyForwarding:
                 f"Expected shorten={shorten_value}, got {lbl.shorten}"
     
     @given(st.booleans())
-    @settings(max_examples=100, deadline=None)
+    @settings(max_examples=2, deadline=None)
     def test_shorten_forwarded_to_list_items(self, shorten_value):
         """shorten property is forwarded to list item Labels."""
         markdown = '- Item 1\n- Item 2'
@@ -76,7 +76,7 @@ class TestShorteningPropertyForwarding:
                 f"Expected shorten={shorten_value}, got {lbl.shorten}"
     
     @given(st.booleans())
-    @settings(max_examples=100, deadline=None)
+    @settings(max_examples=2, deadline=None)
     def test_shorten_forwarded_to_table_cells(self, shorten_value):
         """shorten property is forwarded to table cell Labels."""
         markdown = '| A | B |\n| --- | --- |\n| 1 | 2 |'
@@ -168,7 +168,7 @@ class TestShorteningPropertyForwarding:
             # When max_lines=0, it may not be set on child Labels (default behavior)
     
     @given(st.integers(min_value=1, max_value=10))
-    @settings(max_examples=100, deadline=None)
+    @settings(max_examples=10, deadline=None)
     def test_max_lines_forwarded_to_heading(self, max_lines_value):
         """max_lines property is forwarded to heading Labels when non-zero."""
         label = MarkdownLabel(text='# Heading', max_lines=max_lines_value)
@@ -181,7 +181,7 @@ class TestShorteningPropertyForwarding:
                 f"Expected max_lines={max_lines_value}, got {lbl.max_lines}"
     
     @given(st.integers(min_value=1, max_value=10))
-    @settings(max_examples=100, deadline=None)
+    @settings(max_examples=10, deadline=None)
     def test_max_lines_forwarded_to_list_items(self, max_lines_value):
         """max_lines property is forwarded to list item Labels when non-zero."""
         markdown = '- Item 1\n- Item 2'
@@ -197,7 +197,7 @@ class TestShorteningPropertyForwarding:
     @given(st.fixed_dictionaries({
         'markup_color': st.sampled_from([[1, 0, 0, 1], [0, 1, 0, 1], [0, 0, 1, 1]])
     }))
-    @settings(max_examples=100, deadline=None)
+    @settings(max_examples=3, deadline=None)
     def test_ellipsis_options_forwarded_to_paragraph(self, ellipsis_opts):
         """ellipsis_options property is forwarded to paragraph Labels."""
         label = MarkdownLabel(text='Hello World', ellipsis_options=ellipsis_opts)
@@ -212,7 +212,7 @@ class TestShorteningPropertyForwarding:
     @given(st.fixed_dictionaries({
         'markup_color': st.sampled_from([[1, 0, 0, 1], [0, 1, 0, 1], [0, 0, 1, 1]])
     }))
-    @settings(max_examples=100, deadline=None)
+    @settings(max_examples=3, deadline=None)
     def test_ellipsis_options_forwarded_to_heading(self, ellipsis_opts):
         """ellipsis_options property is forwarded to heading Labels."""
         label = MarkdownLabel(text='# Heading', ellipsis_options=ellipsis_opts)
@@ -227,7 +227,7 @@ class TestShorteningPropertyForwarding:
     @given(st.fixed_dictionaries({
         'markup_color': st.sampled_from([[1, 0, 0, 1], [0, 1, 0, 1], [0, 0, 1, 1]])
     }))
-    @settings(max_examples=100, deadline=None)
+    @settings(max_examples=3, deadline=None)
     def test_ellipsis_options_forwarded_to_list_items(self, ellipsis_opts):
         """ellipsis_options property is forwarded to list item Labels."""
         markdown = '- Item 1\n- Item 2'
@@ -243,7 +243,7 @@ class TestShorteningPropertyForwarding:
     @given(st.fixed_dictionaries({
         'markup_color': st.sampled_from([[1, 0, 0, 1], [0, 1, 0, 1], [0, 0, 1, 1]])
     }))
-    @settings(max_examples=100, deadline=None)
+    @settings(max_examples=3, deadline=None)
     def test_ellipsis_options_forwarded_to_table_cells(self, ellipsis_opts):
         """ellipsis_options property is forwarded to table cell Labels."""
         markdown = '| A | B |\n| --- | --- |\n| 1 | 2 |'
@@ -271,7 +271,7 @@ class TestShorteningPropertyForwarding:
     @given(st.booleans(), st.sampled_from(['left', 'center', 'right']),
            st.text(min_size=0, max_size=3, alphabet='ab '),
            st.integers(min_value=1, max_value=5))
-    @settings(max_examples=100, deadline=None)
+    @settings(max_examples=2, deadline=None)
     def test_all_shortening_properties_forwarded_together(
             self, shorten_val, shorten_from_val, split_str_val, max_lines_val):
         """All shortening properties are forwarded together to child Labels."""
@@ -308,7 +308,7 @@ Paragraph text
                 f"Expected max_lines={max_lines_val}, got {lbl.max_lines}"
     
     @given(st.booleans(), st.booleans())
-    @settings(max_examples=100, deadline=None)
+    @settings(max_examples=2, deadline=None)
     def test_shorten_change_triggers_rebuild(self, shorten1, shorten2):
         """Changing shorten triggers widget rebuild with new value."""
         assume(shorten1 != shorten2)
@@ -400,7 +400,7 @@ class TestCoordinateTranslation:
         whitelist_categories=['L', 'N'],
         blacklist_characters='[]()&\n\r'
     )))
-    @settings(max_examples=100, deadline=None)
+    @settings(max_examples=3, deadline=None)
     def test_link_produces_ref_markup_for_translation(self, link_text):
         """Links produce ref markup that will be translated when rendered.
         

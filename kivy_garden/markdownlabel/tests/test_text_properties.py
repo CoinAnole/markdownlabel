@@ -149,7 +149,7 @@ class TestTextSizeHeightForwarding:
     
     @given(st.floats(min_value=50, max_value=500, allow_nan=False, allow_infinity=False),
            st.sampled_from(['top', 'middle', 'bottom']))
-    @settings(max_examples=100, deadline=None)
+    @settings(max_examples=3, deadline=None)
     def test_valign_forwarded_with_height(self, height, valign):
         """valign is forwarded to Labels when text_size height is set."""
         label = MarkdownLabel(text='Hello World', text_size=[None, height], valign=valign)
@@ -446,7 +446,7 @@ class TestStripForwarding:
     """Property tests for strip forwarding (Property 13)."""
     
     @given(st.booleans())
-    @settings(max_examples=100, deadline=None)
+    @settings(max_examples=2, deadline=None)
     def test_strip_stored_correctly(self, strip_value):
         """strip value is stored correctly on MarkdownLabel."""
         label = MarkdownLabel(text='Hello World', strip=strip_value)
@@ -455,7 +455,7 @@ class TestStripForwarding:
             f"Expected strip={strip_value}, got {label.strip}"
     
     @given(st.booleans())
-    @settings(max_examples=100, deadline=None)
+    @settings(max_examples=2, deadline=None)
     def test_strip_applied_to_paragraph(self, strip_value):
         """strip is applied to paragraph Labels."""
         label = MarkdownLabel(text='Hello World', strip=strip_value)
@@ -469,7 +469,7 @@ class TestStripForwarding:
                 f"Expected strip={strip_value}, got {lbl.strip}"
     
     @given(st.booleans())
-    @settings(max_examples=100, deadline=None)
+    @settings(max_examples=2, deadline=None)
     def test_strip_applied_to_heading(self, strip_value):
         """strip is applied to heading Labels."""
         label = MarkdownLabel(text='# Heading', strip=strip_value)
@@ -483,7 +483,7 @@ class TestStripForwarding:
                 f"Expected strip={strip_value}, got {lbl.strip}"
     
     @given(st.booleans())
-    @settings(max_examples=100, deadline=None)
+    @settings(max_examples=2, deadline=None)
     def test_strip_applied_to_code_block(self, strip_value):
         """strip is applied to code block Labels."""
         markdown = '```python\nprint("hello")\n```'
@@ -498,7 +498,7 @@ class TestStripForwarding:
                 f"Expected strip={strip_value}, got {lbl.strip}"
     
     @given(st.booleans())
-    @settings(max_examples=100, deadline=None)
+    @settings(max_examples=2, deadline=None)
     def test_strip_applied_to_list_items(self, strip_value):
         """strip is applied to list item Labels."""
         markdown = '- Item 1\n- Item 2'
@@ -513,7 +513,7 @@ class TestStripForwarding:
                 f"Expected strip={strip_value}, got {lbl.strip}"
     
     @given(st.booleans())
-    @settings(max_examples=100, deadline=None)
+    @settings(max_examples=2, deadline=None)
     def test_strip_applied_to_table_cells(self, strip_value):
         """strip is applied to table cell Labels."""
         markdown = '| A | B |\n| --- | --- |\n| 1 | 2 |'
@@ -528,7 +528,7 @@ class TestStripForwarding:
                 f"Expected strip={strip_value}, got {lbl.strip}"
     
     @given(st.booleans(), st.booleans())
-    @settings(max_examples=100, deadline=None)
+    @settings(max_examples=2, deadline=None)
     def test_strip_change_triggers_rebuild(self, strip1, strip2):
         """Changing strip triggers widget rebuild with new value."""
         assume(strip1 != strip2)

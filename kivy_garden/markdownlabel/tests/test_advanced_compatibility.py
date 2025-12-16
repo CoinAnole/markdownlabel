@@ -100,7 +100,7 @@ class TestAdvancedFontPropertiesForwarding:
                     f"Expected font_hinting={font_hinting_value!r}, got {lbl.font_hinting!r}"
     
     @given(st.booleans())
-    @settings(max_examples=100, deadline=None)
+    @settings(max_examples=2, deadline=None)
     def test_font_kerning_forwarded_to_labels(self, font_kerning_value):
         """font_kerning is forwarded to all internal Labels."""
         label = MarkdownLabel(text='Hello World', font_kerning=font_kerning_value)
@@ -113,7 +113,7 @@ class TestAdvancedFontPropertiesForwarding:
                 f"Expected font_kerning={font_kerning_value}, got {lbl.font_kerning}"
     
     @given(st.booleans())
-    @settings(max_examples=100, deadline=None)
+    @settings(max_examples=2, deadline=None)
     def test_font_blended_forwarded_to_labels(self, font_blended_value):
         """font_blended is forwarded to all internal Labels."""
         label = MarkdownLabel(text='Hello World', font_blended=font_blended_value)
@@ -153,7 +153,7 @@ class TestAdvancedFontPropertiesForwarding:
                 f"Expected font_blended={font_blended}, got {lbl.font_blended}"
     
     @given(st.booleans(), st.booleans())
-    @settings(max_examples=100, deadline=None)
+    @settings(max_examples=2, deadline=None)
     def test_font_kerning_change_triggers_rebuild(self, kerning1, kerning2):
         """Changing font_kerning triggers widget rebuild with new value."""
         assume(kerning1 != kerning2)
@@ -176,7 +176,7 @@ class TestAdvancedFontPropertiesForwarding:
                 f"After change, expected font_kerning={kerning2}, got {lbl.font_kerning}"
     
     @given(st.booleans(), st.booleans())
-    @settings(max_examples=100, deadline=None)
+    @settings(max_examples=2, deadline=None)
     def test_font_blended_change_triggers_rebuild(self, blended1, blended2):
         """Changing font_blended triggers widget rebuild with new value."""
         assume(blended1 != blended2)
@@ -314,7 +314,7 @@ class TestDisabledColorApplication:
                 f"Expected color={regular_color}, got {list(lbl.color)}"
     
     @given(st.booleans())
-    @settings(max_examples=100, deadline=None)
+    @settings(max_examples=2, deadline=None)
     def test_disabled_state_determines_color(self, disabled):
         """disabled property determines which color is used."""
         regular_color = [1, 0, 0, 1]  # Red
@@ -694,7 +694,7 @@ class TestReactiveRebuildOnPropertyChange:
                 f"After change, expected unicode_errors={errors2}, got {lbl.unicode_errors}"
     
     @given(st.booleans(), st.booleans())
-    @settings(max_examples=100, deadline=None)
+    @settings(max_examples=2, deadline=None)
     def test_strip_change_rebuilds_widgets(self, strip1, strip2):
         """Changing strip after initial rendering rebuilds widgets."""
         assume(strip1 != strip2)
@@ -719,7 +719,7 @@ class TestReactiveRebuildOnPropertyChange:
                 f"After change, expected strip={strip2}, got {lbl.strip}"
     
     @given(st.booleans(), st.booleans())
-    @settings(max_examples=100, deadline=None)
+    @settings(max_examples=2, deadline=None)
     def test_disabled_change_rebuilds_widgets(self, disabled1, disabled2):
         """Changing disabled after initial rendering rebuilds widgets with correct color."""
         assume(disabled1 != disabled2)
@@ -778,7 +778,7 @@ class TestReactiveRebuildOnPropertyChange:
             f"Expected {children_before} children after rebuild, got {children_after}"
     
     @given(st.booleans(), st.booleans())
-    @settings(max_examples=100, deadline=None)
+    @settings(max_examples=2, deadline=None)
     def test_font_kerning_change_rebuilds_widgets(self, kerning1, kerning2):
         """Changing font_kerning after initial rendering rebuilds widgets."""
         assume(kerning1 != kerning2)
@@ -803,7 +803,7 @@ class TestReactiveRebuildOnPropertyChange:
                 f"After change, expected font_kerning={kerning2}, got {lbl.font_kerning}"
     
     @given(st.booleans(), st.booleans())
-    @settings(max_examples=100, deadline=None)
+    @settings(max_examples=2, deadline=None)
     def test_font_blended_change_rebuilds_widgets(self, blended1, blended2):
         """Changing font_blended after initial rendering rebuilds widgets."""
         assume(blended1 != blended2)

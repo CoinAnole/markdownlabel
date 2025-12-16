@@ -27,7 +27,7 @@ class TestBatchedRebuilds:
     """
 
     @given(st.integers(min_value=2, max_value=5))
-    @settings(max_examples=100, deadline=None)
+    @settings(max_examples=4, deadline=None)
     def test_multiple_text_changes_batch_to_single_rebuild(self, num_changes):
         """Multiple text changes within same frame batch to single rebuild.
 

@@ -235,7 +235,7 @@ class TestNoClippingWhenUnconstrained:
             )
 
     @given(st.integers(min_value=1, max_value=6))
-    @settings(max_examples=100, deadline=None)
+    @settings(max_examples=6, deadline=None)
     def test_heading_expands_naturally_when_unconstrained(self, level):
         """Heading content expands naturally when unconstrained."""
         heading = "#" * level + " Test Heading"

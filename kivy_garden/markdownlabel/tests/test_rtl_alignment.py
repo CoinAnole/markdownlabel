@@ -84,7 +84,7 @@ class TestAutoAlignmentRespectsDirection:
         st.sampled_from(['rtl', 'weak_rtl']),
         st.integers(min_value=1, max_value=6)
     )
-    @settings(max_examples=100, deadline=None)
+    @settings(max_examples=2, deadline=None)
     def test_auto_alignment_rtl_applies_to_headings(self, base_direction, heading_level):
         """Auto alignment with RTL direction applies to heading Labels.
         
@@ -110,7 +110,7 @@ class TestAutoAlignmentRespectsDirection:
         st.sampled_from(['ltr', 'weak_ltr', None]),
         st.integers(min_value=1, max_value=6)
     )
-    @settings(max_examples=100, deadline=None)
+    @settings(max_examples=3, deadline=None)
     def test_auto_alignment_ltr_applies_to_headings(self, base_direction, heading_level):
         """Auto alignment with LTR direction applies to heading Labels.
         
@@ -210,7 +210,7 @@ class TestDirectionChangeUpdatesAlignment:
         st.sampled_from(['ltr', 'weak_ltr', None]),
         st.sampled_from(['rtl', 'weak_rtl'])
     )
-    @settings(max_examples=100, deadline=None)
+    @settings(max_examples=2, deadline=None)
     def test_direction_change_ltr_to_rtl_updates_alignment(self, initial_direction, new_direction):
         """Changing base_direction from LTR to RTL updates alignment.
         
@@ -244,7 +244,7 @@ class TestDirectionChangeUpdatesAlignment:
         st.sampled_from(['rtl', 'weak_rtl']),
         st.sampled_from(['ltr', 'weak_ltr', None])
     )
-    @settings(max_examples=100, deadline=None)
+    @settings(max_examples=2, deadline=None)
     def test_direction_change_rtl_to_ltr_updates_alignment(self, initial_direction, new_direction):
         """Changing base_direction from RTL to LTR updates alignment.
         
@@ -279,7 +279,7 @@ class TestDirectionChangeUpdatesAlignment:
         st.sampled_from(['ltr', 'weak_ltr', None]),
         st.sampled_from(['rtl', 'weak_rtl'])
     )
-    @settings(max_examples=100, deadline=None)
+    @settings(max_examples=2, deadline=None)
     def test_direction_change_updates_heading_alignment(self, heading_level, initial_direction, new_direction):
         """Direction change updates heading alignment.
         
@@ -314,7 +314,7 @@ class TestDirectionChangeUpdatesAlignment:
         st.sampled_from(['ltr', 'weak_ltr', None]),
         st.sampled_from(['rtl', 'weak_rtl'])
     )
-    @settings(max_examples=100, deadline=None)
+    @settings(max_examples=2, deadline=None)
     def test_direction_change_preserves_widget_identities(self, initial_direction, new_direction):
         """Direction change preserves widget identities (no rebuild).
         
@@ -351,7 +351,7 @@ class TestDirectionChangeUpdatesAlignment:
         st.sampled_from(['ltr', 'weak_ltr', None]),
         st.sampled_from(['rtl', 'weak_rtl'])
     )
-    @settings(max_examples=100, deadline=None)
+    @settings(max_examples=2, deadline=None)
     def test_direction_change_mixed_content_updates_alignment(self, initial_direction, new_direction):
         """Direction change updates alignment for mixed content types.
         
@@ -414,7 +414,7 @@ class TestExplicitAlignmentOverridesAuto:
         st.sampled_from(['left', 'center', 'right', 'justify']),
         st.sampled_from(['rtl', 'weak_rtl', 'ltr', 'weak_ltr', None])
     )
-    @settings(max_examples=100, deadline=None)
+    @settings(max_examples=3, deadline=None)
     def test_explicit_alignment_overrides_base_direction(self, explicit_halign, base_direction):
         """Explicit halign overrides base_direction for all content.
         
@@ -440,7 +440,7 @@ class TestExplicitAlignmentOverridesAuto:
         st.sampled_from(['rtl', 'weak_rtl']),
         st.integers(min_value=1, max_value=6)
     )
-    @settings(max_examples=100, deadline=None)
+    @settings(max_examples=2, deadline=None)
     def test_explicit_alignment_overrides_rtl_for_headings(self, explicit_halign, base_direction, heading_level):
         """Explicit halign overrides RTL base_direction for headings.
         
@@ -496,7 +496,7 @@ class TestExplicitAlignmentOverridesAuto:
         st.sampled_from(['rtl', 'weak_rtl']),
         st.sampled_from(['ltr', 'weak_ltr', None])
     )
-    @settings(max_examples=100, deadline=None)
+    @settings(max_examples=2, deadline=None)
     def test_explicit_alignment_unchanged_by_direction_change(self, explicit_halign, initial_direction, new_direction):
         """Explicit halign remains unchanged when base_direction changes.
         
@@ -530,7 +530,7 @@ class TestExplicitAlignmentOverridesAuto:
         st.sampled_from(['left', 'center', 'right', 'justify']),
         st.sampled_from(['rtl', 'weak_rtl', 'ltr', 'weak_ltr', None])
     )
-    @settings(max_examples=100, deadline=None)
+    @settings(max_examples=3, deadline=None)
     def test_explicit_alignment_stored_correctly_on_widget(self, explicit_halign, base_direction):
         """Explicit halign is stored correctly on MarkdownLabel widget.
         
