@@ -127,7 +127,8 @@ class TestShorteningPropertyForwarding:
                 f"Expected shorten_from={shorten_from_value}, got {lbl.shorten_from}"
     
     @given(st.text(min_size=0, max_size=5, alphabet='abc '))
-    @settings(max_examples=100, deadline=None)
+    # Complex strategy with text generation, custom alphabet: 30 examples
+    @settings(max_examples=30 if not os.getenv('CI') else 15, deadline=None)
     def test_split_str_forwarded_to_paragraph(self, split_str_value):
         """split_str property is forwarded to paragraph Labels."""
         label = MarkdownLabel(text='Hello World', split_str=split_str_value)
@@ -139,8 +140,9 @@ class TestShorteningPropertyForwarding:
             assert lbl.split_str == split_str_value, \
                 f"Expected split_str={split_str_value!r}, got {lbl.split_str!r}"
     
+    # Complex strategy with text generation, custom alphabet: 30 examples
     @given(st.text(min_size=0, max_size=5, alphabet='abc '))
-    @settings(max_examples=100, deadline=None)
+    @settings(max_examples=30 if not os.getenv('CI') else 15, deadline=None)
     def test_split_str_forwarded_to_heading(self, split_str_value):
         """split_str property is forwarded to heading Labels."""
         label = MarkdownLabel(text='# Heading', split_str=split_str_value)
@@ -436,7 +438,7 @@ class TestCoordinateTranslation:
         )),
         min_size=2, max_size=4
     ))
-    @settings(max_examples=100, deadline=None)
+    @settings(max_examples=20, deadline=None)
     def test_multiple_links_produce_ref_markup(self, link_texts):
         """Multiple links in different paragraphs produce ref markup.
         
@@ -599,7 +601,7 @@ class TestCoordinateTranslation:
         whitelist_categories=['L', 'N'],
         blacklist_characters='[]()&\n\r'
     )))
-    @settings(max_examples=100, deadline=None)
+    @settings(max_examples=20, deadline=None)
     def test_ref_markup_updates_when_text_changes(self, link_text1, link_text2):
         """ref markup updates correctly when text property changes."""
         url1 = 'https://example1.com'
@@ -636,7 +638,7 @@ class TestCoordinateTranslation:
            st.floats(min_value=0, max_value=100),
            st.floats(min_value=0, max_value=100),
            st.floats(min_value=0, max_value=100))
-    @settings(max_examples=100, deadline=None)
+    @settings(max_examples=20, deadline=None)
     def test_coordinate_translation_math(self, x1, y1, x2, y2):
         """Test that coordinate translation math is correct.
         
@@ -665,7 +667,7 @@ class TestCoordinateTranslation:
     
     @given(st.floats(min_value=0, max_value=100),
            st.floats(min_value=0, max_value=100))
-    @settings(max_examples=100, deadline=None)
+    @settings(max_examples=20, deadline=None)
     def test_anchor_translation_math(self, x, y):
         """Test that anchor coordinate translation math is correct.
         

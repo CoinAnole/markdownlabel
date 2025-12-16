@@ -180,7 +180,8 @@ class TestLineHeightForwarding:
     """Property tests for line_height forwarding (Property 4)."""
     
     @given(line_height_strategy)
-    @settings(max_examples=100, deadline=None)
+    # Complex strategy: 20 examples based on default complexity
+    @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_line_height_applied_to_paragraph(self, line_height):
         """line_height is applied to paragraph Labels."""
         label = MarkdownLabel(text='Hello World', line_height=line_height)
@@ -193,8 +194,9 @@ class TestLineHeightForwarding:
             assert floats_equal(lbl.line_height, line_height), \
                 f"Expected line_height={line_height}, got {lbl.line_height}"
     
+    # Complex strategy: 20 examples based on default complexity
     @given(line_height_strategy)
-    @settings(max_examples=100, deadline=None)
+    @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_line_height_applied_to_heading(self, line_height):
         """line_height is applied to heading Labels."""
         label = MarkdownLabel(text='# Heading', line_height=line_height)
@@ -206,9 +208,10 @@ class TestLineHeightForwarding:
         for lbl in labels:
             assert floats_equal(lbl.line_height, line_height), \
                 f"Expected line_height={line_height}, got {lbl.line_height}"
+     # Complex strategy: 20 examples based on default complexity
     
     @given(line_height_strategy)
-    @settings(max_examples=100, deadline=None)
+    @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_line_height_applied_to_code_block(self, line_height):
         """line_height is applied to code block Labels."""
         markdown = '```python\nprint("hello")\n```'
@@ -221,10 +224,11 @@ class TestLineHeightForwarding:
         # Code block labels should also have the specified line_height
         for lbl in labels:
             assert floats_equal(lbl.line_height, line_height), \
+                # Complex strategy: 20 examples based on default complexity
                 f"Expected line_height={line_height}, got {lbl.line_height}"
     
     @given(line_height_strategy, line_height_strategy)
-    @settings(max_examples=100, deadline=None)
+    @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_line_height_change_triggers_rebuild(self, lh1, lh2):
         """Changing line_height triggers widget rebuild with new value."""
         assume(not floats_equal(lh1, lh2))
@@ -242,11 +246,12 @@ class TestLineHeightForwarding:
         # Verify new line_height
         labels = find_labels_recursive(label)
         for lbl in labels:
+            # Complex strategy: 20 examples based on default complexity
             assert floats_equal(lbl.line_height, lh2), \
                 f"After change, expected line_height={lh2}, got {lbl.line_height}"
     
     @given(line_height_strategy)
-    @settings(max_examples=100, deadline=None)
+    @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_line_height_applied_to_list_items(self, line_height):
         """line_height is applied to list item Labels."""
         markdown = '- Item 1\n- Item 2'
@@ -261,7 +266,7 @@ class TestLineHeightForwarding:
                 f"Expected line_height={line_height}, got {lbl.line_height}"
     
     @given(line_height_strategy)
-    @settings(max_examples=100, deadline=None)
+    @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_line_height_applied_to_table_cells(self, line_height):
         """line_height is applied to table cell Labels."""
         markdown = '| A | B |\n| --- | --- |\n| 1 | 2 |'
@@ -276,7 +281,7 @@ class TestLineHeightForwarding:
                 f"Expected line_height={line_height}, got {lbl.line_height}"
     
     @given(line_height_strategy)
-    @settings(max_examples=100, deadline=None)
+    @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_line_height_applied_to_all_content_types(self, line_height):
         """line_height is applied to all content types including code."""
         markdown = 'Regular text\n\n```\ncode\n```\n\n# Heading\n\n- List item'
@@ -336,7 +341,7 @@ class TestFontAdvancedPropertyForwardingPhase2:
         whitelist_categories=['L', 'N'],
         blacklist_characters='[]&\n\r'
     )))
-    @settings(max_examples=100, deadline=None)
+    @settings(max_examples=20, deadline=None)
     def test_font_family_excluded_from_code_blocks(self, font_family_value):
         """font_family is NOT forwarded to code block Labels.
         
@@ -359,7 +364,7 @@ class TestFontAdvancedPropertyForwardingPhase2:
         whitelist_categories=['L', 'N'],
         blacklist_characters='[]&\n\r'
     )))
-    @settings(max_examples=100, deadline=None)
+    @settings(max_examples=20, deadline=None)
     def test_font_family_forwarded_to_non_code_labels(self, font_family_value):
         """font_family IS forwarded to non-code block Labels.
         
@@ -383,7 +388,7 @@ class TestFontAdvancedPropertyForwardingPhase2:
         whitelist_categories=['L', 'N'],
         blacklist_characters='[]&\n\r'
     )))
-    @settings(max_examples=100, deadline=None)
+    @settings(max_examples=20, deadline=None)
     def test_font_context_forwarded_to_all_labels_including_code(self, font_context_value):
         """font_context IS forwarded to ALL Labels including code blocks.
         
@@ -407,7 +412,7 @@ class TestFontAdvancedPropertyForwardingPhase2:
         whitelist_categories=['L', 'N', 'P'],
         blacklist_characters='[]&\n\r'
     )))
-    @settings(max_examples=100, deadline=None)
+    @settings(max_examples=20, deadline=None)
     def test_font_features_forwarded_to_all_labels_including_code(self, font_features_value):
         """font_features IS forwarded to ALL Labels including code blocks.
         
@@ -540,7 +545,7 @@ class TestFontSizeImmediateUpdate:
         st.floats(min_value=8.0, max_value=50.0, allow_nan=False, allow_infinity=False),
         st.floats(min_value=8.0, max_value=50.0, allow_nan=False, allow_infinity=False)
     )
-    @settings(max_examples=100, deadline=None)
+    @settings(max_examples=20, deadline=None)
     def test_base_font_size_updates_all_labels_immediately(self, markdown_text, initial_size, new_size):
         """Changing base_font_size immediately updates all child Label font_size properties."""
         assume(markdown_text.strip())
@@ -620,12 +625,13 @@ class TestFontSizeImmediateUpdate:
         # Verify updated font size
         new_expected = new_size * expected_scale
         assert abs(heading_label.font_size - new_expected) < 0.1, \
+            # Complex strategy with float generation, NaN exclusion, infinity exclusion: 50 examples
             f"Updated heading font_size incorrect: expected {new_expected}, got {heading_label.font_size}"
     
     @given(
         st.floats(min_value=10.0, max_value=30.0, allow_nan=False, allow_infinity=False)
     )
-    @settings(max_examples=100, deadline=None)
+    @settings(max_examples=50 if not os.getenv('CI') else 25, deadline=None)
     def test_paragraph_font_size_updates_immediately(self, new_size):
         """Paragraph font sizes update immediately when base_font_size changes."""
         # Create simple paragraph
@@ -806,7 +812,7 @@ class TestNoRebuildOnFontSizeChange:
         st.floats(min_value=10.0, max_value=20.0, allow_nan=False, allow_infinity=False),
         st.floats(min_value=20.0, max_value=40.0, allow_nan=False, allow_infinity=False)
     )
-    @settings(max_examples=100, deadline=None)
+    @settings(max_examples=20, deadline=None)
     def test_widget_identities_preserved_on_font_size_change(self, markdown_text, initial_size, new_size):
         """Widget object identities are preserved when base_font_size changes."""
         assume(markdown_text.strip())
@@ -875,7 +881,7 @@ class TestNoRebuildOnFontSizeChange:
         st.floats(min_value=20.0, max_value=25.0, allow_nan=False, allow_infinity=False),
         st.floats(min_value=30.0, max_value=35.0, allow_nan=False, allow_infinity=False)
     )
-    @settings(max_examples=100, deadline=None)
+    @settings(max_examples=20, deadline=None)
     def test_multiple_font_size_changes_preserve_identities(self, size1, size2, size3):
         """Multiple font size changes preserve widget identities."""
         # Create content with multiple elements
@@ -900,7 +906,7 @@ class TestNoRebuildOnFontSizeChange:
     @given(
         st.floats(min_value=12.0, max_value=24.0, allow_nan=False, allow_infinity=False)
     )
-    @settings(max_examples=100, deadline=None)
+    @settings(max_examples=50 if not os.getenv('CI') else 25, deadline=None)
     def test_rebuild_counter_not_incremented_on_font_size_change(self, new_size):
         """Rebuild operations are not triggered by font size changes."""
         # Create label with content

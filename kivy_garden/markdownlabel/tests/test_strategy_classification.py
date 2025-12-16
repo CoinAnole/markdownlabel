@@ -5,6 +5,7 @@ Hypothesis strategies for max_examples optimization.
 """
 
 import pytest
+import os
 from hypothesis import given, strategies as st, settings
 
 from kivy_garden.markdownlabel.strategy_classifier import (
@@ -145,10 +146,14 @@ class TestMaxExamplesCalculation:
         expected = min(range_size, 20)
         assert optimal == expected, f"Expected {expected} examples for medium range, got {optimal}"
     
+    # **Feature: test-performance-optimization, Property 4: Complex strategies use appropriate ranges**
     @given(st.integers(min_value=1, max_value=4))
     @settings(max_examples=4, deadline=None)
     def test_complex_strategy_uses_complexity_based_examples(self, complexity_level):
-        """Complex strategies should use examples based on complexity level."""
+        """Complex strategies should use examples based on complexity level.
+        
+        **Validates: Requirements 1.5, 2.3**
+        """
         # Simulate a complex strategy analysis
         from kivy_garden.markdownlabel.strategy_classifier import StrategyAnalysis, StrategyType
         
@@ -162,6 +167,49 @@ class TestMaxExamplesCalculation:
         expected = min(10 + (complexity_level * 10), 50)
         
         assert optimal == expected, f"Expected {expected} examples for complexity {complexity_level}, got {optimal}"
+    
+    # **Feature: test-performance-optimization, Property 5: CI environment reduces examples appropriately**
+    @given(st.sampled_from([StrategyType.COMPLEX, StrategyType.COMBINATION]))
+    @settings(max_examples=5, deadline=None)
+    def test_ci_environment_reduces_examples_appropriately(self, strategy_type):
+        """CI environment should reduce examples for complex and large combination strategies.
+        
+        **Validates: Requirements 2.5, 3.5**
+        """
+        import os
+        from kivy_garden.markdownlabel.strategy_classifier import StrategyAnalysis
+        
+        # Create a strategy analysis that benefits from CI optimization
+        if strategy_type == StrategyType.COMPLEX:
+            analysis = StrategyAnalysis(
+                strategy_type=StrategyType.COMPLEX,
+                input_space_size=None,
+                complexity_level=2
+            )
+        else:  # COMBINATION
+            analysis = StrategyAnalysis(
+                strategy_type=StrategyType.COMBINATION,
+                input_space_size=30,  # Large enough to benefit from CI optimization
+                complexity_level=1
+            )
+        
+        # Calculate examples without CI
+        base_examples = self.calculator.calculate_from_analysis(analysis)
+        
+        # Simulate CI environment
+        original_ci = os.environ.get('CI')
+        try:
+            os.environ['CI'] = '1'
+            ci_examples = self.calculator.calculate_from_analysis(analysis)
+        finally:
+            if original_ci is None:
+                os.environ.pop('CI', None)
+            else:
+                os.environ['CI'] = original_ci
+        
+        # CI should reduce examples for these strategy types
+        assert ci_examples < base_examples, f"CI should reduce examples: base={base_examples}, ci={ci_examples}"
+        assert ci_examples >= 5, f"CI examples should not go below minimum: {ci_examples}"
 
 class TestCombinationStrategies:
     """Property tests for combination strategy handling (Property 3)."""
@@ -241,7 +289,7 @@ class TestOverTestingDetection:
     
     # **Feature: test-performance-optimization, Property 7: Over-testing detection works correctly**
     @given(st.integers(min_value=101, max_value=200))
-    @settings(max_examples=10, deadline=None)
+    @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_boolean_over_testing_detected(self, excessive_examples):
         """Over-testing of boolean strategies should be correctly detected.
         

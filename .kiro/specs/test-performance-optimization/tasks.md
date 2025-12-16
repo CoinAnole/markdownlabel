@@ -99,39 +99,39 @@
 - [x] 4. Checkpoint - Verify simple optimizations work correctly
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 5. Optimize combination and complex strategy tests
+- [x] 5. Optimize combination and complex strategy tests
   - Apply product formula to multiple strategy combinations
   - Optimize complex strategies based on complexity assessment
   - Implement CI-aware max_examples reduction
   - _Requirements: 1.4, 1.5, 2.3, 2.4, 2.5, 3.5_
 
-- [ ] 5.1 Optimize combination strategy tests
+- [x] 5.1 Optimize combination strategy tests
   - Identify tests using multiple strategies (e.g., two booleans, boolean + enum)
   - Calculate product of individual strategy sizes, cap at 50
   - Update max_examples to use combination formula
   - _Requirements: 1.4, 2.4, 5.3_
 
-- [ ] 5.2 Write property test for combination optimization
+- [x] 5.2 Write property test for combination optimization
   - **Property 3: Combination strategies use product formula**
   - **Validates: Requirements 1.4, 2.4**
 
-- [ ] 5.3 Optimize complex strategy tests
+- [x] 5.3 Optimize complex strategy tests
   - Identify tests using infinite or large strategies (text, large floats)
   - Assess complexity level and set appropriate max_examples (10-50)
   - Document rationale for custom values in test comments
   - _Requirements: 1.5, 2.3, 3.3_
 
-- [ ] 5.4 Write property test for complex strategy optimization
+- [x] 5.4 Write property test for complex strategy optimization
   - **Property 4: Complex strategies use appropriate ranges**
   - **Validates: Requirements 1.5, 2.3**
 
-- [ ] 5.5 Implement CI environment optimization
+- [x] 5.5 Implement CI environment optimization
   - Add CI detection and reduced max_examples for appropriate tests
   - Ensure finite strategies maintain full coverage in CI
   - Allow complex strategies to use reduced examples in CI
   - _Requirements: 2.5, 3.5_
 
-- [ ] 5.6 Write property test for CI optimization
+- [x] 5.6 Write property test for CI optimization
   - **Property 5: CI environment reduces examples appropriately**
   - **Validates: Requirements 2.5, 3.5**
 

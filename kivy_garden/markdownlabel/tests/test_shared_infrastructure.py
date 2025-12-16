@@ -6,6 +6,7 @@ and are available for use across all test modules.
 """
 
 import pytest
+import os
 from hypothesis import given, strategies as st, settings
 
 from kivy_garden.markdownlabel import MarkdownLabel
@@ -30,7 +31,8 @@ class TestSharedStrategyAvailability:
     """Property tests for shared strategy availability (Property 6)."""
     
     @given(markdown_heading())
-    @settings(max_examples=50, deadline=None)
+    # Complex strategy: 20 examples based on default complexity
+    @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_markdown_heading_strategy_generates_valid_headings(self, heading):
         """**Feature: test-refactoring, Property 6: Shared Strategy Availability**
         *For any* Hypothesis strategy used in multiple modules, that strategy should be 
@@ -45,6 +47,7 @@ class TestSharedStrategyAvailability:
         label = MarkdownLabel(text=heading)
         assert len(label.children) >= 1, "Heading should produce at least one widget"
     
+    # Complex strategy: 20 examples based on default complexity
     @given(markdown_paragraph())
     @settings(max_examples=50, deadline=None)
     def test_markdown_paragraph_strategy_generates_valid_paragraphs(self, paragraph):
@@ -55,6 +58,7 @@ class TestSharedStrategyAvailability:
         # Verify it can be used with MarkdownLabel
         label = MarkdownLabel(text=paragraph)
         assert len(label.children) >= 1, "Paragraph should produce at least one widget"
+     # Complex strategy: 20 examples based on default complexity
     
     @given(markdown_bold())
     @settings(max_examples=50, deadline=None)
@@ -62,6 +66,7 @@ class TestSharedStrategyAvailability:
         """Bold text strategy generates valid bold markdown."""
         assert bold_text.startswith('**'), f"Bold text should start with **: {bold_text}"
         assert bold_text.endswith('**'), f"Bold text should end with **: {bold_text}"
+        # Complex strategy: 20 examples based on default complexity
         assert len(bold_text) > 4, "Bold text should have content between markers"
     
     @given(markdown_italic())
@@ -71,6 +76,7 @@ class TestSharedStrategyAvailability:
         assert italic_text.startswith('*'), f"Italic text should start with *: {italic_text}"
         assert italic_text.endswith('*'), f"Italic text should end with *: {italic_text}"
         assert len(italic_text) > 2, "Italic text should have content between markers"
+        # Complex strategy: 20 examples based on default complexity
         # Ensure it's not bold (which would start/end with **)
         assert not italic_text.startswith('**'), "Should be italic, not bold"
     
@@ -82,6 +88,7 @@ class TestSharedStrategyAvailability:
         assert '(' in link and ')' in link, f"Link should contain parentheses: {link}"
         assert link.startswith('['), f"Link should start with [: {link}"
         
+        # Complex strategy with custom domain strategy: 20 examples
         # Verify it can be used with MarkdownLabel
         label = MarkdownLabel(text=link)
         assert len(label.children) >= 1, "Link should produce at least one widget"
@@ -92,6 +99,7 @@ class TestSharedStrategyAvailability:
         """Document strategy generates valid markdown documents."""
         assert isinstance(document, str), "Document should be a string"
         assert len(document.strip()) > 0, "Document should not be empty"
+         # Complex strategy: 20 examples based on default complexity
         
         # Verify it can be used with MarkdownLabel
         label = MarkdownLabel(text=document)
@@ -105,6 +113,7 @@ class TestSharedStrategyAvailability:
         for component in color:
             assert 0.0 <= component <= 1.0, f"Color component should be 0-1: {component}"
         
+        # Complex strategy: 20 examples based on default complexity
         # Verify it can be used with MarkdownLabel
         label = MarkdownLabel(text="Test", color=color)
         labels = find_labels_recursive(label)
@@ -137,6 +146,7 @@ class TestSharedStrategyAvailability:
         # Verify fonts can be used with MarkdownLabel
         label = MarkdownLabel(text="Test", font_name=KIVY_FONTS[0])
         labels = find_labels_recursive(label)
+        # Complex strategy with text generation: 30 examples
         if labels:
             assert labels[0].font_name == KIVY_FONTS[0], "Font should be applied to labels"
 
@@ -190,7 +200,7 @@ class TestHelperFunctionConsolidation:
     
     @given(st.floats(min_value=0.0, max_value=100.0, allow_nan=False, allow_infinity=False),
            st.floats(min_value=0.0, max_value=100.0, allow_nan=False, allow_infinity=False))
-    @settings(max_examples=50, deadline=None)
+    @settings(max_examples=20, deadline=None)
     def test_floats_equal_function_available(self, float1, float2):
         """floats_equal helper function is available and works correctly."""
         # Test with identical floats

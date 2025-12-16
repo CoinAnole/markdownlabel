@@ -30,7 +30,8 @@ class TestWidgetTreeGeneration:
     """Property tests for widget tree generation (Property 1)."""
     
     @given(simple_markdown_document())
-    @settings(max_examples=100, deadline=None)
+    # Complex strategy with custom domain strategy: 20 examples
+    @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_markdown_produces_widgets(self, markdown_text):
         """Valid Markdown text produces at least one widget."""
         assume(markdown_text.strip())  # Skip empty text
@@ -41,8 +42,9 @@ class TestWidgetTreeGeneration:
         assert len(label.children) >= 1, \
             f"Expected at least 1 child for markdown: {markdown_text!r}"
     
+    # Complex strategy: 20 examples based on default complexity
     @given(markdown_heading())
-    @settings(max_examples=100, deadline=None)
+    @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_heading_produces_label_widget(self, heading):
         """Heading Markdown produces a Label widget."""
         label = MarkdownLabel(text=heading)
@@ -56,9 +58,10 @@ class TestWidgetTreeGeneration:
         heading_widget = label.children[-1]
         assert isinstance(heading_widget, Label), \
             f"Expected Label, got {type(heading_widget)}"
+     # Complex strategy: 20 examples based on default complexity
     
     @given(markdown_paragraph())
-    @settings(max_examples=100, deadline=None)
+    @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_paragraph_produces_label_widget(self, paragraph):
         """Paragraph Markdown produces a Label widget."""
         assume(paragraph.strip())  # Skip empty paragraphs
@@ -98,10 +101,11 @@ class TestWidgetTreeGeneration:
 # **Validates: Requirements 1.2**
 
 class TestReactiveTextUpdates:
+    # Complex strategy: 20 examples based on default complexity
     """Property tests for reactive text updates (Property 2)."""
     
     @given(markdown_heading(), markdown_paragraph())
-    @settings(max_examples=100, deadline=None)
+    @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_text_change_updates_widgets(self, text1, text2):
         """Changing text property updates the widget tree."""
         assume(text1.strip() and text2.strip())
@@ -145,7 +149,7 @@ class TestReactiveTextUpdates:
             f"Expected at least {count2} children after update, got {children_after}"
     
     @given(simple_markdown_document())
-    @settings(max_examples=100, deadline=None)
+    @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_clear_text_removes_widgets(self, markdown_text):
         """Setting text to empty removes all widgets."""
         assume(markdown_text.strip())
@@ -158,11 +162,12 @@ class TestReactiveTextUpdates:
         label.text = ''
         label.force_rebuild()
         
+        # Complex strategy with custom domain strategy: 20 examples
         assert len(label.children) == 0, \
             f"Expected 0 children after clearing text, got {len(label.children)}"
     
     @given(simple_markdown_document(), simple_markdown_document())
-    @settings(max_examples=100, deadline=None)
+    @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_ast_updates_with_text(self, text1, text2):
         """AST tokens update when text changes."""
         assume(text1.strip() and text2.strip())
@@ -192,7 +197,7 @@ class TestLinkRefMarkup:
     """Property tests for link ref markup (Property 12)."""
     
     @given(markdown_link())
-    @settings(max_examples=100, deadline=None)
+    @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_link_produces_ref_markup(self, link_markdown):
         """Markdown links produce [ref=url]...[/ref] markup in Labels."""
         label = MarkdownLabel(text=link_markdown)
@@ -216,7 +221,7 @@ class TestLinkRefMarkup:
         whitelist_categories=['L', 'N'],
         blacklist_characters='[]()&\n\r'
     )))
-    @settings(max_examples=100, deadline=None)
+    @settings(max_examples=20, deadline=None)
     def test_link_url_in_ref_tag(self, link_text):
         """Link URL appears in ref tag."""
         url = 'https://example.com/page'
@@ -230,12 +235,13 @@ class TestLinkRefMarkup:
                 if f'[ref={url}]' in child.text:
                     assert '[/ref]' in child.text, \
                         f"Missing closing [/ref] tag in: {child.text}"
+                    # Complex strategy: 20 examples based on default complexity
                     return
         
         pytest.fail(f"Expected to find [ref={url}] in markup for: {markdown!r}")
     
     @given(st.from_regex(r'https?://[a-z]+\.[a-z]+/[a-z]+', fullmatch=True))
-    @settings(max_examples=100, deadline=None)
+    @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_various_urls_in_links(self, url):
         """Various URL formats work in links."""
         markdown = f'[Click here]({url})'

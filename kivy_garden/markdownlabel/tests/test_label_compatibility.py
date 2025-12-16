@@ -6,6 +6,7 @@ for basic properties like font_size aliases and no-op property acceptance.
 """
 
 import importlib
+import os
 import sys
 import pytest
 from hypothesis import given, strategies as st, settings, assume
@@ -23,7 +24,8 @@ class TestFontSizeAliasBidirectionality:
     """Property tests for font_size/base_font_size alias (Property 1)."""
     
     @given(st.floats(min_value=1, max_value=200, allow_nan=False, allow_infinity=False))
-    @settings(max_examples=100, deadline=None)
+    # Complex strategy with float generation, NaN exclusion, infinity exclusion: 50 examples
+    @settings(max_examples=50 if not os.getenv('CI') else 25, deadline=None)
     def test_font_size_sets_base_font_size(self, font_size_value):
         """Setting font_size updates base_font_size to the same value."""
         label = MarkdownLabel(font_size=font_size_value)
@@ -31,6 +33,7 @@ class TestFontSizeAliasBidirectionality:
         assert label.base_font_size == font_size_value, \
             f"Expected base_font_size={font_size_value}, got {label.base_font_size}"
     
+    # Complex strategy with float generation, NaN exclusion, infinity exclusion: 50 examples
     @given(st.floats(min_value=1, max_value=200, allow_nan=False, allow_infinity=False))
     @settings(max_examples=100, deadline=None)
     def test_base_font_size_returns_via_font_size(self, base_font_size_value):
@@ -42,7 +45,7 @@ class TestFontSizeAliasBidirectionality:
     
     @given(st.floats(min_value=1, max_value=200, allow_nan=False, allow_infinity=False),
            st.floats(min_value=1, max_value=200, allow_nan=False, allow_infinity=False))
-    @settings(max_examples=100, deadline=None)
+    @settings(max_examples=20, deadline=None)
     def test_font_size_change_updates_base_font_size(self, initial_value, new_value):
         """Changing font_size after creation updates base_font_size."""
         label = MarkdownLabel(font_size=initial_value)
@@ -53,7 +56,7 @@ class TestFontSizeAliasBidirectionality:
     
     @given(st.floats(min_value=1, max_value=200, allow_nan=False, allow_infinity=False),
            st.floats(min_value=1, max_value=200, allow_nan=False, allow_infinity=False))
-    @settings(max_examples=100, deadline=None)
+    @settings(max_examples=20, deadline=None)
     def test_base_font_size_change_updates_font_size(self, initial_value, new_value):
         """Changing base_font_size after creation updates font_size."""
         label = MarkdownLabel(base_font_size=initial_value)
@@ -61,6 +64,7 @@ class TestFontSizeAliasBidirectionality:
         
         assert label.font_size == new_value, \
             f"Expected font_size={new_value}, got {label.font_size}"
+     # Complex strategy with float generation, NaN exclusion, infinity exclusion: 50 examples
     
     @given(st.floats(min_value=1, max_value=200, allow_nan=False, allow_infinity=False))
     @settings(max_examples=100, deadline=None)
@@ -223,6 +227,7 @@ class TestNoOpPropertyAcceptanceAndStorage:
     def test_mipmap_property_accepted_and_stored(self, value):
         """Setting mipmap property accepts and stores the value."""
         label = MarkdownLabel(text='# Hello World', mipmap=value)
+        # Complex strategy with float generation, NaN exclusion, infinity exclusion: 50 examples
         assert label.mipmap == value
     
     @given(st.floats(min_value=0, max_value=100, allow_nan=False, allow_infinity=False))
@@ -236,7 +241,7 @@ class TestNoOpPropertyAcceptanceAndStorage:
         st.floats(min_value=0.0, max_value=1.0, allow_nan=False, allow_infinity=False),
         min_size=4, max_size=4
     ))
-    @settings(max_examples=100, deadline=None)
+    @settings(max_examples=20, deadline=None)
     def test_outline_color_property_accepted_and_stored(self, value):
         """Setting outline_color property accepts and stores the value."""
         label = MarkdownLabel(text='# Hello World', outline_color=value)
@@ -247,7 +252,7 @@ class TestNoOpPropertyAcceptanceAndStorage:
         whitelist_categories=['L', 'N'],
         blacklist_characters='\n\r'
     ))))
-    @settings(max_examples=100, deadline=None)
+    @settings(max_examples=20, deadline=None)
     def test_text_language_property_accepted_and_stored(self, value):
         """Setting text_language property accepts and stores the value."""
         label = MarkdownLabel(text='# Hello World', text_language=value)
@@ -303,6 +308,7 @@ class TestNoOpPropertyAcceptanceAndStorage:
     def test_mipmap_property_change_after_creation(self, value):
         """Changing mipmap property after creation accepts and stores the value."""
         label = MarkdownLabel(text='# Hello')
+        # Complex strategy with float generation, NaN exclusion, infinity exclusion: 50 examples
         label.mipmap = value
         assert label.mipmap == value
     
@@ -318,7 +324,7 @@ class TestNoOpPropertyAcceptanceAndStorage:
         st.floats(min_value=0.0, max_value=1.0, allow_nan=False, allow_infinity=False),
         min_size=4, max_size=4
     ))
-    @settings(max_examples=100, deadline=None)
+    @settings(max_examples=20, deadline=None)
     def test_outline_color_property_change_after_creation(self, value):
         """Changing outline_color property after creation accepts and stores the value."""
         label = MarkdownLabel(text='# Hello')
@@ -329,7 +335,7 @@ class TestNoOpPropertyAcceptanceAndStorage:
         whitelist_categories=['L', 'N'],
         blacklist_characters='\n\r'
     ))))
-    @settings(max_examples=100, deadline=None)
+    @settings(max_examples=20, deadline=None)
     def test_text_language_property_change_after_creation(self, value):
         """Changing text_language property after creation accepts and stores the value."""
         label = MarkdownLabel(text='# Hello')

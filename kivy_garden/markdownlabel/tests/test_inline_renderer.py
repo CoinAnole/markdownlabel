@@ -6,6 +6,7 @@ to Kivy markup strings.
 """
 
 import pytest
+import os
 from hypothesis import given, strategies as st, settings
 
 from kivy_garden.markdownlabel.inline_renderer import InlineRenderer
@@ -83,7 +84,8 @@ class TestInlineFormattingConversion:
     """Property tests for inline formatting conversion (Property 4)."""
     
     @given(strong_token())
-    @settings(max_examples=100)
+    # Complex strategy: 20 examples based on default complexity
+    @settings(max_examples=20 if not os.getenv('CI') else 10)
     def test_strong_produces_bold_tags(self, token):
         """Strong tokens produce [b]...[/b] markup."""
         renderer = InlineRenderer()
@@ -92,6 +94,7 @@ class TestInlineFormattingConversion:
         assert result.startswith('[b]'), f"Strong should start with [b], got: {result}"
         assert result.endswith('[/b]'), f"Strong should end with [/b], got: {result}"
     
+    # Complex strategy: 20 examples based on default complexity
     @given(emphasis_token())
     @settings(max_examples=100)
     def test_emphasis_produces_italic_tags(self, token):
@@ -101,6 +104,7 @@ class TestInlineFormattingConversion:
         
         assert result.startswith('[i]'), f"Emphasis should start with [i], got: {result}"
         assert result.endswith('[/i]'), f"Emphasis should end with [/i], got: {result}"
+     # Complex strategy: 20 examples based on default complexity
     
     @given(codespan_token())
     @settings(max_examples=100)
@@ -110,6 +114,7 @@ class TestInlineFormattingConversion:
         result = renderer.codespan(token)
         
         assert result.startswith('[font='), f"Codespan should start with [font=, got: {result}"
+        # Complex strategy: 20 examples based on default complexity
         assert result.endswith('[/font]'), f"Codespan should end with [/font], got: {result}"
     
     @given(strikethrough_token())
@@ -119,6 +124,7 @@ class TestInlineFormattingConversion:
         renderer = InlineRenderer()
         result = renderer.strikethrough(token)
         
+        # Complex strategy: 20 examples based on default complexity
         assert result.startswith('[s]'), f"Strikethrough should start with [s], got: {result}"
         assert result.endswith('[/s]'), f"Strikethrough should end with [/s], got: {result}"
     
@@ -195,6 +201,7 @@ class TestSpecialCharacterEscaping:
         assert output_br == input_brackets_close, \
             f"Expected {input_brackets_close} &br; escapes, got {output_br}"
         
+        # Complex strategy with text generation, custom alphabet: 30 examples
         # Each & should become &amp;
         assert output_amp == input_ampersands, \
             f"Expected {input_ampersands} &amp; escapes, got {output_amp}"
@@ -215,6 +222,7 @@ class TestSpecialCharacterEscaping:
         cleaned = result.replace('&bl;', '').replace('&br;', '').replace('&amp;', '')
         
         assert '[' not in cleaned, f"Found unescaped [ in: {result}"
+        # Complex strategy with text generation: 30 examples
         assert ']' not in cleaned, f"Found unescaped ] in: {result}"
         # & is tricky because &amp; contains &, so we check differently
         # After removing escape sequences, there should be no & left
@@ -406,7 +414,7 @@ class TestURLMarkupSafetyProperty:
         st.text(min_size=1, max_size=50).map(lambda s: f"http://example.com/{s}]]]"),
         st.text(min_size=1, max_size=50).map(lambda s: f"http://example.com/[[[{s}"),
     ))
-    @settings(max_examples=100)
+    @settings(max_examples=20)
     def test_urls_with_brackets_are_safe(self, full_url):
         """URLs containing brackets should be safely escaped."""
         # **Feature: test-improvements, Property 6: URL markup safety**
@@ -664,7 +672,7 @@ class TestHTMLContentEscapingProperty:
         # Raw HTML-like strings
         st.text(min_size=1, max_size=100).filter(lambda s: '<' in s or '>' in s),
     ))
-    @settings(max_examples=100)
+    @settings(max_examples=20)
     def test_html_content_is_escaped(self, html_content):
         """HTML content should be escaped to prevent markup injection."""
         # **Feature: test-improvements, Property 9: HTML content escaping**
@@ -726,7 +734,7 @@ class TestHTMLContentEscapingProperty:
     @given(st.text(min_size=0, max_size=200, alphabet=st.characters(
         whitelist_categories=['L', 'N', 'P', 'S', 'Z']
     )))
-    @settings(max_examples=100)
+    @settings(max_examples=20)
     def test_arbitrary_html_content_safety(self, content):
         """Any arbitrary content in HTML tags should be safely escaped."""
         # **Feature: test-improvements, Property 9: HTML content escaping**

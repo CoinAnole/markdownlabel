@@ -31,7 +31,8 @@ class TestColorForwarding:
     """Property tests for color forwarding (Property 3)."""
     
     @given(color_strategy)
-    @settings(max_examples=100, deadline=None)
+    # Complex strategy: 20 examples based on default complexity
+    @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_color_applied_to_paragraph(self, color):
         """color is applied to paragraph Labels."""
         label = MarkdownLabel(text='Hello World', color=color)
@@ -44,8 +45,9 @@ class TestColorForwarding:
             assert colors_equal(list(lbl.color), color), \
                 f"Expected color={color}, got {list(lbl.color)}"
     
+    # Complex strategy: 20 examples based on default complexity
     @given(color_strategy)
-    @settings(max_examples=100, deadline=None)
+    @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_color_applied_to_heading(self, color):
         """color is applied to heading Labels."""
         label = MarkdownLabel(text='# Heading', color=color)
@@ -57,9 +59,10 @@ class TestColorForwarding:
         for lbl in labels:
             assert colors_equal(list(lbl.color), color), \
                 f"Expected color={color}, got {list(lbl.color)}"
+     # Complex strategy: 20 examples based on default complexity
     
     @given(color_strategy)
-    @settings(max_examples=100, deadline=None)
+    @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_code_block_preserves_light_color(self, color):
         """Code blocks preserve their light text color regardless of color setting."""
         markdown = '```python\nprint("hello")\n```'
@@ -76,7 +79,7 @@ class TestColorForwarding:
                 f"Code label should use light color={code_color}, got {list(lbl.color)}"
     
     @given(color_strategy, color_strategy)
-    @settings(max_examples=100, deadline=None)
+    @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_color_change_triggers_rebuild(self, color1, color2):
         """Changing color triggers widget rebuild with new color."""
         assume(not colors_equal(color1, color2))
@@ -94,11 +97,12 @@ class TestColorForwarding:
         # Verify new color
         labels = find_labels_recursive(label)
         for lbl in labels:
+            # Complex strategy: 20 examples based on default complexity
             assert colors_equal(list(lbl.color), color2), \
                 f"After change, expected color={color2}, got {list(lbl.color)}"
     
     @given(color_strategy)
-    @settings(max_examples=100, deadline=None)
+    @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_color_applied_to_list_items(self, color):
         """color is applied to list item Labels."""
         markdown = '- Item 1\n- Item 2'
@@ -113,7 +117,7 @@ class TestColorForwarding:
                 f"Expected color={color}, got {list(lbl.color)}"
     
     @given(color_strategy)
-    @settings(max_examples=100, deadline=None)
+    @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_color_applied_to_table_cells(self, color):
         """color is applied to table cell Labels."""
         markdown = '| A | B |\n| --- | --- |\n| 1 | 2 |'
@@ -128,7 +132,7 @@ class TestColorForwarding:
                 f"Expected color={color}, got {list(lbl.color)}"
     
     @given(color_strategy)
-    @settings(max_examples=100, deadline=None)
+    @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_mixed_content_color_separation(self, color):
         """Mixed content correctly separates body color and code color."""
         code_color = [0.9, 0.9, 0.9, 1]
