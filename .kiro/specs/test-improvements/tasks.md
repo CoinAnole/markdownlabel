@@ -72,18 +72,18 @@
     - **Property 8: Code serialization round-trip**
     - **Validates: Requirements 5.3, 5.4**
 
-- [ ] 5. Add inline HTML security testing
-  - [ ] 5.1 Implement HTML escaping in InlineRenderer.inline_html() method
+- [x] 5. Add inline HTML security testing
+  - [x] 5.1 Implement HTML escaping in InlineRenderer.inline_html() method
     - Escape HTML tags to render as plain text
     - Prevent introduction of exploitable Kivy markup
     - Handle special characters and edge cases
     - _Requirements: 6.1, 6.2, 6.4_
-  - [ ] 5.2 Create HTML security test suite
+  - [x] 5.2 Create HTML security test suite
     - Test various HTML tags and attributes
     - Verify HTML is rendered as plain text
     - Test potential XSS vectors and markup injection
     - _Requirements: 6.3_
-  - [ ] 5.3 Write property test for HTML content escaping
+  - [x] 5.3 Write property test for HTML content escaping
     - **Property 9: HTML content escaping**
     - **Validates: Requirements 6.1, 6.2, 6.4**
 
