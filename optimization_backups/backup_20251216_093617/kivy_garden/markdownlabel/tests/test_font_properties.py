@@ -494,7 +494,7 @@ class TestFontAdvancedPropertyForwardingPhase2:
     )),
            st.sampled_from([None, 'normal', 'light', 'mono']),
            st.booleans())
-    @settings(max_examples=2, deadline=None)
+    @settings(max_examples=100, deadline=None)
     def test_combined_font_properties_with_code_block(self, font_family, font_context, 
                                                        font_hinting, font_kerning):
         """Combined font properties are correctly forwarded with code block exclusion.
@@ -603,7 +603,7 @@ class TestFontSizeImmediateUpdate:
         st.floats(min_value=10.0, max_value=30.0, allow_nan=False, allow_infinity=False),
         st.floats(min_value=10.0, max_value=30.0, allow_nan=False, allow_infinity=False)
     )
-    @settings(max_examples=6, deadline=None)
+    @settings(max_examples=100, deadline=None)
     def test_heading_font_size_updates_with_scale(self, heading_level, initial_size, new_size):
         """Heading font sizes update immediately with correct scale factors."""
         assume(abs(initial_size - new_size) > 1.0)
@@ -679,7 +679,7 @@ class TestHeadingScalePreservation:
         st.integers(min_value=1, max_value=6),  # Heading levels
         st.floats(min_value=8.0, max_value=50.0, allow_nan=False, allow_infinity=False)
     )
-    @settings(max_examples=6, deadline=None)
+    @settings(max_examples=100, deadline=None)
     def test_heading_scale_factors_preserved(self, heading_level, base_size):
         """Heading scale factors are preserved according to HEADING_SIZES."""
         # Create heading markdown
@@ -719,7 +719,7 @@ class TestHeadingScalePreservation:
         ),
         st.floats(min_value=12.0, max_value=24.0, allow_nan=False, allow_infinity=False)
     )
-    @settings(max_examples=6, deadline=None)
+    @settings(max_examples=100, deadline=None)
     def test_multiple_headings_preserve_relative_scales(self, heading_levels, base_size):
         """Multiple headings preserve correct relative scale factors."""
         # Create markdown with multiple headings
@@ -764,7 +764,7 @@ class TestHeadingScalePreservation:
         st.floats(min_value=10.0, max_value=20.0, allow_nan=False, allow_infinity=False),
         st.floats(min_value=20.0, max_value=40.0, allow_nan=False, allow_infinity=False)
     )
-    @settings(max_examples=6, deadline=None)
+    @settings(max_examples=100, deadline=None)
     def test_heading_scale_preserved_after_base_font_size_change(self, heading_level, initial_size, new_size):
         """Heading scale factors are preserved when base_font_size changes."""
         # Create heading
@@ -853,7 +853,7 @@ class TestNoRebuildOnFontSizeChange:
         st.floats(min_value=12.0, max_value=18.0, allow_nan=False, allow_infinity=False),
         st.floats(min_value=20.0, max_value=30.0, allow_nan=False, allow_infinity=False)
     )
-    @settings(max_examples=6, deadline=None)
+    @settings(max_examples=100, deadline=None)
     def test_heading_widget_identity_preserved(self, heading_level, initial_size, new_size):
         """Heading Label widget identity is preserved when base_font_size changes."""
         # Create heading

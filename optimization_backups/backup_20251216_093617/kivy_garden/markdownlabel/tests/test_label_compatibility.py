@@ -35,7 +35,7 @@ class TestFontSizeAliasBidirectionality:
     
     # Complex strategy with float generation, NaN exclusion, infinity exclusion: 50 examples
     @given(st.floats(min_value=1, max_value=200, allow_nan=False, allow_infinity=False))
-    @settings(max_examples=50, deadline=None)
+    @settings(max_examples=100, deadline=None)
     def test_base_font_size_returns_via_font_size(self, base_font_size_value):
         """Setting base_font_size is returned when reading font_size."""
         label = MarkdownLabel(base_font_size=base_font_size_value)
@@ -69,7 +69,7 @@ class TestFontSizeAliasBidirectionality:
      # Complex strategy with float generation, NaN exclusion, infinity exclusion: 50 examples
     
     @given(st.floats(min_value=1, max_value=200, allow_nan=False, allow_infinity=False))
-    @settings(max_examples=50, deadline=None)
+    @settings(max_examples=100, deadline=None)
     def test_bidirectional_equivalence(self, value):
         """font_size and base_font_size are always equivalent."""
         label = MarkdownLabel()
@@ -233,7 +233,7 @@ class TestNoOpPropertyAcceptanceAndStorage:
         assert label.mipmap == value
     
     @given(st.floats(min_value=0, max_value=100, allow_nan=False, allow_infinity=False))
-    @settings(max_examples=50, deadline=None)
+    @settings(max_examples=100, deadline=None)
     def test_outline_width_property_accepted_and_stored(self, value):
         """Setting outline_width property accepts and stores the value."""
         label = MarkdownLabel(text='# Hello World', outline_width=value)
@@ -274,7 +274,7 @@ class TestNoOpPropertyAcceptanceAndStorage:
         )),
         st.one_of(st.booleans(), st.integers(), st.text(max_size=20))
     ))
-    @settings(max_examples=2, deadline=None)
+    @settings(max_examples=100, deadline=None)
     def test_ellipsis_options_property_accepted_and_stored(self, value):
         """Setting ellipsis_options property accepts and stores the value."""
         label = MarkdownLabel(text='# Hello World', ellipsis_options=value)
@@ -285,7 +285,7 @@ class TestNoOpPropertyAcceptanceAndStorage:
            st.one_of(st.none(), st.text(min_size=1, max_size=5)),
            st.sampled_from([None, 'ltr', 'rtl', 'weak_ltr', 'weak_rtl']),
            st.dictionaries(st.text(min_size=1, max_size=5), st.booleans(), max_size=3))
-    @settings(max_examples=2, deadline=None)
+    @settings(max_examples=100, deadline=None)
     def test_all_noop_properties_together_accepted_and_stored(self, mipmap, outline_width, 
                                                               outline_color, text_language, 
                                                               base_direction, ellipsis_options):
@@ -317,7 +317,7 @@ class TestNoOpPropertyAcceptanceAndStorage:
         assert label.mipmap == value
     
     @given(st.floats(min_value=0, max_value=100, allow_nan=False, allow_infinity=False))
-    @settings(max_examples=50, deadline=None)
+    @settings(max_examples=100, deadline=None)
     def test_outline_width_property_change_after_creation(self, value):
         """Changing outline_width property after creation accepts and stores the value."""
         label = MarkdownLabel(text='# Hello')
@@ -361,7 +361,7 @@ class TestNoOpPropertyAcceptanceAndStorage:
         )),
         st.one_of(st.booleans(), st.integers(), st.text(max_size=20))
     ))
-    @settings(max_examples=2, deadline=None)
+    @settings(max_examples=100, deadline=None)
     def test_ellipsis_options_property_change_after_creation(self, value):
         """Changing ellipsis_options property after creation accepts and stores the value."""
         label = MarkdownLabel(text='# Hello')
@@ -374,7 +374,7 @@ class TestNoOpPropertyAcceptanceAndStorage:
            st.sampled_from([None, 'ltr', 'rtl', 'weak_ltr', 'weak_rtl']),
            st.dictionaries(st.text(min_size=1, max_size=5), st.booleans(), max_size=3),
            simple_markdown_document())
-    @settings(max_examples=2, deadline=None)
+    @settings(max_examples=100, deadline=None)
     def test_noop_properties_do_not_affect_rendering(self, mipmap, outline_width, outline_color,
                                                      text_language, base_direction, ellipsis_options,
                                                      markdown_text):

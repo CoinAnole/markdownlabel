@@ -156,7 +156,7 @@ class TestShorteningPropertyForwarding:
                 f"Expected split_str={split_str_value!r}, got {lbl.split_str!r}"
     
     @given(st.integers(min_value=0, max_value=10))
-    @settings(max_examples=11, deadline=None)
+    @settings(max_examples=100, deadline=None)
     def test_max_lines_forwarded_to_paragraph(self, max_lines_value):
         """max_lines property is forwarded to paragraph Labels when non-zero."""
         label = MarkdownLabel(text='Hello World', max_lines=max_lines_value)

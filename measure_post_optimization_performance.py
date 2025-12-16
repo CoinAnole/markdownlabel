@@ -17,7 +17,7 @@ from typing import Dict, List, Tuple, Any
 # Add the package to Python path
 sys.path.insert(0, str(Path(__file__).parent))
 
-from kivy_garden.markdownlabel.test_file_analyzer import TestFileAnalyzer
+from tools.test_optimization.test_file_analyzer import TestFileAnalyzer
 
 
 class PostOptimizationPerformanceMeasurer:

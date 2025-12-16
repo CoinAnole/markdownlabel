@@ -142,7 +142,7 @@ class TestHeadingFontHierarchy:
     """Property tests for heading font size hierarchy (Property 3)."""
     
     @given(st.integers(min_value=1, max_value=5))
-    @settings(max_examples=5, deadline=None)
+    @settings(max_examples=100, deadline=None)
     def test_smaller_level_has_larger_font(self, level):
         """Headings with smaller level numbers have larger font sizes."""
         renderer = KivyRenderer(base_font_size=15)
@@ -187,7 +187,7 @@ class TestHeadingFontHierarchy:
         assert widget.markup is True, "Heading should have markup=True"
     
     @given(st.integers(min_value=1, max_value=6), st.floats(min_value=10, max_value=30))
-    @settings(max_examples=6)
+    @settings(max_examples=100)
     def test_heading_font_size_scales_with_base(self, level, base_size):
         """Heading font size scales proportionally with base_font_size."""
         assume(base_size > 0)
@@ -327,7 +327,7 @@ class TestNestedListIndentation:
     """Property tests for nested list indentation (Property 7)."""
     
     @given(st.integers(min_value=1, max_value=4))
-    @settings(max_examples=4)
+    @settings(max_examples=100)
     def test_nested_list_increases_indentation(self, depth):
         """Nested lists have increasing left padding."""
         renderer = KivyRenderer()
@@ -676,7 +676,7 @@ class TestTableGridStructure:
     """Property tests for table grid structure (Property 8)."""
     
     @given(st.integers(min_value=1, max_value=5), st.integers(min_value=1, max_value=5))
-    @settings(max_examples=5, deadline=None)
+    @settings(max_examples=100, deadline=None)
     def test_table_has_correct_column_count(self, num_rows, num_cols):
         """Table GridLayout has correct number of columns."""
         renderer = KivyRenderer()
@@ -718,7 +718,7 @@ class TestTableGridStructure:
             f"Expected {num_cols} columns, got {widget.cols}"
     
     @given(st.integers(min_value=1, max_value=5), st.integers(min_value=1, max_value=5))
-    @settings(max_examples=5, deadline=None)
+    @settings(max_examples=100, deadline=None)
     def test_table_has_correct_cell_count(self, num_rows, num_cols):
         """Table contains exactly R×C Label widgets."""
         renderer = KivyRenderer()
@@ -808,7 +808,7 @@ class TestTableAlignmentApplication:
             f"Expected halign='{alignment}', got '{widget.halign}'"
     
     @given(st.integers(min_value=1, max_value=3), st.integers(min_value=2, max_value=4))
-    @settings(max_examples=3, deadline=None)
+    @settings(max_examples=100, deadline=None)
     def test_table_preserves_column_alignments(self, num_rows, num_cols):
         """Table preserves alignment for each column."""
         renderer = KivyRenderer()

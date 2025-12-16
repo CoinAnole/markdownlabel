@@ -1,586 +1,14 @@
 {
   "validation_summary": {
-    "passed": false,
+    "passed": true,
     "total_tests": 331,
-    "over_tested_count": 57,
-    "critical_violations": 39,
-    "warnings": 18,
-    "estimated_time_waste_seconds": 416.5
+    "over_tested_count": 0,
+    "critical_violations": 0,
+    "warnings": 0,
+    "estimated_time_waste_seconds": 0
   },
-  "critical_violations": [
-    {
-      "test_name": "test_emphasis_produces_italic_tags",
-      "file_path": "kivy_garden/markdownlabel/tests/test_inline_renderer.py",
-      "line_number": 98,
-      "current_examples": 100,
-      "recommended_examples": 20,
-      "time_savings_percent": 80.0,
-      "rationale": "Complex strategy uses 20 examples based on complexity",
-      "strategy_type": "complex"
-    },
-    {
-      "test_name": "test_codespan_produces_font_tags",
-      "file_path": "kivy_garden/markdownlabel/tests/test_inline_renderer.py",
-      "line_number": 109,
-      "current_examples": 100,
-      "recommended_examples": 20,
-      "time_savings_percent": 80.0,
-      "rationale": "Complex strategy uses 20 examples based on complexity",
-      "strategy_type": "complex"
-    },
-    {
-      "test_name": "test_strikethrough_produces_s_tags",
-      "file_path": "kivy_garden/markdownlabel/tests/test_inline_renderer.py",
-      "line_number": 120,
-      "current_examples": 100,
-      "recommended_examples": 20,
-      "time_savings_percent": 80.0,
-      "rationale": "Complex strategy uses 20 examples based on complexity",
-      "strategy_type": "complex"
-    },
-    {
-      "test_name": "test_link_produces_ref_tags_unstyled",
-      "file_path": "kivy_garden/markdownlabel/tests/test_inline_renderer.py",
-      "line_number": 131,
-      "current_examples": 100,
-      "recommended_examples": 20,
-      "time_savings_percent": 80.0,
-      "rationale": "Complex strategy uses 20 examples based on complexity",
-      "strategy_type": "complex"
-    },
-    {
-      "test_name": "test_link_produces_ref_tags_styled",
-      "file_path": "kivy_garden/markdownlabel/tests/test_inline_renderer.py",
-      "line_number": 148,
-      "current_examples": 100,
-      "recommended_examples": 20,
-      "time_savings_percent": 80.0,
-      "rationale": "Complex strategy uses 20 examples based on complexity",
-      "strategy_type": "complex"
-    },
-    {
-      "test_name": "test_text_escapes_special_characters",
-      "file_path": "kivy_garden/markdownlabel/tests/test_inline_renderer.py",
-      "line_number": 175,
-      "current_examples": 100,
-      "recommended_examples": 20,
-      "time_savings_percent": 80.0,
-      "rationale": "Complex strategy uses 20 examples based on complexity",
-      "strategy_type": "complex"
-    },
-    {
-      "test_name": "test_smaller_level_has_larger_font",
-      "file_path": "kivy_garden/markdownlabel/tests/test_kivy_renderer.py",
-      "line_number": 144,
-      "current_examples": 100,
-      "recommended_examples": 5,
-      "time_savings_percent": 95.0,
-      "rationale": "Small finite strategy needs 5 examples (input space size)",
-      "strategy_type": "small_finite"
-    },
-    {
-      "test_name": "test_heading_font_size_scales_with_base",
-      "file_path": "kivy_garden/markdownlabel/tests/test_kivy_renderer.py",
-      "line_number": 189,
-      "current_examples": 100,
-      "recommended_examples": 6,
-      "time_savings_percent": 94.0,
-      "rationale": "Small finite strategy needs 6 examples (input space size)",
-      "strategy_type": "small_finite"
-    },
-    {
-      "test_name": "test_nested_list_increases_indentation",
-      "file_path": "kivy_garden/markdownlabel/tests/test_kivy_renderer.py",
-      "line_number": 329,
-      "current_examples": 100,
-      "recommended_examples": 4,
-      "time_savings_percent": 96.0,
-      "rationale": "Small finite strategy needs 4 examples (input space size)",
-      "strategy_type": "small_finite"
-    },
-    {
-      "test_name": "test_table_has_correct_column_count",
-      "file_path": "kivy_garden/markdownlabel/tests/test_kivy_renderer.py",
-      "line_number": 678,
-      "current_examples": 100,
-      "recommended_examples": 5,
-      "time_savings_percent": 95.0,
-      "rationale": "Small finite strategy needs 5 examples (input space size)",
-      "strategy_type": "small_finite"
-    },
-    {
-      "test_name": "test_table_has_correct_cell_count",
-      "file_path": "kivy_garden/markdownlabel/tests/test_kivy_renderer.py",
-      "line_number": 720,
-      "current_examples": 100,
-      "recommended_examples": 5,
-      "time_savings_percent": 95.0,
-      "rationale": "Small finite strategy needs 5 examples (input space size)",
-      "strategy_type": "small_finite"
-    },
-    {
-      "test_name": "test_table_preserves_column_alignments",
-      "file_path": "kivy_garden/markdownlabel/tests/test_kivy_renderer.py",
-      "line_number": 810,
-      "current_examples": 100,
-      "recommended_examples": 3,
-      "time_savings_percent": 97.0,
-      "rationale": "Small finite strategy needs 3 examples (input space size)",
-      "strategy_type": "small_finite"
-    },
-    {
-      "test_name": "test_explicit_alignment_overrides_direction_for_mixed_content",
-      "file_path": "kivy_garden/markdownlabel/tests/test_rtl_alignment.py",
-      "line_number": 465,
-      "current_examples": 100,
-      "recommended_examples": 4,
-      "time_savings_percent": 96.0,
-      "rationale": "Small finite strategy needs 4 examples (input space size)",
-      "strategy_type": "small_finite"
-    },
-    {
-      "test_name": "test_nested_lists_render_without_exception",
-      "file_path": "kivy_garden/markdownlabel/tests/test_core_functionality.py",
-      "line_number": 281,
-      "current_examples": 100,
-      "recommended_examples": 15,
-      "time_savings_percent": 85.0,
-      "rationale": "Medium finite strategy capped at 15 examples",
-      "strategy_type": "medium_finite"
-    },
-    {
-      "test_name": "test_nested_quotes_render_without_exception",
-      "file_path": "kivy_garden/markdownlabel/tests/test_core_functionality.py",
-      "line_number": 298,
-      "current_examples": 100,
-      "recommended_examples": 15,
-      "time_savings_percent": 85.0,
-      "rationale": "Medium finite strategy capped at 15 examples",
-      "strategy_type": "medium_finite"
-    },
-    {
-      "test_name": "test_mixed_nesting_renders_without_exception",
-      "file_path": "kivy_garden/markdownlabel/tests/test_core_functionality.py",
-      "line_number": 314,
-      "current_examples": 100,
-      "recommended_examples": 15,
-      "time_savings_percent": 85.0,
-      "rationale": "Medium finite strategy capped at 15 examples",
-      "strategy_type": "medium_finite"
-    },
-    {
-      "test_name": "test_ellipsis_options_property_accepted_and_stored",
-      "file_path": "kivy_garden/markdownlabel/tests/test_label_compatibility.py",
-      "line_number": 271,
-      "current_examples": 100,
-      "recommended_examples": 2,
-      "time_savings_percent": 98.0,
-      "rationale": "Boolean strategy only needs 2 examples (True/False)",
-      "strategy_type": "boolean"
-    },
-    {
-      "test_name": "test_all_noop_properties_together_accepted_and_stored",
-      "file_path": "kivy_garden/markdownlabel/tests/test_label_compatibility.py",
-      "line_number": 283,
-      "current_examples": 100,
-      "recommended_examples": 2,
-      "time_savings_percent": 98.0,
-      "rationale": "Boolean strategy only needs 2 examples (True/False)",
-      "strategy_type": "boolean"
-    },
-    {
-      "test_name": "test_ellipsis_options_property_change_after_creation",
-      "file_path": "kivy_garden/markdownlabel/tests/test_label_compatibility.py",
-      "line_number": 358,
-      "current_examples": 100,
-      "recommended_examples": 2,
-      "time_savings_percent": 98.0,
-      "rationale": "Boolean strategy only needs 2 examples (True/False)",
-      "strategy_type": "boolean"
-    },
-    {
-      "test_name": "test_noop_properties_do_not_affect_rendering",
-      "file_path": "kivy_garden/markdownlabel/tests/test_label_compatibility.py",
-      "line_number": 371,
-      "current_examples": 100,
-      "recommended_examples": 2,
-      "time_savings_percent": 98.0,
-      "rationale": "Boolean strategy only needs 2 examples (True/False)",
-      "strategy_type": "boolean"
-    },
-    {
-      "test_name": "test_combined_font_properties_with_code_block",
-      "file_path": "kivy_garden/markdownlabel/tests/test_font_properties.py",
-      "line_number": 487,
-      "current_examples": 100,
-      "recommended_examples": 2,
-      "time_savings_percent": 98.0,
-      "rationale": "Boolean strategy only needs 2 examples (True/False)",
-      "strategy_type": "boolean"
-    },
-    {
-      "test_name": "test_heading_font_size_updates_with_scale",
-      "file_path": "kivy_garden/markdownlabel/tests/test_font_properties.py",
-      "line_number": 601,
-      "current_examples": 100,
-      "recommended_examples": 6,
-      "time_savings_percent": 94.0,
-      "rationale": "Small finite strategy needs 6 examples (input space size)",
-      "strategy_type": "small_finite"
-    },
-    {
-      "test_name": "test_heading_scale_factors_preserved",
-      "file_path": "kivy_garden/markdownlabel/tests/test_font_properties.py",
-      "line_number": 678,
-      "current_examples": 100,
-      "recommended_examples": 6,
-      "time_savings_percent": 94.0,
-      "rationale": "Small finite strategy needs 6 examples (input space size)",
-      "strategy_type": "small_finite"
-    },
-    {
-      "test_name": "test_multiple_headings_preserve_relative_scales",
-      "file_path": "kivy_garden/markdownlabel/tests/test_font_properties.py",
-      "line_number": 713,
-      "current_examples": 100,
-      "recommended_examples": 6,
-      "time_savings_percent": 94.0,
-      "rationale": "Small finite strategy needs 6 examples (input space size)",
-      "strategy_type": "small_finite"
-    },
-    {
-      "test_name": "test_heading_scale_preserved_after_base_font_size_change",
-      "file_path": "kivy_garden/markdownlabel/tests/test_font_properties.py",
-      "line_number": 762,
-      "current_examples": 100,
-      "recommended_examples": 6,
-      "time_savings_percent": 94.0,
-      "rationale": "Small finite strategy needs 6 examples (input space size)",
-      "strategy_type": "small_finite"
-    },
-    {
-      "test_name": "test_heading_widget_identity_preserved",
-      "file_path": "kivy_garden/markdownlabel/tests/test_font_properties.py",
-      "line_number": 851,
-      "current_examples": 100,
-      "recommended_examples": 6,
-      "time_savings_percent": 94.0,
-      "rationale": "Small finite strategy needs 6 examples (input space size)",
-      "strategy_type": "small_finite"
-    },
-    {
-      "test_name": "test_disabled_change_preserves_widget_tree",
-      "file_path": "kivy_garden/markdownlabel/tests/test_performance.py",
-      "line_number": 298,
-      "current_examples": 20,
-      "recommended_examples": 2,
-      "time_savings_percent": 90.0,
-      "rationale": "Boolean strategy only needs 2 examples (True/False)",
-      "strategy_type": "boolean"
-    },
-    {
-      "test_name": "test_max_lines_forwarded_to_paragraph",
-      "file_path": "kivy_garden/markdownlabel/tests/test_shortening_and_coordinate.py",
-      "line_number": 158,
-      "current_examples": 100,
-      "recommended_examples": 11,
-      "time_savings_percent": 89.0,
-      "rationale": "Medium finite strategy capped at 11 examples",
-      "strategy_type": "medium_finite"
-    },
-    {
-      "test_name": "test_mixed_property_changes_batch_rebuilds",
-      "file_path": "kivy_garden/markdownlabel/tests/test_rebuild_scheduling.py",
-      "line_number": 67,
-      "current_examples": 100,
-      "recommended_examples": 2,
-      "time_savings_percent": 98.0,
-      "rationale": "Small finite strategy needs 2 examples (input space size)",
-      "strategy_type": "small_finite"
-    },
-    {
-      "test_name": "test_heading_content_clipped_when_height_constrained",
-      "file_path": "kivy_garden/markdownlabel/tests/test_clipping_behavior.py",
-      "line_number": 115,
-      "current_examples": 100,
-      "recommended_examples": 6,
-      "time_savings_percent": 94.0,
-      "rationale": "Small finite strategy needs 6 examples (input space size)",
-      "strategy_type": "small_finite"
-    },
-    {
-      "test_name": "test_boolean_property",
-      "file_path": "kivy_garden/markdownlabel/tests/test_strategy_classification.py",
-      "line_number": 346,
-      "current_examples": 100,
-      "recommended_examples": 2,
-      "time_savings_percent": 98.0,
-      "rationale": "Boolean strategy only needs 2 examples (True/False)",
-      "strategy_type": "boolean"
-    },
-    {
-      "test_name": "test_small_range_property",
-      "file_path": "kivy_garden/markdownlabel/tests/test_strategy_classification.py",
-      "line_number": 352,
-      "current_examples": 100,
-      "recommended_examples": 3,
-      "time_savings_percent": 97.0,
-      "rationale": "Small finite strategy needs 3 examples (input space size)",
-      "strategy_type": "small_finite"
-    },
-    {
-      "test_name": "test_more_content_means_more_height_potential",
-      "file_path": "kivy_garden/markdownlabel/tests/test_sizing_behavior.py",
-      "line_number": 72,
-      "current_examples": 100,
-      "recommended_examples": 5,
-      "time_savings_percent": 95.0,
-      "rationale": "Small finite strategy needs 5 examples (input space size)",
-      "strategy_type": "small_finite"
-    },
-    {
-      "test_name": "test_more_content_increases_texture_height",
-      "file_path": "kivy_garden/markdownlabel/tests/test_texture_sizing.py",
-      "line_number": 208,
-      "current_examples": 100,
-      "recommended_examples": 5,
-      "time_savings_percent": 95.0,
-      "rationale": "Small finite strategy needs 5 examples (input space size)",
-      "strategy_type": "small_finite"
-    },
-    {
-      "test_name": "test_all_heading_levels_create_label_widgets",
-      "file_path": "kivy_garden/markdownlabel/tests/test_texture_sizing.py",
-      "line_number": 351,
-      "current_examples": 100,
-      "recommended_examples": 6,
-      "time_savings_percent": 94.0,
-      "rationale": "Small finite strategy needs 6 examples (input space size)",
-      "strategy_type": "small_finite"
-    },
-    {
-      "test_name": "test_boolean_property",
-      "file_path": "kivy_garden/markdownlabel/tests/test_file_analyzer.py",
-      "line_number": 99,
-      "current_examples": 100,
-      "recommended_examples": 2,
-      "time_savings_percent": 98.0,
-      "rationale": "Boolean strategy only needs 2 examples (True/False)",
-      "strategy_type": "boolean"
-    },
-    {
-      "test_name": "test_small_range_property",
-      "file_path": "kivy_garden/markdownlabel/tests/test_file_analyzer.py",
-      "line_number": 131,
-      "current_examples": 100,
-      "recommended_examples": 5,
-      "time_savings_percent": 95.0,
-      "rationale": "Small finite strategy needs 5 examples (input space size)",
-      "strategy_type": "small_finite"
-    },
-    {
-      "test_name": "test_multiline_given",
-      "file_path": "kivy_garden/markdownlabel/tests/test_file_analyzer.py",
-      "line_number": 195,
-      "current_examples": 100,
-      "recommended_examples": 6,
-      "time_savings_percent": 94.0,
-      "rationale": "Combination strategy uses 6 examples (product formula, capped at 50)",
-      "strategy_type": "combination"
-    },
-    {
-      "test_name": "test_boolean_over",
-      "file_path": "kivy_garden/markdownlabel/tests/test_file_analyzer.py",
-      "line_number": 250,
-      "current_examples": 100,
-      "recommended_examples": 2,
-      "time_savings_percent": 98.0,
-      "rationale": "Boolean strategy only needs 2 examples (True/False)",
-      "strategy_type": "boolean"
-    }
-  ],
-  "warnings": [
-    {
-      "test_name": "test_only_special_chars_fully_escaped",
-      "file_path": "kivy_garden/markdownlabel/tests/test_inline_renderer.py",
-      "line_number": 209,
-      "current_examples": 100,
-      "recommended_examples": 30,
-      "time_savings_percent": 70.0,
-      "rationale": "Complex strategy uses 30 examples based on complexity",
-      "strategy_type": "complex"
-    },
-    {
-      "test_name": "test_escape_is_reversible",
-      "file_path": "kivy_garden/markdownlabel/tests/test_inline_renderer.py",
-      "line_number": 231,
-      "current_examples": 100,
-      "recommended_examples": 30,
-      "time_savings_percent": 70.0,
-      "rationale": "Complex strategy uses 30 examples based on complexity",
-      "strategy_type": "complex"
-    },
-    {
-      "test_name": "test_markdown_paragraph_strategy_generates_valid_paragraphs",
-      "file_path": "kivy_garden/markdownlabel/tests/test_shared_infrastructure.py",
-      "line_number": 51,
-      "current_examples": 50,
-      "recommended_examples": 20,
-      "time_savings_percent": 60.0,
-      "rationale": "Complex strategy uses 20 examples based on complexity",
-      "strategy_type": "complex"
-    },
-    {
-      "test_name": "test_markdown_bold_strategy_generates_valid_bold_text",
-      "file_path": "kivy_garden/markdownlabel/tests/test_shared_infrastructure.py",
-      "line_number": 64,
-      "current_examples": 50,
-      "recommended_examples": 20,
-      "time_savings_percent": 60.0,
-      "rationale": "Complex strategy uses 20 examples based on complexity",
-      "strategy_type": "complex"
-    },
-    {
-      "test_name": "test_markdown_italic_strategy_generates_valid_italic_text",
-      "file_path": "kivy_garden/markdownlabel/tests/test_shared_infrastructure.py",
-      "line_number": 74,
-      "current_examples": 50,
-      "recommended_examples": 20,
-      "time_savings_percent": 60.0,
-      "rationale": "Complex strategy uses 20 examples based on complexity",
-      "strategy_type": "complex"
-    },
-    {
-      "test_name": "test_markdown_link_strategy_generates_valid_links",
-      "file_path": "kivy_garden/markdownlabel/tests/test_shared_infrastructure.py",
-      "line_number": 86,
-      "current_examples": 50,
-      "recommended_examples": 20,
-      "time_savings_percent": 60.0,
-      "rationale": "Complex strategy uses 20 examples based on complexity",
-      "strategy_type": "complex"
-    },
-    {
-      "test_name": "test_simple_markdown_document_strategy_generates_valid_documents",
-      "file_path": "kivy_garden/markdownlabel/tests/test_shared_infrastructure.py",
-      "line_number": 100,
-      "current_examples": 50,
-      "recommended_examples": 20,
-      "time_savings_percent": 60.0,
-      "rationale": "Complex strategy uses 20 examples based on complexity",
-      "strategy_type": "complex"
-    },
-    {
-      "test_name": "test_color_strategy_generates_valid_colors",
-      "file_path": "kivy_garden/markdownlabel/tests/test_shared_infrastructure.py",
-      "line_number": 113,
-      "current_examples": 50,
-      "recommended_examples": 20,
-      "time_savings_percent": 60.0,
-      "rationale": "Complex strategy uses 20 examples based on complexity",
-      "strategy_type": "complex"
-    },
-    {
-      "test_name": "test_text_padding_strategy_generates_valid_padding",
-      "file_path": "kivy_garden/markdownlabel/tests/test_shared_infrastructure.py",
-      "line_number": 129,
-      "current_examples": 50,
-      "recommended_examples": 20,
-      "time_savings_percent": 60.0,
-      "rationale": "Complex strategy uses 20 examples based on complexity",
-      "strategy_type": "complex"
-    },
-    {
-      "test_name": "test_find_labels_recursive_function_available",
-      "file_path": "kivy_garden/markdownlabel/tests/test_shared_infrastructure.py",
-      "line_number": 164,
-      "current_examples": 50,
-      "recommended_examples": 30,
-      "time_savings_percent": 40.0,
-      "rationale": "Complex strategy uses 30 examples based on complexity",
-      "strategy_type": "complex"
-    },
-    {
-      "test_name": "test_colors_equal_function_available",
-      "file_path": "kivy_garden/markdownlabel/tests/test_shared_infrastructure.py",
-      "line_number": 184,
-      "current_examples": 50,
-      "recommended_examples": 20,
-      "time_savings_percent": 60.0,
-      "rationale": "Complex strategy uses 20 examples based on complexity",
-      "strategy_type": "complex"
-    },
-    {
-      "test_name": "test_padding_equal_function_available",
-      "file_path": "kivy_garden/markdownlabel/tests/test_shared_infrastructure.py",
-      "line_number": 198,
-      "current_examples": 50,
-      "recommended_examples": 20,
-      "time_savings_percent": 60.0,
-      "rationale": "Complex strategy uses 20 examples based on complexity",
-      "strategy_type": "complex"
-    },
-    {
-      "test_name": "test_base_font_size_returns_via_font_size",
-      "file_path": "kivy_garden/markdownlabel/tests/test_label_compatibility.py",
-      "line_number": 37,
-      "current_examples": 100,
-      "recommended_examples": 50,
-      "time_savings_percent": 50.0,
-      "rationale": "Complex strategy uses 50 examples based on complexity",
-      "strategy_type": "complex"
-    },
-    {
-      "test_name": "test_bidirectional_equivalence",
-      "file_path": "kivy_garden/markdownlabel/tests/test_label_compatibility.py",
-      "line_number": 71,
-      "current_examples": 100,
-      "recommended_examples": 50,
-      "time_savings_percent": 50.0,
-      "rationale": "Complex strategy uses 50 examples based on complexity",
-      "strategy_type": "complex"
-    },
-    {
-      "test_name": "test_outline_width_property_accepted_and_stored",
-      "file_path": "kivy_garden/markdownlabel/tests/test_label_compatibility.py",
-      "line_number": 235,
-      "current_examples": 100,
-      "recommended_examples": 50,
-      "time_savings_percent": 50.0,
-      "rationale": "Complex strategy uses 50 examples based on complexity",
-      "strategy_type": "complex"
-    },
-    {
-      "test_name": "test_outline_width_property_change_after_creation",
-      "file_path": "kivy_garden/markdownlabel/tests/test_label_compatibility.py",
-      "line_number": 319,
-      "current_examples": 100,
-      "recommended_examples": 50,
-      "time_savings_percent": 50.0,
-      "rationale": "Complex strategy uses 50 examples based on complexity",
-      "strategy_type": "complex"
-    },
-    {
-      "test_name": "test_ci_environment_reduces_examples_appropriately",
-      "file_path": "kivy_garden/markdownlabel/tests/test_strategy_classification.py",
-      "line_number": 176,
-      "current_examples": 5,
-      "recommended_examples": 2,
-      "time_savings_percent": 60.0,
-      "rationale": "Small finite strategy needs 2 examples (input space size)",
-      "strategy_type": "small_finite"
-    },
-    {
-      "test_name": "test_combination_uses_product_formula",
-      "file_path": "kivy_garden/markdownlabel/tests/test_strategy_classification.py",
-      "line_number": 227,
-      "current_examples": 10,
-      "recommended_examples": 4,
-      "time_savings_percent": 60.0,
-      "rationale": "Small finite strategy needs 4 examples (input space size)",
-      "strategy_type": "small_finite"
-    }
-  ],
+  "critical_violations": [],
+  "warnings": [],
   "thresholds": {
     "boolean_max": 2,
     "small_finite_max": 10,
@@ -600,177 +28,24 @@
     },
     {
       "file_path": "kivy_garden/markdownlabel/tests/test_inline_renderer.py",
-      "recommendations": [
-        {
-          "test_name": "test_emphasis_produces_italic_tags",
-          "file_path": "kivy_garden/markdownlabel/tests/test_inline_renderer.py",
-          "line_number": 98,
-          "current_examples": 100,
-          "recommended_examples": 20,
-          "time_savings_percent": 80.0,
-          "rationale": "Complex strategy uses 20 examples based on complexity",
-          "strategy_type": "complex"
-        },
-        {
-          "test_name": "test_codespan_produces_font_tags",
-          "file_path": "kivy_garden/markdownlabel/tests/test_inline_renderer.py",
-          "line_number": 109,
-          "current_examples": 100,
-          "recommended_examples": 20,
-          "time_savings_percent": 80.0,
-          "rationale": "Complex strategy uses 20 examples based on complexity",
-          "strategy_type": "complex"
-        },
-        {
-          "test_name": "test_strikethrough_produces_s_tags",
-          "file_path": "kivy_garden/markdownlabel/tests/test_inline_renderer.py",
-          "line_number": 120,
-          "current_examples": 100,
-          "recommended_examples": 20,
-          "time_savings_percent": 80.0,
-          "rationale": "Complex strategy uses 20 examples based on complexity",
-          "strategy_type": "complex"
-        },
-        {
-          "test_name": "test_link_produces_ref_tags_unstyled",
-          "file_path": "kivy_garden/markdownlabel/tests/test_inline_renderer.py",
-          "line_number": 131,
-          "current_examples": 100,
-          "recommended_examples": 20,
-          "time_savings_percent": 80.0,
-          "rationale": "Complex strategy uses 20 examples based on complexity",
-          "strategy_type": "complex"
-        },
-        {
-          "test_name": "test_link_produces_ref_tags_styled",
-          "file_path": "kivy_garden/markdownlabel/tests/test_inline_renderer.py",
-          "line_number": 148,
-          "current_examples": 100,
-          "recommended_examples": 20,
-          "time_savings_percent": 80.0,
-          "rationale": "Complex strategy uses 20 examples based on complexity",
-          "strategy_type": "complex"
-        },
-        {
-          "test_name": "test_text_escapes_special_characters",
-          "file_path": "kivy_garden/markdownlabel/tests/test_inline_renderer.py",
-          "line_number": 175,
-          "current_examples": 100,
-          "recommended_examples": 20,
-          "time_savings_percent": 80.0,
-          "rationale": "Complex strategy uses 20 examples based on complexity",
-          "strategy_type": "complex"
-        },
-        {
-          "test_name": "test_only_special_chars_fully_escaped",
-          "file_path": "kivy_garden/markdownlabel/tests/test_inline_renderer.py",
-          "line_number": 209,
-          "current_examples": 100,
-          "recommended_examples": 30,
-          "time_savings_percent": 70.0,
-          "rationale": "Complex strategy uses 30 examples based on complexity",
-          "strategy_type": "complex"
-        },
-        {
-          "test_name": "test_escape_is_reversible",
-          "file_path": "kivy_garden/markdownlabel/tests/test_inline_renderer.py",
-          "line_number": 231,
-          "current_examples": 100,
-          "recommended_examples": 30,
-          "time_savings_percent": 70.0,
-          "rationale": "Complex strategy uses 30 examples based on complexity",
-          "strategy_type": "complex"
-        }
-      ],
+      "recommendations": [],
       "total_tests": 12,
-      "over_tested_count": 8,
-      "potential_time_savings_percent": 51.666666666666664
+      "over_tested_count": 0,
+      "potential_time_savings_percent": 0.0
     },
     {
       "file_path": "kivy_garden/markdownlabel/tests/test_kivy_renderer.py",
-      "recommendations": [
-        {
-          "test_name": "test_smaller_level_has_larger_font",
-          "file_path": "kivy_garden/markdownlabel/tests/test_kivy_renderer.py",
-          "line_number": 144,
-          "current_examples": 100,
-          "recommended_examples": 5,
-          "time_savings_percent": 95.0,
-          "rationale": "Small finite strategy needs 5 examples (input space size)",
-          "strategy_type": "small_finite"
-        },
-        {
-          "test_name": "test_heading_font_size_scales_with_base",
-          "file_path": "kivy_garden/markdownlabel/tests/test_kivy_renderer.py",
-          "line_number": 189,
-          "current_examples": 100,
-          "recommended_examples": 6,
-          "time_savings_percent": 94.0,
-          "rationale": "Small finite strategy needs 6 examples (input space size)",
-          "strategy_type": "small_finite"
-        },
-        {
-          "test_name": "test_nested_list_increases_indentation",
-          "file_path": "kivy_garden/markdownlabel/tests/test_kivy_renderer.py",
-          "line_number": 329,
-          "current_examples": 100,
-          "recommended_examples": 4,
-          "time_savings_percent": 96.0,
-          "rationale": "Small finite strategy needs 4 examples (input space size)",
-          "strategy_type": "small_finite"
-        },
-        {
-          "test_name": "test_table_has_correct_column_count",
-          "file_path": "kivy_garden/markdownlabel/tests/test_kivy_renderer.py",
-          "line_number": 678,
-          "current_examples": 100,
-          "recommended_examples": 5,
-          "time_savings_percent": 95.0,
-          "rationale": "Small finite strategy needs 5 examples (input space size)",
-          "strategy_type": "small_finite"
-        },
-        {
-          "test_name": "test_table_has_correct_cell_count",
-          "file_path": "kivy_garden/markdownlabel/tests/test_kivy_renderer.py",
-          "line_number": 720,
-          "current_examples": 100,
-          "recommended_examples": 5,
-          "time_savings_percent": 95.0,
-          "rationale": "Small finite strategy needs 5 examples (input space size)",
-          "strategy_type": "small_finite"
-        },
-        {
-          "test_name": "test_table_preserves_column_alignments",
-          "file_path": "kivy_garden/markdownlabel/tests/test_kivy_renderer.py",
-          "line_number": 810,
-          "current_examples": 100,
-          "recommended_examples": 3,
-          "time_savings_percent": 97.0,
-          "rationale": "Small finite strategy needs 3 examples (input space size)",
-          "strategy_type": "small_finite"
-        }
-      ],
+      "recommendations": [],
       "total_tests": 30,
-      "over_tested_count": 6,
-      "potential_time_savings_percent": 19.066666666666666
+      "over_tested_count": 0,
+      "potential_time_savings_percent": 0.0
     },
     {
       "file_path": "kivy_garden/markdownlabel/tests/test_rtl_alignment.py",
-      "recommendations": [
-        {
-          "test_name": "test_explicit_alignment_overrides_direction_for_mixed_content",
-          "file_path": "kivy_garden/markdownlabel/tests/test_rtl_alignment.py",
-          "line_number": 465,
-          "current_examples": 100,
-          "recommended_examples": 4,
-          "time_savings_percent": 96.0,
-          "rationale": "Small finite strategy needs 4 examples (input space size)",
-          "strategy_type": "small_finite"
-        }
-      ],
+      "recommendations": [],
       "total_tests": 12,
-      "over_tested_count": 1,
-      "potential_time_savings_percent": 8.0
+      "over_tested_count": 0,
+      "potential_time_savings_percent": 0.0
     },
     {
       "file_path": "kivy_garden/markdownlabel/tests/test_utils.py",
@@ -781,149 +56,17 @@
     },
     {
       "file_path": "kivy_garden/markdownlabel/tests/test_shared_infrastructure.py",
-      "recommendations": [
-        {
-          "test_name": "test_markdown_paragraph_strategy_generates_valid_paragraphs",
-          "file_path": "kivy_garden/markdownlabel/tests/test_shared_infrastructure.py",
-          "line_number": 51,
-          "current_examples": 50,
-          "recommended_examples": 20,
-          "time_savings_percent": 60.0,
-          "rationale": "Complex strategy uses 20 examples based on complexity",
-          "strategy_type": "complex"
-        },
-        {
-          "test_name": "test_markdown_bold_strategy_generates_valid_bold_text",
-          "file_path": "kivy_garden/markdownlabel/tests/test_shared_infrastructure.py",
-          "line_number": 64,
-          "current_examples": 50,
-          "recommended_examples": 20,
-          "time_savings_percent": 60.0,
-          "rationale": "Complex strategy uses 20 examples based on complexity",
-          "strategy_type": "complex"
-        },
-        {
-          "test_name": "test_markdown_italic_strategy_generates_valid_italic_text",
-          "file_path": "kivy_garden/markdownlabel/tests/test_shared_infrastructure.py",
-          "line_number": 74,
-          "current_examples": 50,
-          "recommended_examples": 20,
-          "time_savings_percent": 60.0,
-          "rationale": "Complex strategy uses 20 examples based on complexity",
-          "strategy_type": "complex"
-        },
-        {
-          "test_name": "test_markdown_link_strategy_generates_valid_links",
-          "file_path": "kivy_garden/markdownlabel/tests/test_shared_infrastructure.py",
-          "line_number": 86,
-          "current_examples": 50,
-          "recommended_examples": 20,
-          "time_savings_percent": 60.0,
-          "rationale": "Complex strategy uses 20 examples based on complexity",
-          "strategy_type": "complex"
-        },
-        {
-          "test_name": "test_simple_markdown_document_strategy_generates_valid_documents",
-          "file_path": "kivy_garden/markdownlabel/tests/test_shared_infrastructure.py",
-          "line_number": 100,
-          "current_examples": 50,
-          "recommended_examples": 20,
-          "time_savings_percent": 60.0,
-          "rationale": "Complex strategy uses 20 examples based on complexity",
-          "strategy_type": "complex"
-        },
-        {
-          "test_name": "test_color_strategy_generates_valid_colors",
-          "file_path": "kivy_garden/markdownlabel/tests/test_shared_infrastructure.py",
-          "line_number": 113,
-          "current_examples": 50,
-          "recommended_examples": 20,
-          "time_savings_percent": 60.0,
-          "rationale": "Complex strategy uses 20 examples based on complexity",
-          "strategy_type": "complex"
-        },
-        {
-          "test_name": "test_text_padding_strategy_generates_valid_padding",
-          "file_path": "kivy_garden/markdownlabel/tests/test_shared_infrastructure.py",
-          "line_number": 129,
-          "current_examples": 50,
-          "recommended_examples": 20,
-          "time_savings_percent": 60.0,
-          "rationale": "Complex strategy uses 20 examples based on complexity",
-          "strategy_type": "complex"
-        },
-        {
-          "test_name": "test_find_labels_recursive_function_available",
-          "file_path": "kivy_garden/markdownlabel/tests/test_shared_infrastructure.py",
-          "line_number": 164,
-          "current_examples": 50,
-          "recommended_examples": 30,
-          "time_savings_percent": 40.0,
-          "rationale": "Complex strategy uses 30 examples based on complexity",
-          "strategy_type": "complex"
-        },
-        {
-          "test_name": "test_colors_equal_function_available",
-          "file_path": "kivy_garden/markdownlabel/tests/test_shared_infrastructure.py",
-          "line_number": 184,
-          "current_examples": 50,
-          "recommended_examples": 20,
-          "time_savings_percent": 60.0,
-          "rationale": "Complex strategy uses 20 examples based on complexity",
-          "strategy_type": "complex"
-        },
-        {
-          "test_name": "test_padding_equal_function_available",
-          "file_path": "kivy_garden/markdownlabel/tests/test_shared_infrastructure.py",
-          "line_number": 198,
-          "current_examples": 50,
-          "recommended_examples": 20,
-          "time_savings_percent": 60.0,
-          "rationale": "Complex strategy uses 20 examples based on complexity",
-          "strategy_type": "complex"
-        }
-      ],
+      "recommendations": [],
       "total_tests": 12,
-      "over_tested_count": 10,
-      "potential_time_savings_percent": 48.333333333333336
+      "over_tested_count": 0,
+      "potential_time_savings_percent": 0.0
     },
     {
       "file_path": "kivy_garden/markdownlabel/tests/test_core_functionality.py",
-      "recommendations": [
-        {
-          "test_name": "test_nested_lists_render_without_exception",
-          "file_path": "kivy_garden/markdownlabel/tests/test_core_functionality.py",
-          "line_number": 281,
-          "current_examples": 100,
-          "recommended_examples": 15,
-          "time_savings_percent": 85.0,
-          "rationale": "Medium finite strategy capped at 15 examples",
-          "strategy_type": "medium_finite"
-        },
-        {
-          "test_name": "test_nested_quotes_render_without_exception",
-          "file_path": "kivy_garden/markdownlabel/tests/test_core_functionality.py",
-          "line_number": 298,
-          "current_examples": 100,
-          "recommended_examples": 15,
-          "time_savings_percent": 85.0,
-          "rationale": "Medium finite strategy capped at 15 examples",
-          "strategy_type": "medium_finite"
-        },
-        {
-          "test_name": "test_mixed_nesting_renders_without_exception",
-          "file_path": "kivy_garden/markdownlabel/tests/test_core_functionality.py",
-          "line_number": 314,
-          "current_examples": 100,
-          "recommended_examples": 15,
-          "time_savings_percent": 85.0,
-          "rationale": "Medium finite strategy capped at 15 examples",
-          "strategy_type": "medium_finite"
-        }
-      ],
+      "recommendations": [],
       "total_tests": 14,
-      "over_tested_count": 3,
-      "potential_time_savings_percent": 18.214285714285715
+      "over_tested_count": 0,
+      "potential_time_savings_percent": 0.0
     },
     {
       "file_path": "kivy_garden/markdownlabel/tests/test_core_functionality_properties.py",
@@ -934,159 +77,17 @@
     },
     {
       "file_path": "kivy_garden/markdownlabel/tests/test_label_compatibility.py",
-      "recommendations": [
-        {
-          "test_name": "test_base_font_size_returns_via_font_size",
-          "file_path": "kivy_garden/markdownlabel/tests/test_label_compatibility.py",
-          "line_number": 37,
-          "current_examples": 100,
-          "recommended_examples": 50,
-          "time_savings_percent": 50.0,
-          "rationale": "Complex strategy uses 50 examples based on complexity",
-          "strategy_type": "complex"
-        },
-        {
-          "test_name": "test_bidirectional_equivalence",
-          "file_path": "kivy_garden/markdownlabel/tests/test_label_compatibility.py",
-          "line_number": 71,
-          "current_examples": 100,
-          "recommended_examples": 50,
-          "time_savings_percent": 50.0,
-          "rationale": "Complex strategy uses 50 examples based on complexity",
-          "strategy_type": "complex"
-        },
-        {
-          "test_name": "test_outline_width_property_accepted_and_stored",
-          "file_path": "kivy_garden/markdownlabel/tests/test_label_compatibility.py",
-          "line_number": 235,
-          "current_examples": 100,
-          "recommended_examples": 50,
-          "time_savings_percent": 50.0,
-          "rationale": "Complex strategy uses 50 examples based on complexity",
-          "strategy_type": "complex"
-        },
-        {
-          "test_name": "test_ellipsis_options_property_accepted_and_stored",
-          "file_path": "kivy_garden/markdownlabel/tests/test_label_compatibility.py",
-          "line_number": 271,
-          "current_examples": 100,
-          "recommended_examples": 2,
-          "time_savings_percent": 98.0,
-          "rationale": "Boolean strategy only needs 2 examples (True/False)",
-          "strategy_type": "boolean"
-        },
-        {
-          "test_name": "test_all_noop_properties_together_accepted_and_stored",
-          "file_path": "kivy_garden/markdownlabel/tests/test_label_compatibility.py",
-          "line_number": 283,
-          "current_examples": 100,
-          "recommended_examples": 2,
-          "time_savings_percent": 98.0,
-          "rationale": "Boolean strategy only needs 2 examples (True/False)",
-          "strategy_type": "boolean"
-        },
-        {
-          "test_name": "test_outline_width_property_change_after_creation",
-          "file_path": "kivy_garden/markdownlabel/tests/test_label_compatibility.py",
-          "line_number": 319,
-          "current_examples": 100,
-          "recommended_examples": 50,
-          "time_savings_percent": 50.0,
-          "rationale": "Complex strategy uses 50 examples based on complexity",
-          "strategy_type": "complex"
-        },
-        {
-          "test_name": "test_ellipsis_options_property_change_after_creation",
-          "file_path": "kivy_garden/markdownlabel/tests/test_label_compatibility.py",
-          "line_number": 358,
-          "current_examples": 100,
-          "recommended_examples": 2,
-          "time_savings_percent": 98.0,
-          "rationale": "Boolean strategy only needs 2 examples (True/False)",
-          "strategy_type": "boolean"
-        },
-        {
-          "test_name": "test_noop_properties_do_not_affect_rendering",
-          "file_path": "kivy_garden/markdownlabel/tests/test_label_compatibility.py",
-          "line_number": 371,
-          "current_examples": 100,
-          "recommended_examples": 2,
-          "time_savings_percent": 98.0,
-          "rationale": "Boolean strategy only needs 2 examples (True/False)",
-          "strategy_type": "boolean"
-        }
-      ],
+      "recommendations": [],
       "total_tests": 29,
-      "over_tested_count": 8,
-      "potential_time_savings_percent": 20.413793103448278
+      "over_tested_count": 0,
+      "potential_time_savings_percent": 0.0
     },
     {
       "file_path": "kivy_garden/markdownlabel/tests/test_font_properties.py",
-      "recommendations": [
-        {
-          "test_name": "test_combined_font_properties_with_code_block",
-          "file_path": "kivy_garden/markdownlabel/tests/test_font_properties.py",
-          "line_number": 487,
-          "current_examples": 100,
-          "recommended_examples": 2,
-          "time_savings_percent": 98.0,
-          "rationale": "Boolean strategy only needs 2 examples (True/False)",
-          "strategy_type": "boolean"
-        },
-        {
-          "test_name": "test_heading_font_size_updates_with_scale",
-          "file_path": "kivy_garden/markdownlabel/tests/test_font_properties.py",
-          "line_number": 601,
-          "current_examples": 100,
-          "recommended_examples": 6,
-          "time_savings_percent": 94.0,
-          "rationale": "Small finite strategy needs 6 examples (input space size)",
-          "strategy_type": "small_finite"
-        },
-        {
-          "test_name": "test_heading_scale_factors_preserved",
-          "file_path": "kivy_garden/markdownlabel/tests/test_font_properties.py",
-          "line_number": 678,
-          "current_examples": 100,
-          "recommended_examples": 6,
-          "time_savings_percent": 94.0,
-          "rationale": "Small finite strategy needs 6 examples (input space size)",
-          "strategy_type": "small_finite"
-        },
-        {
-          "test_name": "test_multiple_headings_preserve_relative_scales",
-          "file_path": "kivy_garden/markdownlabel/tests/test_font_properties.py",
-          "line_number": 713,
-          "current_examples": 100,
-          "recommended_examples": 6,
-          "time_savings_percent": 94.0,
-          "rationale": "Small finite strategy needs 6 examples (input space size)",
-          "strategy_type": "small_finite"
-        },
-        {
-          "test_name": "test_heading_scale_preserved_after_base_font_size_change",
-          "file_path": "kivy_garden/markdownlabel/tests/test_font_properties.py",
-          "line_number": 762,
-          "current_examples": 100,
-          "recommended_examples": 6,
-          "time_savings_percent": 94.0,
-          "rationale": "Small finite strategy needs 6 examples (input space size)",
-          "strategy_type": "small_finite"
-        },
-        {
-          "test_name": "test_heading_widget_identity_preserved",
-          "file_path": "kivy_garden/markdownlabel/tests/test_font_properties.py",
-          "line_number": 851,
-          "current_examples": 100,
-          "recommended_examples": 6,
-          "time_savings_percent": 94.0,
-          "rationale": "Small finite strategy needs 6 examples (input space size)",
-          "strategy_type": "small_finite"
-        }
-      ],
+      "recommendations": [],
       "total_tests": 23,
-      "over_tested_count": 6,
-      "potential_time_savings_percent": 24.695652173913043
+      "over_tested_count": 0,
+      "potential_time_savings_percent": 0.0
     },
     {
       "file_path": "kivy_garden/markdownlabel/tests/test_color_properties.py",
@@ -1118,39 +119,17 @@
     },
     {
       "file_path": "kivy_garden/markdownlabel/tests/test_performance.py",
-      "recommendations": [
-        {
-          "test_name": "test_disabled_change_preserves_widget_tree",
-          "file_path": "kivy_garden/markdownlabel/tests/test_performance.py",
-          "line_number": 298,
-          "current_examples": 20,
-          "recommended_examples": 2,
-          "time_savings_percent": 90.0,
-          "rationale": "Boolean strategy only needs 2 examples (True/False)",
-          "strategy_type": "boolean"
-        }
-      ],
+      "recommendations": [],
       "total_tests": 13,
-      "over_tested_count": 1,
-      "potential_time_savings_percent": 6.923076923076923
+      "over_tested_count": 0,
+      "potential_time_savings_percent": 0.0
     },
     {
       "file_path": "kivy_garden/markdownlabel/tests/test_shortening_and_coordinate.py",
-      "recommendations": [
-        {
-          "test_name": "test_max_lines_forwarded_to_paragraph",
-          "file_path": "kivy_garden/markdownlabel/tests/test_shortening_and_coordinate.py",
-          "line_number": 158,
-          "current_examples": 100,
-          "recommended_examples": 11,
-          "time_savings_percent": 89.0,
-          "rationale": "Medium finite strategy capped at 11 examples",
-          "strategy_type": "medium_finite"
-        }
-      ],
+      "recommendations": [],
       "total_tests": 20,
-      "over_tested_count": 1,
-      "potential_time_savings_percent": 4.45
+      "over_tested_count": 0,
+      "potential_time_savings_percent": 0.0
     },
     {
       "file_path": "kivy_garden/markdownlabel/tests/test_refactoring_properties.py",
@@ -1161,39 +140,17 @@
     },
     {
       "file_path": "kivy_garden/markdownlabel/tests/test_rebuild_scheduling.py",
-      "recommendations": [
-        {
-          "test_name": "test_mixed_property_changes_batch_rebuilds",
-          "file_path": "kivy_garden/markdownlabel/tests/test_rebuild_scheduling.py",
-          "line_number": 67,
-          "current_examples": 100,
-          "recommended_examples": 2,
-          "time_savings_percent": 98.0,
-          "rationale": "Small finite strategy needs 2 examples (input space size)",
-          "strategy_type": "small_finite"
-        }
-      ],
+      "recommendations": [],
       "total_tests": 4,
-      "over_tested_count": 1,
-      "potential_time_savings_percent": 24.5
+      "over_tested_count": 0,
+      "potential_time_savings_percent": 0.0
     },
     {
       "file_path": "kivy_garden/markdownlabel/tests/test_clipping_behavior.py",
-      "recommendations": [
-        {
-          "test_name": "test_heading_content_clipped_when_height_constrained",
-          "file_path": "kivy_garden/markdownlabel/tests/test_clipping_behavior.py",
-          "line_number": 115,
-          "current_examples": 100,
-          "recommended_examples": 6,
-          "time_savings_percent": 94.0,
-          "rationale": "Small finite strategy needs 6 examples (input space size)",
-          "strategy_type": "small_finite"
-        }
-      ],
+      "recommendations": [],
       "total_tests": 9,
-      "over_tested_count": 1,
-      "potential_time_savings_percent": 10.444444444444445
+      "over_tested_count": 0,
+      "potential_time_savings_percent": 0.0
     },
     {
       "file_path": "kivy_garden/markdownlabel/tests/test_texture_render_mode.py",
@@ -1211,51 +168,10 @@
     },
     {
       "file_path": "kivy_garden/markdownlabel/tests/test_strategy_classification.py",
-      "recommendations": [
-        {
-          "test_name": "test_ci_environment_reduces_examples_appropriately",
-          "file_path": "kivy_garden/markdownlabel/tests/test_strategy_classification.py",
-          "line_number": 176,
-          "current_examples": 5,
-          "recommended_examples": 2,
-          "time_savings_percent": 60.0,
-          "rationale": "Small finite strategy needs 2 examples (input space size)",
-          "strategy_type": "small_finite"
-        },
-        {
-          "test_name": "test_combination_uses_product_formula",
-          "file_path": "kivy_garden/markdownlabel/tests/test_strategy_classification.py",
-          "line_number": 227,
-          "current_examples": 10,
-          "recommended_examples": 4,
-          "time_savings_percent": 60.0,
-          "rationale": "Small finite strategy needs 4 examples (input space size)",
-          "strategy_type": "small_finite"
-        },
-        {
-          "test_name": "test_boolean_property",
-          "file_path": "kivy_garden/markdownlabel/tests/test_strategy_classification.py",
-          "line_number": 346,
-          "current_examples": 100,
-          "recommended_examples": 2,
-          "time_savings_percent": 98.0,
-          "rationale": "Boolean strategy only needs 2 examples (True/False)",
-          "strategy_type": "boolean"
-        },
-        {
-          "test_name": "test_small_range_property",
-          "file_path": "kivy_garden/markdownlabel/tests/test_strategy_classification.py",
-          "line_number": 352,
-          "current_examples": 100,
-          "recommended_examples": 3,
-          "time_savings_percent": 97.0,
-          "rationale": "Small finite strategy needs 3 examples (input space size)",
-          "strategy_type": "small_finite"
-        }
-      ],
+      "recommendations": [],
       "total_tests": 16,
-      "over_tested_count": 4,
-      "potential_time_savings_percent": 19.6875
+      "over_tested_count": 0,
+      "potential_time_savings_percent": 0.0
     },
     {
       "file_path": "kivy_garden/markdownlabel/tests/test_documentation_compliance.py",
@@ -1266,97 +182,24 @@
     },
     {
       "file_path": "kivy_garden/markdownlabel/tests/test_sizing_behavior.py",
-      "recommendations": [
-        {
-          "test_name": "test_more_content_means_more_height_potential",
-          "file_path": "kivy_garden/markdownlabel/tests/test_sizing_behavior.py",
-          "line_number": 72,
-          "current_examples": 100,
-          "recommended_examples": 5,
-          "time_savings_percent": 95.0,
-          "rationale": "Small finite strategy needs 5 examples (input space size)",
-          "strategy_type": "small_finite"
-        }
-      ],
+      "recommendations": [],
       "total_tests": 25,
-      "over_tested_count": 1,
-      "potential_time_savings_percent": 3.8
+      "over_tested_count": 0,
+      "potential_time_savings_percent": 0.0
     },
     {
       "file_path": "kivy_garden/markdownlabel/tests/test_texture_sizing.py",
-      "recommendations": [
-        {
-          "test_name": "test_more_content_increases_texture_height",
-          "file_path": "kivy_garden/markdownlabel/tests/test_texture_sizing.py",
-          "line_number": 208,
-          "current_examples": 100,
-          "recommended_examples": 5,
-          "time_savings_percent": 95.0,
-          "rationale": "Small finite strategy needs 5 examples (input space size)",
-          "strategy_type": "small_finite"
-        },
-        {
-          "test_name": "test_all_heading_levels_create_label_widgets",
-          "file_path": "kivy_garden/markdownlabel/tests/test_texture_sizing.py",
-          "line_number": 351,
-          "current_examples": 100,
-          "recommended_examples": 6,
-          "time_savings_percent": 94.0,
-          "rationale": "Small finite strategy needs 6 examples (input space size)",
-          "strategy_type": "small_finite"
-        }
-      ],
+      "recommendations": [],
       "total_tests": 8,
-      "over_tested_count": 2,
-      "potential_time_savings_percent": 23.625
+      "over_tested_count": 0,
+      "potential_time_savings_percent": 0.0
     },
     {
       "file_path": "kivy_garden/markdownlabel/tests/test_file_analyzer.py",
-      "recommendations": [
-        {
-          "test_name": "test_boolean_property",
-          "file_path": "kivy_garden/markdownlabel/tests/test_file_analyzer.py",
-          "line_number": 99,
-          "current_examples": 100,
-          "recommended_examples": 2,
-          "time_savings_percent": 98.0,
-          "rationale": "Boolean strategy only needs 2 examples (True/False)",
-          "strategy_type": "boolean"
-        },
-        {
-          "test_name": "test_small_range_property",
-          "file_path": "kivy_garden/markdownlabel/tests/test_file_analyzer.py",
-          "line_number": 131,
-          "current_examples": 100,
-          "recommended_examples": 5,
-          "time_savings_percent": 95.0,
-          "rationale": "Small finite strategy needs 5 examples (input space size)",
-          "strategy_type": "small_finite"
-        },
-        {
-          "test_name": "test_multiline_given",
-          "file_path": "kivy_garden/markdownlabel/tests/test_file_analyzer.py",
-          "line_number": 195,
-          "current_examples": 100,
-          "recommended_examples": 6,
-          "time_savings_percent": 94.0,
-          "rationale": "Combination strategy uses 6 examples (product formula, capped at 50)",
-          "strategy_type": "combination"
-        },
-        {
-          "test_name": "test_boolean_over",
-          "file_path": "kivy_garden/markdownlabel/tests/test_file_analyzer.py",
-          "line_number": 250,
-          "current_examples": 100,
-          "recommended_examples": 2,
-          "time_savings_percent": 98.0,
-          "rationale": "Boolean strategy only needs 2 examples (True/False)",
-          "strategy_type": "boolean"
-        }
-      ],
+      "recommendations": [],
       "total_tests": 9,
-      "over_tested_count": 4,
-      "potential_time_savings_percent": 42.77777777777778
+      "over_tested_count": 0,
+      "potential_time_savings_percent": 0.0
     }
   ]
 }

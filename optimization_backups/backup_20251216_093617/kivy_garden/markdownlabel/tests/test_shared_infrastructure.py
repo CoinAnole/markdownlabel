@@ -50,7 +50,7 @@ class TestSharedStrategyAvailability:
     # Complex strategy: 20 examples based on default complexity
     @given(markdown_paragraph())
     # Custom strategy: 50 examples for adequate coverage
-    @settings(max_examples=20, deadline=None)
+    @settings(max_examples=50, deadline=None)
     def test_markdown_paragraph_strategy_generates_valid_paragraphs(self, paragraph):
         """Paragraph strategy generates valid paragraph text."""
         assert isinstance(paragraph, str), "Paragraph should be a string"
@@ -63,7 +63,7 @@ class TestSharedStrategyAvailability:
     
     @given(markdown_bold())
     # Custom strategy: 50 examples for adequate coverage
-    @settings(max_examples=20, deadline=None)
+    @settings(max_examples=50, deadline=None)
     def test_markdown_bold_strategy_generates_valid_bold_text(self, bold_text):
         """Bold text strategy generates valid bold markdown."""
         assert bold_text.startswith('**'), f"Bold text should start with **: {bold_text}"
@@ -73,7 +73,7 @@ class TestSharedStrategyAvailability:
     
     @given(markdown_italic())
     # Custom strategy: 50 examples for adequate coverage
-    @settings(max_examples=20, deadline=None)
+    @settings(max_examples=50, deadline=None)
     def test_markdown_italic_strategy_generates_valid_italic_text(self, italic_text):
         """Italic text strategy generates valid italic markdown."""
         assert italic_text.startswith('*'), f"Italic text should start with *: {italic_text}"
@@ -85,7 +85,7 @@ class TestSharedStrategyAvailability:
     
     @given(markdown_link())
     # Custom strategy: 50 examples for adequate coverage
-    @settings(max_examples=20, deadline=None)
+    @settings(max_examples=50, deadline=None)
     def test_markdown_link_strategy_generates_valid_links(self, link):
         """Link strategy generates valid markdown links."""
         assert '[' in link and ']' in link, f"Link should contain brackets: {link}"
@@ -99,7 +99,7 @@ class TestSharedStrategyAvailability:
     
     @given(simple_markdown_document())
     # Custom strategy: 50 examples for adequate coverage
-    @settings(max_examples=20, deadline=None)
+    @settings(max_examples=50, deadline=None)
     def test_simple_markdown_document_strategy_generates_valid_documents(self, document):
         """Document strategy generates valid markdown documents."""
         assert isinstance(document, str), "Document should be a string"
@@ -112,7 +112,7 @@ class TestSharedStrategyAvailability:
     
     @given(color_strategy)
     # Custom strategy: 50 examples for adequate coverage
-    @settings(max_examples=20, deadline=None)
+    @settings(max_examples=50, deadline=None)
     def test_color_strategy_generates_valid_colors(self, color):
         """Color strategy generates valid RGBA color values."""
         assert len(color) == 4, f"Color should have 4 components: {color}"
@@ -128,7 +128,7 @@ class TestSharedStrategyAvailability:
     
     @given(text_padding_strategy)
     # Custom strategy: 50 examples for adequate coverage
-    @settings(max_examples=20, deadline=None)
+    @settings(max_examples=50, deadline=None)
     def test_text_padding_strategy_generates_valid_padding(self, padding):
         """Text padding strategy generates valid padding values."""
         assert len(padding) == 4, f"Padding should have 4 components: {padding}"
@@ -163,7 +163,7 @@ class TestHelperFunctionConsolidation:
     
     @given(st.text(min_size=1, max_size=50))
     # Complex text strategy with constraints: 50 examples
-    @settings(max_examples=30, deadline=None)
+    @settings(max_examples=50, deadline=None)
     def test_find_labels_recursive_function_available(self, text):
         """**Feature: test-refactoring, Property 7: Helper Function Consolidation**
         *For any* helper function, it should appear in exactly one location 
@@ -183,7 +183,7 @@ class TestHelperFunctionConsolidation:
     
     @given(color_strategy, color_strategy)
     # Combination strategy: 50 examples (capped for performance)
-    @settings(max_examples=20, deadline=None)
+    @settings(max_examples=50, deadline=None)
     def test_colors_equal_function_available(self, color1, color2):
         """colors_equal helper function is available and works correctly."""
         # Test with identical colors
@@ -197,7 +197,7 @@ class TestHelperFunctionConsolidation:
     
     @given(text_padding_strategy, text_padding_strategy)
     # Combination strategy: 50 examples (capped for performance)
-    @settings(max_examples=20, deadline=None)
+    @settings(max_examples=50, deadline=None)
     def test_padding_equal_function_available(self, padding1, padding2):
         """padding_equal helper function is available and works correctly."""
         # Test with identical padding

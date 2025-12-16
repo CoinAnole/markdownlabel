@@ -206,7 +206,7 @@ class TestComprehensiveTextureSizeCalculation:
             f"Expected texture_size height > 0 for thematic break, got {texture_size[1]}"
     
     @given(st.integers(min_value=1, max_value=5))
-    @settings(max_examples=5, deadline=None)
+    @settings(max_examples=100, deadline=None)
     def test_more_content_increases_texture_height(self, num_paragraphs):
         """More content results in larger texture_size height."""
         # Create markdown with varying number of paragraphs
@@ -349,7 +349,7 @@ code = "block"
             f"Expected children for image markdown, got {len(label.children)}"
     
     @given(st.integers(min_value=1, max_value=6))
-    @settings(max_examples=6, deadline=None)
+    @settings(max_examples=100, deadline=None)
     def test_all_heading_levels_create_label_widgets(self, level):
         """All heading levels create Label widgets for texture_size calculation."""
         markdown = '#' * level + ' Heading'

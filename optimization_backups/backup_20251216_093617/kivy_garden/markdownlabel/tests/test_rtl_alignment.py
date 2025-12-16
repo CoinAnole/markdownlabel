@@ -466,7 +466,7 @@ class TestExplicitAlignmentOverridesAuto:
         st.sampled_from(['left', 'center', 'right', 'justify']),
         st.sampled_from(['rtl', 'weak_rtl', 'ltr', 'weak_ltr', None])
     )
-    @settings(max_examples=4, deadline=None)
+    @settings(max_examples=100, deadline=None)
     def test_explicit_alignment_overrides_direction_for_mixed_content(self, explicit_halign, base_direction):
         """Explicit halign overrides base_direction for mixed content types.
         

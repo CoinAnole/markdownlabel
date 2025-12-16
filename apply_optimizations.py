@@ -22,7 +22,7 @@ os.environ['KIVY_NO_ARGS'] = '1'
 # Add the package to Python path
 sys.path.insert(0, str(Path(__file__).parent))
 
-from kivy_garden.markdownlabel.test_file_analyzer import TestFileAnalyzer
+from tools.test_optimization.test_file_analyzer import TestFileAnalyzer
 
 
 class OptimizationApplier:
@@ -118,7 +118,10 @@ class OptimizationApplier:
             source_path = Path(file_path)
             if source_path.exists():
                 # Preserve directory structure in backup
-                relative_path = source_path.relative_to(Path.cwd())
+                if source_path.is_absolute():
+                    relative_path = source_path.relative_to(source_path.anchor)
+                else:
+                    relative_path = source_path
                 backup_file_path = backup_path / relative_path
                 backup_file_path.parent.mkdir(parents=True, exist_ok=True)
                 

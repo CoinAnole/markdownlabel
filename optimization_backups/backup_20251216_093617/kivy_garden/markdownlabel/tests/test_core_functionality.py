@@ -279,7 +279,7 @@ class TestDeepNestingStability:
     """Property tests for deep nesting stability (Property 18)."""
     
     @given(st.integers(min_value=1, max_value=15))
-    @settings(max_examples=15, deadline=None)
+    @settings(max_examples=100, deadline=None)
     def test_nested_lists_render_without_exception(self, depth):
         """Deeply nested lists render without raising exceptions."""
         # Generate nested list markdown
@@ -296,7 +296,7 @@ class TestDeepNestingStability:
             pytest.fail(f"Unexpected exception at depth {depth}: {e}")
     
     @given(st.integers(min_value=1, max_value=15))
-    @settings(max_examples=15, deadline=None)
+    @settings(max_examples=100, deadline=None)
     def test_nested_quotes_render_without_exception(self, depth):
         """Deeply nested block quotes render without raising exceptions."""
         # Generate nested quote markdown
@@ -312,7 +312,7 @@ class TestDeepNestingStability:
             pytest.fail(f"Unexpected exception at depth {depth}: {e}")
     
     @given(st.integers(min_value=1, max_value=15))
-    @settings(max_examples=15, deadline=None)
+    @settings(max_examples=100, deadline=None)
     def test_mixed_nesting_renders_without_exception(self, depth):
         """Mixed nested structures (lists and quotes) render without exceptions."""
         # Generate mixed nested markdown

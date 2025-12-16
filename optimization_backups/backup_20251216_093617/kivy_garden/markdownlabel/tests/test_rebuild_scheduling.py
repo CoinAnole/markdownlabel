@@ -76,7 +76,7 @@ class TestBatchedRebuilds:
         st.floats(min_value=10, max_value=30, allow_nan=False, allow_infinity=False),
         st.sampled_from(["Roboto", "RobotoMono-Regular"]),
     )
-    @settings(max_examples=2, deadline=None)
+    @settings(max_examples=100, deadline=None)
     def test_mixed_property_changes_batch_rebuilds(self, text, font_size, font_name):
         """Mixed structure property changes batch into single rebuild.
 

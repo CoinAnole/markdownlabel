@@ -96,7 +96,7 @@ class TestInlineFormattingConversion:
     
     # Complex strategy: 20 examples based on default complexity
     @given(emphasis_token())
-    @settings(max_examples=20)
+    @settings(max_examples=100)
     def test_emphasis_produces_italic_tags(self, token):
         """Emphasis tokens produce [i]...[/i] markup."""
         renderer = InlineRenderer()
@@ -107,7 +107,7 @@ class TestInlineFormattingConversion:
      # Complex strategy: 20 examples based on default complexity
     
     @given(codespan_token())
-    @settings(max_examples=20)
+    @settings(max_examples=100)
     def test_codespan_produces_font_tags(self, token):
         """Codespan tokens produce [font=...]...[/font] markup."""
         renderer = InlineRenderer()
@@ -118,7 +118,7 @@ class TestInlineFormattingConversion:
         assert result.endswith('[/font]'), f"Codespan should end with [/font], got: {result}"
     
     @given(strikethrough_token())
-    @settings(max_examples=20)
+    @settings(max_examples=100)
     def test_strikethrough_produces_s_tags(self, token):
         """Strikethrough tokens produce [s]...[/s] markup."""
         renderer = InlineRenderer()
@@ -129,7 +129,7 @@ class TestInlineFormattingConversion:
         assert result.endswith('[/s]'), f"Strikethrough should end with [/s], got: {result}"
     
     @given(link_token())
-    @settings(max_examples=20)
+    @settings(max_examples=100)
     def test_link_produces_ref_tags_unstyled(self, token):
         """Unstyled links produce [ref=url]...[/ref] without forced styling."""
         renderer = InlineRenderer(link_style='unstyled')
@@ -146,7 +146,7 @@ class TestInlineFormattingConversion:
             f"Unstyled link should not add underline, got: {result}"
     
     @given(link_token())
-    @settings(max_examples=20)
+    @settings(max_examples=100)
     def test_link_produces_ref_tags_styled(self, token):
         """Styled links wrap refs with color and underline."""
         renderer = InlineRenderer(link_style='styled')
@@ -173,7 +173,7 @@ class TestSpecialCharacterEscaping:
     """Property tests for special character escaping (Property 19)."""
     
     @given(text_token())
-    @settings(max_examples=20)
+    @settings(max_examples=100)
     def test_text_escapes_special_characters(self, token):
         """Text tokens escape [, ], and & characters."""
         renderer = InlineRenderer()
@@ -207,7 +207,7 @@ class TestSpecialCharacterEscaping:
             f"Expected {input_ampersands} &amp; escapes, got {output_amp}"
     
     @given(st.text(alphabet='[]&', min_size=1, max_size=50))
-    @settings(max_examples=30)
+    @settings(max_examples=100)
     def test_only_special_chars_fully_escaped(self, raw):
         """Text containing only special characters is fully escaped."""
         renderer = InlineRenderer()
@@ -229,7 +229,7 @@ class TestSpecialCharacterEscaping:
         assert '&' not in cleaned, f"Found unescaped & in: {result}"
     
     @given(st.text(min_size=0, max_size=100))
-    @settings(max_examples=30)
+    @settings(max_examples=100)
     def test_escape_is_reversible(self, raw):
         """Escaping can be reversed to get original text."""
         renderer = InlineRenderer()

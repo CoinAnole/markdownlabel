@@ -174,7 +174,7 @@ class TestMaxExamplesCalculation:
     
     # **Feature: test-performance-optimization, Property 5: CI environment reduces examples appropriately**
     @given(st.sampled_from([StrategyType.COMPLEX, StrategyType.COMBINATION]))
-    @settings(max_examples=2, deadline=None)
+    @settings(max_examples=5, deadline=None)
     def test_ci_environment_reduces_examples_appropriately(self, strategy_type):
         """CI environment should reduce examples for complex and large combination strategies.
         
@@ -225,7 +225,7 @@ class TestCombinationStrategies:
     
     # **Feature: test-performance-optimization, Property 3: Combination strategies use product formula**
     @given(st.integers(min_value=2, max_value=5), st.integers(min_value=2, max_value=5))
-    @settings(max_examples=4, deadline=None)
+    @settings(max_examples=10, deadline=None)
     def test_combination_uses_product_formula(self, size1, size2):
         """Combination strategies should use product of individual strategy sizes.
         
@@ -344,13 +344,13 @@ from hypothesis import given, strategies as st, settings
 
 class TestExample:
     @given(st.booleans())
-    @settings(max_examples=2, deadline=None)
+    @settings(max_examples=100, deadline=None)
     def test_boolean_property(self, value):
         """Test with over-testing."""
         assert isinstance(value, bool)
     
     @given(st.integers(min_value=0, max_value=2))
-    @settings(max_examples=3, deadline=None)
+    @settings(max_examples=100, deadline=None)
     def test_small_range_property(self, value):
         """Test with over-testing."""
         assert 0 <= value <= 2

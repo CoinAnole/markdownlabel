@@ -1,15 +1,15 @@
 {
   "metadata": {
-    "generated_at": "2025-12-15T23:19:27.130164",
+    "generated_at": "2025-12-16T09:40:58.923114",
     "test_directory": "kivy_garden/markdownlabel/tests",
     "measurement_type": "post_optimization_comparison",
     "baseline_report_used": true
   },
   "overall_comparison": {
     "baseline_time_seconds": 2.745295286178589,
-    "current_time_seconds": 3.229215145111084,
-    "time_saved_seconds": -0.4839198589324951,
-    "improvement_percent": -17.627242554519682,
+    "current_time_seconds": 41.47787141799927,
+    "time_saved_seconds": -38.73257613182068,
+    "improvement_percent": -1410.871039149157,
     "baseline_tests": 0,
     "current_tests": 0,
     "tests_still_passing": 0,
@@ -17,320 +17,278 @@
   },
   "file_level_improvements": {
     "kivy_garden/markdownlabel/tests/test_import.py": {
-      "current_time_seconds": 1.6264581680297852,
+      "current_time_seconds": 0.9211061000823975,
       "baseline_time_seconds": 0.9236841201782227,
-      "time_saved_seconds": -0.7027740478515625,
-      "improvement_percent": -76.08380749427238,
+      "time_saved_seconds": 0.0025780200958251953,
+      "improvement_percent": 0.2791019180158443,
       "test_count": 2,
       "passed_tests": 2,
       "failed_tests": 0,
       "return_code": 0
     },
     "kivy_garden/markdownlabel/tests/test_inline_renderer.py": {
-      "current_time_seconds": 2.5818071365356445,
+      "current_time_seconds": 1.1218538284301758,
       "baseline_time_seconds": 1.5854735374450684,
-      "time_saved_seconds": -0.9963335990905762,
-      "improvement_percent": -62.84138937418853,
+      "time_saved_seconds": 0.4636197090148926,
+      "improvement_percent": 29.241718519124483,
       "test_count": 56,
       "passed_tests": 56,
       "failed_tests": 0,
       "return_code": 0
     },
     "kivy_garden/markdownlabel/tests/test_kivy_renderer.py": {
-      "current_time_seconds": 3.8674542903900146,
+      "current_time_seconds": 3.7217912673950195,
       "baseline_time_seconds": 4.135519027709961,
-      "time_saved_seconds": 0.2680647373199463,
-      "improvement_percent": 6.482009525860817,
+      "time_saved_seconds": 0.4137277603149414,
+      "improvement_percent": 10.004252369358404,
       "test_count": 43,
       "passed_tests": 43,
       "failed_tests": 0,
       "return_code": 0
     },
     "kivy_garden/markdownlabel/tests/test_rtl_alignment.py": {
-      "current_time_seconds": 1.1634294986724854,
+      "current_time_seconds": 1.127474308013916,
       "baseline_time_seconds": 1.1903319358825684,
-      "time_saved_seconds": 0.026902437210083008,
-      "improvement_percent": 2.2600785880903267,
+      "time_saved_seconds": 0.06285762786865234,
+      "improvement_percent": 5.2806806214139534,
       "test_count": 22,
       "passed_tests": 22,
       "failed_tests": 0,
       "return_code": 0
     },
     "kivy_garden/markdownlabel/tests/test_utils.py": {
-      "current_time_seconds": 0.7187328338623047,
+      "current_time_seconds": 0.7766163349151611,
       "baseline_time_seconds": 0.7335679531097412,
-      "time_saved_seconds": 0.014835119247436523,
-      "improvement_percent": 2.0223237921650594,
+      "time_saved_seconds": -0.04304838180541992,
+      "improvement_percent": -5.868356383744577,
       "test_count": 0,
       "passed_tests": 0,
       "failed_tests": 0,
       "return_code": 5
     },
     "kivy_garden/markdownlabel/tests/test_shared_infrastructure.py": {
-      "current_time_seconds": 2.4800565242767334,
+      "current_time_seconds": 1.830610990524292,
       "baseline_time_seconds": 2.6469616889953613,
-      "time_saved_seconds": 0.16690516471862793,
-      "improvement_percent": 6.305537606098705,
+      "time_saved_seconds": 0.8163506984710693,
+      "improvement_percent": 30.841046996071576,
       "test_count": 13,
       "passed_tests": 13,
       "failed_tests": 0,
       "return_code": 0
     },
     "kivy_garden/markdownlabel/tests/test_core_functionality.py": {
-      "current_time_seconds": 2.674156904220581,
+      "current_time_seconds": 2.6510262489318848,
       "baseline_time_seconds": 2.609837293624878,
-      "time_saved_seconds": -0.06431961059570312,
-      "improvement_percent": -2.4645065327565985,
+      "time_saved_seconds": -0.041188955307006836,
+      "improvement_percent": -1.5782192785588682,
       "test_count": 17,
       "passed_tests": 17,
       "failed_tests": 0,
       "return_code": 0
     },
     "kivy_garden/markdownlabel/tests/test_core_functionality_properties.py": {
-      "current_time_seconds": 1.1532037258148193,
+      "current_time_seconds": 1.2026748657226562,
       "baseline_time_seconds": 1.272526741027832,
-      "time_saved_seconds": 0.1193230152130127,
-      "improvement_percent": 9.376857190178523,
-      "test_count": 113,
-      "passed_tests": 113,
+      "time_saved_seconds": 0.06985187530517578,
+      "improvement_percent": 5.489226517059732,
+      "test_count": 115,
+      "passed_tests": 115,
       "failed_tests": 0,
       "return_code": 1
     },
     "kivy_garden/markdownlabel/tests/test_label_compatibility.py": {
-      "current_time_seconds": 4.540435075759888,
+      "current_time_seconds": 1.8229587078094482,
       "baseline_time_seconds": 4.852021932601929,
-      "time_saved_seconds": 0.311586856842041,
-      "improvement_percent": 6.421794072042673,
+      "time_saved_seconds": 3.0290632247924805,
+      "improvement_percent": 62.42888566598308,
       "test_count": 42,
       "passed_tests": 42,
       "failed_tests": 0,
       "return_code": 0
     },
     "kivy_garden/markdownlabel/tests/test_font_properties.py": {
-      "current_time_seconds": 0.8944058418273926,
+      "current_time_seconds": 3.02470326423645,
       "baseline_time_seconds": 0.9343075752258301,
-      "time_saved_seconds": 0.0399017333984375,
-      "improvement_percent": 4.270727804897965,
-      "test_count": 0,
-      "passed_tests": 0,
+      "time_saved_seconds": -2.09039568901062,
+      "improvement_percent": -223.73742271171824,
+      "test_count": 56,
+      "passed_tests": 56,
       "failed_tests": 0,
-      "return_code": 2
+      "return_code": 0
     },
     "kivy_garden/markdownlabel/tests/test_color_properties.py": {
-      "current_time_seconds": 1.4277551174163818,
+      "current_time_seconds": 1.507814645767212,
       "baseline_time_seconds": 1.4901132583618164,
-      "time_saved_seconds": 0.06235814094543457,
-      "improvement_percent": 4.184792034800707,
+      "time_saved_seconds": -0.017701387405395508,
+      "improvement_percent": -1.187922280810779,
       "test_count": 9,
       "passed_tests": 9,
       "failed_tests": 0,
       "return_code": 0
     },
-    "kivy_garden/markdownlabel/tests/test_sizing_behavior.py": {
-      "current_time_seconds": 1.0014410018920898,
-      "baseline_time_seconds": 0.9856348037719727,
-      "time_saved_seconds": -0.015806198120117188,
-      "improvement_percent": -1.6036566545365176,
-      "test_count": 0,
-      "passed_tests": 0,
-      "failed_tests": 0,
-      "return_code": 2
-    },
     "kivy_garden/markdownlabel/tests/test_text_properties.py": {
-      "current_time_seconds": 3.0913302898406982,
+      "current_time_seconds": 3.1358845233917236,
       "baseline_time_seconds": 3.059863805770874,
-      "time_saved_seconds": -0.03146648406982422,
-      "improvement_percent": -1.0283622431324797,
+      "time_saved_seconds": -0.07602071762084961,
+      "improvement_percent": -2.484447754748929,
       "test_count": 37,
       "passed_tests": 37,
       "failed_tests": 0,
       "return_code": 0
     },
     "kivy_garden/markdownlabel/tests/test_padding_properties.py": {
-      "current_time_seconds": 0.9869868755340576,
+      "current_time_seconds": 5.72204327583313,
       "baseline_time_seconds": 0.9932479858398438,
-      "time_saved_seconds": 0.006261110305786133,
-      "improvement_percent": 0.6303672793750528,
-      "test_count": 0,
-      "passed_tests": 0,
+      "time_saved_seconds": -4.728795289993286,
+      "improvement_percent": -476.0941232611551,
+      "test_count": 33,
+      "passed_tests": 33,
       "failed_tests": 0,
-      "return_code": 2
+      "return_code": 0
     },
     "kivy_garden/markdownlabel/tests/test_serialization.py": {
-      "current_time_seconds": 1.004286766052246,
+      "current_time_seconds": 2.125509262084961,
       "baseline_time_seconds": 0.9950242042541504,
-      "time_saved_seconds": -0.009262561798095703,
-      "improvement_percent": -0.9308880888016919,
-      "test_count": 0,
-      "passed_tests": 0,
+      "time_saved_seconds": -1.1304850578308105,
+      "improvement_percent": -113.61382497003667,
+      "test_count": 20,
+      "passed_tests": 20,
       "failed_tests": 0,
-      "return_code": 2
+      "return_code": 0
     },
     "kivy_garden/markdownlabel/tests/test_performance.py": {
-      "current_time_seconds": 0.7704715728759766,
+      "current_time_seconds": 0.7826693058013916,
       "baseline_time_seconds": 0.7699940204620361,
-      "time_saved_seconds": -0.0004775524139404297,
-      "improvement_percent": -0.06202027564498145,
+      "time_saved_seconds": -0.012675285339355469,
+      "improvement_percent": -1.6461537365900119,
       "test_count": 0,
       "passed_tests": 0,
       "failed_tests": 0,
       "return_code": 5
     },
     "kivy_garden/markdownlabel/tests/test_shortening_and_coordinate.py": {
-      "current_time_seconds": 1.7191603183746338,
+      "current_time_seconds": 1.7404284477233887,
       "baseline_time_seconds": 1.6610558032989502,
-      "time_saved_seconds": -0.058104515075683594,
-      "improvement_percent": -3.4980471432859006,
+      "time_saved_seconds": -0.07937264442443848,
+      "improvement_percent": -4.778445387975524,
       "test_count": 38,
       "passed_tests": 38,
       "failed_tests": 0,
       "return_code": 0
     },
     "kivy_garden/markdownlabel/tests/test_refactoring_properties.py": {
-      "current_time_seconds": 9.680060863494873,
+      "current_time_seconds": 9.44113540649414,
       "baseline_time_seconds": 9.842936277389526,
-      "time_saved_seconds": 0.16287541389465332,
-      "improvement_percent": 1.654744166827523,
-      "test_count": 18,
-      "passed_tests": 18,
+      "time_saved_seconds": 0.40180087089538574,
+      "improvement_percent": 4.082124069200502,
+      "test_count": 24,
+      "passed_tests": 24,
       "failed_tests": 0,
-      "return_code": 1
+      "return_code": 0
     },
     "kivy_garden/markdownlabel/tests/test_rebuild_scheduling.py": {
-      "current_time_seconds": 1.373006820678711,
+      "current_time_seconds": 1.1451568603515625,
       "baseline_time_seconds": 1.438370943069458,
-      "time_saved_seconds": 0.06536412239074707,
-      "improvement_percent": 4.544316103275918,
+      "time_saved_seconds": 0.2932140827178955,
+      "improvement_percent": 20.385150585160034,
       "test_count": 12,
       "passed_tests": 12,
       "failed_tests": 0,
       "return_code": 0
     },
     "kivy_garden/markdownlabel/tests/test_clipping_behavior.py": {
-      "current_time_seconds": 2.348353147506714,
+      "current_time_seconds": 1.9009168148040771,
       "baseline_time_seconds": 2.4425737857818604,
-      "time_saved_seconds": 0.09422063827514648,
-      "improvement_percent": 3.857432632070386,
+      "time_saved_seconds": 0.5416569709777832,
+      "improvement_percent": 22.17566462600844,
       "test_count": 11,
       "passed_tests": 11,
       "failed_tests": 0,
       "return_code": 0
     },
     "kivy_garden/markdownlabel/tests/test_texture_render_mode.py": {
-      "current_time_seconds": 1.074068546295166,
+      "current_time_seconds": 1.07136869430542,
       "baseline_time_seconds": 1.1368930339813232,
-      "time_saved_seconds": 0.06282448768615723,
-      "improvement_percent": 5.525980528365987,
+      "time_saved_seconds": 0.06552433967590332,
+      "improvement_percent": 5.763456870383089,
       "test_count": 25,
       "passed_tests": 25,
       "failed_tests": 0,
       "return_code": 0
     },
     "kivy_garden/markdownlabel/tests/test_advanced_compatibility.py": {
-      "current_time_seconds": 0.9334805011749268,
+      "current_time_seconds": 2.256549596786499,
       "baseline_time_seconds": 0.9663879871368408,
-      "time_saved_seconds": 0.03290748596191406,
-      "improvement_percent": 3.405204369252404,
-      "test_count": 0,
-      "passed_tests": 0,
+      "time_saved_seconds": -1.2901616096496582,
+      "improvement_percent": -133.50348170946077,
+      "test_count": 83,
+      "passed_tests": 83,
       "failed_tests": 0,
-      "return_code": 2
+      "return_code": 0
     },
     "kivy_garden/markdownlabel/tests/test_strategy_classification.py": {
-      "current_time_seconds": 0.9169635772705078,
+      "current_time_seconds": 1.009800910949707,
       "baseline_time_seconds": 0.9891903400421143,
-      "time_saved_seconds": 0.07222676277160645,
-      "improvement_percent": 7.301604135007164,
+      "time_saved_seconds": -0.020610570907592773,
+      "improvement_percent": -2.083579880765444,
+      "test_count": 19,
+      "passed_tests": 19,
+      "failed_tests": 0,
+      "return_code": 1
+    },
+    "kivy_garden/markdownlabel/tests/test_documentation_compliance.py": {
+      "current_time_seconds": 0.8556947708129883,
+      "baseline_time_seconds": 0.8292458057403564,
+      "time_saved_seconds": -0.026448965072631836,
+      "improvement_percent": -3.189520512439374,
+      "test_count": 2,
+      "passed_tests": 2,
+      "failed_tests": 0,
+      "return_code": 1
+    },
+    "kivy_garden/markdownlabel/tests/test_sizing_behavior.py": {
+      "current_time_seconds": 5.978587865829468,
+      "baseline_time_seconds": 0.9856348037719727,
+      "time_saved_seconds": -4.992953062057495,
+      "improvement_percent": -506.5723169423123,
+      "test_count": 32,
+      "passed_tests": 32,
+      "failed_tests": 0,
+      "return_code": 0
+    },
+    "kivy_garden/markdownlabel/tests/test_texture_sizing.py": {
+      "current_time_seconds": 1.899967908859253,
+      "baseline_time_seconds": 0,
+      "time_saved_seconds": -1.899967908859253,
+      "improvement_percent": 0,
       "test_count": 21,
       "passed_tests": 21,
       "failed_tests": 0,
       "return_code": 0
     },
-    "kivy_garden/markdownlabel/tests/test_documentation_compliance.py": {
-      "current_time_seconds": 0.8293025493621826,
-      "baseline_time_seconds": 0.8292458057403564,
-      "time_saved_seconds": -5.6743621826171875e-05,
-      "improvement_percent": -0.006842798773701456,
-      "test_count": 3,
-      "passed_tests": 3,
+    "kivy_garden/markdownlabel/tests/test_file_analyzer.py": {
+      "current_time_seconds": 0.7810475826263428,
+      "baseline_time_seconds": 0,
+      "time_saved_seconds": -0.7810475826263428,
+      "improvement_percent": 0,
+      "test_count": 0,
+      "passed_tests": 0,
       "failed_tests": 0,
-      "return_code": 0
+      "return_code": 1
     }
   },
-  "strategy_category_improvements": {
-    "complex": {
-      "current_time_seconds": 7.369032382965088,
-      "baseline_time_seconds": 7.016808271408081,
-      "time_saved_seconds": -0.35222411155700684,
-      "improvement_percent": -5.0197197633608015,
-      "test_count": 22,
-      "files_involved": 3,
-      "return_code": 0
-    },
-    "small_finite": {
-      "current_time_seconds": 1.1999435424804688,
-      "baseline_time_seconds": 1.1179134845733643,
-      "time_saved_seconds": -0.08203005790710449,
-      "improvement_percent": -7.337782309550554,
-      "test_count": 20,
-      "files_involved": 7,
-      "return_code": 2
-    },
-    "medium_finite": {
-      "current_time_seconds": 3.2917909622192383,
-      "baseline_time_seconds": 3.450101375579834,
-      "time_saved_seconds": 0.1583104133605957,
-      "improvement_percent": 4.588572801980046,
-      "test_count": 4,
-      "files_involved": 2,
-      "return_code": 0
-    },
-    "boolean": {
-      "current_time_seconds": 1.0146586894989014,
-      "baseline_time_seconds": 1.0686070919036865,
-      "time_saved_seconds": 0.053948402404785156,
-      "improvement_percent": 5.048478792020549,
-      "test_count": 7,
-      "files_involved": 4,
-      "return_code": 2
-    }
-  },
+  "strategy_category_improvements": {},
   "optimization_effectiveness": {
-    "total_tests": 317,
-    "optimized_tests": 264,
-    "remaining_over_tested": 53,
-    "optimization_coverage_percent": 83.2807570977918,
+    "total_tests": 331,
+    "optimized_tests": 331,
+    "remaining_over_tested": 0,
+    "optimization_coverage_percent": 100.0,
     "baseline_over_tested": 0
   },
   "target_verification": {
     "overall_target_met": false,
     "overall_target": 50.0,
-    "overall_actual": -17.627242554519682,
-    "strategy_targets": {
-      "boolean": {
-        "target_min": 95.0,
-        "target_max": 100.0,
-        "actual": 5.048478792020549,
-        "target_met": false
-      },
-      "small_finite": {
-        "target_min": 80.0,
-        "target_max": 95.0,
-        "actual": -7.337782309550554,
-        "target_met": false
-      },
-      "medium_finite": {
-        "target_min": 50.0,
-        "target_max": 80.0,
-        "actual": 4.588572801980046,
-        "target_met": false
-      },
-      "complex": {
-        "target_min": 50.0,
-        "target_max": 80.0,
-        "actual": -5.0197197633608015,
-        "target_met": false
-      }
-    }
+    "overall_actual": -1410.871039149157,
+    "strategy_targets": {}
   }
 }
