@@ -146,42 +146,42 @@
     - **Property 13: Explicit alignment overrides auto**
     - **Validates: Requirements 5.4**
 
-- [ ] 8. Implement texture render mode
-  - [ ] 8.1 Add `render_mode` OptionProperty
+- [x] 8. Implement texture render mode
+  - [x] 8.1 Add `render_mode` OptionProperty
     - Options: 'widgets', 'texture', 'auto'
     - Default: 'widgets'
     - _Requirements: 6.1, 6.3, 6.4_
-  - [ ] 8.2 Implement `_render_as_texture()` method
+  - [x] 8.2 Implement `_render_as_texture()` method
     - Render widget tree off-screen
     - Use `export_as_image()` to create texture
     - Create Image widget to display texture
     - Store aggregated refs for hit-testing
     - _Requirements: 6.1_
-  - [ ] 8.3 Update `_rebuild_widgets()` for render mode
+  - [x] 8.3 Update `_rebuild_widgets()` for render mode
     - Check render_mode property
     - Call `_render_as_texture()` for 'texture' mode
     - Use existing widget rendering for 'widgets' mode
     - Implement auto-selection logic for 'auto' mode
     - _Requirements: 6.1, 6.3, 6.4_
-  - [ ] 8.4 Implement touch handling for texture mode
+  - [x] 8.4 Implement touch handling for texture mode
     - Override `on_touch_down()` for texture mode
     - Hit-test against `_aggregated_refs`
     - Dispatch `on_ref_press` for link clicks
     - _Requirements: 6.2_
-  - [ ] 8.5 Implement auto mode selection logic
+  - [x] 8.5 Implement auto mode selection logic
     - Use 'texture' when strict_label_mode with height constraints
     - Use 'widgets' for simple content
     - Consider content complexity metrics
     - _Requirements: 6.4_
-  - [ ] 8.6 Write property test for texture render mode structure in test_advanced_compatibility.py
+  - [x] 8.6 Write property test for texture render mode structure in test_advanced_compatibility.py
     - **Property 14: Texture render mode structure**
     - **Validates: Requirements 6.1**
-  - [ ] 8.7 Write property test for texture mode link handling in test_advanced_compatibility.py
+  - [x] 8.7 Write property test for texture mode link handling in test_advanced_compatibility.py
     - **Property 15: Texture mode link handling**
     - **Validates: Requirements 6.2**
-  - [ ] 8.8 Write property test for auto render mode selection in test_advanced_compatibility.py
+  - [x] 8.8 Write property test for auto render mode selection in test_advanced_compatibility.py
     - **Property 16: Auto render mode selection**
     - **Validates: Requirements 6.4**
 
-- [ ] 9. Final Checkpoint - Ensure all tests pass
+- [x] 9. Final Checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.

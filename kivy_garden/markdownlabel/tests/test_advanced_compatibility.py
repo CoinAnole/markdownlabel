@@ -826,3 +826,4 @@ class TestReactiveRebuildOnPropertyChange:
         for lbl in labels_after:
             assert lbl.font_blended == blended2, \
                 f"After change, expected font_blended={blended2}, got {lbl.font_blended}"
+

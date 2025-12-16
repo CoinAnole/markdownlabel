@@ -15,7 +15,9 @@ Example usage::
 
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label import Label
+from kivy.uix.image import Image
 from kivy.clock import Clock
+from kivy.graphics import Fbo, ClearColor, ClearBuffers, Color, Rectangle
 from kivy.properties import (
     StringProperty, 
     NumericProperty, 
@@ -611,6 +613,37 @@ class MarkdownLabel(BoxLayout):
     and defaults to False.
     """
     
+    render_mode = OptionProperty('widgets', options=['widgets', 'texture', 'auto'])
+    """Rendering mode for content display.
+    
+    Controls how MarkdownLabel renders its content:
+    
+    - 'widgets' (default): Renders content as a tree of Kivy widgets (Labels,
+      BoxLayouts, etc.). This provides full interactivity and is best for
+      most use cases.
+    
+    - 'texture': Renders all content to a single texture and displays it via
+      an Image widget. This provides maximum Label compatibility and is useful
+      in complex layouts where widget-tree rendering causes issues. Links are
+      still clickable via hit-testing against aggregated reference zones.
+    
+    - 'auto': Automatically selects the appropriate mode based on content
+      complexity and layout constraints. Uses 'texture' when strict_label_mode
+      is True with height constraints, otherwise uses 'widgets'.
+    
+    :attr:`render_mode` is an :class:`~kivy.properties.OptionProperty`
+    and defaults to 'widgets'.
+    """
+    
+    # Internal storage for texture mode hit-testing
+    _aggregated_refs = DictProperty({})
+    """Internal storage for aggregated reference zones in texture mode.
+    
+    Maps ref names (typically URLs) to lists of bounding box tuples
+    (x, y, width, height) in widget coordinates. Used for hit-testing
+    when render_mode is 'texture'.
+    """
+    
     # Read-only aggregated properties from child Labels
     
     def _get_texture_size(self):
@@ -896,6 +929,9 @@ class MarkdownLabel(BoxLayout):
         # Bind strict_label_mode changes to handler
         self.bind(strict_label_mode=self._on_strict_label_mode_changed)
         
+        # Bind render_mode changes to handler
+        self.bind(render_mode=self._on_render_mode_changed)
+        
         # Store the parsed AST tokens
         self._ast_tokens = []
         
@@ -1174,6 +1210,15 @@ class MarkdownLabel(BoxLayout):
         # Schedule deferred rebuild to apply new mode behavior
         self._schedule_rebuild()
     
+    def _on_render_mode_changed(self, instance, value):
+        """Handle render_mode property changes.
+        
+        When render_mode changes, a full rebuild is required to switch
+        between widget-tree rendering and texture rendering.
+        """
+        # Schedule deferred rebuild to apply new render mode
+        self._schedule_rebuild()
+    
     def _schedule_rebuild(self):
         """Schedule a rebuild for the next frame.
         
@@ -1248,6 +1293,9 @@ class MarkdownLabel(BoxLayout):
         # Clear existing children
         self.clear_widgets()
         
+        # Clear aggregated refs for texture mode
+        self._aggregated_refs = {}
+        
         # Handle empty text
         if not self.text:
             self._ast_tokens = []
@@ -1300,6 +1348,50 @@ class MarkdownLabel(BoxLayout):
         # Render AST to widget tree
         content = renderer(self._ast_tokens, None)
         
+        # Determine effective render mode
+        effective_render_mode = self._get_effective_render_mode()
+        
+        # Handle texture render mode
+        if effective_render_mode == 'texture':
+            # Bind ref_press events first (needed for collecting refs)
+            self._bind_ref_press_events(content)
+            
+            # Render to texture
+            image = self._render_as_texture(content)
+            
+            if image is not None:
+                # Successfully rendered to texture
+                # Determine if clipping is needed
+                needs_clipping = self._needs_clipping()
+                
+                if needs_clipping:
+                    # Wrap image in a clipping container
+                    clipping_container = _ClippingContainer()
+                    
+                    # Set the clipping container height based on constraints
+                    if self.text_size and self.text_size[1] is not None:
+                        clipping_container.height = self.text_size[1]
+                    elif self.strict_label_mode and self.height:
+                        clipping_container.height = self.height
+                        self.bind(height=clipping_container.setter('height'))
+                    
+                    # Bind width to parent for proper layout
+                    clipping_container.size_hint_x = None
+                    self.bind(width=clipping_container.setter('width'))
+                    clipping_container.width = self.width
+                    
+                    clipping_container.add_widget(image)
+                    self.add_widget(clipping_container)
+                else:
+                    self.add_widget(image)
+                
+                # Bind to child widget size changes for texture_size updates
+                self._bind_child_size_changes(self)
+                return
+            
+            # Fall through to widget mode if texture rendering failed
+        
+        # Widget render mode (default)
         # Bind ref_press events from child Labels to bubble up
         self._bind_ref_press_events(content)
         
@@ -1340,6 +1432,189 @@ class MarkdownLabel(BoxLayout):
         
         # Bind to child widget size changes for texture_size updates
         self._bind_child_size_changes(self)
+    
+    def _get_effective_render_mode(self):
+        """Determine the effective render mode based on settings and content.
+        
+        For 'auto' mode, selects between 'widgets' and 'texture' based on:
+        - Use 'texture' when strict_label_mode is True with height constraints
+        - Use 'widgets' for simple content or when no constraints
+        
+        Returns:
+            str: 'widgets' or 'texture'
+        """
+        if self.render_mode == 'widgets':
+            return 'widgets'
+        elif self.render_mode == 'texture':
+            return 'texture'
+        else:  # 'auto' mode
+            # Use texture mode when strict_label_mode with height constraints
+            if self.strict_label_mode:
+                # Check for height constraints
+                has_height_constraint = (
+                    (self.text_size and self.text_size[1] is not None) or
+                    self.size_hint_y is None
+                )
+                if has_height_constraint:
+                    return 'texture'
+            
+            # Default to widgets mode
+            return 'widgets'
+    
+    def _render_as_texture(self, content):
+        """Render content widget tree to a single texture.
+        
+        This method renders the widget tree off-screen using an FBO,
+        creates a texture from it, and displays it via an Image widget.
+        It also stores aggregated refs for hit-testing link clicks.
+        
+        Args:
+            content: The BoxLayout containing rendered Markdown widgets
+            
+        Returns:
+            Image widget displaying the rendered texture, or None on failure
+        """
+        from kivy.uix.image import AsyncImage
+        from kivy.uix.gridlayout import GridLayout
+        from kivy.uix.widget import Widget
+        
+        # Calculate the size needed for the content
+        # We need to measure the content first
+        content_width = self.width if self.width > 0 else 800
+        content_height = 0
+        
+        # Calculate total height from content children
+        for child in content.children:
+            if isinstance(child, Label):
+                # Force texture creation to get accurate size
+                child.texture_update()
+                if child.texture_size[1] > 0:
+                    content_height += child.texture_size[1]
+                else:
+                    content_height += child.height
+            elif isinstance(child, GridLayout):
+                if hasattr(child, 'minimum_height') and child.minimum_height:
+                    content_height += child.minimum_height
+                else:
+                    content_height += child.height
+            else:
+                content_height += child.height
+        
+        # Ensure minimum size
+        if content_height <= 0:
+            content_height = 100
+        if content_width <= 0:
+            content_width = 100
+        
+        # Set content size for rendering
+        content.size = (content_width, content_height)
+        content.size_hint = (None, None)
+        
+        # Position content at origin for FBO rendering
+        content.pos = (0, 0)
+        
+        # Collect refs from content before rendering
+        self._collect_refs_for_texture(content, content_height)
+        
+        try:
+            # Create FBO for off-screen rendering
+            fbo = Fbo(size=(int(content_width), int(content_height)))
+            
+            with fbo:
+                ClearColor(0, 0, 0, 0)  # Transparent background
+                ClearBuffers()
+            
+            # Add content to FBO and render
+            fbo.add(content.canvas)
+            fbo.draw()
+            
+            # Get the texture from FBO
+            texture = fbo.texture
+            
+            # Create Image widget to display the texture
+            image = Image(
+                texture=texture,
+                size=(content_width, content_height),
+                size_hint=(None, None),
+                allow_stretch=True,
+                keep_ratio=False
+            )
+            
+            # Clean up - remove content canvas from FBO
+            fbo.remove(content.canvas)
+            
+            return image
+            
+        except Exception as e:
+            # Fall back to widget mode on failure
+            import warnings
+            warnings.warn(
+                f"Texture rendering failed, falling back to widget mode: {e}",
+                RuntimeWarning
+            )
+            return None
+    
+    def _collect_refs_for_texture(self, widget, content_height, offset_x=0, offset_y=0):
+        """Collect reference zones from widget tree for texture mode hit-testing.
+        
+        This method traverses the widget tree and collects bounding boxes
+        for all refs (links) in Label widgets. The coordinates are stored
+        in widget space for hit-testing when the texture is displayed.
+        
+        Args:
+            widget: Widget to collect refs from
+            content_height: Total height of content (for Y coordinate conversion)
+            offset_x: X offset from parent widgets
+            offset_y: Y offset from parent widgets
+        """
+        # Clear existing refs at the start of collection
+        if widget is self or (hasattr(widget, 'parent') and widget.parent is self):
+            self._aggregated_refs = {}
+        
+        if isinstance(widget, Label) and hasattr(widget, 'refs') and widget.refs:
+            # Get label's position relative to content
+            label_x = offset_x + widget.x
+            label_y = offset_y + widget.y
+            
+            # Get texture size for coordinate translation
+            tex_w, tex_h = getattr(widget, 'texture_size', (widget.width, widget.height))
+            if tex_w <= 0:
+                tex_w = widget.width
+            if tex_h <= 0:
+                tex_h = widget.height
+            
+            # Calculate base position (center-aligned texture in label)
+            base_x = label_x + (widget.width - tex_w) / 2.0
+            base_y = label_y + (widget.height - tex_h) / 2.0
+            
+            for ref_name, ref_boxes in widget.refs.items():
+                if ref_name not in self._aggregated_refs:
+                    self._aggregated_refs[ref_name] = []
+                
+                for box in ref_boxes:
+                    # box is [x1, y1, x2, y2] in texture coordinates
+                    # Convert to widget coordinates (x, y, width, height)
+                    x1, y1, x2, y2 = box
+                    
+                    # Texture coordinates have Y=0 at top, widget coords at bottom
+                    # Convert to widget space
+                    zone_x = base_x + x1
+                    zone_y = base_y + (tex_h - y2)  # Flip Y
+                    zone_width = x2 - x1
+                    zone_height = y2 - y1
+                    
+                    self._aggregated_refs[ref_name].append(
+                        (zone_x, zone_y, zone_width, zone_height)
+                    )
+        
+        # Recursively collect from children
+        if hasattr(widget, 'children'):
+            child_offset_x = offset_x + widget.x
+            child_offset_y = offset_y + widget.y
+            for child in widget.children:
+                self._collect_refs_for_texture(
+                    child, content_height, child_offset_x, child_offset_y
+                )
     
     def _bind_ref_press_events(self, widget):
         """Recursively bind on_ref_press events from child Labels.
@@ -1398,6 +1673,55 @@ class MarkdownLabel(BoxLayout):
             ref: The URL/reference string
         """
         self.dispatch('on_ref_press', ref)
+    
+    def on_touch_down(self, touch):
+        """Handle touch events, including texture mode link hit-testing.
+        
+        In texture mode, this method performs hit-testing against the
+        aggregated reference zones to detect link clicks and dispatch
+        on_ref_press events.
+        
+        Args:
+            touch: The touch event
+            
+        Returns:
+            bool: True if the touch was handled, False otherwise
+        """
+        # Check if we're in texture mode and have aggregated refs
+        effective_mode = self._get_effective_render_mode()
+        
+        if effective_mode == 'texture' and self._aggregated_refs:
+            # Check if touch is within our bounds
+            if self.collide_point(*touch.pos):
+                # Convert touch position to local coordinates
+                local_x = touch.x - self.x
+                local_y = touch.y - self.y
+                
+                # Hit-test against aggregated refs
+                for ref_name, zones in self._aggregated_refs.items():
+                    for zone in zones:
+                        if self._point_in_zone((local_x, local_y), zone):
+                            # Found a matching ref - dispatch event
+                            self.dispatch('on_ref_press', ref_name)
+                            return True
+        
+        # Fall through to default behavior
+        return super(MarkdownLabel, self).on_touch_down(touch)
+    
+    def _point_in_zone(self, point, zone):
+        """Check if a point is within a bounding zone.
+        
+        Args:
+            point: Tuple (x, y) of the point to test
+            zone: Tuple (x, y, width, height) of the zone
+            
+        Returns:
+            bool: True if point is within zone
+        """
+        px, py = point
+        zx, zy, zw, zh = zone
+        
+        return (zx <= px <= zx + zw) and (zy <= py <= zy + zh)
     
     def on_ref_press(self, ref):
         """Event handler for link clicks.
