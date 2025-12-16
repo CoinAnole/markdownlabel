@@ -4,10 +4,10 @@
 import sys
 from pathlib import Path
 
-# Add the package to Python path
-sys.path.insert(0, str(Path.cwd()))
+# Add the tools directory to Python path
+sys.path.insert(0, str(Path.cwd() / 'tools'))
 
-from kivy_garden.markdownlabel.over_testing_validator import OverTestingValidator
+from test_optimization.over_testing_validator import OverTestingValidator
 
 
 def main():

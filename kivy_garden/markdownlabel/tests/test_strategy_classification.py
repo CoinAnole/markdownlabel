@@ -8,7 +8,11 @@ import pytest
 import os
 from hypothesis import given, strategies as st, settings
 
-from kivy_garden.markdownlabel.strategy_classifier import (
+import sys
+import os
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', '..', 'tools'))
+
+from test_optimization.strategy_classifier import (
     StrategyClassifier, StrategyType, StrategyAnalysis
 )
 
@@ -99,7 +103,7 @@ class TestMaxExamplesCalculation:
     
     def setup_method(self):
         """Set up test fixtures."""
-        from kivy_garden.markdownlabel.max_examples_calculator import MaxExamplesCalculator
+        from test_optimization.max_examples_calculator import MaxExamplesCalculator
         self.calculator = MaxExamplesCalculator()
     
     # **Feature: test-performance-optimization, Property 2: Small finite strategies use input space size**
@@ -155,7 +159,7 @@ class TestMaxExamplesCalculation:
         **Validates: Requirements 1.5, 2.3**
         """
         # Simulate a complex strategy analysis
-        from kivy_garden.markdownlabel.strategy_classifier import StrategyAnalysis, StrategyType
+        from test_optimization.strategy_classifier import StrategyAnalysis, StrategyType
         
         analysis = StrategyAnalysis(
             strategy_type=StrategyType.COMPLEX,
@@ -216,7 +220,7 @@ class TestCombinationStrategies:
     
     def setup_method(self):
         """Set up test fixtures."""
-        from kivy_garden.markdownlabel.max_examples_calculator import MaxExamplesCalculator
+        from test_optimization.max_examples_calculator import MaxExamplesCalculator
         self.calculator = MaxExamplesCalculator()
     
     # **Feature: test-performance-optimization, Property 3: Combination strategies use product formula**
@@ -284,7 +288,7 @@ class TestOverTestingDetection:
     
     def setup_method(self):
         """Set up test fixtures."""
-        from kivy_garden.markdownlabel.test_file_analyzer import TestFileAnalyzer
+        from test_optimization.test_file_analyzer import TestFileAnalyzer
         self.analyzer = TestFileAnalyzer()
     
     # **Feature: test-performance-optimization, Property 7: Over-testing detection works correctly**

@@ -27,6 +27,9 @@ kivy_garden/
         ├── test_advanced_compatibility.py # Advanced label features
         ├── test_serialization.py         # Round-trip serialization
         ├── test_performance.py           # Performance and stability tests
+        ├── test_strategy_classification.py # Tests for optimization infrastructure
+        ├── test_file_analyzer.py         # Tests for test file analysis tools
+        ├── test_documentation_compliance.py # Tests for max_examples documentation
         └── test_utils.py                 # Shared test utilities and strategies
 ```
 
@@ -81,6 +84,20 @@ doc/
 └── Makefile             # Build documentation
 ```
 
+## Tools
+
+```
+tools/
+├── test_optimization/           # Test performance optimization tools
+│   ├── __init__.py             # Package exports
+│   ├── strategy_classifier.py  # Hypothesis strategy analysis
+│   ├── max_examples_calculator.py  # Optimal max_examples calculation
+│   ├── test_file_analyzer.py   # Test file analysis and reporting
+│   └── over_testing_validator.py  # CI validation and automated fixing
+├── analyze_tests.py            # Command-line analysis tool
+└── README.md                   # Tools documentation
+```
+
 ## Configuration Files
 
 - **setup.py**: Package metadata, dependencies, entry points
@@ -89,6 +106,7 @@ doc/
 - **CHANGELOG.md**: Version history
 - **CONTRIBUTING.md**: Contribution guidelines
 - **LICENSE.txt**: MIT license
+- **HYPOTHESIS_OPTIMIZATION_GUIDELINES.md**: Guidelines for optimizing property-based tests
 
 ## Namespace Package Convention
 
