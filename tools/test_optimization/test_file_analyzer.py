@@ -12,6 +12,8 @@ from typing import List, Optional, Dict, Tuple
 
 from .strategy_classifier import StrategyClassifier
 from .max_examples_calculator import MaxExamplesCalculator
+from .comment_analyzer import CommentAnalyzer
+from .comment_format import CommentFormatValidator, ValidationResult
 
 
 @dataclass
@@ -23,6 +25,17 @@ class PropertyTest:
     strategy_code: str
     current_max_examples: int
     decorator_line: str
+    comment_info: Optional['CommentInfo'] = None
+
+
+@dataclass
+class CommentInfo:
+    """Information about standardized comments for a test."""
+    has_standardized_comment: bool
+    comment_text: Optional[str] = None
+    comment_line: Optional[int] = None
+    validation_result: Optional[ValidationResult] = None
+    is_documented: bool = False
     
     
 @dataclass
@@ -36,6 +49,8 @@ class OptimizationRecommendation:
     time_savings_percent: float
     rationale: str
     strategy_type: str
+    comment_info: Optional[CommentInfo] = None
+    needs_comment_update: bool = False
 
 
 @dataclass
@@ -46,6 +61,17 @@ class FileAnalysis:
     total_tests: int
     over_tested_count: int
     potential_time_savings_percent: float
+    comment_compliance_stats: Optional['CommentComplianceStats'] = None
+
+
+@dataclass
+class CommentComplianceStats:
+    """Statistics about comment compliance in a file."""
+    total_property_tests: int
+    documented_tests: int
+    undocumented_tests: int
+    format_violations: int
+    compliance_percentage: float
 
 
 @dataclass
@@ -56,6 +82,7 @@ class ValidationReport:
     total_over_tested: int
     potential_time_savings_percent: float
     estimated_time_reduction_seconds: float
+    overall_comment_compliance: Optional[CommentComplianceStats] = None
 
 
 class FileAnalyzer:
@@ -65,6 +92,8 @@ class FileAnalyzer:
         """Initialize analyzer with classifier and calculator."""
         self.classifier = StrategyClassifier()
         self.calculator = MaxExamplesCalculator(self.classifier)
+        self.comment_analyzer = CommentAnalyzer()
+        self.comment_validator = CommentFormatValidator()
         
         # Regex patterns for finding property tests
         self.given_pattern = re.compile(r'@given\((.*?)\)', re.DOTALL)
@@ -93,10 +122,16 @@ class FileAnalyzer:
                 potential_time_savings_percent=0.0
             )
         
+        # Analyze comments using the comment analyzer
+        comment_analysis = self.comment_analyzer.analyze_file(file_path)
+        
         tests = self._extract_property_tests(content)
         recommendations = []
         
         for test in tests:
+            # Add comment information to the test
+            test.comment_info = self._get_comment_info_for_test(test, comment_analysis)
+            
             optimal_examples = self.calculator.calculate_optimal_examples(test.strategy_code)
             
             if test.current_max_examples > optimal_examples:
@@ -106,6 +141,11 @@ class FileAnalyzer:
                 
                 analysis = self.classifier.classify_strategy(test.strategy_code)
                 
+                # Check if comment needs updating after optimization
+                needs_comment_update = self._check_if_comment_needs_update(
+                    test.comment_info, optimal_examples
+                )
+                
                 recommendations.append(OptimizationRecommendation(
                     test_name=test.name,
                     file_path=test.file_path,
@@ -114,7 +154,9 @@ class FileAnalyzer:
                     recommended_examples=optimal_examples,
                     time_savings_percent=time_savings * 100,
                     rationale=self._generate_rationale(analysis, optimal_examples),
-                    strategy_type=analysis.strategy_type.value
+                    strategy_type=analysis.strategy_type.value,
+                    comment_info=test.comment_info,
+                    needs_comment_update=needs_comment_update
                 ))
         
         # Calculate file-level statistics
@@ -126,12 +168,25 @@ class FileAnalyzer:
         else:
             avg_time_savings = 0.0
         
+        # Create comment compliance statistics
+        comment_compliance = CommentComplianceStats(
+            total_property_tests=comment_analysis.total_property_tests,
+            documented_tests=comment_analysis.documented_tests,
+            undocumented_tests=comment_analysis.undocumented_tests,
+            format_violations=len(comment_analysis.format_violations),
+            compliance_percentage=(
+                (comment_analysis.documented_tests / comment_analysis.total_property_tests * 100)
+                if comment_analysis.total_property_tests > 0 else 100.0
+            )
+        )
+        
         return FileAnalysis(
             file_path=file_path,
             recommendations=recommendations,
             total_tests=total_tests,
             over_tested_count=over_tested_count,
-            potential_time_savings_percent=avg_time_savings
+            potential_time_savings_percent=avg_time_savings,
+            comment_compliance_stats=comment_compliance
         )
     
     def _extract_property_tests(self, content: str) -> List[PropertyTest]:
@@ -257,6 +312,75 @@ class FileAnalyzer:
         else:
             return f"Complex strategy uses {optimal_examples} examples based on complexity"
     
+    def _get_comment_info_for_test(self, test: PropertyTest, comment_analysis) -> CommentInfo:
+        """Get comment information for a specific test.
+        
+        Args:
+            test: PropertyTest instance
+            comment_analysis: FileAnalysis from CommentAnalyzer
+            
+        Returns:
+            CommentInfo with standardized comment details
+        """
+        # Look for valid comments that might correspond to this test
+        for comment_pattern in comment_analysis.valid_comments:
+            # Check if comment is near the test (within reasonable range)
+            if (comment_pattern.line_number and 
+                abs(comment_pattern.line_number - test.line_number) <= 5):
+                
+                return CommentInfo(
+                    has_standardized_comment=True,
+                    comment_text=comment_pattern.to_standardized_format(),
+                    comment_line=comment_pattern.line_number,
+                    validation_result=None,  # Already validated
+                    is_documented=True
+                )
+        
+        # Check if test is in missing documentation list
+        for func_name, line_num, max_examples in comment_analysis.missing_documentation:
+            if func_name == test.name and line_num == test.line_number:
+                return CommentInfo(
+                    has_standardized_comment=False,
+                    comment_text=None,
+                    comment_line=None,
+                    validation_result=None,
+                    is_documented=False
+                )
+        
+        # Default case - assume documented if not in missing list
+        return CommentInfo(
+            has_standardized_comment=False,
+            comment_text=None,
+            comment_line=None,
+            validation_result=None,
+            is_documented=True  # Assume documented if not explicitly missing
+        )
+    
+    def _check_if_comment_needs_update(self, comment_info: Optional[CommentInfo], 
+                                     new_max_examples: int) -> bool:
+        """Check if comment needs updating after optimization.
+        
+        Args:
+            comment_info: Current comment information
+            new_max_examples: New max_examples value after optimization
+            
+        Returns:
+            True if comment needs updating, False otherwise
+        """
+        if not comment_info or not comment_info.has_standardized_comment:
+            # No standardized comment exists, will need one after optimization
+            return True
+        
+        if comment_info.comment_text:
+            # Parse current comment to check max_examples value
+            validation_result = self.comment_validator.validate_comment_format(comment_info.comment_text)
+            if (validation_result.is_valid and 
+                validation_result.parsed_pattern and
+                validation_result.parsed_pattern.max_examples != new_max_examples):
+                return True
+        
+        return False
+    
     def validate_test_suite(self, test_directory: str) -> ValidationReport:
         """Validate entire test suite and generate optimization report."""
         test_dir = Path(test_directory)
@@ -292,10 +416,49 @@ class FileAnalyzer:
             for r in a.recommendations
         )
         
+        # Calculate overall comment compliance statistics
+        overall_comment_compliance = self._calculate_overall_comment_compliance(file_analyses)
+        
         return ValidationReport(
             file_analyses=file_analyses,
             total_tests=total_tests,
             total_over_tested=total_over_tested,
             potential_time_savings_percent=avg_time_savings,
-            estimated_time_reduction_seconds=estimated_time_reduction
+            estimated_time_reduction_seconds=estimated_time_reduction,
+            overall_comment_compliance=overall_comment_compliance
+        )
+    
+    def _calculate_overall_comment_compliance(self, file_analyses: List[FileAnalysis]) -> CommentComplianceStats:
+        """Calculate overall comment compliance across all files.
+        
+        Args:
+            file_analyses: List of file analysis results
+            
+        Returns:
+            CommentComplianceStats for the entire test suite
+        """
+        total_property_tests = 0
+        total_documented_tests = 0
+        total_undocumented_tests = 0
+        total_format_violations = 0
+        
+        for analysis in file_analyses:
+            if analysis.comment_compliance_stats:
+                stats = analysis.comment_compliance_stats
+                total_property_tests += stats.total_property_tests
+                total_documented_tests += stats.documented_tests
+                total_undocumented_tests += stats.undocumented_tests
+                total_format_violations += stats.format_violations
+        
+        compliance_percentage = (
+            (total_documented_tests / total_property_tests * 100)
+            if total_property_tests > 0 else 100.0
+        )
+        
+        return CommentComplianceStats(
+            total_property_tests=total_property_tests,
+            documented_tests=total_documented_tests,
+            undocumented_tests=total_undocumented_tests,
+            format_violations=total_format_violations,
+            compliance_percentage=compliance_percentage
         )

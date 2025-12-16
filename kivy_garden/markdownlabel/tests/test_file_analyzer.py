@@ -451,3 +451,112 @@ def test_two_booleans(self, values):
             assert rec.time_savings_percent > 90  # Significant savings
         finally:
             os.unlink(temp_file)
+
+
+class TestToolIntegrationCompatibility:
+    """Property-based tests for tool integration compatibility."""
+    
+    def setup_method(self):
+        """Set up test fixtures."""
+        self.analyzer = FileAnalyzer()
+    
+    # Complex strategy: 20 examples (adequate coverage)
+    @given(
+        strategy_type=st.sampled_from(['Boolean', 'Small finite', 'Medium finite', 'Complex', 'Combination']),
+        max_examples=st.integers(min_value=1, max_value=100),
+        has_comment=st.booleans()
+    )
+    @settings(max_examples=20, deadline=None)
+    def test_tool_integration_compatibility(self, strategy_type, max_examples, has_comment):
+        """**Feature: test-comment-standardization, Property 9: Tool Integration Compatibility**
+        
+        For any standardized comment format, existing optimization and analysis tools 
+        SHALL be able to reference and utilize the comment information.
+        **Validates: Requirements 4.4, 5.4**
+        """
+        # Generate test file content with or without standardized comment
+        comment_line = ""
+        if has_comment:
+            rationale_map = {
+                'Boolean': 'True/False coverage',
+                'Small finite': f'input space size: {min(max_examples, 10)}',
+                'Medium finite': 'adequate finite coverage',
+                'Complex': 'adequate coverage',
+                'Combination': 'combination coverage'
+            }
+            rationale = rationale_map[strategy_type]
+            comment_line = f"    # {strategy_type} strategy: {max_examples} examples ({rationale})\n"
+        
+        # Generate appropriate strategy code based on type
+        strategy_code_map = {
+            'Boolean': 'st.booleans()',
+            'Small finite': 'st.integers(min_value=0, max_value=4)',
+            'Medium finite': 'st.sampled_from([f"item_{i}" for i in range(25)])',
+            'Complex': 'st.text()',
+            'Combination': 'st.tuples(st.booleans(), st.integers(min_value=0, max_value=2))'
+        }
+        strategy_code = strategy_code_map[strategy_type]
+        
+        content = f'''
+from hypothesis import given, strategies as st, settings
+
+class TestExample:
+{comment_line}    @given({strategy_code})
+    @settings(max_examples={max_examples}, deadline=None)
+    def test_property(self, value):
+        """Test property."""
+        assert value is not None
+'''
+        
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.py', delete=False) as f:
+            f.write(content)
+            temp_file = f.name
+        
+        try:
+            # Test that FileAnalyzer can process files with standardized comments
+            analysis = self.analyzer.analyze_file(temp_file)
+            
+            # Property: Tool integration compatibility
+            # The analysis should complete successfully regardless of comment presence
+            assert isinstance(analysis, FileAnalysis)
+            assert analysis.total_tests >= 0
+            assert analysis.over_tested_count >= 0
+            assert isinstance(analysis.recommendations, list)
+            
+            # If comment compliance stats are available, they should be valid
+            if analysis.comment_compliance_stats:
+                stats = analysis.comment_compliance_stats
+                assert stats.total_property_tests >= 0
+                assert stats.documented_tests >= 0
+                assert stats.undocumented_tests >= 0
+                assert stats.format_violations >= 0
+                assert 0 <= stats.compliance_percentage <= 100
+            
+            # If recommendations exist, they should include comment information
+            for rec in analysis.recommendations:
+                assert hasattr(rec, 'comment_info')
+                assert hasattr(rec, 'needs_comment_update')
+                
+                if rec.comment_info:
+                    assert hasattr(rec.comment_info, 'has_standardized_comment')
+                    assert hasattr(rec.comment_info, 'is_documented')
+            
+            # Test suite validation should also work with comment integration
+            with tempfile.TemporaryDirectory() as temp_dir:
+                # Copy test file to temporary directory
+                temp_test_file = Path(temp_dir) / 'test_integration.py'
+                temp_test_file.write_text(content)
+                
+                report = self.analyzer.validate_test_suite(temp_dir)
+                
+                # Property: Overall comment compliance should be calculated
+                assert isinstance(report, ValidationReport)
+                if report.overall_comment_compliance:
+                    compliance = report.overall_comment_compliance
+                    assert compliance.total_property_tests >= 0
+                    assert compliance.documented_tests >= 0
+                    assert compliance.undocumented_tests >= 0
+                    assert 0 <= compliance.compliance_percentage <= 100
+        
+        finally:
+            os.unlink(temp_file)
