@@ -202,7 +202,7 @@ Mark heavy tests appropriately:
 
 ```python
 @pytest.mark.slow
-@settings(max_examples=10 if os.getenv('CI') else 100)
+@settings(max_examples=20 if os.getenv('CI') else 100)
 class TestPerformanceHeavy:
     """Heavy performance tests marked for CI control."""
     
