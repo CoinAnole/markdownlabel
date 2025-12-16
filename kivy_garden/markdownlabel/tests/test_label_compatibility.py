@@ -45,6 +45,7 @@ class TestFontSizeAliasBidirectionality:
     
     @given(st.floats(min_value=1, max_value=200, allow_nan=False, allow_infinity=False),
            st.floats(min_value=1, max_value=200, allow_nan=False, allow_infinity=False))
+    # Float strategy with constraints: 20 examples
     @settings(max_examples=20, deadline=None)
     def test_font_size_change_updates_base_font_size(self, initial_value, new_value):
         """Changing font_size after creation updates base_font_size."""
@@ -56,6 +57,7 @@ class TestFontSizeAliasBidirectionality:
     
     @given(st.floats(min_value=1, max_value=200, allow_nan=False, allow_infinity=False),
            st.floats(min_value=1, max_value=200, allow_nan=False, allow_infinity=False))
+    # Float strategy with constraints: 20 examples
     @settings(max_examples=20, deadline=None)
     def test_base_font_size_change_updates_font_size(self, initial_value, new_value):
         """Changing base_font_size after creation updates font_size."""
@@ -241,6 +243,7 @@ class TestNoOpPropertyAcceptanceAndStorage:
         st.floats(min_value=0.0, max_value=1.0, allow_nan=False, allow_infinity=False),
         min_size=4, max_size=4
     ))
+    # List strategy: 20 examples for varied list sizes
     @settings(max_examples=20, deadline=None)
     def test_outline_color_property_accepted_and_stored(self, value):
         """Setting outline_color property accepts and stores the value."""
@@ -252,6 +255,7 @@ class TestNoOpPropertyAcceptanceAndStorage:
         whitelist_categories=['L', 'N'],
         blacklist_characters='\n\r'
     ))))
+    # Complex text strategy with constraints: 20 examples
     @settings(max_examples=20, deadline=None)
     def test_text_language_property_accepted_and_stored(self, value):
         """Setting text_language property accepts and stores the value."""
@@ -324,6 +328,7 @@ class TestNoOpPropertyAcceptanceAndStorage:
         st.floats(min_value=0.0, max_value=1.0, allow_nan=False, allow_infinity=False),
         min_size=4, max_size=4
     ))
+    # List strategy: 20 examples for varied list sizes
     @settings(max_examples=20, deadline=None)
     def test_outline_color_property_change_after_creation(self, value):
         """Changing outline_color property after creation accepts and stores the value."""
@@ -335,6 +340,7 @@ class TestNoOpPropertyAcceptanceAndStorage:
         whitelist_categories=['L', 'N'],
         blacklist_characters='\n\r'
     ))))
+    # Complex text strategy with constraints: 20 examples
     @settings(max_examples=20, deadline=None)
     def test_text_language_property_change_after_creation(self, value):
         """Changing text_language property after creation accepts and stores the value."""

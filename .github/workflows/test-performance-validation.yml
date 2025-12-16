@@ -1,0 +1,73 @@
+name: Test Performance Validation
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  validate-test-performance:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -e .
+        pip install pytest hypothesis
+    
+    - name: Run over-testing validation
+      run: |
+        python validate_test_performance.py
+    
+    - name: Upload validation report
+      if: always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: over-testing-report
+        path: over_testing_report.json
+        retention-days: 30
+    
+    - name: Comment on PR (if validation fails)
+      if: failure() && github.event_name == 'pull_request'
+      uses: actions/github-script@v6
+      with:
+        script: |
+          const fs = require('fs');
+          
+          try {
+            const report = JSON.parse(fs.readFileSync('over_testing_report.json', 'utf8'));
+            const violations = report.critical_violations;
+            
+            if (violations.length > 0) {
+              let comment = '## ⚠️ Over-testing Detected\\n\\n';
+              comment += `Found ${violations.length} critical over-testing violations that need to be fixed:\\n\\n`;
+              
+              violations.slice(0, 10).forEach(v => {
+                comment += `- **${v.test_name}**: ${v.current_examples} → ${v.recommended_examples} examples (${v.time_savings_percent.toFixed(1)}% time savings)\\n`;
+              });
+              
+              if (violations.length > 10) {
+                comment += `\\n... and ${violations.length - 10} more violations.\\n`;
+              }
+              
+              comment += '\\nPlease optimize these tests according to the [Hypothesis Optimization Guidelines](HYPOTHESIS_OPTIMIZATION_GUIDELINES.md).';
+              
+              github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: comment
+              });
+            }
+          } catch (error) {
+            console.log('Could not read validation report:', error.message);
+          }

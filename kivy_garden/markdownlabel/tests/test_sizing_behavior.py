@@ -49,6 +49,7 @@ class TestAutoSizingBehavior:
     
     # Complex strategy: 20 examples based on default complexity
     @given(markdown_heading())
+    # Custom strategy: 20 examples for adequate coverage
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_height_bound_to_minimum(self, heading):
         """auto_size_height=True binds height to minimum_height."""
@@ -94,6 +95,7 @@ class TestAutoSizeHeightTrueBehavior:
      # Complex strategy with custom domain strategy: 20 examples
     
     @given(simple_markdown_document())
+    # Custom strategy: 20 examples for adequate coverage
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_auto_size_height_true_sets_size_hint_y_none(self, markdown_text):
         """When auto_size_height=True, size_hint_y should be None."""
@@ -104,6 +106,7 @@ class TestAutoSizeHeightTrueBehavior:
             f"Expected size_hint_y=None when auto_size_height=True, got {label.size_hint_y}"
     
     @given(simple_markdown_document())
+    # Custom strategy: 20 examples for adequate coverage
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_auto_size_height_true_binds_height_to_minimum(self, markdown_text):
         """When auto_size_height=True, height should be bound to minimum_height."""
@@ -130,6 +133,7 @@ class TestAutoSizeHeightTrueBehavior:
             f"Expected size_hint_y=1 by default, got {label.size_hint_y}"
     
     @given(st.floats(min_value=0.1, max_value=2.0, allow_nan=False, allow_infinity=False))
+    # Float strategy with constraints: 50 examples
     @settings(max_examples=50 if not os.getenv('CI') else 25, deadline=None)
     def test_auto_size_height_true_ignores_user_size_hint_y(self, user_size_hint_y):
         """When auto_size_height=True, user-provided size_hint_y is overridden."""
@@ -158,6 +162,7 @@ class TestAutoSizeHeightFalseBehavior:
     """Property tests for auto_size_height False behavior (Property 8)."""
     
     @given(simple_markdown_document())
+    # Custom strategy: 20 examples for adequate coverage
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_auto_size_height_false_preserves_default_size_hint_y(self, markdown_text):
         """When auto_size_height=False, default size_hint_y=1 is preserved."""
@@ -172,6 +177,7 @@ class TestAutoSizeHeightFalseBehavior:
     
     @given(simple_markdown_document(), 
            st.floats(min_value=0.1, max_value=2.0, allow_nan=False, allow_infinity=False))
+    # Custom strategy: 50 examples for adequate coverage
     @settings(max_examples=50 if not os.getenv('CI') else 25, deadline=None)
     def test_auto_size_height_false_preserves_user_size_hint_y(self, markdown_text, user_size_hint_y):
         """When auto_size_height=False, user-specified size_hint_y is preserved."""
@@ -189,6 +195,7 @@ class TestAutoSizeHeightFalseBehavior:
             f"Expected auto_size_height=False, got {label.auto_size_height}"
     
     @given(simple_markdown_document())
+    # Custom strategy: 20 examples for adequate coverage
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_auto_size_height_false_no_height_binding(self, markdown_text):
         """When auto_size_height=False, height is not bound to minimum_height."""
@@ -214,6 +221,7 @@ class TestAutoSizeHeightDynamicToggling:
     """Property tests for auto_size_height dynamic toggling (Property 9)."""
     
     @given(simple_markdown_document())
+    # Custom strategy: 20 examples for adequate coverage
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_toggle_true_to_false_restores_size_hint_y(self, markdown_text):
         """Toggling auto_size_height from True to False restores size_hint_y."""
@@ -234,6 +242,7 @@ class TestAutoSizeHeightDynamicToggling:
             f"Expected auto_size_height=False after toggle, got {label.auto_size_height}"
     
     @given(simple_markdown_document())
+    # Custom strategy: 20 examples for adequate coverage
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_toggle_false_to_true_sets_size_hint_y_none(self, markdown_text):
         """Toggling auto_size_height from False to True sets size_hint_y=None."""
@@ -256,6 +265,7 @@ class TestAutoSizeHeightDynamicToggling:
     
     @given(simple_markdown_document(), 
            st.floats(min_value=0.1, max_value=2.0, allow_nan=False, allow_infinity=False))
+    # Custom strategy: 50 examples for adequate coverage
     @settings(max_examples=50 if not os.getenv('CI') else 25, deadline=None)
     def test_toggle_preserves_user_size_hint_y(self, markdown_text, user_size_hint_y):
         """Toggling preserves the original user-specified size_hint_y value."""
@@ -289,6 +299,7 @@ class TestAutoSizeHeightDynamicToggling:
             f"Expected size_hint_y={user_size_hint_y} after second toggle to False, got {label.size_hint_y}"
     
     @given(simple_markdown_document())
+    # Custom strategy: 20 examples for adequate coverage
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_multiple_toggles_maintain_consistency(self, markdown_text):
         """Multiple toggles maintain consistent behavior."""
@@ -323,6 +334,7 @@ class TestStrictLabelModeSizingBehavior:
     """Property tests for strict label mode sizing behavior (Property 2)."""
     
     @given(simple_markdown_document())
+    # Custom strategy: 20 examples for adequate coverage
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_strict_mode_preserves_default_size_hint_y(self, markdown_text):
         """When strict_label_mode=True, default size_hint_y=1 is preserved."""
@@ -337,6 +349,7 @@ class TestStrictLabelModeSizingBehavior:
     
     @given(simple_markdown_document(), 
            st.floats(min_value=0.1, max_value=2.0, allow_nan=False, allow_infinity=False))
+    # Custom strategy: 50 examples for adequate coverage
     @settings(max_examples=50 if not os.getenv('CI') else 25, deadline=None)
     def test_strict_mode_preserves_user_size_hint_y(self, markdown_text, user_size_hint_y):
         """When strict_label_mode=True, user-specified size_hint_y is preserved."""
@@ -354,6 +367,7 @@ class TestStrictLabelModeSizingBehavior:
             f"Expected strict_label_mode=True, got {label.strict_label_mode}"
     
     @given(simple_markdown_document())
+    # Custom strategy: 20 examples for adequate coverage
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_strict_mode_height_not_bound_to_minimum(self, markdown_text):
         """When strict_label_mode=True, height is not bound to minimum_height."""
@@ -395,6 +409,7 @@ class TestStrictLabelModeSizingBehavior:
         assert label.strict_label_mode == value
     
     @given(simple_markdown_document())
+    # Custom strategy: 20 examples for adequate coverage
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_strict_mode_toggle_from_false_to_true(self, markdown_text):
         """Toggling strict_label_mode from False to True disables auto-sizing."""
@@ -417,6 +432,7 @@ class TestStrictLabelModeSizingBehavior:
             f"Expected size_hint_y=1 after toggling to strict_label_mode=True, got {label.size_hint_y}"
     
     @given(simple_markdown_document())
+    # Custom strategy: 20 examples for adequate coverage
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_strict_mode_toggle_from_true_to_false(self, markdown_text):
         """Toggling strict_label_mode from True to False enables auto-sizing."""
@@ -440,6 +456,7 @@ class TestStrictLabelModeSizingBehavior:
     
     @given(simple_markdown_document(), 
            st.floats(min_value=0.1, max_value=2.0, allow_nan=False, allow_infinity=False))
+    # Custom strategy: 50 examples for adequate coverage
     @settings(max_examples=50 if not os.getenv('CI') else 25, deadline=None)
     def test_strict_mode_toggle_preserves_user_size_hint_y(self, markdown_text, user_size_hint_y):
         """Toggling strict_label_mode preserves user-specified size_hint_y."""
@@ -480,6 +497,7 @@ class TestStrictLabelModeSizingBehavior:
             f"Expected size_hint_y=1 when strict_label_mode=True (overrides auto_size_height), got {label.size_hint_y}"
     
     @given(simple_markdown_document())
+    # Custom strategy: 20 examples for adequate coverage
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     # Complex strategy with custom domain strategy: 20 examples
     def test_strict_mode_ignores_auto_size_height_changes(self, markdown_text):
@@ -497,6 +515,7 @@ class TestStrictLabelModeSizingBehavior:
             f"Expected size_hint_y=1 (strict mode ignores auto_size_height), got {label.size_hint_y}"
     
     @given(simple_markdown_document())
+    # Custom strategy: 20 examples for adequate coverage
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     # Complex strategy with custom domain strategy: 20 examples
     def test_strict_mode_triggers_rebuild(self, markdown_text):
@@ -515,6 +534,7 @@ class TestStrictLabelModeSizingBehavior:
             "Expected at least 1 child after strict_label_mode toggle"
     
     @given(simple_markdown_document())
+    # Custom strategy: 20 examples for adequate coverage
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_multiple_strict_mode_toggles_maintain_consistency(self, markdown_text):
         """Multiple strict_label_mode toggles maintain consistent behavior."""
@@ -580,6 +600,7 @@ class TestComprehensiveTextureSizeCalculation:
         return widgets
     
     @given(simple_markdown_document())
+    # Custom strategy: 20 examples for adequate coverage
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_texture_size_returns_tuple(self, markdown_text):
         """texture_size returns a list/tuple with two elements."""
@@ -593,6 +614,7 @@ class TestComprehensiveTextureSizeCalculation:
             f"Expected texture_size to have 2 elements, got {len(texture_size)}"
     
     @given(simple_markdown_document())
+    # Custom strategy: 20 examples for adequate coverage
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_texture_size_non_negative(self, markdown_text):
         """texture_size width and height are non-negative."""
@@ -617,6 +639,7 @@ class TestComprehensiveTextureSizeCalculation:
             f"Expected texture_size [0, 0] for empty label, got {texture_size}"
     
     @given(markdown_heading())
+    # Custom strategy: 20 examples for adequate coverage
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_heading_creates_label_widget(self, heading):
         """Heading content creates a Label widget that is included in texture_size calculation."""
@@ -632,6 +655,7 @@ class TestComprehensiveTextureSizeCalculation:
         assert texture_size[0] >= 0 and texture_size[1] >= 0
     
     @given(markdown_paragraph())
+    # Custom strategy: 20 examples for adequate coverage
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_paragraph_creates_label_widget(self, paragraph):
         """Paragraph content creates a Label widget that is included in texture_size calculation."""
@@ -765,6 +789,7 @@ code = "block"
             f"Expected multiple children for mixed content, got {len(label.children)}"
     
     @given(simple_markdown_document())
+    # Custom strategy: 20 examples for adequate coverage
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_texture_size_accessible_for_all_content(self, markdown_text):
         """texture_size is accessible and valid for all markdown content."""
@@ -816,6 +841,7 @@ code = "block"
         assert texture_size[0] >= 0 and texture_size[1] >= 0
     
     @given(simple_markdown_document(), simple_markdown_document())
+    # Custom strategy: 20 examples for adequate coverage
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_texture_size_updates_on_text_change(self, text1, text2):
         """texture_size updates when text property changes."""

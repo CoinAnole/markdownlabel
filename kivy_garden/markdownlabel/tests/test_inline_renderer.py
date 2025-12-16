@@ -414,6 +414,7 @@ class TestURLMarkupSafetyProperty:
         st.text(min_size=1, max_size=50).map(lambda s: f"http://example.com/{s}]]]"),
         st.text(min_size=1, max_size=50).map(lambda s: f"http://example.com/[[[{s}"),
     ))
+    # Complex URL generation strategy: 20 examples for bracket safety testing
     @settings(max_examples=20)
     def test_urls_with_brackets_are_safe(self, full_url):
         """URLs containing brackets should be safely escaped."""
@@ -672,6 +673,7 @@ class TestHTMLContentEscapingProperty:
         # Raw HTML-like strings
         st.text(min_size=1, max_size=100).filter(lambda s: '<' in s or '>' in s),
     ))
+    # Complex HTML generation strategy: 20 examples for escaping safety testing
     @settings(max_examples=20)
     def test_html_content_is_escaped(self, html_content):
         """HTML content should be escaped to prevent markup injection."""
@@ -734,6 +736,7 @@ class TestHTMLContentEscapingProperty:
     @given(st.text(min_size=0, max_size=200, alphabet=st.characters(
         whitelist_categories=['L', 'N', 'P', 'S', 'Z']
     )))
+    # Complex text strategy with constraints: 20 examples
     @settings(max_examples=20)
     def test_arbitrary_html_content_safety(self, content):
         """Any arbitrary content in HTML tags should be safely escaped."""

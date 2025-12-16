@@ -289,6 +289,7 @@ class TestOverTestingDetection:
     
     # **Feature: test-performance-optimization, Property 7: Over-testing detection works correctly**
     @given(st.integers(min_value=101, max_value=200))
+    # Combination strategy: 20 examples (capped for performance)
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_boolean_over_testing_detected(self, excessive_examples):
         """Over-testing of boolean strategies should be correctly detected.

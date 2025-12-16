@@ -38,6 +38,7 @@ class TestTextSizeForwarding:
     
     # Complex strategy with float generation, NaN exclusion, infinity exclusion: 50 examples
     @given(st.floats(min_value=50, max_value=1000, allow_nan=False, allow_infinity=False))
+    # Float strategy with constraints: 50 examples
     @settings(max_examples=50 if not os.getenv('CI') else 25, deadline=None)
     def test_text_size_property_stored_correctly(self, width):
         """text_size property value is stored correctly on MarkdownLabel."""
@@ -50,6 +51,7 @@ class TestTextSizeForwarding:
     
     @given(st.floats(min_value=50, max_value=1000, allow_nan=False, allow_infinity=False),
            st.floats(min_value=50, max_value=1000, allow_nan=False, allow_infinity=False))
+    # Float strategy with constraints: 20 examples
     @settings(max_examples=20, deadline=None)
     def test_text_size_change_triggers_rebuild(self, width1, width2):
         """Changing text_size triggers widget rebuild."""
@@ -82,6 +84,7 @@ class TestTextSizeForwarding:
      # Complex strategy with float generation, NaN exclusion, infinity exclusion: 50 examples
     
     @given(st.floats(min_value=50, max_value=1000, allow_nan=False, allow_infinity=False))
+    # Float strategy with constraints: 50 examples
     @settings(max_examples=50 if not os.getenv('CI') else 25, deadline=None)
     def test_text_size_with_width_passed_to_renderer(self, width):
         """text_size with width is passed to renderer and affects internal Labels."""
@@ -107,6 +110,7 @@ class TestTextSizeHeightForwarding:
     """Property tests for text_size height forwarding (Property 1)."""
     
     @given(st.floats(min_value=50, max_value=500, allow_nan=False, allow_infinity=False))
+    # Float strategy with constraints: 50 examples
     @settings(max_examples=50 if not os.getenv('CI') else 25, deadline=None)
     def test_text_size_height_forwarded_to_paragraph(self, height):
         """text_size height is forwarded to paragraph Labels."""
@@ -122,6 +126,7 @@ class TestTextSizeHeightForwarding:
                 f"Expected text_size[1]={height}, got {lbl.text_size[1]}"
     
     @given(st.floats(min_value=50, max_value=500, allow_nan=False, allow_infinity=False))
+    # Float strategy with constraints: 50 examples
     @settings(max_examples=50 if not os.getenv('CI') else 25, deadline=None)
     def test_text_size_height_forwarded_to_heading(self, height):
         """text_size height is forwarded to heading Labels."""
@@ -137,6 +142,7 @@ class TestTextSizeHeightForwarding:
     
     @given(st.floats(min_value=100, max_value=500, allow_nan=False, allow_infinity=False),
            st.floats(min_value=50, max_value=300, allow_nan=False, allow_infinity=False))
+    # Float strategy with constraints: 20 examples
     @settings(max_examples=20, deadline=None)
     def test_text_size_both_width_and_height_forwarded(self, width, height):
         """Both width and height in text_size are forwarded to Labels."""
@@ -168,6 +174,7 @@ class TestTextSizeHeightForwarding:
                 f"Expected valign={valign}, got {lbl.valign}"
     
     @given(st.floats(min_value=50, max_value=500, allow_nan=False, allow_infinity=False))
+    # Float strategy with constraints: 50 examples
     @settings(max_examples=50 if not os.getenv('CI') else 25, deadline=None)
     def test_text_size_height_forwarded_to_table_cells(self, height):
         """text_size height is forwarded to table cell Labels."""
@@ -192,6 +199,7 @@ class TestTextSizeHeightNoneBackwardCompatibility:
     """Property tests for text_size height None backward compatibility (Property 2)."""
     
     @given(simple_markdown_document())
+    # Custom strategy: 20 examples for adequate coverage
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_text_size_height_none_preserves_auto_sizing(self, markdown_text):
         """text_size[1]=None preserves auto-sizing behavior."""
@@ -208,6 +216,7 @@ class TestTextSizeHeightNoneBackwardCompatibility:
                 f"Expected text_size[1]=None for auto-sizing, got {lbl.text_size[1]}"
     
     @given(st.floats(min_value=50, max_value=1000, allow_nan=False, allow_infinity=False))
+    # Float strategy with constraints: 50 examples
     @settings(max_examples=50 if not os.getenv('CI') else 25, deadline=None)
     def test_text_size_width_only_preserves_height_none(self, width):
         """Setting only text_size width preserves height=None."""
@@ -248,6 +257,7 @@ class TestTextSizeDynamicUpdates:
     
     @given(st.floats(min_value=50, max_value=300, allow_nan=False, allow_infinity=False),
            st.floats(min_value=350, max_value=600, allow_nan=False, allow_infinity=False))
+    # Float strategy with constraints: 20 examples
     @settings(max_examples=20, deadline=None)
     def test_text_size_height_change_updates_labels(self, height1, height2):
         """Changing text_size height updates all child Labels."""
@@ -271,6 +281,7 @@ class TestTextSizeDynamicUpdates:
                 f"After change: Expected text_size[1]={height2}, got {lbl.text_size[1]}"
     
     @given(st.floats(min_value=50, max_value=300, allow_nan=False, allow_infinity=False))
+    # Float strategy with constraints: 50 examples
     @settings(max_examples=50 if not os.getenv('CI') else 25, deadline=None)
     def test_text_size_height_to_none_updates_labels(self, height):
         """Changing text_size height to None updates all child Labels."""
@@ -295,6 +306,7 @@ class TestTextSizeDynamicUpdates:
                     f"After change to None: Expected text_size[1]=None, got {lbl.text_size[1]}"
     
     @given(st.floats(min_value=50, max_value=300, allow_nan=False, allow_infinity=False))
+    # Float strategy with constraints: 50 examples
     @settings(max_examples=50 if not os.getenv('CI') else 25, deadline=None)
     def test_text_size_none_to_height_updates_labels(self, height):
         """Changing text_size height from None to value updates all child Labels."""
@@ -327,6 +339,7 @@ class TestUnicodeErrorsForwarding:
     """Property tests for unicode_errors forwarding (Property 10)."""
     
     @given(unicode_errors_strategy)
+    # Custom strategy: 20 examples for adequate coverage
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_unicode_errors_stored_correctly(self, unicode_errors):
         # Complex strategy: 20 examples based on default complexity
@@ -337,6 +350,7 @@ class TestUnicodeErrorsForwarding:
             f"Expected unicode_errors={unicode_errors}, got {label.unicode_errors}"
     
     @given(unicode_errors_strategy)
+    # Custom strategy: 20 examples for adequate coverage
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_unicode_errors_applied_to_paragraph(self, unicode_errors):
         """unicode_errors is applied to paragraph Labels."""
@@ -352,6 +366,7 @@ class TestUnicodeErrorsForwarding:
                 f"Expected unicode_errors={unicode_errors}, got {lbl.unicode_errors}"
     
     @given(unicode_errors_strategy)
+    # Custom strategy: 20 examples for adequate coverage
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_unicode_errors_applied_to_heading(self, unicode_errors):
         """unicode_errors is applied to heading Labels."""
@@ -367,6 +382,7 @@ class TestUnicodeErrorsForwarding:
                 f"Expected unicode_errors={unicode_errors}, got {lbl.unicode_errors}"
     
     @given(unicode_errors_strategy)
+    # Custom strategy: 20 examples for adequate coverage
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_unicode_errors_applied_to_code_block(self, unicode_errors):
         """unicode_errors is applied to code block Labels."""
@@ -383,6 +399,7 @@ class TestUnicodeErrorsForwarding:
                 f"Expected unicode_errors={unicode_errors}, got {lbl.unicode_errors}"
     
     @given(unicode_errors_strategy)
+    # Custom strategy: 20 examples for adequate coverage
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_unicode_errors_applied_to_list_items(self, unicode_errors):
         """unicode_errors is applied to list item Labels."""
@@ -399,6 +416,7 @@ class TestUnicodeErrorsForwarding:
                 f"Expected unicode_errors={unicode_errors}, got {lbl.unicode_errors}"
     
     @given(unicode_errors_strategy)
+    # Custom strategy: 20 examples for adequate coverage
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_unicode_errors_applied_to_table_cells(self, unicode_errors):
         """unicode_errors is applied to table cell Labels."""

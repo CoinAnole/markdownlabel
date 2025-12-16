@@ -62,6 +62,7 @@ class TestPaddingApplication:
     
     # Complex strategy: 20 examples based on default complexity
     @given(padding_two)
+    # Custom strategy: 20 examples for adequate coverage
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_two_element_padding_applied_to_axes(self, padding_values):
         """Two-element padding [horizontal, vertical] is applied to appropriate axes."""
@@ -80,6 +81,7 @@ class TestPaddingApplication:
      # Complex strategy: 20 examples based on default complexity
     
     @given(padding_four)
+    # Custom strategy: 20 examples for adequate coverage
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_four_element_padding_applied_directly(self, padding_values):
         """Four-element padding [left, top, right, bottom] is applied directly."""
@@ -94,6 +96,7 @@ class TestPaddingApplication:
                 f"Padding[{i}]: expected {exp}, got {actual}"
     
     @given(padding_four)
+    # Custom strategy: 20 examples for adequate coverage
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_padding_property_stored_correctly(self, padding_values):
         """padding property value is stored correctly on MarkdownLabel."""
@@ -108,6 +111,7 @@ class TestPaddingApplication:
                 f"Padding[{i}]: expected {exp}, got {actual}"
     
     @given(padding_four, padding_four)
+    # Combination strategy: 20 examples (capped for performance)
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_padding_change_updates_container(self, padding1, padding2):
         """Changing padding updates the container padding."""
@@ -172,6 +176,7 @@ class TestPaddingForwarding:
         return all(abs(a - b) < tolerance for a, b in zip(p1, p2))
     
     @given(text_padding_strategy)
+    # Custom strategy: 20 examples for adequate coverage
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_padding_applied_to_paragraph(self, padding):
         """padding is applied to paragraph Labels."""
@@ -187,6 +192,7 @@ class TestPaddingForwarding:
                 f"Expected padding={padding}, got {list(lbl.padding)}"
     
     @given(text_padding_strategy)
+    # Custom strategy: 20 examples for adequate coverage
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_padding_applied_to_heading(self, padding):
         """padding is applied to heading Labels."""
@@ -202,6 +208,7 @@ class TestPaddingForwarding:
                 f"Expected padding={padding}, got {list(lbl.padding)}"
     
     @given(text_padding_strategy)
+    # Custom strategy: 20 examples for adequate coverage
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_padding_applied_to_list_items(self, padding):
         """padding is applied to list item Labels."""
@@ -218,6 +225,7 @@ class TestPaddingForwarding:
                 f"Expected padding={padding}, got {list(lbl.padding)}"
     
     @given(text_padding_strategy)
+    # Custom strategy: 20 examples for adequate coverage
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_padding_applied_to_table_cells(self, padding):
         """padding is applied to table cell Labels."""
@@ -234,6 +242,7 @@ class TestPaddingForwarding:
                 f"Expected padding={padding}, got {list(lbl.padding)}"
     
     @given(text_padding_strategy)
+    # Custom strategy: 20 examples for adequate coverage
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_padding_applied_to_nested_structures(self, padding):
         """padding is applied to Labels in nested structures (lists, tables, block quotes)."""
@@ -264,6 +273,7 @@ Regular paragraph
                 f"Expected padding={padding}, got {list(lbl.padding)}"
     
     @given(text_padding_strategy, text_padding_strategy)
+    # Combination strategy: 20 examples (capped for performance)
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_padding_change_triggers_rebuild(self, padding1, padding2):
         """Changing text_padding triggers widget rebuild with new padding."""
@@ -329,6 +339,7 @@ class TestPaddingDynamicUpdates:
         return all(abs(a - b) < tolerance for a, b in zip(p1, p2))
     
     @given(text_padding_strategy, text_padding_strategy)
+    # Combination strategy: 20 examples (capped for performance)
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_padding_update_paragraph(self, initial_padding, new_padding):
         """Updating text_padding on paragraph updates all child Labels."""
@@ -354,6 +365,7 @@ class TestPaddingDynamicUpdates:
                 f"After update, expected padding={new_padding}, got {list(lbl.padding)}"
     
     @given(text_padding_strategy, text_padding_strategy)
+    # Combination strategy: 20 examples (capped for performance)
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_padding_update_complex_content(self, initial_padding, new_padding):
         """Updating text_padding on complex content updates all child Labels."""
@@ -438,6 +450,7 @@ class TestPaddingWithNestedStructures:
         return all(abs(a - b) < tolerance for a, b in zip(p1, p2))
     
     @given(text_padding_strategy)
+    # Custom strategy: 20 examples for adequate coverage
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_padding_in_nested_lists(self, padding):
         """padding is applied to Labels in nested lists without breaking structure."""
@@ -465,6 +478,7 @@ class TestPaddingWithNestedStructures:
                 f"Expected padding={padding}, got {list(lbl.padding)}"
     
     @given(text_padding_strategy)
+    # Custom strategy: 20 examples for adequate coverage
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_padding_in_nested_quotes(self, padding):
         """padding is applied to Labels in nested block quotes without breaking structure."""
@@ -492,6 +506,7 @@ class TestPaddingWithNestedStructures:
                 f"Expected padding={padding}, got {list(lbl.padding)}"
     
     @given(text_padding_strategy)
+    # Custom strategy: 20 examples for adequate coverage
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_padding_in_complex_table(self, padding):
         """padding is applied to Labels in complex tables without breaking structure."""
@@ -518,6 +533,7 @@ class TestPaddingWithNestedStructures:
                 f"Expected padding={padding}, got {list(lbl.padding)}"
     
     @given(text_padding_strategy)
+    # Custom strategy: 20 examples for adequate coverage
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_padding_in_mixed_nested_structures(self, padding):
         """padding is applied to Labels in mixed nested structures without breaking layout."""
@@ -560,6 +576,7 @@ Final paragraph.
                 f"Expected padding={padding}, got {list(lbl.padding)}"
     
     @given(text_padding_strategy)
+    # Custom strategy: 20 examples for adequate coverage
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_padding_preserves_widget_hierarchy(self, padding):
         """padding application preserves the widget hierarchy structure."""
@@ -616,6 +633,7 @@ class TestTextPaddingAppliesToChildLabels:
         return all(abs(a - b) < tolerance for a, b in zip(p1, p2))
     
     @given(text_padding_strategy)
+    # Custom strategy: 20 examples for adequate coverage
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_text_padding_applied_to_paragraph_labels(self, padding):
         """text_padding is applied to paragraph Labels."""
@@ -631,6 +649,7 @@ class TestTextPaddingAppliesToChildLabels:
                 f"Expected padding={padding}, got {list(lbl.padding)}"
     
     @given(text_padding_strategy)
+    # Custom strategy: 20 examples for adequate coverage
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_text_padding_applied_to_heading_labels(self, padding):
         """text_padding is applied to heading Labels."""
@@ -646,6 +665,7 @@ class TestTextPaddingAppliesToChildLabels:
                 f"Expected padding={padding}, got {list(lbl.padding)}"
     
     @given(text_padding_strategy)
+    # Custom strategy: 20 examples for adequate coverage
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_text_padding_applied_to_list_labels(self, padding):
         """text_padding is applied to list item Labels."""
@@ -661,6 +681,7 @@ class TestTextPaddingAppliesToChildLabels:
                 f"Expected padding={padding}, got {list(lbl.padding)}"
     
     @given(text_padding_strategy)
+    # Custom strategy: 20 examples for adequate coverage
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_text_padding_applied_to_table_labels(self, padding):
         """text_padding is applied to table cell Labels."""
@@ -707,6 +728,7 @@ class TestPaddingAppliesToContainer:
         return all(abs(a - b) < tolerance for a, b in zip(p1, p2))
     
     @given(text_padding_strategy)
+    # Custom strategy: 20 examples for adequate coverage
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_padding_applied_to_container_only(self, padding):
         """padding is applied to the MarkdownLabel container, not child Labels."""
@@ -751,6 +773,7 @@ class TestPaddingAppliesToContainer:
                 f"Expected child Label padding={text_padding}, got {list(lbl.padding)}"
     
     @given(text_padding_strategy)
+    # Custom strategy: 20 examples for adequate coverage
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_padding_change_affects_container_only(self, new_padding):
         """Changing padding affects only the container, not child Labels."""
@@ -791,6 +814,7 @@ class TestLabelPaddingAliasSynchronization:
         return all(abs(a - b) < tolerance for a, b in zip(p1, p2))
     
     @given(text_padding_strategy)
+    # Custom strategy: 20 examples for adequate coverage
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_label_padding_setter_updates_text_padding(self, padding):
         """Setting label_padding updates text_padding."""
@@ -804,6 +828,7 @@ class TestLabelPaddingAliasSynchronization:
             f"Expected text_padding={padding}, got {list(label.text_padding)}"
     
     @given(text_padding_strategy)
+    # Custom strategy: 20 examples for adequate coverage
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_label_padding_getter_returns_text_padding(self, padding):
         """Getting label_padding returns text_padding value."""
@@ -814,6 +839,7 @@ class TestLabelPaddingAliasSynchronization:
             f"Expected label_padding={padding}, got {list(label.label_padding)}"
     
     @given(text_padding_strategy)
+    # Custom strategy: 20 examples for adequate coverage
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_text_padding_setter_updates_label_padding(self, padding):
         """Setting text_padding updates label_padding."""
@@ -827,6 +853,7 @@ class TestLabelPaddingAliasSynchronization:
             f"Expected label_padding={padding}, got {list(label.label_padding)}"
     
     @given(text_padding_strategy, text_padding_strategy)
+    # Combination strategy: 20 examples (capped for performance)
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_bidirectional_synchronization(self, padding1, padding2):
         """label_padding and text_padding stay synchronized in both directions."""

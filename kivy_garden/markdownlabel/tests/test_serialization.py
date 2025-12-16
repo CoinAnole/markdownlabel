@@ -135,6 +135,7 @@ class TestRoundTripSerialization:
     
     # Complex strategy: 20 examples based on default complexity
     @given(markdown_paragraph())
+    # Custom strategy: 20 examples for adequate coverage
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_paragraph_round_trip(self, paragraph):
         """Paragraph round-trips through parse-serialize-parse."""
@@ -158,6 +159,7 @@ class TestRoundTripSerialization:
      # Complex strategy: 20 examples based on default complexity
     
     @given(markdown_bold())
+    # Custom strategy: 20 examples for adequate coverage
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_bold_round_trip(self, bold_text):
         """Bold text round-trips through parse-serialize-parse."""
@@ -174,6 +176,7 @@ class TestRoundTripSerialization:
             f"AST mismatch after round-trip:\nOriginal: {ast1}\nAfter: {ast2}"
     
     @given(markdown_italic())
+    # Custom strategy: 20 examples for adequate coverage
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_italic_round_trip(self, italic_text):
         """Italic text round-trips through parse-serialize-parse."""
@@ -190,6 +193,7 @@ class TestRoundTripSerialization:
             f"AST mismatch after round-trip:\nOriginal: {ast1}\nAfter: {ast2}"
     
     @given(markdown_link())
+    # Custom strategy: 20 examples for adequate coverage
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_link_round_trip(self, link_text):
         """Link round-trips through parse-serialize-parse."""
@@ -206,6 +210,7 @@ class TestRoundTripSerialization:
             f"AST mismatch after round-trip:\nOriginal: {ast1}\nAfter: {ast2}"
     
     @given(simple_markdown_document())
+    # Custom strategy: 20 examples for adequate coverage
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_document_round_trip(self, markdown_text):
         """Full document round-trips through parse-serialize-parse."""
@@ -443,6 +448,7 @@ class TestCodeFenceCollisionProperty:
     """Property-based tests for code fence collision handling."""
     
     @given(st.text(min_size=0, max_size=200))
+    # Complex text strategy with constraints: 30 examples
     @settings(max_examples=30 if not os.getenv('CI') else 15, deadline=None)
     def test_fence_collision_handling_property(self, code_content):
         """**Feature: test-improvements, Property 7: Code fence collision handling**
@@ -503,6 +509,7 @@ class TestCodeFenceCollisionProperty:
             f"Original content should be preserved in result. Content: {code_content!r}, Result: {result!r}"
     
     @given(st.text(min_size=0, max_size=200), st.text(alphabet=st.characters(whitelist_categories=('L', 'N')), min_size=0, max_size=20))
+    # Complex text strategy with constraints: 20 examples
     @settings(max_examples=20, deadline=None)
     def test_code_serialization_round_trip_property(self, code_content, language):
         """**Feature: test-improvements, Property 8: Code serialization round-trip**

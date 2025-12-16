@@ -165,6 +165,7 @@ class TestDeferredRebuildScheduling:
             ),
         )
     )
+    # Rebuild scheduling testing: 20 examples for deferred operations
     @settings(max_examples=20, deadline=None)
     def test_text_change_schedules_deferred_rebuild(self, new_text):
         """Text property change schedules deferred rebuild, not synchronous.
@@ -310,6 +311,7 @@ class TestDeferredRebuildScheduling:
             max_size=5,
         )
     )
+    # Rebuild scheduling testing: 20 examples for deferred operations
     @settings(max_examples=20, deadline=None)
     def test_multiple_changes_all_deferred(self, text_values):
         """Multiple property changes are all deferred until next frame.

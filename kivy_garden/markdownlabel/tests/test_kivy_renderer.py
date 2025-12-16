@@ -177,6 +177,7 @@ class TestHeadingFontHierarchy:
     
     # Complex strategy: 20 examples based on default complexity
     @given(heading_token())
+    # Custom strategy: 20 examples for adequate coverage
     @settings(max_examples=20 if not os.getenv('CI') else 10)
     def test_heading_has_markup_enabled(self, token):
         """Heading Labels have markup=True."""
@@ -216,6 +217,7 @@ class TestParagraphMarkupEnabled:
      # Complex strategy: 20 examples based on default complexity
     
     @given(paragraph_token())
+    # Custom strategy: 20 examples for adequate coverage
     @settings(max_examples=20 if not os.getenv('CI') else 10)
     def test_paragraph_has_markup_enabled(self, token):
         """Paragraph Labels have markup=True."""
@@ -227,6 +229,7 @@ class TestParagraphMarkupEnabled:
         assert widget.markup is True, "Paragraph should have markup=True"
     
     @given(paragraph_token())
+    # Custom strategy: 20 examples for adequate coverage
     @settings(max_examples=20 if not os.getenv('CI') else 10)
     def test_paragraph_returns_label(self, token):
         """Paragraph tokens produce Label widgets."""
@@ -248,6 +251,7 @@ class TestListStructurePreservation:
     """Property tests for list structure preservation (Property 6)."""
     
     @given(list_token())
+    # Custom strategy: 20 examples for adequate coverage
     @settings(max_examples=20 if not os.getenv('CI') else 10)
     def test_list_returns_boxlayout(self, token):
         """List tokens produce BoxLayout widgets."""
@@ -258,6 +262,7 @@ class TestListStructurePreservation:
         assert isinstance(widget, BoxLayout), f"Expected BoxLayout, got {type(widget)}"
     
     @given(list_token())
+    # Custom strategy: 20 examples for adequate coverage
     @settings(max_examples=20 if not os.getenv('CI') else 10)
     def test_list_has_correct_item_count(self, token):
         """List has one child per list item."""
@@ -272,6 +277,7 @@ class TestListStructurePreservation:
             f"Expected {expected_count} children, got {actual_count}"
     
     @given(list_token(ordered=False))
+    # Custom strategy: 20 examples for adequate coverage
     @settings(max_examples=20 if not os.getenv('CI') else 10)
     def test_unordered_list_has_bullet_markers(self, token):
         """Unordered list items have bullet markers."""
@@ -289,6 +295,7 @@ class TestListStructurePreservation:
             assert '•' in marker.text, f"Unordered list marker should contain bullet, got: {marker.text}"
     
     @given(list_token(ordered=True))
+    # Custom strategy: 20 examples for adequate coverage
     @settings(max_examples=20 if not os.getenv('CI') else 10)
     def test_ordered_list_has_number_markers(self, token):
         """Ordered list items have number markers."""
@@ -373,6 +380,7 @@ class TestCodeBlockStyling:
     """Property tests for code block styling (Property 10)."""
     
     @given(code_block_token())
+    # Custom strategy: 20 examples for adequate coverage
     @settings(max_examples=20 if not os.getenv('CI') else 10)
     # Complex strategy: 20 examples based on default complexity
     def test_code_block_returns_widget(self, token):
@@ -383,6 +391,7 @@ class TestCodeBlockStyling:
         assert isinstance(widget, Widget), f"Expected Widget, got {type(widget)}"
     
     @given(code_block_token())
+    # Custom strategy: 20 examples for adequate coverage
     @settings(max_examples=20 if not os.getenv('CI') else 10)
     def test_code_block_has_monospace_font(self, token):
         """Code block uses monospace font."""
@@ -405,6 +414,7 @@ class TestCodeBlockStyling:
             f"Expected monospace font, got {label.font_name}"
     
     @given(code_block_token())
+    # Custom strategy: 20 examples for adequate coverage
     @settings(max_examples=20 if not os.getenv('CI') else 10)
     def test_code_block_has_dark_background(self, token):
         """Code block has dark background color."""
@@ -426,6 +436,7 @@ class TestCodeBlockLanguageMetadata:
     """Property tests for code block language metadata (Property 11)."""
     
     @given(code_block_token())
+    # Custom strategy: 20 examples for adequate coverage
     @settings(max_examples=20 if not os.getenv('CI') else 10)
     def test_code_block_stores_language_info(self, token):
         """Code block stores language info as attribute."""
@@ -466,6 +477,7 @@ class TestBlockQuoteStructure:
     """Property tests for block quote structure (Property 14)."""
     
     @given(block_quote_token())
+    # Custom strategy: 20 examples for adequate coverage
     @settings(max_examples=20 if not os.getenv('CI') else 10)
     def test_block_quote_returns_boxlayout(self, token):
         """Block quote tokens produce BoxLayout widgets."""
@@ -476,6 +488,7 @@ class TestBlockQuoteStructure:
      # Complex strategy: 20 examples based on default complexity
     
     @given(block_quote_token())
+    # Custom strategy: 20 examples for adequate coverage
     @settings(max_examples=20 if not os.getenv('CI') else 10)
     def test_block_quote_has_left_padding(self, token):
         """Block quote has left padding for indentation."""
@@ -487,6 +500,7 @@ class TestBlockQuoteStructure:
             f"Block quote should have left padding, got {widget.padding[0]}"
     
     @given(block_quote_token())
+    # Custom strategy: 20 examples for adequate coverage
     @settings(max_examples=20 if not os.getenv('CI') else 10)
     def test_block_quote_has_left_border(self, token):
         """Block quote has left border line."""
@@ -507,6 +521,7 @@ class TestThematicBreakRendering:
     """Property tests for thematic break rendering (Property 15)."""
     
     @given(st.just({'type': 'thematic_break'}))
+    # Custom strategy: 20 examples for adequate coverage
     @settings(max_examples=20 if not os.getenv('CI') else 10)
     def test_thematic_break_returns_widget(self, token):
         """Thematic break tokens produce Widget."""
@@ -517,6 +532,7 @@ class TestThematicBreakRendering:
         assert isinstance(widget, Widget), f"Expected Widget, got {type(widget)}"
     
     @given(st.just({'type': 'thematic_break'}))
+    # Custom strategy: 20 examples for adequate coverage
     @settings(max_examples=20 if not os.getenv('CI') else 10)
     def test_thematic_break_has_fixed_height(self, token):
         """Thematic break has fixed height."""
@@ -527,6 +543,7 @@ class TestThematicBreakRendering:
         assert widget.height > 0, "Thematic break should have positive height"
     
     @given(st.just({'type': 'thematic_break'}))
+    # Custom strategy: 20 examples for adequate coverage
     @settings(max_examples=20 if not os.getenv('CI') else 10)
     def test_thematic_break_has_horizontal_line(self, token):
         """Thematic break has horizontal line on canvas."""
@@ -547,6 +564,7 @@ class TestImageWidgetCreation:
     """Property tests for image widget creation (Property 13)."""
     
     @given(image_token())
+    # Custom strategy: 20 examples for adequate coverage
     @settings(max_examples=20 if not os.getenv('CI') else 10)
     def test_image_returns_asyncimage(self, token):
         """Image tokens produce AsyncImage widgets."""
@@ -557,6 +575,7 @@ class TestImageWidgetCreation:
         assert isinstance(widget, AsyncImage), f"Expected AsyncImage, got {type(widget)}"
     
     @given(image_token())
+    # Custom strategy: 20 examples for adequate coverage
     @settings(max_examples=20 if not os.getenv('CI') else 10)
     def test_image_has_correct_source(self, token):
         """Image widget has correct source URL."""
@@ -568,6 +587,7 @@ class TestImageWidgetCreation:
             f"Expected source '{expected_url}', got '{widget.source}'"
     
     @given(image_token())
+    # Custom strategy: 20 examples for adequate coverage
     @settings(max_examples=20 if not os.getenv('CI') else 10)
     def test_image_stores_alt_text(self, token):
         """Image widget stores alt text for fallback."""
@@ -741,6 +761,7 @@ class TestTableGridStructure:
             f"Expected {expected_count} cells (R={num_rows} × C={num_cols}), got {label_count}"
     
     @given(table_token())
+    # Custom strategy: 20 examples for adequate coverage
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_table_returns_gridlayout(self, token):
         """Table tokens produce GridLayout widgets."""
@@ -750,6 +771,7 @@ class TestTableGridStructure:
         assert isinstance(widget, GridLayout), f"Expected GridLayout, got {type(widget)}"
     
     @given(table_token())
+    # Custom strategy: 20 examples for adequate coverage
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_table_cells_are_labels(self, token):
         """All table cells are Label widgets."""
@@ -855,6 +877,7 @@ class TestTableAlignmentApplication:
             f"Expected halign='left' for invalid alignment, got '{widget.halign}'"
     
     @given(table_token())
+    # Custom strategy: 20 examples for adequate coverage
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_cell_stores_alignment_metadata(self, token):
         """Table cells store alignment as metadata."""

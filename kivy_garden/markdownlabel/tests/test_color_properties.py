@@ -47,6 +47,7 @@ class TestColorForwarding:
     
     # Complex strategy: 20 examples based on default complexity
     @given(color_strategy)
+    # Custom strategy: 20 examples for adequate coverage
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_color_applied_to_heading(self, color):
         """color is applied to heading Labels."""
@@ -62,6 +63,7 @@ class TestColorForwarding:
      # Complex strategy: 20 examples based on default complexity
     
     @given(color_strategy)
+    # Custom strategy: 20 examples for adequate coverage
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_code_block_preserves_light_color(self, color):
         """Code blocks preserve their light text color regardless of color setting."""
@@ -79,6 +81,7 @@ class TestColorForwarding:
                 f"Code label should use light color={code_color}, got {list(lbl.color)}"
     
     @given(color_strategy, color_strategy)
+    # Combination strategy: 20 examples (capped for performance)
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_color_change_triggers_rebuild(self, color1, color2):
         """Changing color triggers widget rebuild with new color."""
@@ -102,6 +105,7 @@ class TestColorForwarding:
                 f"After change, expected color={color2}, got {list(lbl.color)}"
     
     @given(color_strategy)
+    # Custom strategy: 20 examples for adequate coverage
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_color_applied_to_list_items(self, color):
         """color is applied to list item Labels."""
@@ -117,6 +121,7 @@ class TestColorForwarding:
                 f"Expected color={color}, got {list(lbl.color)}"
     
     @given(color_strategy)
+    # Custom strategy: 20 examples for adequate coverage
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_color_applied_to_table_cells(self, color):
         """color is applied to table cell Labels."""
@@ -132,6 +137,7 @@ class TestColorForwarding:
                 f"Expected color={color}, got {list(lbl.color)}"
     
     @given(color_strategy)
+    # Custom strategy: 20 examples for adequate coverage
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_mixed_content_color_separation(self, color):
         """Mixed content correctly separates body color and code color."""

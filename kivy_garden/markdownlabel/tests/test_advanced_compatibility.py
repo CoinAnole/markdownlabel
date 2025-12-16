@@ -41,6 +41,7 @@ class TestAdvancedFontPropertiesForwarding:
         whitelist_categories=['L', 'N'],
         blacklist_characters='[]&\n\r'
     )))
+    # Complex text strategy with constraints: 20 examples
     @settings(max_examples=20, deadline=None)
     def test_font_family_forwarded_to_labels(self, font_family_value):
         """font_family is forwarded to all internal Labels."""
@@ -57,6 +58,7 @@ class TestAdvancedFontPropertiesForwarding:
         whitelist_categories=['L', 'N'],
         blacklist_characters='[]&\n\r'
     )))
+    # Complex text strategy with constraints: 20 examples
     @settings(max_examples=20, deadline=None)
     def test_font_context_forwarded_to_labels(self, font_context_value):
         """font_context is forwarded to all internal Labels."""
@@ -73,6 +75,7 @@ class TestAdvancedFontPropertiesForwarding:
         whitelist_categories=['L', 'N', 'P'],
         blacklist_characters='[]&\n\r'
     )))
+    # Complex text strategy with constraints: 20 examples
     @settings(max_examples=20, deadline=None)
     def test_font_features_forwarded_to_labels(self, font_features_value):
         """font_features is forwarded to all internal Labels."""
@@ -253,6 +256,7 @@ class TestDisabledColorApplication:
         st.floats(min_value=0, max_value=1, allow_nan=False, allow_infinity=False),
         min_size=4, max_size=4
     ))
+    # List strategy: 20 examples for varied list sizes
     @settings(max_examples=20, deadline=None)
     def test_disabled_color_stored_correctly(self, disabled_color):
         """disabled_color property stores the value correctly."""
@@ -265,6 +269,7 @@ class TestDisabledColorApplication:
         st.floats(min_value=0, max_value=1, allow_nan=False, allow_infinity=False),
         min_size=4, max_size=4
     ))
+    # List strategy: 20 examples for varied list sizes
     @settings(max_examples=20, deadline=None)
     def test_disabled_color_applied_when_disabled(self, disabled_color):
         """When disabled=True, internal Labels use disabled_color instead of color."""
@@ -291,6 +296,7 @@ class TestDisabledColorApplication:
         st.floats(min_value=0, max_value=1, allow_nan=False, allow_infinity=False),
         min_size=4, max_size=4
     ))
+    # List strategy: 20 examples for varied list sizes
     @settings(max_examples=20, deadline=None)
     def test_regular_color_applied_when_not_disabled(self, regular_color):
         """When disabled=False, internal Labels use regular color."""
@@ -498,6 +504,7 @@ class TestReactiveRebuildOnPropertyChange:
     
     # Complex strategy: 20 examples based on default complexity
     @given(rebuild_colors, rebuild_colors)
+    # Combination strategy: 20 examples (capped for performance)
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_color_change_rebuilds_widgets(self, color1, color2):
         """Changing color after initial rendering rebuilds widgets with new color.
@@ -528,6 +535,7 @@ class TestReactiveRebuildOnPropertyChange:
      # Complex strategy: 20 examples based on default complexity
     
     @given(rebuild_line_heights, rebuild_line_heights)
+    # Combination strategy: 20 examples (capped for performance)
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_line_height_change_rebuilds_widgets(self, lh1, lh2):
         """Changing line_height after initial rendering rebuilds widgets with new value.
@@ -558,6 +566,7 @@ class TestReactiveRebuildOnPropertyChange:
                 f"After change, expected line_height={lh2}, got {lbl.line_height}"
     
     @given(rebuild_text_size_widths, rebuild_text_size_widths)
+    # Combination strategy: 20 examples (capped for performance)
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_text_size_change_rebuilds_widgets(self, width1, width2):
         """Changing text_size after initial rendering rebuilds widgets.
@@ -584,6 +593,7 @@ class TestReactiveRebuildOnPropertyChange:
         assert len(labels_after) >= 1, "Expected at least one Label after rebuild"
     
     @given(rebuild_font_names, rebuild_colors, rebuild_line_heights)
+    # Combination strategy: 20 examples (capped for performance)
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_multiple_property_changes_rebuild_correctly(self, font_name, color, line_height):
         """Multiple property changes each trigger rebuilds with correct values."""
@@ -761,6 +771,7 @@ class TestReactiveRebuildOnPropertyChange:
                 f"After change, expected color={expected_color2}, got {list(lbl.color)}"
     
     @given(simple_markdown_document(), rebuild_font_names, rebuild_font_names)
+    # Custom strategy: 20 examples for adequate coverage
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_rebuild_preserves_content_structure(self, markdown_text, font1, font2):
         """Rebuilding widgets preserves the content structure."""
