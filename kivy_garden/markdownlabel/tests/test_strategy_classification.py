@@ -291,13 +291,13 @@ from hypothesis import given, strategies as st, settings
 
 class TestExample:
     @given(st.booleans())
-    @settings(max_examples=2, deadline=None)
+    @settings(max_examples=100, deadline=None)
     def test_boolean_property(self, value):
         """Test with over-testing."""
         assert isinstance(value, bool)
     
     @given(st.integers(min_value=0, max_value=2))
-    @settings(max_examples=3, deadline=None)
+    @settings(max_examples=100, deadline=None)
     def test_small_range_property(self, value):
         """Test with over-testing."""
         assert 0 <= value <= 2
