@@ -751,8 +751,7 @@ class TestTableGridStructure:
 class TestTableAlignmentApplication:
     """Property tests for table alignment application (Property 9)."""
     
-    @given(st.sampled_from(['left', 'center', 'right']))
-    @settings(max_examples=100, deadline=None)
+    @pytest.mark.parametrize('alignment', ['left', 'center', 'right'])
     def test_cell_alignment_applied(self, alignment):
         """Table cell alignment is applied to Label halign."""
         renderer = KivyRenderer()
@@ -821,8 +820,7 @@ class TestTableAlignmentApplication:
                 assert cell.halign == expected_align, \
                     f"Cell [{row_idx}][{col_idx}] expected halign='{expected_align}', got '{cell.halign}'"
     
-    @given(st.sampled_from([None, 'invalid', '']))
-    @settings(max_examples=100, deadline=None)
+    @pytest.mark.parametrize('alignment', [None, 'invalid', ''])
     def test_invalid_alignment_defaults_to_left(self, alignment):
         """Invalid or missing alignment defaults to 'left'."""
         renderer = KivyRenderer()
