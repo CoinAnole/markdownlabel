@@ -110,7 +110,7 @@
 - [x] 6. Checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
-- [-] 7. Implement RTL-aware auto alignment
+- [x] 7. Implement RTL-aware auto alignment
   - [x] 7.1 Add `_get_effective_halign()` method
     - Return explicit halign if not 'auto'
     - Return 'right' if base_direction is 'rtl' or 'weak_rtl'
