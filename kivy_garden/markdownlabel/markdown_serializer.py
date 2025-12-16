@@ -186,9 +186,18 @@ class MarkdownSerializer:
         attrs = token.get('attrs', {})
         language = attrs.get('info', '')
         
-        # Use fenced code block format
-        fence = '```'
-        return f'{fence}{language}\n{raw}{fence}'
+        # Find appropriate fence length to avoid collision with content
+        fence_length = 3
+        while '`' * fence_length in raw:
+            fence_length += 1
+        
+        fence = '`' * fence_length
+        
+        # Don't add extra newline if content already ends with one
+        if raw.endswith('\n'):
+            return f'{fence}{language}\n{raw}{fence}'
+        else:
+            return f'{fence}{language}\n{raw}\n{fence}'
     
     def block_quote(self, token: Dict[str, Any]) -> str:
         """Serialize a block quote token.

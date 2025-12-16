@@ -54,21 +54,21 @@
     - **Property 6: URL markup safety**
     - **Validates: Requirements 4.1, 4.2, 4.4**
 
-- [ ] 4. Implement robust code block serialization
-  - [ ] 4.1 Fix fence collision handling in MarkdownSerializer.block_code()
+- [x] 4. Implement robust code block serialization
+  - [x] 4.1 Fix fence collision handling in MarkdownSerializer.block_code()
     - Implement dynamic fence length selection based on content
     - Ensure fence is longer than any backtick sequence in code
     - Handle edge cases like code containing only backticks
     - _Requirements: 5.1, 5.2_
-  - [ ] 4.2 Add code block serialization tests
+  - [x] 4.2 Add code block serialization tests
     - Test code containing various backtick patterns
     - Verify round-trip serialization preserves content exactly
     - Test edge cases like empty code blocks and backtick-only content
     - _Requirements: 5.3, 5.4_
-  - [ ] 4.3 Write property test for code fence collision handling
+  - [x] 4.3 Write property test for code fence collision handling
     - **Property 7: Code fence collision handling**
     - **Validates: Requirements 5.1, 5.2**
-  - [ ] 4.4 Write property test for code serialization round-trip
+  - [x] 4.4 Write property test for code serialization round-trip
     - **Property 8: Code serialization round-trip**
     - **Validates: Requirements 5.3, 5.4**
 

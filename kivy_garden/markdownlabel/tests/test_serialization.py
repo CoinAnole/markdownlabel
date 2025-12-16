@@ -12,8 +12,10 @@ os.environ['KIVY_NO_ARGS'] = '1'
 os.environ['KIVY_NO_CONSOLELOG'] = '1'
 
 from hypothesis import given, settings, assume
+from hypothesis import strategies as st
 
 from kivy_garden.markdownlabel import MarkdownLabel
+from kivy_garden.markdownlabel.markdown_serializer import MarkdownSerializer
 from .test_utils import (
     markdown_heading,
     markdown_paragraph,
@@ -308,3 +310,243 @@ class TestRoundTripSerialization:
         
         assert ast1 == ast2, \
             f"AST mismatch after round-trip:\nOriginal: {ast1}\nAfter: {ast2}"
+
+
+class TestCodeBlockSerialization:
+    """Tests for code block serialization edge cases."""
+    
+    def test_code_with_backticks(self):
+        """Code containing backticks should use longer fence."""
+        markdown = '```\ncode with ``` backticks\n```'
+        
+        label = MarkdownLabel(text=markdown)
+        serialized = label.to_markdown()
+        
+        # Should use 4 backticks to avoid collision
+        assert '````' in serialized
+        assert 'code with ``` backticks' in serialized
+        
+        # Verify round-trip works
+        label2 = MarkdownLabel(text=serialized)
+        ast1 = label.get_ast()
+        ast2 = label2.get_ast()
+        
+        # Extract code content from AST
+        code1 = ast1[0]['raw'] if ast1 and ast1[0].get('type') == 'block_code' else None
+        code2 = ast2[0]['raw'] if ast2 and ast2[0].get('type') == 'block_code' else None
+        
+        assert code1 == code2, f"Code content mismatch: {code1!r} != {code2!r}"
+    
+    def test_code_with_four_backticks(self):
+        """Code containing four backticks should use five backticks fence."""
+        markdown = '```\ncode with ```` four backticks\n```'
+        
+        label = MarkdownLabel(text=markdown)
+        serialized = label.to_markdown()
+        
+        # Should use 5 backticks to avoid collision
+        assert '`````' in serialized
+        assert 'code with ```` four backticks' in serialized
+    
+    def test_code_only_backticks(self):
+        """Code containing only backticks should be handled correctly."""
+        # Use a code block that actually contains backticks as content
+        markdown = '```\n```backticks```\n```'
+        
+        label = MarkdownLabel(text=markdown)
+        serialized = label.to_markdown()
+        
+        # Should use 4 backticks to avoid collision
+        assert '````' in serialized
+        assert '```backticks```' in serialized
+        
+        # Verify round-trip preserves content
+        label2 = MarkdownLabel(text=serialized)
+        ast1 = label.get_ast()
+        ast2 = label2.get_ast()
+        
+        code1 = ast1[0]['raw'] if ast1 and ast1[0].get('type') == 'block_code' else None
+        code2 = ast2[0]['raw'] if ast2 and ast2[0].get('type') == 'block_code' else None
+        
+        assert code1 == code2, f"Code content mismatch: {code1!r} != {code2!r}"
+    
+    def test_empty_code_block(self):
+        """Empty code blocks should serialize correctly."""
+        markdown = '```\n\n```'
+        
+        label = MarkdownLabel(text=markdown)
+        serialized = label.to_markdown()
+        
+        # Should use standard 3 backticks for empty content
+        assert '```' in serialized
+        
+        # Verify round-trip works
+        label2 = MarkdownLabel(text=serialized)
+        ast1 = label.get_ast()
+        ast2 = label2.get_ast()
+        
+        # Both should have block_code tokens
+        assert ast1[0].get('type') == 'block_code'
+        assert ast2[0].get('type') == 'block_code'
+    
+    def test_code_with_language_and_backticks(self):
+        """Code with language info and backticks should preserve both."""
+        markdown = '```python\nprint("```")\n```'
+        
+        label = MarkdownLabel(text=markdown)
+        serialized = label.to_markdown()
+        
+        # Should use 4 backticks and preserve language
+        assert '````python' in serialized
+        assert 'print("```")' in serialized
+        
+        # Verify round-trip preserves language info
+        label2 = MarkdownLabel(text=serialized)
+        ast1 = label.get_ast()
+        ast2 = label2.get_ast()
+        
+        lang1 = ast1[0]['attrs']['info'] if ast1 and ast1[0].get('attrs') else None
+        lang2 = ast2[0]['attrs']['info'] if ast2 and ast2[0].get('attrs') else None
+        
+        assert lang1 == lang2 == 'python'
+    
+    def test_code_with_mixed_backtick_lengths(self):
+        """Code with various backtick lengths should use appropriate fence."""
+        code_content = 'single ` double `` triple ``` quadruple ````'
+        markdown = f'```\n{code_content}\n```'
+        
+        label = MarkdownLabel(text=markdown)
+        serialized = label.to_markdown()
+        
+        # Should use 5 backticks to be longer than any sequence in content
+        assert '`````' in serialized
+        assert code_content in serialized
+        
+        # Verify round-trip preserves exact content
+        label2 = MarkdownLabel(text=serialized)
+        ast1 = label.get_ast()
+        ast2 = label2.get_ast()
+        
+        code1 = ast1[0]['raw'] if ast1 and ast1[0].get('type') == 'block_code' else None
+        code2 = ast2[0]['raw'] if ast2 and ast2[0].get('type') == 'block_code' else None
+        
+        # The raw content includes the trailing newline from parsing
+        expected_content = code_content + '\n'
+        assert code1 == code2 == expected_content
+
+
+class TestCodeFenceCollisionProperty:
+    """Property-based tests for code fence collision handling."""
+    
+    @given(st.text(min_size=0, max_size=200))
+    @settings(max_examples=100, deadline=None)
+    def test_fence_collision_handling_property(self, code_content):
+        """**Feature: test-improvements, Property 7: Code fence collision handling**
+        
+        For any code content that contains backticks, the MarkdownSerializer 
+        SHALL choose a fence length longer than any backtick sequence in the content 
+        to prevent fence collision.
+        
+        **Validates: Requirements 5.1, 5.2**
+        """
+        # Create a code block token
+        token = {
+            'type': 'block_code',
+            'raw': code_content,
+            'attrs': {'info': ''}
+        }
+        
+        serializer = MarkdownSerializer()
+        result = serializer.block_code(token)
+        
+        # Extract the fence used (backticks at start of result)
+        lines = result.split('\n')
+        if not lines:
+            return  # Empty result, nothing to check
+        
+        first_line = lines[0]
+        fence_match = ''
+        for char in first_line:
+            if char == '`':
+                fence_match += char
+            else:
+                break
+        
+        if not fence_match:
+            return  # No fence found, might be empty content
+        
+        fence_length = len(fence_match)
+        
+        # Property: The fence should be longer than any backtick sequence in content
+        if '`' in code_content:
+            # Find the longest sequence of backticks in the content
+            max_backticks_in_content = 0
+            current_backticks = 0
+            
+            for char in code_content:
+                if char == '`':
+                    current_backticks += 1
+                    max_backticks_in_content = max(max_backticks_in_content, current_backticks)
+                else:
+                    current_backticks = 0
+            
+            # The fence should be longer than the longest sequence in content
+            assert fence_length > max_backticks_in_content, \
+                f"Fence length {fence_length} should be > max backticks in content {max_backticks_in_content}. Content: {code_content!r}, Result: {result!r}"
+        
+        # Additional property: The result should contain the original content
+        assert code_content in result, \
+            f"Original content should be preserved in result. Content: {code_content!r}, Result: {result!r}"
+    
+    @given(st.text(min_size=0, max_size=200), st.text(alphabet=st.characters(whitelist_categories=('L', 'N')), min_size=0, max_size=20))
+    @settings(max_examples=100, deadline=None)
+    def test_code_serialization_round_trip_property(self, code_content, language):
+        """**Feature: test-improvements, Property 8: Code serialization round-trip**
+        
+        For any code block, serializing and then parsing the result SHALL produce 
+        valid Markdown that preserves the original content exactly.
+        
+        **Validates: Requirements 5.3, 5.4**
+        """
+        # Skip problematic characters that might interfere with parsing
+        assume('\x00' not in code_content)
+        assume('\r' not in code_content)  # Avoid line ending issues
+        
+        # Create original markdown with code block
+        if language.strip():
+            original_markdown = f'```{language}\n{code_content}\n```'
+        else:
+            original_markdown = f'```\n{code_content}\n```'
+        
+        # Parse the original markdown
+        label1 = MarkdownLabel(text=original_markdown)
+        ast1 = label1.get_ast()
+        
+        # Skip if parsing didn't produce a code block (malformed input)
+        if not ast1 or ast1[0].get('type') != 'block_code':
+            assume(False)
+        
+        # Serialize back to markdown
+        serialized = label1.to_markdown()
+        
+        # Parse the serialized markdown
+        label2 = MarkdownLabel(text=serialized)
+        ast2 = label2.get_ast()
+        
+        # Should still be a code block
+        assert ast2 and ast2[0].get('type') == 'block_code', \
+            f"Round-trip should preserve code block type. Serialized: {serialized!r}"
+        
+        # Content should be preserved exactly
+        original_content = ast1[0].get('raw', '')
+        round_trip_content = ast2[0].get('raw', '')
+        
+        assert original_content == round_trip_content, \
+            f"Code content should be preserved exactly.\nOriginal: {original_content!r}\nRound-trip: {round_trip_content!r}\nSerialized: {serialized!r}"
+        
+        # Language info should be preserved
+        original_lang = ast1[0].get('attrs', {}).get('info', '')
+        round_trip_lang = ast2[0].get('attrs', {}).get('info', '')
+        
+        assert original_lang == round_trip_lang, \
+            f"Language info should be preserved.\nOriginal: {original_lang!r}\nRound-trip: {round_trip_lang!r}"
