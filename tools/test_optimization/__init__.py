@@ -8,6 +8,7 @@ from .strategy_classifier import StrategyClassifier, StrategyType, StrategyAnaly
 from .max_examples_calculator import MaxExamplesCalculator
 from .test_file_analyzer import FileAnalyzer, OptimizationRecommendation, FileAnalysis, ValidationReport
 from .over_testing_validator import OverTestingValidator, ValidationThresholds, ValidationResult
+from .comment_analyzer import CommentAnalyzer, FileAnalysis as CommentFileAnalysis, DirectoryAnalysis, FormatViolation, Inconsistency
 
 __all__ = [
     'StrategyClassifier',
@@ -20,5 +21,10 @@ __all__ = [
     'ValidationReport',
     'OverTestingValidator',
     'ValidationThresholds',
-    'ValidationResult'
+    'ValidationResult',
+    'CommentAnalyzer',
+    'CommentFileAnalysis',
+    'DirectoryAnalysis',
+    'FormatViolation',
+    'Inconsistency'
 ]
