@@ -14,7 +14,7 @@ from pathlib import Path
 tools_dir = Path(__file__).parent
 sys.path.insert(0, str(tools_dir))
 
-from test_optimization import TestFileAnalyzer
+from test_optimization import FileAnalyzer
 
 
 def main():
@@ -31,7 +31,7 @@ def main():
     print()
     
     # Create analyzer and run validation
-    analyzer = TestFileAnalyzer()
+    analyzer = FileAnalyzer()
     report = analyzer.validate_test_suite(str(test_dir))
     
     # Print summary

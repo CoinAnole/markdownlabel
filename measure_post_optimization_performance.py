@@ -17,14 +17,14 @@ from typing import Dict, List, Tuple, Any
 # Add the package to Python path
 sys.path.insert(0, str(Path(__file__).parent))
 
-from tools.test_optimization.test_file_analyzer import TestFileAnalyzer
+from tools.test_optimization.test_file_analyzer import FileAnalyzer
 
 
 class PostOptimizationPerformanceMeasurer:
     """Measures post-optimization performance and compares against baseline."""
     
     def __init__(self, baseline_report_path: str = "baseline_performance_report.json"):
-        self.analyzer = TestFileAnalyzer()
+        self.analyzer = FileAnalyzer()
         self.test_directory = "kivy_garden/markdownlabel/tests"
         self.baseline_report = self._load_baseline_report(baseline_report_path)
         

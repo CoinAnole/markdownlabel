@@ -1,7 +1,7 @@
 """
-Tests for the TestFileAnalyzer optimization tool.
+Tests for the FileAnalyzer optimization tool.
 
-This module tests the TestFileAnalyzer's ability to correctly analyze test files
+This module tests the FileAnalyzer's ability to correctly analyze test files
 and generate optimization recommendations for max_examples values.
 """
 
@@ -15,21 +15,21 @@ from hypothesis import given, strategies as st, settings
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', '..', 'tools'))
 
 from test_optimization.test_file_analyzer import (
-    TestFileAnalyzer, PropertyTest, OptimizationRecommendation, 
+    FileAnalyzer, PropertyTest, OptimizationRecommendation, 
     FileAnalysis, ValidationReport
 )
 from test_optimization.strategy_classifier import StrategyType
 
 
 class TestFileAnalyzerBasics:
-    """Basic functionality tests for TestFileAnalyzer."""
+    """Basic functionality tests for FileAnalyzer."""
     
     def setup_method(self):
         """Set up test fixtures."""
-        self.analyzer = TestFileAnalyzer()
+        self.analyzer = FileAnalyzer()
     
     def test_analyzer_initialization(self):
-        """TestFileAnalyzer initializes correctly with classifier and calculator."""
+        """FileAnalyzer initializes correctly with classifier and calculator."""
         assert self.analyzer.classifier is not None
         assert self.analyzer.calculator is not None
         assert hasattr(self.analyzer, 'given_pattern')
@@ -87,7 +87,7 @@ class TestPropertyTestExtraction:
     
     def setup_method(self):
         """Set up test fixtures."""
-        self.analyzer = TestFileAnalyzer()
+        self.analyzer = FileAnalyzer()
     
     def test_boolean_over_testing_detection(self):
         """Detects boolean tests with excessive max_examples."""
@@ -226,7 +226,7 @@ class TestValidationReport:
     
     def setup_method(self):
         """Set up test fixtures."""
-        self.analyzer = TestFileAnalyzer()
+        self.analyzer = FileAnalyzer()
     
     def test_validate_test_suite_empty_directory(self):
         """Validates empty test directory correctly."""
@@ -287,7 +287,7 @@ class TestRationaleGeneration:
     
     def setup_method(self):
         """Set up test fixtures."""
-        self.analyzer = TestFileAnalyzer()
+        self.analyzer = FileAnalyzer()
     
     @given(st.sampled_from(['boolean', 'small_finite', 'medium_finite', 'combination', 'complex']))
     @settings(max_examples=5, deadline=None)
@@ -323,7 +323,7 @@ class TestErrorHandling:
     
     def setup_method(self):
         """Set up test fixtures."""
-        self.analyzer = TestFileAnalyzer()
+        self.analyzer = FileAnalyzer()
     
     def test_nonexistent_file_handling(self):
         """Handles nonexistent files gracefully."""
@@ -393,10 +393,10 @@ class TestIntegrationWithOptimizationTools:
     
     def setup_method(self):
         """Set up test fixtures."""
-        self.analyzer = TestFileAnalyzer()
+        self.analyzer = FileAnalyzer()
     
     def test_integration_with_strategy_classifier(self):
-        """TestFileAnalyzer correctly uses StrategyClassifier."""
+        """FileAnalyzer correctly uses StrategyClassifier."""
         content = '''
 from hypothesis import given, strategies as st, settings
 
@@ -423,7 +423,7 @@ def test_color_enum(self, color):
             os.unlink(temp_file)
     
     def test_integration_with_max_examples_calculator(self):
-        """TestFileAnalyzer correctly uses MaxExamplesCalculator."""
+        """FileAnalyzer correctly uses MaxExamplesCalculator."""
         content = '''
 from hypothesis import given, strategies as st, settings
 

@@ -237,10 +237,10 @@ Following these guidelines typically results in:
 Use the provided optimization tools to identify over-testing:
 
 ```python
-from kivy_garden.markdownlabel.test_file_analyzer import TestFileAnalyzer
+from kivy_garden.markdownlabel.test_file_analyzer import FileAnalyzer
 
 # Analyze test files for optimization opportunities
-analyzer = TestFileAnalyzer()
+analyzer = FileAnalyzer()
 report = analyzer.validate_test_suite('tests/')
 
 # Generate optimization recommendations

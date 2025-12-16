@@ -12,12 +12,12 @@ from pathlib import Path
 # Add the package to Python path
 sys.path.insert(0, str(Path(__file__).parent))
 
-from kivy_garden.markdownlabel.test_file_analyzer import TestFileAnalyzer
+from kivy_garden.markdownlabel.test_file_analyzer import FileAnalyzer
 
 
 def main():
     """Run analysis on the test suite and generate report."""
-    analyzer = TestFileAnalyzer()
+    analyzer = FileAnalyzer()
     test_directory = "kivy_garden/markdownlabel/tests"
     
     print("Analyzing test suite for over-testing patterns...")

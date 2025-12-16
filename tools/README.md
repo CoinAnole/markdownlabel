@@ -50,10 +50,10 @@ python3 tools/analyze_tests.py
 ### Use in Python Code
 
 ```python
-from tools.test_optimization import TestFileAnalyzer, OverTestingValidator
+from tools.test_optimization import FileAnalyzer, OverTestingValidator
 
 # Basic analysis
-analyzer = TestFileAnalyzer()
+analyzer = FileAnalyzer()
 report = analyzer.validate_test_suite('kivy_garden/markdownlabel/tests/')
 
 for file_analysis in report.file_analyses:

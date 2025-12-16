@@ -22,7 +22,7 @@ os.environ['KIVY_NO_ARGS'] = '1'
 # Add the package to Python path
 sys.path.insert(0, str(Path(__file__).parent))
 
-from tools.test_optimization.test_file_analyzer import TestFileAnalyzer
+from tools.test_optimization.test_file_analyzer import FileAnalyzer
 
 
 class OptimizationApplier:
@@ -297,7 +297,7 @@ class OptimizationApplier:
 def load_recommendations_from_analyzer() -> List[Dict]:
     """Load recommendations directly from analyzer (more complete than JSON)."""
     try:
-        analyzer = TestFileAnalyzer()
+        analyzer = FileAnalyzer()
         test_directory = "kivy_garden/markdownlabel/tests"
         
         # Generate fresh validation report

@@ -14,12 +14,12 @@ from datetime import datetime
 # Add the package to Python path
 sys.path.insert(0, str(Path(__file__).parent))
 
-from kivy_garden.markdownlabel.test_file_analyzer import TestFileAnalyzer
+from kivy_garden.markdownlabel.test_file_analyzer import FileAnalyzer
 
 
 def generate_detailed_report():
     """Generate comprehensive optimization report."""
-    analyzer = TestFileAnalyzer()
+    analyzer = FileAnalyzer()
     test_directory = "kivy_garden/markdownlabel/tests"
     
     print("Generating comprehensive optimization report...")

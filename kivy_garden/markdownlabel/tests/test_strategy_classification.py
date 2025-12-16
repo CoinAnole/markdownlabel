@@ -295,8 +295,8 @@ class TestOverTestingDetection:
     
     def setup_method(self):
         """Set up test fixtures."""
-        from test_optimization.test_file_analyzer import TestFileAnalyzer
-        self.analyzer = TestFileAnalyzer()
+        from test_optimization.test_file_analyzer import FileAnalyzer
+        self.analyzer = FileAnalyzer()
     
     # **Feature: test-performance-optimization, Property 7: Over-testing detection works correctly**
     @given(st.integers(min_value=101, max_value=200))

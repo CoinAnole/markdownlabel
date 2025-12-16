@@ -17,14 +17,14 @@ from typing import Dict, List, Tuple, Any
 # Add the package to Python path
 sys.path.insert(0, str(Path(__file__).parent))
 
-from kivy_garden.markdownlabel.test_file_analyzer import TestFileAnalyzer
+from kivy_garden.markdownlabel.test_file_analyzer import FileAnalyzer
 
 
 class BaselinePerformanceMeasurer:
     """Measures baseline performance of the test suite."""
     
     def __init__(self):
-        self.analyzer = TestFileAnalyzer()
+        self.analyzer = FileAnalyzer()
         self.test_directory = "kivy_garden/markdownlabel/tests"
         
     def measure_full_suite_performance(self) -> Dict[str, Any]:

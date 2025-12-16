@@ -12,7 +12,7 @@ from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 from dataclasses import dataclass, asdict
 
-from .test_file_analyzer import TestFileAnalyzer, ValidationReport, OptimizationRecommendation
+from .test_file_analyzer import FileAnalyzer, ValidationReport, OptimizationRecommendation
 
 
 @dataclass
@@ -54,7 +54,7 @@ class OverTestingValidator:
             thresholds: Custom validation thresholds, uses defaults if None
         """
         self.thresholds = thresholds or ValidationThresholds()
-        self.analyzer = TestFileAnalyzer()
+        self.analyzer = FileAnalyzer()
     
     def validate_test_suite(self, test_directory: str, 
                           output_file: Optional[str] = None) -> ValidationResult:

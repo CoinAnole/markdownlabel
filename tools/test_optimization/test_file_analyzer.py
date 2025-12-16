@@ -58,7 +58,7 @@ class ValidationReport:
     estimated_time_reduction_seconds: float
 
 
-class TestFileAnalyzer:
+class FileAnalyzer:
     """Analyzes test files for max_examples optimization opportunities."""
     
     def __init__(self):
