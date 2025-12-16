@@ -285,62 +285,82 @@ self._aggregated_refs: Dict[str, List[Tuple[float, float, float, float]]]
 
 ## Testing Strategy
 
-### Property-Based Testing Framework
+### Testing Framework and Organization
 
-Use **Hypothesis** for property-based testing (already in dev dependencies).
+Following the test-improvements design, use a combination of:
+- **Hypothesis** for property-based testing (truly random inputs)
+- **pytest.mark.parametrize** for fixed-list testing (specific edge cases)
+- **Focused test files** for different aspects of functionality
+
+### Test File Organization
+
+Tests are organized into focused files following the test-improvements structure:
+- `test_clipping_behavior.py` - Content clipping and StencilView tests
+- `test_rebuild_scheduling.py` - Deferred rebuild and batching tests  
+- `test_font_properties.py` - Font size and heading scale tests
+- `test_padding_properties.py` - Padding property tests
+- `test_rtl_alignment.py` - RTL-aware alignment tests
+- `test_advanced_compatibility.py` - Texture render mode tests
 
 ### Test Configuration
 
-- Minimum 100 iterations per property test
-- Use `@settings(max_examples=100)` decorator
+- Centralized configuration in `conftest.py` (no duplicate environment setup)
+- Property tests: 100 iterations for comprehensive coverage
+- Parametrized tests: Specific edge cases with descriptive parameter names
+- Performance tests: Marked with `@pytest.mark.slow`
 
 ### Test Annotation Format
 
 Each property-based test MUST be annotated with:
 ```python
-# **Feature: label-compatibility, Property {N}: {property_text}**
+# **Feature: label-compatibility, Property {number}: {property_text}**
 ```
+
+### Testing Approach Guidelines
+
+**Use Property-Based Tests For:**
+- Random Markdown content with varying structures
+- Random font sizes and property combinations
+- Random padding values and alignment combinations
+- Truly variable inputs where edge cases emerge from randomness
+
+**Use Parametrized Tests For:**
+- Specific clipping scenarios (height-constrained vs unconstrained)
+- Specific alignment combinations (halign + base_direction)
+- Specific render modes ('widgets', 'texture', 'auto')
+- Known edge cases and regression scenarios
 
 ### Unit Tests
 
 Unit tests cover specific examples and edge cases:
 - Empty text with clipping enabled
-- Single character content
-- Very large content (stress test)
+- Single character content  
+- Very large content (marked as slow)
 - Rapid property changes
-- Mode switching during animation
+- Mode switching scenarios
+- Specific padding configurations
 
-### Property-Based Tests
-
-Each correctness property maps to a property-based test:
-
-1. **Clipping tests**: Generate random Markdown, set height constraints, verify StencilView presence
-2. **Font size tests**: Generate content with headings, change base_font_size, verify all Labels updated
-3. **Rebuild batching tests**: Change multiple properties, count rebuild calls
-4. **Padding tests**: Set padding values, verify correct application
-5. **Alignment tests**: Set direction/halign combinations, verify child Label alignment
-6. **Render mode tests**: Set modes, verify widget tree structure
-
-### Test Generators
+### Test Generators (for Property-Based Tests)
 
 ```python
 from hypothesis import strategies as st
 
-# Markdown content generator
+# Markdown content with structure
 markdown_content = st.text(
     alphabet=st.characters(whitelist_categories=('L', 'N', 'P', 'S', 'Z')),
-    min_size=0, max_size=1000
+    min_size=0, max_size=500  # Reduced for faster tests
 ).map(lambda s: f"# Heading\n\n{s}\n\n**bold** and *italic*")
 
 # Font size generator
-font_sizes = st.floats(min_value=1.0, max_value=100.0, allow_nan=False)
+font_sizes = st.floats(min_value=1.0, max_value=100.0, allow_nan=False, allow_infinity=False)
 
-# Padding generator
+# Padding generator  
 padding_values = st.lists(
-    st.floats(min_value=0.0, max_value=50.0, allow_nan=False),
+    st.floats(min_value=0.0, max_value=50.0, allow_nan=False, allow_infinity=False),
     min_size=4, max_size=4
 )
 
-# Direction generator
-directions = st.sampled_from([None, 'ltr', 'rtl', 'weak_ltr', 'weak_rtl'])
+# Direction generator (for parametrized tests)
+DIRECTIONS = [None, 'ltr', 'rtl', 'weak_ltr', 'weak_rtl']
+HALIGN_VALUES = ['auto', 'left', 'center', 'right', 'justify']
 ```

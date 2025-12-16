@@ -1,5 +1,13 @@
 # Implementation Plan
 
+**Note**: This implementation plan follows the test-improvements design patterns. Some test infrastructure and files may already exist from the test-improvements implementation and should be leveraged where appropriate.
+
+**Testing Guidelines**: 
+- Use existing test files where they align with the functionality (e.g., `test_clipping_behavior.py`, `test_font_properties.py`)
+- Follow test-improvements patterns: property-based tests for random inputs, parametrized tests for specific scenarios
+- Leverage centralized `conftest.py` configuration
+- Mark performance-intensive tests with `@pytest.mark.slow`
+
 - [x] 1. Add deferred rebuild system with Clock.create_trigger
   - [x] 1.1 Implement `_rebuild_trigger` and `_pending_rebuild` in `__init__`
     - Create Clock.create_trigger for deferred rebuilds
@@ -22,10 +30,10 @@
     - Replace direct `_rebuild_widgets()` calls with `_schedule_rebuild()`
     - Keep `_on_text_changed` using deferred rebuild
     - _Requirements: 3.1, 3.2, 3.3_
-  - [x] 1.6 Write property test for batched rebuilds
+  - [x] 1.6 Write property test for batched rebuilds in test_rebuild_scheduling.py
     - **Property 6: Batched rebuilds**
     - **Validates: Requirements 3.1, 3.3**
-  - [x] 1.7 Write property test for deferred rebuild scheduling
+  - [x] 1.7 Write property test for deferred rebuild scheduling in test_rebuild_scheduling.py
     - **Property 7: Deferred rebuild scheduling**
     - **Validates: Requirements 3.2**
 
@@ -44,13 +52,13 @@
     - Ensure font size changes don't trigger rebuild
     - Verify heading scales are preserved
     - _Requirements: 2.3_
-  - [x] 2.4 Write property test for font size immediate update
+  - [x] 2.4 Write property test for font size immediate update in test_font_properties.py
     - **Property 3: Font size immediate update**
     - **Validates: Requirements 2.1**
-  - [x] 2.5 Write property test for heading scale preservation
+  - [x] 2.5 Write property test for heading scale preservation in test_font_properties.py
     - **Property 4: Heading scale preservation**
     - **Validates: Requirements 2.2, 2.4**
-  - [x] 2.6 Write property test for no rebuild on font size change
+  - [x] 2.6 Write property test for no rebuild on font size change in test_font_properties.py
     - **Property 5: No rebuild on font size change**
     - **Validates: Requirements 2.3**
 
@@ -76,10 +84,10 @@
     - Ensure no StencilView wrapper is added
     - Allow content to expand naturally
     - _Requirements: 1.4_
-  - [x] 4.5 Write property test for content clipping when height-constrained
+  - [x] 4.5 Write property test for content clipping when height-constrained in test_clipping_behavior.py
     - **Property 1: Content clipping when height-constrained**
     - **Validates: Requirements 1.1, 1.2, 1.3**
-  - [x] 4.6 Write property test for no clipping when unconstrained
+  - [x] 4.6 Write property test for no clipping when unconstrained in test_clipping_behavior.py
     - **Property 2: No clipping when unconstrained**
     - **Validates: Requirements 1.4**
 
@@ -97,13 +105,13 @@
     - Ensure BoxLayout padding is separate from child Label padding
     - Document the distinction in docstrings
     - _Requirements: 4.2_
-  - [x] 5.4 Write property test for text_padding applies to child Labels
+  - [x] 5.4 Write property test for text_padding applies to child Labels in test_padding_properties.py
     - **Property 8: text_padding applies to child Labels**
     - **Validates: Requirements 4.1**
-  - [x] 5.5 Write property test for padding applies to container
+  - [x] 5.5 Write property test for padding applies to container in test_padding_properties.py
     - **Property 9: padding applies to container**
     - **Validates: Requirements 4.2**
-  - [x] 5.6 Write property test for label_padding alias synchronization
+  - [x] 5.6 Write property test for label_padding alias synchronization in test_padding_properties.py
     - **Property 10: label_padding alias synchronization**
     - **Validates: Requirements 4.4**
 
@@ -128,13 +136,13 @@
     - Ensure alignment updates when base_direction changes
     - Use in-place update, not full rebuild
     - _Requirements: 5.3_
-  - [x] 7.5 Write property test for auto alignment respects direction
+  - [x] 7.5 Write property test for auto alignment respects direction in test_rtl_alignment.py
     - **Property 11: Auto alignment respects direction**
     - **Validates: Requirements 5.1, 5.2**
-  - [x] 7.6 Write property test for direction change updates alignment
+  - [x] 7.6 Write property test for direction change updates alignment in test_rtl_alignment.py
     - **Property 12: Direction change updates alignment**
     - **Validates: Requirements 5.3**
-  - [x] 7.7 Write property test for explicit alignment overrides auto
+  - [x] 7.7 Write property test for explicit alignment overrides auto in test_rtl_alignment.py
     - **Property 13: Explicit alignment overrides auto**
     - **Validates: Requirements 5.4**
 
@@ -165,13 +173,13 @@
     - Use 'widgets' for simple content
     - Consider content complexity metrics
     - _Requirements: 6.4_
-  - [ ] 8.6 Write property test for texture render mode structure
+  - [ ] 8.6 Write property test for texture render mode structure in test_advanced_compatibility.py
     - **Property 14: Texture render mode structure**
     - **Validates: Requirements 6.1**
-  - [ ] 8.7 Write property test for texture mode link handling
+  - [ ] 8.7 Write property test for texture mode link handling in test_advanced_compatibility.py
     - **Property 15: Texture mode link handling**
     - **Validates: Requirements 6.2**
-  - [ ] 8.8 Write property test for auto render mode selection
+  - [ ] 8.8 Write property test for auto render mode selection in test_advanced_compatibility.py
     - **Property 16: Auto render mode selection**
     - **Validates: Requirements 6.4**
 
