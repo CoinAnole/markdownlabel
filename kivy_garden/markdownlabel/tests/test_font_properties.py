@@ -225,8 +225,8 @@ class TestLineHeightForwarding:
         
         # Code block labels should also have the specified line_height
         for lbl in labels:
+            # Complex strategy: 20 examples based on default complexity
             assert floats_equal(lbl.line_height, line_height), \
-                # Complex strategy: 20 examples based on default complexity
                 f"Expected line_height={line_height}, got {lbl.line_height}"
     
     @given(line_height_strategy, line_height_strategy)
@@ -635,8 +635,8 @@ class TestFontSizeImmediateUpdate:
         
         # Verify updated font size
         new_expected = new_size * expected_scale
+        # Complex strategy with float generation, NaN exclusion, infinity exclusion: 50 examples
         assert abs(heading_label.font_size - new_expected) < 0.1, \
-            # Complex strategy with float generation, NaN exclusion, infinity exclusion: 50 examples
             f"Updated heading font_size incorrect: expected {new_expected}, got {heading_label.font_size}"
     
     @given(

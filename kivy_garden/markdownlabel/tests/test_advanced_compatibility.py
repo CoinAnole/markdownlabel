@@ -561,8 +561,8 @@ class TestReactiveRebuildOnPropertyChange:
         labels_after = find_labels_recursive(label)
         assert len(labels_after) >= 1, "Expected at least one Label after rebuild"
         for lbl in labels_after:
+            # Complex strategy: 20 examples based on default complexity
             assert floats_equal(lbl.line_height, lh2), \
-                # Complex strategy: 20 examples based on default complexity
                 f"After change, expected line_height={lh2}, got {lbl.line_height}"
     
     @given(rebuild_text_size_widths, rebuild_text_size_widths)

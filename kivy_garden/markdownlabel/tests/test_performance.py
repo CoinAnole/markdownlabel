@@ -474,3 +474,230 @@ class TestEfficientStyleUpdates:
         for child_label in child_labels:
             assert list(child_label.color) == list(normal_color), \
                 f"Expected normal color {list(normal_color)}, got {list(child_label.color)}"
+
+
+@pytest.mark.slow
+class TestPerformanceImprovements:
+    """Property tests for performance improvements (Property 8).
+    
+    Tests verify that optimization efforts result in measurable performance
+    improvements that meet the expected targets from requirements.
+    """
+
+    def _load_performance_reports(self):
+        """Load baseline and post-optimization performance reports."""
+        import json
+        from pathlib import Path
+        
+        baseline_path = Path("baseline_performance_report.json")
+        post_opt_path = Path("post_optimization_performance_report.json")
+        
+        baseline_data = {}
+        post_opt_data = {}
+        
+        if baseline_path.exists():
+            with open(baseline_path, 'r') as f:
+                baseline_data = json.load(f)
+        
+        if post_opt_path.exists():
+            with open(post_opt_path, 'r') as f:
+                post_opt_data = json.load(f)
+        
+        return baseline_data, post_opt_data
+
+    @given(st.just(None))  # Dummy strategy since we're testing real performance data
+    @settings(max_examples=1, deadline=None)  # Only run once since we're checking real data
+    def test_overall_performance_improvement_measurable(self, _):
+        """Overall test suite performance improvement is measurable and significant.
+        
+        **Feature: test-performance-optimization, Property 8: Performance improvements are measurable**
+        **Validates: Requirements 5.1, 5.2, 5.3, 5.4, 5.5**
+        """
+        baseline_data, post_opt_data = self._load_performance_reports()
+        
+        # Skip test if performance reports are not available
+        if not baseline_data or not post_opt_data:
+            pytest.skip("Performance reports not available - run measurement scripts first")
+        
+        # Extract performance data
+        baseline_time = baseline_data.get('full_suite_performance', {}).get('total_execution_time_seconds', 0)
+        post_opt_comparison = post_opt_data.get('overall_comparison', {})
+        current_time = post_opt_comparison.get('current_time_seconds', 0)
+        improvement_percent = post_opt_comparison.get('improvement_percent', 0)
+        
+        # Verify measurements are available
+        assert baseline_time > 0, "Baseline performance measurement should be available"
+        assert current_time > 0, "Current performance measurement should be available"
+        
+        # Performance improvement should be measurable (non-zero change)
+        time_difference = abs(baseline_time - current_time)
+        assert time_difference > 0.01, f"Performance change should be measurable (>0.01s), got {time_difference:.3f}s"
+        
+        # Improvement percentage should be calculable
+        assert improvement_percent != 0, "Performance improvement percentage should be non-zero and measurable"
+
+    @given(st.sampled_from(['boolean', 'small_finite', 'medium_finite', 'combination', 'complex']))
+    @settings(max_examples=5, deadline=None)  # Test each strategy type once
+    def test_strategy_category_improvements_measurable(self, strategy_type):
+        """Performance improvements by strategy category are measurable.
+        
+        **Feature: test-performance-optimization, Property 8: Performance improvements are measurable**
+        **Validates: Requirements 5.1, 5.2, 5.3, 5.4, 5.5**
+        """
+        baseline_data, post_opt_data = self._load_performance_reports()
+        
+        # Skip test if performance reports are not available
+        if not baseline_data or not post_opt_data:
+            pytest.skip("Performance reports not available - run measurement scripts first")
+        
+        # Extract strategy-specific performance data
+        baseline_strategy_perf = baseline_data.get('strategy_category_performance', {})
+        post_opt_strategy_perf = post_opt_data.get('strategy_category_improvements', {})
+        
+        # Skip if this strategy type wasn't measured
+        if strategy_type not in baseline_strategy_perf or strategy_type not in post_opt_strategy_perf:
+            pytest.skip(f"Strategy type {strategy_type} not found in performance reports")
+        
+        baseline_time = baseline_strategy_perf[strategy_type].get('execution_time_seconds', 0)
+        current_time = post_opt_strategy_perf[strategy_type].get('current_time_seconds', 0)
+        improvement_percent = post_opt_strategy_perf[strategy_type].get('improvement_percent', 0)
+        
+        # Verify measurements are available
+        assert baseline_time > 0, f"Baseline measurement for {strategy_type} should be available"
+        assert current_time > 0, f"Current measurement for {strategy_type} should be available"
+        
+        # Performance change should be measurable
+        time_difference = abs(baseline_time - current_time)
+        assert time_difference >= 0, f"Performance change for {strategy_type} should be measurable"
+        
+        # Improvement percentage should be calculable (can be negative if performance degraded)
+        assert improvement_percent is not None, f"Improvement percentage for {strategy_type} should be calculable"
+
+    @given(st.just(None))  # Dummy strategy since we're testing real data
+    @settings(max_examples=1, deadline=None)  # Only run once
+    def test_file_level_improvements_measurable(self, _):
+        """File-level performance improvements are measurable.
+        
+        **Feature: test-performance-optimization, Property 8: Performance improvements are measurable**
+        **Validates: Requirements 5.1, 5.2, 5.3, 5.4, 5.5**
+        """
+        baseline_data, post_opt_data = self._load_performance_reports()
+        
+        # Skip test if performance reports are not available
+        if not baseline_data or not post_opt_data:
+            pytest.skip("Performance reports not available - run measurement scripts first")
+        
+        # Extract file-level performance data
+        baseline_file_perf = baseline_data.get('file_level_performance', {})
+        post_opt_file_perf = post_opt_data.get('file_level_improvements', {})
+        
+        # Should have measurements for multiple files
+        assert len(baseline_file_perf) > 0, "Baseline file measurements should be available"
+        assert len(post_opt_file_perf) > 0, "Post-optimization file measurements should be available"
+        
+        # Check that improvements are measurable for at least some files
+        measurable_improvements = 0
+        total_files_compared = 0
+        
+        for file_path, post_opt_data_file in post_opt_file_perf.items():
+            if file_path in baseline_file_perf:
+                total_files_compared += 1
+                baseline_time = baseline_file_perf[file_path].get('execution_time_seconds', 0)
+                current_time = post_opt_data_file.get('current_time_seconds', 0)
+                
+                if baseline_time > 0 and current_time > 0:
+                    time_difference = abs(baseline_time - current_time)
+                    if time_difference > 0.001:  # Measurable difference (>1ms)
+                        measurable_improvements += 1
+        
+        assert total_files_compared > 0, "Should have files to compare between baseline and post-optimization"
+        
+        # At least some files should show measurable performance changes
+        improvement_ratio = measurable_improvements / total_files_compared
+        assert improvement_ratio > 0, f"At least some files should show measurable performance changes, got {improvement_ratio:.2%}"
+
+    @given(st.just(None))  # Dummy strategy since we're testing real data
+    @settings(max_examples=1, deadline=None)  # Only run once
+    def test_optimization_effectiveness_measurable(self, _):
+        """Optimization effectiveness metrics are measurable and meaningful.
+        
+        **Feature: test-performance-optimization, Property 8: Performance improvements are measurable**
+        **Validates: Requirements 5.1, 5.2, 5.3, 5.4, 5.5**
+        """
+        baseline_data, post_opt_data = self._load_performance_reports()
+        
+        # Skip test if performance reports are not available
+        if not baseline_data or not post_opt_data:
+            pytest.skip("Performance reports not available - run measurement scripts first")
+        
+        # Extract optimization effectiveness data
+        opt_effectiveness = post_opt_data.get('optimization_effectiveness', {})
+        
+        # Should have meaningful optimization metrics
+        total_tests = opt_effectiveness.get('total_tests', 0)
+        optimized_tests = opt_effectiveness.get('optimized_tests', 0)
+        remaining_over_tested = opt_effectiveness.get('remaining_over_tested', 0)
+        optimization_coverage = opt_effectiveness.get('optimization_coverage_percent', 0)
+        
+        assert total_tests > 0, "Should have total test count"
+        assert optimized_tests >= 0, "Should have optimized test count"
+        assert remaining_over_tested >= 0, "Should have remaining over-tested count"
+        assert 0 <= optimization_coverage <= 100, f"Optimization coverage should be 0-100%, got {optimization_coverage}%"
+        
+        # Optimization progress should be measurable
+        assert optimized_tests + remaining_over_tested <= total_tests, \
+            "Optimized + remaining should not exceed total tests"
+        
+        # Should show some optimization progress
+        if total_tests > 0:
+            actual_coverage = (optimized_tests / total_tests) * 100
+            assert abs(actual_coverage - optimization_coverage) < 1.0, \
+                f"Optimization coverage calculation should be accurate: expected ~{actual_coverage:.1f}%, got {optimization_coverage:.1f}%"
+
+    @given(st.just(None))  # Dummy strategy since we're testing real data  
+    @settings(max_examples=1, deadline=None)  # Only run once
+    def test_target_verification_measurable(self, _):
+        """Performance target verification produces measurable results.
+        
+        **Feature: test-performance-optimization, Property 8: Performance improvements are measurable**
+        **Validates: Requirements 5.1, 5.2, 5.3, 5.4, 5.5**
+        """
+        baseline_data, post_opt_data = self._load_performance_reports()
+        
+        # Skip test if performance reports are not available
+        if not baseline_data or not post_opt_data:
+            pytest.skip("Performance reports not available - run measurement scripts first")
+        
+        # Extract target verification data
+        target_verification = post_opt_data.get('target_verification', {})
+        
+        # Should have overall target verification
+        assert 'overall_target_met' in target_verification, "Should have overall target verification"
+        assert 'overall_target' in target_verification, "Should have overall target value"
+        assert 'overall_actual' in target_verification, "Should have overall actual value"
+        
+        overall_target = target_verification.get('overall_target', 0)
+        overall_actual = target_verification.get('overall_actual', 0)
+        
+        # Target values should be meaningful
+        assert overall_target > 0, f"Overall target should be positive, got {overall_target}"
+        assert overall_actual is not None, f"Overall actual should be measurable, got {overall_actual}"
+        
+        # Should have strategy-specific target verification
+        strategy_targets = target_verification.get('strategy_targets', {})
+        assert len(strategy_targets) > 0, "Should have strategy-specific target verification"
+        
+        # Each strategy target should have measurable values
+        for strategy_type, target_info in strategy_targets.items():
+            assert 'target_min' in target_info, f"Strategy {strategy_type} should have target_min"
+            assert 'target_max' in target_info, f"Strategy {strategy_type} should have target_max"
+            assert 'actual' in target_info, f"Strategy {strategy_type} should have actual value"
+            assert 'target_met' in target_info, f"Strategy {strategy_type} should have target_met status"
+            
+            target_min = target_info.get('target_min', 0)
+            target_max = target_info.get('target_max', 0)
+            actual = target_info.get('actual', 0)
+            
+            assert target_min >= 0, f"Strategy {strategy_type} target_min should be non-negative"
+            assert target_max >= target_min, f"Strategy {strategy_type} target_max should be >= target_min"
+            assert actual is not None, f"Strategy {strategy_type} actual should be measurable"

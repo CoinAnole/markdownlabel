@@ -91,8 +91,8 @@ class TestPaddingApplication:
             f"Expected 4-element padding, got {len(label.padding)}"
         
         for i, (actual, exp) in enumerate(zip(label.padding, padding_values)):
+            # Complex strategy: 20 examples based on default complexity
             assert abs(actual - exp) < 0.001, \
-                # Complex strategy: 20 examples based on default complexity
                 f"Padding[{i}]: expected {exp}, got {actual}"
     
     @given(padding_four)

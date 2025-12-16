@@ -171,8 +171,8 @@ class TestRoundTripSerialization:
         label2 = MarkdownLabel(text=serialized)
         ast2 = self._normalize_ast(label2.get_ast())
         
+        # Complex strategy: 20 examples based on default complexity
         assert ast1 == ast2, \
-            # Complex strategy: 20 examples based on default complexity
             f"AST mismatch after round-trip:\nOriginal: {ast1}\nAfter: {ast2}"
     
     @given(markdown_italic())

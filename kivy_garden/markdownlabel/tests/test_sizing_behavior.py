@@ -101,8 +101,8 @@ class TestAutoSizeHeightTrueBehavior:
         """When auto_size_height=True, size_hint_y should be None."""
         label = MarkdownLabel(text=markdown_text, auto_size_height=True)
         
+        # Complex strategy with custom domain strategy: 20 examples
         assert label.size_hint_y is None, \
-            # Complex strategy with custom domain strategy: 20 examples
             f"Expected size_hint_y=None when auto_size_height=True, got {label.size_hint_y}"
     
     @given(simple_markdown_document())
@@ -187,8 +187,8 @@ class TestAutoSizeHeightFalseBehavior:
             size_hint_y=user_size_hint_y
         )
         
+        # Complex strategy with custom domain strategy: 20 examples
         assert label.size_hint_y == user_size_hint_y, \
-            # Complex strategy with custom domain strategy: 20 examples
             f"Expected size_hint_y={user_size_hint_y} when auto_size_height=False, got {label.size_hint_y}"
         
         assert label.auto_size_height is False, \
@@ -256,8 +256,8 @@ class TestAutoSizeHeightDynamicToggling:
         label.auto_size_height = True
         
         # Should set size_hint_y=None
+        # Complex strategy with float generation, NaN exclusion, infinity exclusion, custom domain strategy: 50 examples
         assert label.size_hint_y is None, \
-            # Complex strategy with float generation, NaN exclusion, infinity exclusion, custom domain strategy: 50 examples
             f"Expected size_hint_y=None after toggling to True, got {label.size_hint_y}"
         
         assert label.auto_size_height is True, \
@@ -817,8 +817,8 @@ code = "block"
         label = MarkdownLabel(text=markdown)
         
         # Verify nested list creates children
+        # Complex strategy with custom domain strategy: 20 examples
         assert len(label.children) >= 1, \
-            # Complex strategy with custom domain strategy: 20 examples
             f"Expected at least 1 child for nested list, got {len(label.children)}"
         
         # Verify texture_size is accessible and returns valid structure
