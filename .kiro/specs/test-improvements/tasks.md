@@ -90,7 +90,7 @@
 - [x] 6. Checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
-- [-] 7. Mark performance tests and clean up configuration
+- [x] 7. Mark performance tests and clean up configuration
   - [x] 7.1 Add @pytest.mark.slow to performance-intensive tests
     - Identify genuinely heavy tests in test_performance.py
     - Add slow marker to appropriate tests
@@ -109,7 +109,7 @@
   - [x] 7.4 Write property test for performance test marking
     - **Property 10: Performance tests marked**
     - **Validates: Requirements 7.1, 7.3**
-  - [-] 7.5 Write property test for no duplicate environment setup
+  - [x] 7.5 Write property test for no duplicate environment setup
     - **Property 11: No duplicate environment setup**
     - **Validates: Requirements 8.1, 8.4**
 
