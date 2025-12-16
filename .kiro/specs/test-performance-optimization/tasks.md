@@ -191,5 +191,5 @@
   - Check that test behavior and assertions remain unchanged
   - _Requirements: 5.1, 5.5_
 
-- [ ] 8. Final checkpoint - Ensure all optimizations are working
+- [x] 8. Final checkpoint - Ensure all optimizations are working
   - Ensure all tests pass, ask the user if questions arise.

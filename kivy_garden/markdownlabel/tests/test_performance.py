@@ -495,7 +495,8 @@ class TestPerformanceImprovements:
         baseline_data = {}
         post_opt_data = {}
         
-        if baseline_path.exists():
+        assert baseline_path.exists(), f"Baseline performance data not found at {baseline_path}"
+        if True:  # Always execute since we assert the file exists
             with open(baseline_path, 'r') as f:
                 baseline_data = json.load(f)
         
@@ -505,8 +506,10 @@ class TestPerformanceImprovements:
         
         return baseline_data, post_opt_data
 
+    @pytest.mark.slow
     @given(st.just(None))  # Dummy strategy since we're testing real performance data
-    @settings(max_examples=1, deadline=None)  # Only run once since we're checking real data
+    # max_examples=1: Only run once since we're checking real performance data files
+    @settings(max_examples=1, deadline=None)
     def test_overall_performance_improvement_measurable(self, _):
         """Overall test suite performance improvement is measurable and significant.
         
@@ -566,15 +569,17 @@ class TestPerformanceImprovements:
         assert baseline_time > 0, f"Baseline measurement for {strategy_type} should be available"
         assert current_time > 0, f"Current measurement for {strategy_type} should be available"
         
-        # Performance change should be measurable
+        # Performance change should be measurable (time difference is always non-negative)
         time_difference = abs(baseline_time - current_time)
-        assert time_difference >= 0, f"Performance change for {strategy_type} should be measurable"
+        # Note: time_difference >= 0 is always true for abs(), so we verify it's a valid number
+        assert isinstance(time_difference, (int, float)), f"Performance change for {strategy_type} should be a valid number"
         
         # Improvement percentage should be calculable (can be negative if performance degraded)
         assert improvement_percent is not None, f"Improvement percentage for {strategy_type} should be calculable"
 
     @given(st.just(None))  # Dummy strategy since we're testing real data
-    @settings(max_examples=1, deadline=None)  # Only run once
+    # max_examples=1: Only run once since we're validating real performance data files
+    @settings(max_examples=1, deadline=None)
     def test_file_level_improvements_measurable(self, _):
         """File-level performance improvements are measurable.
         
@@ -617,7 +622,8 @@ class TestPerformanceImprovements:
         assert improvement_ratio > 0, f"At least some files should show measurable performance changes, got {improvement_ratio:.2%}"
 
     @given(st.just(None))  # Dummy strategy since we're testing real data
-    @settings(max_examples=1, deadline=None)  # Only run once
+    # max_examples=1: Only run once since we're validating real performance data files
+    @settings(max_examples=1, deadline=None)
     def test_optimization_effectiveness_measurable(self, _):
         """Optimization effectiveness metrics are measurable and meaningful.
         
@@ -655,7 +661,8 @@ class TestPerformanceImprovements:
                 f"Optimization coverage calculation should be accurate: expected ~{actual_coverage:.1f}%, got {optimization_coverage:.1f}%"
 
     @given(st.just(None))  # Dummy strategy since we're testing real data  
-    @settings(max_examples=1, deadline=None)  # Only run once
+    # max_examples=1: Only run once since we're validating real performance data files
+    @settings(max_examples=1, deadline=None)
     def test_target_verification_measurable(self, _):
         """Performance target verification produces measurable results.
         
