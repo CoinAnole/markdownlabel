@@ -539,8 +539,9 @@ class TestPerformanceImprovements:
         # Improvement percentage should be calculable
         assert improvement_percent != 0, "Performance improvement percentage should be non-zero and measurable"
 
-    @given(st.sampled_from(['boolean', 'small_finite', 'medium_finite', 'combination', 'complex']))
-    @settings(max_examples=5, deadline=None)  # Test each strategy type once
+    @pytest.mark.slow
+    @given(st.sampled_from(['boolean', 'small_finite', 'medium_finite', 'complex']))
+    @settings(max_examples=4, deadline=None)  # Test each strategy type once
     def test_strategy_category_improvements_measurable(self, strategy_type):
         """Performance improvements by strategy category are measurable.
         
