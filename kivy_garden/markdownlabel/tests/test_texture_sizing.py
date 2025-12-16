@@ -61,7 +61,7 @@ class TestComprehensiveTextureSizeCalculation:
         return widgets
     
     @given(simple_markdown_document())
-    # Custom strategy: 20 examples for adequate coverage
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_texture_size_returns_tuple(self, markdown_text):
         """texture_size returns a list/tuple with two elements."""
@@ -75,11 +75,11 @@ class TestComprehensiveTextureSizeCalculation:
             f"Expected texture_size to have 2 elements, got {len(texture_size)}"
     
     @given(simple_markdown_document())
-    # Custom strategy: 20 examples for adequate coverage
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_texture_size_non_negative(self, markdown_text):
         """texture_size width and height are non-negative."""
-        # Complex strategy: 20 examples based on default complexity
+        # Complex strategy: 20 examples (adequate coverage)
         label = MarkdownLabel(text=markdown_text)
         
         texture_size = label.texture_size
@@ -94,13 +94,13 @@ class TestComprehensiveTextureSizeCalculation:
         label = MarkdownLabel(text='')
         
         texture_size = label.texture_size
-         # Complex strategy: 20 examples based on default complexity
+         # Complex strategy: 20 examples (adequate coverage)
         
         assert texture_size == [0, 0], \
             f"Expected texture_size [0, 0] for empty label, got {texture_size}"
     
     @given(markdown_heading())
-    # Custom strategy: 20 examples for adequate coverage
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_heading_creates_label_widget(self, heading):
         """Heading content creates a Label widget that is included in texture_size calculation."""
@@ -116,7 +116,7 @@ class TestComprehensiveTextureSizeCalculation:
         assert texture_size[0] >= 0 and texture_size[1] >= 0
     
     @given(markdown_paragraph())
-    # Custom strategy: 20 examples for adequate coverage
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_paragraph_creates_label_widget(self, paragraph):
         """Paragraph content creates a Label widget that is included in texture_size calculation."""
@@ -250,7 +250,7 @@ code = "block"
             f"Expected multiple children for mixed content, got {len(label.children)}"
     
     @given(simple_markdown_document())
-    # Custom strategy: 20 examples for adequate coverage
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_texture_size_accessible_for_all_content(self, markdown_text):
         """texture_size is accessible and valid for all markdown content."""
@@ -302,7 +302,7 @@ code = "block"
         assert texture_size[0] >= 0 and texture_size[1] >= 0
     
     @given(simple_markdown_document(), simple_markdown_document())
-    # Custom strategy: 20 examples for adequate coverage
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_texture_size_updates_on_text_change(self, text1, text2):
         """texture_size updates when text property changes."""

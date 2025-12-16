@@ -115,7 +115,7 @@ class TestRoundTripSerialization:
         return merged
     
     @given(markdown_heading())
-    # Complex strategy: 20 examples based on default complexity
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_heading_round_trip(self, heading):
         """Heading round-trips through parse-serialize-parse."""
@@ -133,9 +133,9 @@ class TestRoundTripSerialization:
         assert ast1 == ast2, \
             f"AST mismatch after round-trip:\nOriginal: {ast1}\nAfter: {ast2}\nSerialized: {serialized!r}"
     
-    # Complex strategy: 20 examples based on default complexity
+    # Complex strategy: 20 examples (adequate coverage)
     @given(markdown_paragraph())
-    # Custom strategy: 20 examples for adequate coverage
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_paragraph_round_trip(self, paragraph):
         """Paragraph round-trips through parse-serialize-parse."""
@@ -156,10 +156,10 @@ class TestRoundTripSerialization:
         
         assert ast1 == ast2, \
             f"AST mismatch after round-trip:\nOriginal: {ast1}\nAfter: {ast2}"
-     # Complex strategy: 20 examples based on default complexity
+     # Complex strategy: 20 examples (adequate coverage)
     
     @given(markdown_bold())
-    # Custom strategy: 20 examples for adequate coverage
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_bold_round_trip(self, bold_text):
         """Bold text round-trips through parse-serialize-parse."""
@@ -171,12 +171,12 @@ class TestRoundTripSerialization:
         label2 = MarkdownLabel(text=serialized)
         ast2 = self._normalize_ast(label2.get_ast())
         
-        # Complex strategy: 20 examples based on default complexity
+        # Complex strategy: 20 examples (adequate coverage)
         assert ast1 == ast2, \
             f"AST mismatch after round-trip:\nOriginal: {ast1}\nAfter: {ast2}"
     
     @given(markdown_italic())
-    # Custom strategy: 20 examples for adequate coverage
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_italic_round_trip(self, italic_text):
         """Italic text round-trips through parse-serialize-parse."""
@@ -188,12 +188,12 @@ class TestRoundTripSerialization:
         label2 = MarkdownLabel(text=serialized)
         ast2 = self._normalize_ast(label2.get_ast())
         
-        # Complex strategy: 20 examples based on default complexity
+        # Complex strategy: 20 examples (adequate coverage)
         assert ast1 == ast2, \
             f"AST mismatch after round-trip:\nOriginal: {ast1}\nAfter: {ast2}"
     
     @given(markdown_link())
-    # Custom strategy: 20 examples for adequate coverage
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_link_round_trip(self, link_text):
         """Link round-trips through parse-serialize-parse."""
@@ -210,7 +210,7 @@ class TestRoundTripSerialization:
             f"AST mismatch after round-trip:\nOriginal: {ast1}\nAfter: {ast2}"
     
     @given(simple_markdown_document())
-    # Custom strategy: 20 examples for adequate coverage
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_document_round_trip(self, markdown_text):
         """Full document round-trips through parse-serialize-parse."""

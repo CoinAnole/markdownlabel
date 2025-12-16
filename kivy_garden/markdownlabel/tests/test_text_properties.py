@@ -199,7 +199,7 @@ class TestTextSizeHeightNoneBackwardCompatibility:
     """Property tests for text_size height None backward compatibility (Property 2)."""
     
     @given(simple_markdown_document())
-    # Custom strategy: 20 examples for adequate coverage
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_text_size_height_none_preserves_auto_sizing(self, markdown_text):
         """text_size[1]=None preserves auto-sizing behavior."""
@@ -339,10 +339,10 @@ class TestUnicodeErrorsForwarding:
     """Property tests for unicode_errors forwarding (Property 10)."""
     
     @given(unicode_errors_strategy)
-    # Custom strategy: 20 examples for adequate coverage
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_unicode_errors_stored_correctly(self, unicode_errors):
-        # Complex strategy: 20 examples based on default complexity
+        # Complex strategy: 20 examples (adequate coverage)
         """unicode_errors value is stored correctly on MarkdownLabel."""
         label = MarkdownLabel(text='Hello World', unicode_errors=unicode_errors)
         
@@ -350,14 +350,14 @@ class TestUnicodeErrorsForwarding:
             f"Expected unicode_errors={unicode_errors}, got {label.unicode_errors}"
     
     @given(unicode_errors_strategy)
-    # Custom strategy: 20 examples for adequate coverage
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_unicode_errors_applied_to_paragraph(self, unicode_errors):
         """unicode_errors is applied to paragraph Labels."""
         label = MarkdownLabel(text='Hello World', unicode_errors=unicode_errors)
         
         labels = find_labels_recursive(label)
-        # Complex strategy: 20 examples based on default complexity
+        # Complex strategy: 20 examples (adequate coverage)
         assert len(labels) >= 1, "Expected at least one Label"
         
         # All labels should have the specified unicode_errors
@@ -366,13 +366,13 @@ class TestUnicodeErrorsForwarding:
                 f"Expected unicode_errors={unicode_errors}, got {lbl.unicode_errors}"
     
     @given(unicode_errors_strategy)
-    # Custom strategy: 20 examples for adequate coverage
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_unicode_errors_applied_to_heading(self, unicode_errors):
         """unicode_errors is applied to heading Labels."""
         label = MarkdownLabel(text='# Heading', unicode_errors=unicode_errors)
         
-        # Complex strategy: 20 examples based on default complexity
+        # Complex strategy: 20 examples (adequate coverage)
         labels = find_labels_recursive(label)
         assert len(labels) >= 1, "Expected at least one Label"
         
@@ -382,13 +382,13 @@ class TestUnicodeErrorsForwarding:
                 f"Expected unicode_errors={unicode_errors}, got {lbl.unicode_errors}"
     
     @given(unicode_errors_strategy)
-    # Custom strategy: 20 examples for adequate coverage
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_unicode_errors_applied_to_code_block(self, unicode_errors):
         """unicode_errors is applied to code block Labels."""
         markdown = '```python\nprint("hello")\n```'
         label = MarkdownLabel(text=markdown, unicode_errors=unicode_errors)
-         # Complex strategy: 20 examples based on default complexity
+         # Complex strategy: 20 examples (adequate coverage)
         
         labels = find_labels_recursive(label)
         assert len(labels) >= 1, "Expected at least one Label for code block"
@@ -399,12 +399,12 @@ class TestUnicodeErrorsForwarding:
                 f"Expected unicode_errors={unicode_errors}, got {lbl.unicode_errors}"
     
     @given(unicode_errors_strategy)
-    # Custom strategy: 20 examples for adequate coverage
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_unicode_errors_applied_to_list_items(self, unicode_errors):
         """unicode_errors is applied to list item Labels."""
         markdown = '- Item 1\n- Item 2'
-        # Complex strategy: 20 examples based on default complexity
+        # Complex strategy: 20 examples (adequate coverage)
         label = MarkdownLabel(text=markdown, unicode_errors=unicode_errors)
         
         labels = find_labels_recursive(label)
@@ -416,7 +416,7 @@ class TestUnicodeErrorsForwarding:
                 f"Expected unicode_errors={unicode_errors}, got {lbl.unicode_errors}"
     
     @given(unicode_errors_strategy)
-    # Custom strategy: 20 examples for adequate coverage
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_unicode_errors_applied_to_table_cells(self, unicode_errors):
         """unicode_errors is applied to table cell Labels."""

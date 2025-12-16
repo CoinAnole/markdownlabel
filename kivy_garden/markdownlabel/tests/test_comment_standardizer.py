@@ -1244,7 +1244,7 @@ class TestCIOptimizationDocumentation:
         ci_examples=st.integers(min_value=1, max_value=10).filter(lambda x: x not in {2, 5, 10}),  # Exclude standard values
         function_name=st.text(min_size=5, max_size=30, alphabet=st.characters(whitelist_categories=('Lu', 'Ll', 'Nd', 'Pc'))).map(lambda x: f"test_{x}")
     )
-    # Complex strategy: 3 examples (CI optimized: 25 examples locally, 3 in CI)
+    # Complex strategy: 3 examples (adequate coverage)
     @settings(max_examples=3, deadline=None)
     def test_ci_optimization_documentation_includes_both_values(self, base_examples, ci_examples, function_name):
         """CI optimization documentation includes both base and CI values."""
@@ -1318,7 +1318,7 @@ def {function_name}(data):
         ]),
         function_name=st.text(min_size=5, max_size=30, alphabet=st.characters(whitelist_categories=('Lu', 'Ll', 'Nd', 'Pc'))).map(lambda x: f"test_{x}")
     )
-    # Complex strategy: 4 examples (CI optimized)
+    # Complex strategy: 4 examples (adequate coverage)
     @settings(max_examples=4, deadline=None)
     def test_ci_optimization_patterns_consistently_documented(self, ci_pattern, function_name):
         """Different CI optimization patterns are consistently documented."""
@@ -1379,7 +1379,7 @@ def {function_name}(data):
         max_examples=st.integers(min_value=1, max_value=15).filter(lambda x: x not in {2, 5, 10}),
         function_name=st.text(min_size=5, max_size=30, alphabet=st.characters(whitelist_categories=('Lu', 'Ll', 'Nd', 'Pc'))).map(lambda x: f"test_{x}")
     )
-    # Complex strategy: 6 examples (CI optimized)
+    # Complex strategy: 6 examples (adequate coverage)
     @settings(max_examples=6, deadline=None)
     def test_ci_optimization_process_referenced_in_comments(self, optimization_reference, max_examples, function_name):
         """CI optimization process is properly referenced in comments."""

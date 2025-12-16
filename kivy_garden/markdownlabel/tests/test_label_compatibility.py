@@ -233,6 +233,7 @@ class TestNoOpPropertyAcceptanceAndStorage:
         assert label.mipmap == value
     
     @given(st.floats(min_value=0, max_value=100, allow_nan=False, allow_infinity=False))
+    # Complex strategy: 50 examples (adequate coverage)
     @settings(max_examples=50, deadline=None)
     def test_outline_width_property_accepted_and_stored(self, value):
         """Setting outline_width property accepts and stores the value."""
@@ -317,6 +318,7 @@ class TestNoOpPropertyAcceptanceAndStorage:
         assert label.mipmap == value
     
     @given(st.floats(min_value=0, max_value=100, allow_nan=False, allow_infinity=False))
+    # Complex strategy: 50 examples (adequate coverage)
     @settings(max_examples=50, deadline=None)
     def test_outline_width_property_change_after_creation(self, value):
         """Changing outline_width property after creation accepts and stores the value."""

@@ -41,15 +41,15 @@ class PerformanceRationale:
         if self.ci_specific and self.base_examples:
             return f"CI optimized: {self.base_examples} examples locally, {self.reduced_examples} in CI"
         elif self.reason == PerformanceReason.EXECUTION_TIME:
-            return f"performance optimized (execution time)"
+            return "performance optimized"
         elif self.reason == PerformanceReason.MEMORY_OPTIMIZATION:
-            return f"performance optimized (memory)"
+            return "performance optimized"
         elif self.reason == PerformanceReason.COMPLEXITY_REDUCTION:
-            return f"performance optimized (complexity)"
+            return "performance optimized"
         elif self.reason == PerformanceReason.DEADLINE_CONSTRAINT:
-            return f"performance optimized (deadline constraint)"
+            return "performance optimized"
         else:
-            return f"performance optimized"
+            return "performance optimized"
 
 
 class PerformanceRationaleDetector:

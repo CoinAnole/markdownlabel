@@ -296,7 +296,7 @@ class TestEfficientStyleUpdates:
                 f"Expected line_height {new_line_height}, got {child_label.line_height}"
 
     @given(st.booleans())
-    # Custom strategy: 20 examples for adequate coverage
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=2 if os.getenv('CI') else 100, deadline=None)
     def test_disabled_change_preserves_widget_tree(self, new_disabled):
         """Changing disabled preserves widget tree structure (widget identities).

@@ -180,7 +180,7 @@ class TestLineHeightForwarding:
     """Property tests for line_height forwarding (Property 4)."""
     
     @given(line_height_strategy)
-    # Complex strategy: 20 examples based on default complexity
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_line_height_applied_to_paragraph(self, line_height):
         """line_height is applied to paragraph Labels."""
@@ -194,9 +194,9 @@ class TestLineHeightForwarding:
             assert floats_equal(lbl.line_height, line_height), \
                 f"Expected line_height={line_height}, got {lbl.line_height}"
     
-    # Complex strategy: 20 examples based on default complexity
+    # Complex strategy: 20 examples (adequate coverage)
     @given(line_height_strategy)
-    # Custom strategy: 20 examples for adequate coverage
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_line_height_applied_to_heading(self, line_height):
         """line_height is applied to heading Labels."""
@@ -209,10 +209,10 @@ class TestLineHeightForwarding:
         for lbl in labels:
             assert floats_equal(lbl.line_height, line_height), \
                 f"Expected line_height={line_height}, got {lbl.line_height}"
-     # Complex strategy: 20 examples based on default complexity
+     # Complex strategy: 20 examples (adequate coverage)
     
     @given(line_height_strategy)
-    # Custom strategy: 20 examples for adequate coverage
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_line_height_applied_to_code_block(self, line_height):
         """line_height is applied to code block Labels."""
@@ -225,12 +225,12 @@ class TestLineHeightForwarding:
         
         # Code block labels should also have the specified line_height
         for lbl in labels:
-            # Complex strategy: 20 examples based on default complexity
+            # Complex strategy: 20 examples (adequate coverage)
             assert floats_equal(lbl.line_height, line_height), \
                 f"Expected line_height={line_height}, got {lbl.line_height}"
     
     @given(line_height_strategy, line_height_strategy)
-    # Combination strategy: 20 examples (capped for performance)
+    # Combination strategy: 20 examples (combination coverage)
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_line_height_change_triggers_rebuild(self, lh1, lh2):
         """Changing line_height triggers widget rebuild with new value."""
@@ -249,12 +249,12 @@ class TestLineHeightForwarding:
         # Verify new line_height
         labels = find_labels_recursive(label)
         for lbl in labels:
-            # Complex strategy: 20 examples based on default complexity
+            # Complex strategy: 20 examples (adequate coverage)
             assert floats_equal(lbl.line_height, lh2), \
                 f"After change, expected line_height={lh2}, got {lbl.line_height}"
     
     @given(line_height_strategy)
-    # Custom strategy: 20 examples for adequate coverage
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_line_height_applied_to_list_items(self, line_height):
         """line_height is applied to list item Labels."""
@@ -270,7 +270,7 @@ class TestLineHeightForwarding:
                 f"Expected line_height={line_height}, got {lbl.line_height}"
     
     @given(line_height_strategy)
-    # Custom strategy: 20 examples for adequate coverage
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_line_height_applied_to_table_cells(self, line_height):
         """line_height is applied to table cell Labels."""
@@ -286,7 +286,7 @@ class TestLineHeightForwarding:
                 f"Expected line_height={line_height}, got {lbl.line_height}"
     
     @given(line_height_strategy)
-    # Custom strategy: 20 examples for adequate coverage
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_line_height_applied_to_all_content_types(self, line_height):
         """line_height is applied to all content types including code."""
@@ -642,7 +642,7 @@ class TestFontSizeImmediateUpdate:
     @given(
         st.floats(min_value=10.0, max_value=30.0, allow_nan=False, allow_infinity=False)
     )
-    # Custom strategy: 50 examples for adequate coverage
+    # Complex strategy: 50 examples (adequate coverage)
     @settings(max_examples=50 if not os.getenv('CI') else 25, deadline=None)
     def test_paragraph_font_size_updates_immediately(self, new_size):
         """Paragraph font sizes update immediately when base_font_size changes."""
@@ -920,7 +920,7 @@ class TestNoRebuildOnFontSizeChange:
     @given(
         st.floats(min_value=12.0, max_value=24.0, allow_nan=False, allow_infinity=False)
     )
-    # Custom strategy: 50 examples for adequate coverage
+    # Complex strategy: 50 examples (adequate coverage)
     @settings(max_examples=50 if not os.getenv('CI') else 25, deadline=None)
     def test_rebuild_counter_not_incremented_on_font_size_change(self, new_size):
         """Rebuild operations are not triggered by font size changes."""

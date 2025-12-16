@@ -84,7 +84,7 @@ class TestInlineFormattingConversion:
     """Property tests for inline formatting conversion (Property 4)."""
     
     @given(strong_token())
-    # Complex strategy: 20 examples based on default complexity
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20 if not os.getenv('CI') else 10)
     def test_strong_produces_bold_tags(self, token):
         """Strong tokens produce [b]...[/b] markup."""
@@ -94,7 +94,7 @@ class TestInlineFormattingConversion:
         assert result.startswith('[b]'), f"Strong should start with [b], got: {result}"
         assert result.endswith('[/b]'), f"Strong should end with [/b], got: {result}"
     
-    # Complex strategy: 20 examples based on default complexity
+    # Complex strategy: 20 examples (adequate coverage)
     @given(emphasis_token())
     @settings(max_examples=20)
     def test_emphasis_produces_italic_tags(self, token):
@@ -104,7 +104,7 @@ class TestInlineFormattingConversion:
         
         assert result.startswith('[i]'), f"Emphasis should start with [i], got: {result}"
         assert result.endswith('[/i]'), f"Emphasis should end with [/i], got: {result}"
-     # Complex strategy: 20 examples based on default complexity
+     # Complex strategy: 20 examples (adequate coverage)
     
     @given(codespan_token())
     @settings(max_examples=20)
@@ -114,21 +114,22 @@ class TestInlineFormattingConversion:
         result = renderer.codespan(token)
         
         assert result.startswith('[font='), f"Codespan should start with [font=, got: {result}"
-        # Complex strategy: 20 examples based on default complexity
+        # Complex strategy: 20 examples (adequate coverage)
         assert result.endswith('[/font]'), f"Codespan should end with [/font], got: {result}"
     
     @given(strikethrough_token())
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20)
     def test_strikethrough_produces_s_tags(self, token):
         """Strikethrough tokens produce [s]...[/s] markup."""
         renderer = InlineRenderer()
         result = renderer.strikethrough(token)
         
-        # Complex strategy: 20 examples based on default complexity
         assert result.startswith('[s]'), f"Strikethrough should start with [s], got: {result}"
         assert result.endswith('[/s]'), f"Strikethrough should end with [/s], got: {result}"
     
     @given(link_token())
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20)
     def test_link_produces_ref_tags_unstyled(self, token):
         """Unstyled links produce [ref=url]...[/ref] without forced styling."""
@@ -146,6 +147,7 @@ class TestInlineFormattingConversion:
             f"Unstyled link should not add underline, got: {result}"
     
     @given(link_token())
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20)
     def test_link_produces_ref_tags_styled(self, token):
         """Styled links wrap refs with color and underline."""
@@ -173,6 +175,7 @@ class TestSpecialCharacterEscaping:
     """Property tests for special character escaping (Property 19)."""
     
     @given(text_token())
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20)
     def test_text_escapes_special_characters(self, token):
         """Text tokens escape [, ], and & characters."""
@@ -207,6 +210,7 @@ class TestSpecialCharacterEscaping:
             f"Expected {input_ampersands} &amp; escapes, got {output_amp}"
     
     @given(st.text(alphabet='[]&', min_size=1, max_size=50))
+    # Complex strategy: 30 examples (adequate coverage)
     @settings(max_examples=30)
     def test_only_special_chars_fully_escaped(self, raw):
         """Text containing only special characters is fully escaped."""
@@ -222,13 +226,13 @@ class TestSpecialCharacterEscaping:
         cleaned = result.replace('&bl;', '').replace('&br;', '').replace('&amp;', '')
         
         assert '[' not in cleaned, f"Found unescaped [ in: {result}"
-        # Complex strategy with text generation: 30 examples
         assert ']' not in cleaned, f"Found unescaped ] in: {result}"
         # & is tricky because &amp; contains &, so we check differently
         # After removing escape sequences, there should be no & left
         assert '&' not in cleaned, f"Found unescaped & in: {result}"
     
     @given(st.text(min_size=0, max_size=100))
+    # Complex strategy: 30 examples (adequate coverage)
     @settings(max_examples=30)
     def test_escape_is_reversible(self, raw):
         """Escaping can be reversed to get original text."""

@@ -31,7 +31,7 @@ class TestSharedStrategyAvailability:
     """Property tests for shared strategy availability (Property 6)."""
     
     @given(markdown_heading())
-    # Complex strategy: 20 examples based on default complexity
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_markdown_heading_strategy_generates_valid_headings(self, heading):
         """**Feature: test-refactoring, Property 6: Shared Strategy Availability**
@@ -47,9 +47,9 @@ class TestSharedStrategyAvailability:
         label = MarkdownLabel(text=heading)
         assert len(label.children) >= 1, "Heading should produce at least one widget"
     
-    # Complex strategy: 20 examples based on default complexity
+    # Complex strategy: 20 examples (adequate coverage)
     @given(markdown_paragraph())
-    # Custom strategy: 50 examples for adequate coverage
+    # Complex strategy: 50 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_markdown_paragraph_strategy_generates_valid_paragraphs(self, paragraph):
         """Paragraph strategy generates valid paragraph text."""
@@ -59,32 +59,32 @@ class TestSharedStrategyAvailability:
         # Verify it can be used with MarkdownLabel
         label = MarkdownLabel(text=paragraph)
         assert len(label.children) >= 1, "Paragraph should produce at least one widget"
-     # Complex strategy: 20 examples based on default complexity
+     # Complex strategy: 20 examples (adequate coverage)
     
     @given(markdown_bold())
-    # Custom strategy: 50 examples for adequate coverage
+    # Complex strategy: 50 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_markdown_bold_strategy_generates_valid_bold_text(self, bold_text):
         """Bold text strategy generates valid bold markdown."""
         assert bold_text.startswith('**'), f"Bold text should start with **: {bold_text}"
         assert bold_text.endswith('**'), f"Bold text should end with **: {bold_text}"
-        # Complex strategy: 20 examples based on default complexity
+        # Complex strategy: 20 examples (adequate coverage)
         assert len(bold_text) > 4, "Bold text should have content between markers"
     
     @given(markdown_italic())
-    # Custom strategy: 50 examples for adequate coverage
+    # Complex strategy: 50 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_markdown_italic_strategy_generates_valid_italic_text(self, italic_text):
         """Italic text strategy generates valid italic markdown."""
         assert italic_text.startswith('*'), f"Italic text should start with *: {italic_text}"
         assert italic_text.endswith('*'), f"Italic text should end with *: {italic_text}"
         assert len(italic_text) > 2, "Italic text should have content between markers"
-        # Complex strategy: 20 examples based on default complexity
+        # Complex strategy: 20 examples (adequate coverage)
         # Ensure it's not bold (which would start/end with **)
         assert not italic_text.startswith('**'), "Should be italic, not bold"
     
     @given(markdown_link())
-    # Custom strategy: 50 examples for adequate coverage
+    # Complex strategy: 50 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_markdown_link_strategy_generates_valid_links(self, link):
         """Link strategy generates valid markdown links."""
@@ -98,20 +98,20 @@ class TestSharedStrategyAvailability:
         assert len(label.children) >= 1, "Link should produce at least one widget"
     
     @given(simple_markdown_document())
-    # Custom strategy: 50 examples for adequate coverage
+    # Complex strategy: 50 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_simple_markdown_document_strategy_generates_valid_documents(self, document):
         """Document strategy generates valid markdown documents."""
         assert isinstance(document, str), "Document should be a string"
         assert len(document.strip()) > 0, "Document should not be empty"
-         # Complex strategy: 20 examples based on default complexity
+         # Complex strategy: 20 examples (adequate coverage)
         
         # Verify it can be used with MarkdownLabel
         label = MarkdownLabel(text=document)
         assert len(label.children) >= 1, "Document should produce at least one widget"
     
     @given(color_strategy)
-    # Custom strategy: 50 examples for adequate coverage
+    # Complex strategy: 50 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_color_strategy_generates_valid_colors(self, color):
         """Color strategy generates valid RGBA color values."""
@@ -119,7 +119,7 @@ class TestSharedStrategyAvailability:
         for component in color:
             assert 0.0 <= component <= 1.0, f"Color component should be 0-1: {component}"
         
-        # Complex strategy: 20 examples based on default complexity
+        # Complex strategy: 20 examples (adequate coverage)
         # Verify it can be used with MarkdownLabel
         label = MarkdownLabel(text="Test", color=color)
         labels = find_labels_recursive(label)
@@ -127,7 +127,7 @@ class TestSharedStrategyAvailability:
             assert colors_equal(list(labels[0].color), color), "Color should be applied to labels"
     
     @given(text_padding_strategy)
-    # Custom strategy: 50 examples for adequate coverage
+    # Complex strategy: 50 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_text_padding_strategy_generates_valid_padding(self, padding):
         """Text padding strategy generates valid padding values."""
@@ -182,7 +182,7 @@ class TestHelperFunctionConsolidation:
             assert isinstance(lbl, Label), f"Should find only Labels, got {type(lbl)}"
     
     @given(color_strategy, color_strategy)
-    # Combination strategy: 50 examples (capped for performance)
+    # Combination strategy: 50 examples (combination coverage)
     @settings(max_examples=20, deadline=None)
     def test_colors_equal_function_available(self, color1, color2):
         """colors_equal helper function is available and works correctly."""
@@ -196,7 +196,7 @@ class TestHelperFunctionConsolidation:
             assert isinstance(result, bool), "colors_equal should return boolean"
     
     @given(text_padding_strategy, text_padding_strategy)
-    # Combination strategy: 50 examples (capped for performance)
+    # Combination strategy: 50 examples (combination coverage)
     @settings(max_examples=20, deadline=None)
     def test_padding_equal_function_available(self, padding1, padding2):
         """padding_equal helper function is available and works correctly."""

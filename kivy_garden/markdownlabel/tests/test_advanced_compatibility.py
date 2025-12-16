@@ -473,7 +473,7 @@ class TestReactiveRebuildOnPropertyChange:
     """Property tests for reactive rebuild on property change (Property 14)."""
     
     @given(rebuild_font_names, rebuild_font_names)
-    # Complex strategy: 20 examples based on default complexity
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_font_name_change_rebuilds_widgets(self, font1, font2):
         """Changing font_name after initial rendering rebuilds widgets with new font.
@@ -502,9 +502,9 @@ class TestReactiveRebuildOnPropertyChange:
             assert lbl.font_name == font2, \
                 f"After change, expected font_name={font2}, got {lbl.font_name}"
     
-    # Complex strategy: 20 examples based on default complexity
+    # Complex strategy: 20 examples (adequate coverage)
     @given(rebuild_colors, rebuild_colors)
-    # Combination strategy: 20 examples (capped for performance)
+    # Combination strategy: 20 examples (combination coverage)
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_color_change_rebuilds_widgets(self, color1, color2):
         """Changing color after initial rendering rebuilds widgets with new color.
@@ -532,10 +532,10 @@ class TestReactiveRebuildOnPropertyChange:
         for lbl in labels_after:
             assert colors_equal(list(lbl.color), color2), \
                 f"After change, expected color={color2}, got {list(lbl.color)}"
-     # Complex strategy: 20 examples based on default complexity
+     # Complex strategy: 20 examples (adequate coverage)
     
     @given(rebuild_line_heights, rebuild_line_heights)
-    # Combination strategy: 20 examples (capped for performance)
+    # Combination strategy: 20 examples (combination coverage)
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_line_height_change_rebuilds_widgets(self, lh1, lh2):
         """Changing line_height after initial rendering rebuilds widgets with new value.
@@ -561,12 +561,12 @@ class TestReactiveRebuildOnPropertyChange:
         labels_after = find_labels_recursive(label)
         assert len(labels_after) >= 1, "Expected at least one Label after rebuild"
         for lbl in labels_after:
-            # Complex strategy: 20 examples based on default complexity
+            # Complex strategy: 20 examples (adequate coverage)
             assert floats_equal(lbl.line_height, lh2), \
                 f"After change, expected line_height={lh2}, got {lbl.line_height}"
     
     @given(rebuild_text_size_widths, rebuild_text_size_widths)
-    # Combination strategy: 20 examples (capped for performance)
+    # Combination strategy: 20 examples (combination coverage)
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_text_size_change_rebuilds_widgets(self, width1, width2):
         """Changing text_size after initial rendering rebuilds widgets.
@@ -593,7 +593,7 @@ class TestReactiveRebuildOnPropertyChange:
         assert len(labels_after) >= 1, "Expected at least one Label after rebuild"
     
     @given(rebuild_font_names, rebuild_colors, rebuild_line_heights)
-    # Combination strategy: 20 examples (capped for performance)
+    # Combination strategy: 20 examples (combination coverage)
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_multiple_property_changes_rebuild_correctly(self, font_name, color, line_height):
         """Multiple property changes each trigger rebuilds with correct values."""
@@ -771,7 +771,7 @@ class TestReactiveRebuildOnPropertyChange:
                 f"After change, expected color={expected_color2}, got {list(lbl.color)}"
     
     @given(simple_markdown_document(), rebuild_font_names, rebuild_font_names)
-    # Custom strategy: 20 examples for adequate coverage
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_rebuild_preserves_content_structure(self, markdown_text, font1, font2):
         """Rebuilding widgets preserves the content structure."""
