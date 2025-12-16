@@ -133,6 +133,25 @@ class InlineRenderer:
         inner = self.render(children)
         return f'[s]{inner}[/s]'
     
+    def _escape_url(self, url: str) -> str:
+        """Escape URL for safe use in Kivy markup.
+        
+        URLs in [ref=url] markup need special handling for characters
+        that could break the markup structure, particularly closing brackets.
+        
+        Args:
+            url: Raw URL string
+            
+        Returns:
+            URL escaped for safe use in Kivy markup
+        """
+        # Escape closing brackets that would break [ref=url] markup
+        # We use a simple replacement that preserves URL functionality
+        # while preventing markup injection
+        escaped = url.replace(']', '%5D')  # URL encode closing bracket
+        escaped = escaped.replace('[', '%5B')  # URL encode opening bracket for consistency
+        return escaped
+    
     def link(self, token: Dict[str, Any]) -> str:
         """Render link as [ref=url]...[/ref] with color and underline.
         
@@ -145,15 +164,16 @@ class InlineRenderer:
         children = token.get('children', [])
         attrs = token.get('attrs', {})
         url = attrs.get('url', '')
+        escaped_url = self._escape_url(url)
         inner = self.render(children)
         
         if self.link_style == 'unstyled':
-            return f'[ref={url}]{inner}[/ref]'
+            return f'[ref={escaped_url}]{inner}[/ref]'
         
         # Styled links: apply color and underline to make links visually distinct
         r, g, b, a = self.link_color
         color_hex = f'{int(r*255):02x}{int(g*255):02x}{int(b*255):02x}{int(a*255):02x}'
-        return f'[color={color_hex}][u][ref={url}]{inner}[/ref][/u][/color]'
+        return f'[color={color_hex}][u][ref={escaped_url}]{inner}[/ref][/u][/color]'
     
     def softbreak(self, token: Dict[str, Any]) -> str:
         """Render soft line break as a space.

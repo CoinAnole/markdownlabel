@@ -232,3 +232,210 @@ class TestSpecialCharacterEscaping:
         unescaped = result.replace('&bl;', '[').replace('&br;', ']').replace('&amp;', '&')
         
         assert unescaped == raw, f"Round-trip failed: {raw!r} -> {result!r} -> {unescaped!r}"
+
+
+class TestURLMarkupSafety:
+    """Test URL handling for markup injection prevention."""
+    
+    @pytest.mark.parametrize('unsafe_url', [
+        'http://example.com]malicious[/ref][b]bold',
+        'https://test.com[color=ff0000]red[/color]',
+        'ftp://site.com]]][[[ref=evil]click[/ref]',
+        'http://example.com]close[ref=nested]nested[/ref]',
+        'https://site.com][/ref][ref=hijack]hijack[/ref]',
+        'http://test.com][b]bold][/b][/ref]',
+    ])
+    def test_url_markup_escaping(self, unsafe_url):
+        """URLs with markup characters should be escaped."""
+        renderer = InlineRenderer()
+        token = {
+            'type': 'link',
+            'children': [{'type': 'text', 'raw': 'link text'}],
+            'attrs': {'url': unsafe_url}
+        }
+        result = renderer.link(token)
+        
+        # Should not contain unescaped closing brackets that could break markup
+        # Count [ref= tags - should be exactly 1 opening and 1 closing
+        ref_opens = result.count('[ref=')
+        ref_closes = result.count('[/ref]')
+        
+        assert ref_opens == 1, f"Should have exactly 1 [ref= tag, got {ref_opens} in: {result}"
+        assert ref_closes == 1, f"Should have exactly 1 [/ref] tag, got {ref_closes} in: {result}"
+        
+        # Should still be a valid link structure
+        assert '[ref=' in result, f"Should contain [ref= tag: {result}"
+        assert '[/ref]' in result, f"Should contain [/ref] tag: {result}"
+        assert 'link text' in result, f"Should contain link text: {result}"
+    
+    @pytest.mark.parametrize('unsafe_url', [
+        'http://example.com]',
+        'https://test.com[',
+        'ftp://site.com][',
+        'http://example.com]]]',
+        'https://site.com[[[',
+    ])
+    def test_bracket_escaping_in_urls(self, unsafe_url):
+        """URLs with brackets should be URL-encoded."""
+        renderer = InlineRenderer()
+        token = {
+            'type': 'link',
+            'children': [{'type': 'text', 'raw': 'test'}],
+            'attrs': {'url': unsafe_url}
+        }
+        result = renderer.link(token)
+        
+        # Extract the URL from the [ref=URL] markup
+        ref_start = result.find('[ref=') + 5
+        ref_end = result.find(']', ref_start)
+        escaped_url = result[ref_start:ref_end]
+        
+        # Should not contain literal brackets
+        assert '[' not in escaped_url, f"URL should not contain literal [: {escaped_url}"
+        assert ']' not in escaped_url, f"URL should not contain literal ]: {escaped_url}"
+        
+        # Should contain URL-encoded brackets if original had them
+        if '[' in unsafe_url:
+            assert '%5B' in escaped_url, f"Should contain %5B for [: {escaped_url}"
+        if ']' in unsafe_url:
+            assert '%5D' in escaped_url, f"Should contain %5D for ]: {escaped_url}"
+    
+    def test_url_escaping_preserves_functionality(self):
+        """Escaped URLs should still function as clickable links."""
+        renderer = InlineRenderer()
+        
+        # Test a URL that needs escaping
+        unsafe_url = 'http://example.com/path]with]brackets'
+        token = {
+            'type': 'link',
+            'children': [{'type': 'text', 'raw': 'click me'}],
+            'attrs': {'url': unsafe_url}
+        }
+        result = renderer.link(token)
+        
+        # Should produce valid markup structure
+        assert result.startswith('[ref='), f"Should start with [ref=: {result}"
+        assert result.endswith('[/ref]'), f"Should end with [/ref]: {result}"
+        assert 'click me' in result, f"Should contain link text: {result}"
+        
+        # URL should be escaped but still recognizable
+        assert 'http://example.com/path' in result, f"Should contain base URL: {result}"
+        assert '%5D' in result, f"Should contain escaped brackets: {result}"
+    
+    def test_nested_markup_prevention(self):
+        """URLs with nested markup should not break the link structure."""
+        renderer = InlineRenderer()
+        
+        # URL that tries to inject nested markup
+        malicious_url = 'http://evil.com][/ref][b]injected[/b][ref=http://real.com'
+        token = {
+            'type': 'link',
+            'children': [{'type': 'text', 'raw': 'safe text'}],
+            'attrs': {'url': malicious_url}
+        }
+        result = renderer.link(token)
+        
+        # Should have exactly one ref tag pair
+        assert result.count('[ref=') == 1, f"Should have exactly 1 [ref= tag: {result}"
+        assert result.count('[/ref]') == 1, f"Should have exactly 1 [/ref] tag: {result}"
+        
+        # Should not contain injected bold markup
+        # The [b] and [/b] should be part of the escaped URL, not active markup
+        bold_count = result.count('[b]')
+        if bold_count > 0:
+            # If [b] appears, it should be in the URL part, not as active markup
+            ref_start = result.find('[ref=')
+            ref_end = result.find(']', ref_start + 5)
+            url_part = result[ref_start:ref_end + 1]
+            text_part = result[ref_end + 1:]
+            
+            # [b] should not appear in the text part as active markup
+            assert '[b]' not in text_part or text_part.count('[b]') == text_part.count('[/b]'), \
+                f"Unmatched bold tags in text part: {text_part}"
+    
+    def test_multiple_brackets_handling(self):
+        """URLs with multiple brackets should be handled safely."""
+        renderer = InlineRenderer()
+        
+        test_cases = [
+            'http://example.com]]]',
+            'http://example.com[[[',
+            'http://example.com][][][]',
+            'http://example.com[test][more]',
+        ]
+        
+        for url in test_cases:
+            token = {
+                'type': 'link',
+                'children': [{'type': 'text', 'raw': 'test'}],
+                'attrs': {'url': url}
+            }
+            result = renderer.link(token)
+            
+            # Should maintain proper markup structure
+            assert result.count('[ref=') == 1, f"URL {url} should have 1 [ref= tag: {result}"
+            assert result.count('[/ref]') == 1, f"URL {url} should have 1 [/ref] tag: {result}"
+            
+            # Extract escaped URL
+            ref_start = result.find('[ref=') + 5
+            ref_end = result.find(']', ref_start)
+            escaped_url = result[ref_start:ref_end]
+            
+            # Should not contain literal brackets
+            assert '[' not in escaped_url, f"Escaped URL should not contain [: {escaped_url}"
+            assert ']' not in escaped_url, f"Escaped URL should not contain ]: {escaped_url}"
+
+
+# **Feature: test-improvements, Property 6: URL markup safety**
+# *For any* URL containing Kivy markup characters (], [, or markup patterns),
+# the InlineRenderer SHALL escape or quote the URL to prevent markup injection
+# while preserving link functionality.
+# **Validates: Requirements 4.1, 4.2, 4.4**
+
+class TestURLMarkupSafetyProperty:
+    """Property test for URL markup safety (Property 6)."""
+    
+    @given(st.one_of(
+        # URLs with closing brackets
+        st.text(min_size=1, max_size=100).map(lambda s: f"http://example.com/{s}]"),
+        # URLs with opening brackets  
+        st.text(min_size=1, max_size=100).map(lambda s: f"http://example.com/[{s}"),
+        # URLs with both brackets
+        st.text(min_size=1, max_size=100).map(lambda s: f"http://example.com/[{s}]"),
+        # URLs with multiple brackets
+        st.text(min_size=1, max_size=50).map(lambda s: f"http://example.com/{s}]]]"),
+        st.text(min_size=1, max_size=50).map(lambda s: f"http://example.com/[[[{s}"),
+    ))
+    @settings(max_examples=100)
+    def test_urls_with_brackets_are_safe(self, full_url):
+        """URLs containing brackets should be safely escaped."""
+        # **Feature: test-improvements, Property 6: URL markup safety**
+        renderer = InlineRenderer()
+        
+        token = {
+            'type': 'link',
+            'children': [{'type': 'text', 'raw': 'test link'}],
+            'attrs': {'url': full_url}
+        }
+        
+        result = renderer.link(token)
+        
+        # Property: Should have exactly one ref tag pair (no markup injection)
+        ref_opens = result.count('[ref=')
+        ref_closes = result.count('[/ref]')
+        
+        assert ref_opens == 1, f"Should have exactly 1 [ref= tag, got {ref_opens}. URL: {full_url!r}, Result: {result!r}"
+        assert ref_closes == 1, f"Should have exactly 1 [/ref] tag, got {ref_closes}. URL: {full_url!r}, Result: {result!r}"
+        
+        # Property: Should still be a functional link
+        assert '[ref=' in result, f"Should contain [ref= tag. URL: {full_url!r}, Result: {result!r}"
+        assert '[/ref]' in result, f"Should contain [/ref] tag. URL: {full_url!r}, Result: {result!r}"
+        assert 'test link' in result, f"Should preserve link text. URL: {full_url!r}, Result: {result!r}"
+        
+        # Property: Escaped URL should not contain literal brackets
+        ref_start = result.find('[ref=') + 5
+        ref_end = result.find(']', ref_start)
+        escaped_url = result[ref_start:ref_end]
+        
+        assert '[' not in escaped_url, f"Escaped URL should not contain literal [. URL: {full_url!r}, Escaped: {escaped_url!r}"
+        assert ']' not in escaped_url, f"Escaped URL should not contain literal ]. URL: {full_url!r}, Escaped: {escaped_url!r}"

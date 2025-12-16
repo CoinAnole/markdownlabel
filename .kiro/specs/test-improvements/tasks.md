@@ -24,7 +24,7 @@
     - **Property 4: No broad exception handling**
     - **Validates: Requirements 2.2, 2.4**
 
-- [-] 2. Convert inappropriate property tests to parametrized tests
+- [x] 2. Convert inappropriate property tests to parametrized tests
   - [x] 2.1 Identify fixed-list property tests in test suite
     - Scan all test files for @given(st.sampled_from(...)) patterns
     - Create list of tests that should be converted to parametrized
@@ -39,18 +39,18 @@
     - **Property 5: Fixed-list property tests converted**
     - **Validates: Requirements 3.1, 3.4**
 
-- [ ] 3. Implement URL markup safety testing and fixes
-  - [ ] 3.1 Add URL escaping to InlineRenderer.link() method
+- [x] 3. Implement URL markup safety testing and fixes
+  - [x] 3.1 Add URL escaping to InlineRenderer.link() method
     - Implement URL escaping for closing brackets and markup characters
     - Ensure escaped URLs still function as clickable links
     - Handle edge cases like multiple brackets and nested markup
     - _Requirements: 4.1, 4.2, 4.4_
-  - [ ] 3.2 Create comprehensive URL safety test suite
+  - [x] 3.2 Create comprehensive URL safety test suite
     - Test URLs with ], [, and other markup-breaking characters
     - Verify links still function correctly after escaping
     - Test edge cases like nested markup and multiple brackets
     - _Requirements: 4.3_
-  - [ ] 3.3 Write property test for URL markup safety
+  - [x] 3.3 Write property test for URL markup safety
     - **Property 6: URL markup safety**
     - **Validates: Requirements 4.1, 4.2, 4.4**
 
