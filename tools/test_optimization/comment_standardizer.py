@@ -15,6 +15,8 @@ from typing import List, Optional, Dict, Tuple
 from .comment_analyzer import CommentAnalyzer, FileAnalysis
 from .comment_format import CommentFormatValidator, CommentPattern, StrategyType
 from .strategy_type_mapper import StrategyTypeMapper, TestCodeAnalyzer, CommentStrategyClassification
+from .performance_rationale_handler import PerformanceAwareCommentStandardizer
+from .ci_optimization_handler import CIOptimizationIntegrator
 
 
 @dataclass
@@ -53,6 +55,8 @@ class CommentStandardizer:
         self.validator = CommentFormatValidator()
         self.mapper = StrategyTypeMapper()
         self.code_analyzer = TestCodeAnalyzer()
+        self.performance_standardizer = PerformanceAwareCommentStandardizer()
+        self.ci_integrator = CIOptimizationIntegrator()
         
         # Set up backup directory
         if backup_dir is None:
@@ -299,12 +303,14 @@ class CommentStandardizer:
                     rationale="adequate coverage"
                 )
             
-            # Generate the comment
-            comment_text = self.generate_comment(
-                strategy_classification.strategy_type.value,
-                max_examples,
-                strategy_classification.input_space_size
-            )
+            # Generate the comment with CI optimization and performance awareness
+            comment_text = self.ci_integrator.generate_integrated_comment(func_code, max_examples)
+            
+            # Fall back to performance-aware comment if no CI optimization
+            if not comment_text:
+                comment_text = self.performance_standardizer.generate_comment_with_performance_awareness(
+                    func_code, max_examples
+                )
             
             # Find the best place to insert the comment (before @settings or @given)
             insert_line = self._find_comment_insertion_point(lines, func_start_line)

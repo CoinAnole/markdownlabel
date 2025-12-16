@@ -78,6 +78,12 @@ class CommentAnalyzer:
         # Pattern to match @settings decorator with max_examples
         self.settings_pattern = re.compile(r'@settings\([^)]*max_examples\s*=\s*(\d+)', re.DOTALL)
         
+        # Pattern to match conditional max_examples (CI optimization)
+        # This pattern captures the entire conditional expression including nested parentheses
+        self.conditional_settings_pattern = re.compile(
+            r'@settings\([^)]*max_examples\s*=\s*([^,]+(?:,\s*deadline\s*=\s*None)?)', re.DOTALL
+        )
+        
         # Pattern to match comment lines
         self.comment_pattern = re.compile(r'^\s*#\s*(.+)$')
     
@@ -400,10 +406,14 @@ class CommentAnalyzer:
                     next_line = lines[j].strip()
                     
                     if next_line.startswith('@settings'):
-                        # Extract max_examples from settings
-                        settings_match = self.settings_pattern.search(next_line)
-                        if settings_match:
-                            max_examples = int(settings_match.group(1))
+                        # Try to extract max_examples from more complex expressions first
+                        max_examples = self._extract_max_examples_from_settings_line(next_line)
+                        
+                        # If that didn't work, try the simple pattern
+                        if max_examples is None:
+                            settings_match = self.settings_pattern.search(next_line)
+                            if settings_match:
+                                max_examples = int(settings_match.group(1))
                     
                     elif next_line.startswith('def test_'):
                         # Found the function definition
@@ -512,6 +522,88 @@ class CommentAnalyzer:
             return f"# Combination strategy: {max_examples} examples (combination coverage)"
         else:
             return f"# Complex strategy: {max_examples} examples (adequate coverage)"
+    
+    def _extract_max_examples_from_settings_line(self, settings_line: str) -> Optional[int]:
+        """Extract max_examples value from @settings line with complex expressions.
+        
+        Args:
+            settings_line: The @settings decorator line
+            
+        Returns:
+            Integer value to use for documentation purposes, or None if can't parse
+        """
+        # Find max_examples= and extract the balanced expression
+        start_match = re.search(r'max_examples\s*=\s*', settings_line)
+        if not start_match:
+            return None
+        
+        start_pos = start_match.end()
+        
+        # Extract the expression by finding the next comma at the same nesting level
+        # or the closing parenthesis of the @settings decorator
+        paren_count = 0
+        quote_char = None
+        i = start_pos
+        
+        while i < len(settings_line):
+            char = settings_line[i]
+            
+            # Handle quotes
+            if char in ('"', "'") and (i == 0 or settings_line[i-1] != '\\'):
+                if quote_char is None:
+                    quote_char = char
+                elif quote_char == char:
+                    quote_char = None
+            elif quote_char is None:  # Only process structure when not in quotes
+                if char == '(':
+                    paren_count += 1
+                elif char == ')':
+                    if paren_count == 0:
+                        # This is the closing paren of @settings
+                        break
+                    paren_count -= 1
+                elif char == ',' and paren_count == 0:
+                    # This is a comma at the top level
+                    break
+            
+            i += 1
+        
+        max_examples_expr = settings_line[start_pos:i].strip()
+        return self._extract_max_examples_from_conditional(max_examples_expr)
+    
+    def _extract_max_examples_from_conditional(self, max_examples_expr: str) -> Optional[int]:
+        """Extract max_examples value from conditional expression.
+        
+        Args:
+            max_examples_expr: Expression like "20 if not os.getenv('CI') else 5"
+            
+        Returns:
+            Integer value to use for documentation purposes, or None if can't parse
+        """
+        # For CI optimizations, we want to document the CI (reduced) value
+        # since that's what needs performance rationale
+        
+        # Pattern: "base_value if not CI_condition else ci_value"
+        ci_pattern = re.search(r'(\d+)\s+if\s+not.*CI.*else\s+(\d+)', max_examples_expr, re.IGNORECASE)
+        if ci_pattern:
+            base_value = int(ci_pattern.group(1))
+            ci_value = int(ci_pattern.group(2))
+            return ci_value  # Return CI value for documentation
+        
+        # Pattern: "ci_value if CI_condition else base_value"
+        ci_reverse_pattern = re.search(r'(\d+)\s+if.*CI.*else\s+(\d+)', max_examples_expr, re.IGNORECASE)
+        if ci_reverse_pattern:
+            ci_value = int(ci_reverse_pattern.group(1))
+            base_value = int(ci_reverse_pattern.group(2))
+            return ci_value  # Return CI value for documentation
+        
+        # Try to extract any integer from the expression
+        numbers = re.findall(r'\d+', max_examples_expr)
+        if numbers:
+            # Return the smallest value (likely the performance-optimized one)
+            return min(int(n) for n in numbers)
+        
+        return None
     
     def _calculate_summary_stats(self, file_analyses: List[FileAnalysis]) -> Dict[str, int]:
         """Calculate summary statistics across all file analyses."""
