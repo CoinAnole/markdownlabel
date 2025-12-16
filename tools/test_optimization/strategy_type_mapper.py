@@ -146,14 +146,28 @@ class StrategyTypeMapper:
     
     def _extract_given_strategy(self, test_code: str) -> Optional[str]:
         """Extract strategy code from @given decorator in test function."""
-        # Look for @given decorator
-        given_pattern = re.compile(r'@given\((.*?)\)', re.DOTALL)
-        match = given_pattern.search(test_code)
+        # Look for @given decorator with proper parentheses matching
+        start_idx = test_code.find('@given(')
+        if start_idx == -1:
+            return None
         
-        if match:
-            return match.group(1).strip()
+        # Find the matching closing parenthesis
+        start_paren = start_idx + len('@given(')
+        paren_count = 1
+        end_idx = start_paren
         
-        return None
+        while end_idx < len(test_code) and paren_count > 0:
+            if test_code[end_idx] == '(':
+                paren_count += 1
+            elif test_code[end_idx] == ')':
+                paren_count -= 1
+            end_idx += 1
+        
+        if paren_count != 0:
+            return None  # Unmatched parentheses
+        
+        strategy_code = test_code[start_paren:end_idx-1]
+        return strategy_code.strip()
     
     def _is_performance_optimized(self, strategy_code: str) -> bool:
         """Check if strategy appears to be performance-optimized."""
