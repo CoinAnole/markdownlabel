@@ -31,7 +31,7 @@ class TestAutoSizingBehavior:
     """Property tests for auto-sizing behavior (Property 16)."""
     
     @given(simple_markdown_document())
-    # Complex strategy with custom domain strategy: 20 examples
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_auto_size_hint_enabled_sets_none(self, markdown_text):
         """With auto_size_height=True, size_hint_y is None for auto-sizing."""
@@ -92,7 +92,7 @@ class TestAutoSizingBehavior:
 
 class TestAutoSizeHeightTrueBehavior:
     """Property tests for auto_size_height True behavior (Property 7)."""
-     # Complex strategy with custom domain strategy: 20 examples
+     # Complex strategy: 20 examples (adequate coverage)
     
     @given(simple_markdown_document())
     # Complex strategy: 20 examples (adequate coverage)
@@ -101,7 +101,7 @@ class TestAutoSizeHeightTrueBehavior:
         """When auto_size_height=True, size_hint_y should be None."""
         label = MarkdownLabel(text=markdown_text, auto_size_height=True)
         
-        # Complex strategy with custom domain strategy: 20 examples
+        # Complex strategy: 20 examples (adequate coverage)
         assert label.size_hint_y is None, \
             f"Expected size_hint_y=None when auto_size_height=True, got {label.size_hint_y}"
     
@@ -128,12 +128,12 @@ class TestAutoSizeHeightTrueBehavior:
         assert label.auto_size_height is False, \
             f"Expected default auto_size_height=False, got {label.auto_size_height}"
         
-        # Complex strategy with float generation, NaN exclusion, infinity exclusion: 50 examples
+        # Complex strategy: 50 examples (adequate coverage)
         assert label.size_hint_y == 1, \
             f"Expected size_hint_y=1 by default, got {label.size_hint_y}"
     
     @given(st.floats(min_value=0.1, max_value=2.0, allow_nan=False, allow_infinity=False))
-    # Float strategy with constraints: 50 examples
+    # Complex strategy: 50 examples (adequate coverage)
     @settings(max_examples=50 if not os.getenv('CI') else 25, deadline=None)
     def test_auto_size_height_true_ignores_user_size_hint_y(self, user_size_hint_y):
         """When auto_size_height=True, user-provided size_hint_y is overridden."""
@@ -171,7 +171,7 @@ class TestAutoSizeHeightFalseBehavior:
         assert label.size_hint_y == 1, \
             f"Expected size_hint_y=1 when auto_size_height=False, got {label.size_hint_y}"
         
-        # Complex strategy with float generation, NaN exclusion, infinity exclusion, custom domain strategy: 50 examples
+        # Complex strategy: 50 examples (adequate coverage)
         assert label.auto_size_height is False, \
             f"Expected auto_size_height=False, got {label.auto_size_height}"
     
@@ -187,7 +187,7 @@ class TestAutoSizeHeightFalseBehavior:
             size_hint_y=user_size_hint_y
         )
         
-        # Complex strategy with custom domain strategy: 20 examples
+        # Complex strategy: 20 examples (adequate coverage)
         assert label.size_hint_y == user_size_hint_y, \
             f"Expected size_hint_y={user_size_hint_y} when auto_size_height=False, got {label.size_hint_y}"
         
@@ -256,7 +256,7 @@ class TestAutoSizeHeightDynamicToggling:
         label.auto_size_height = True
         
         # Should set size_hint_y=None
-        # Complex strategy with float generation, NaN exclusion, infinity exclusion, custom domain strategy: 50 examples
+        # Complex strategy: 50 examples (adequate coverage)
         assert label.size_hint_y is None, \
             f"Expected size_hint_y=None after toggling to True, got {label.size_hint_y}"
         
@@ -290,7 +290,7 @@ class TestAutoSizeHeightDynamicToggling:
         
         assert label.size_hint_y is None, \
             f"Expected size_hint_y=None after toggle back to True, got {label.size_hint_y}"
-         # Complex strategy with custom domain strategy: 20 examples
+         # Complex strategy: 20 examples (adequate coverage)
         
         # Toggle to False again - should still restore user value
         label.auto_size_height = False
@@ -339,7 +339,7 @@ class TestStrictLabelModeSizingBehavior:
     def test_strict_mode_preserves_default_size_hint_y(self, markdown_text):
         """When strict_label_mode=True, default size_hint_y=1 is preserved."""
         label = MarkdownLabel(text=markdown_text, strict_label_mode=True)
-         # Complex strategy with float generation, NaN exclusion, infinity exclusion, custom domain strategy: 50 examples
+         # Complex strategy: 50 examples (adequate coverage)
         
         assert label.size_hint_y == 1, \
             f"Expected size_hint_y=1 when strict_label_mode=True, got {label.size_hint_y}"
@@ -356,7 +356,7 @@ class TestStrictLabelModeSizingBehavior:
         label = MarkdownLabel(
             text=markdown_text, 
             strict_label_mode=True, 
-            # Complex strategy with custom domain strategy: 20 examples
+            # Complex strategy: 20 examples (adequate coverage)
             size_hint_y=user_size_hint_y
         )
         
@@ -397,7 +397,7 @@ class TestStrictLabelModeSizingBehavior:
     def test_strict_mode_property_accepted_and_stored(self, value):
         """Setting strict_label_mode property accepts and stores the value."""
         label = MarkdownLabel(text='# Hello World', strict_label_mode=value)
-        # Complex strategy with custom domain strategy: 20 examples
+        # Complex strategy: 20 examples (adequate coverage)
         assert label.strict_label_mode == value
     
     @given(st.booleans())
@@ -419,7 +419,7 @@ class TestStrictLabelModeSizingBehavior:
             auto_size_height=True
         )
         
-        # Complex strategy with custom domain strategy: 20 examples
+        # Complex strategy: 20 examples (adequate coverage)
         # Initially should have auto-sizing enabled
         assert label.size_hint_y is None, \
             "size_hint_y should be None when auto_size_height=True"
@@ -442,7 +442,7 @@ class TestStrictLabelModeSizingBehavior:
             auto_size_height=True
         )
         
-        # Complex strategy with float generation, NaN exclusion, infinity exclusion, custom domain strategy: 50 examples
+        # Complex strategy: 50 examples (adequate coverage)
         # Initially should have size_hint_y preserved
         assert label.size_hint_y == 1, \
             "size_hint_y should be 1 when strict_label_mode=True"
@@ -482,7 +482,7 @@ class TestStrictLabelModeSizingBehavior:
             f"Expected size_hint_y={user_size_hint_y} after toggle back to True, got {label.size_hint_y}"
     
     @given(simple_markdown_document())
-    # Complex strategy with custom domain strategy: 20 examples
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_strict_mode_overrides_auto_size_height(self, markdown_text):
         """strict_label_mode=True overrides auto_size_height=True behavior."""
@@ -499,7 +499,7 @@ class TestStrictLabelModeSizingBehavior:
     @given(simple_markdown_document())
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
-    # Complex strategy with custom domain strategy: 20 examples
+    # Complex strategy: 20 examples (adequate coverage)
     def test_strict_mode_ignores_auto_size_height_changes(self, markdown_text):
         """When strict_label_mode=True, auto_size_height changes are ignored."""
         label = MarkdownLabel(text=markdown_text, strict_label_mode=True)
@@ -517,7 +517,7 @@ class TestStrictLabelModeSizingBehavior:
     @given(simple_markdown_document())
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
-    # Complex strategy with custom domain strategy: 20 examples
+    # Complex strategy: 20 examples (adequate coverage)
     def test_strict_mode_triggers_rebuild(self, markdown_text):
         """Changing strict_label_mode triggers widget rebuild."""
         assume(markdown_text.strip())

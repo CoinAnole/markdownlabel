@@ -204,7 +204,7 @@ class TestRoundTripSerialization:
         
         label2 = MarkdownLabel(text=serialized)
         ast2 = self._normalize_ast(label2.get_ast())
-         # Complex strategy with custom domain strategy: 20 examples
+         # Complex strategy: 20 examples (adequate coverage)
         
         assert ast1 == ast2, \
             f"AST mismatch after round-trip:\nOriginal: {ast1}\nAfter: {ast2}"
@@ -441,14 +441,14 @@ class TestCodeBlockSerialization:
         # The raw content includes the trailing newline from parsing
         expected_content = code_content + '\n'
         assert code1 == code2 == expected_content
- # Complex strategy with text generation, large text size: 30 examples
+ # Complex strategy: 30 examples (adequate coverage)
 
 
 class TestCodeFenceCollisionProperty:
     """Property-based tests for code fence collision handling."""
     
     @given(st.text(min_size=0, max_size=200))
-    # Complex text strategy with constraints: 30 examples
+    # Complex strategy: 30 examples (adequate coverage)
     @settings(max_examples=30 if not os.getenv('CI') else 15, deadline=None)
     def test_fence_collision_handling_property(self, code_content):
         """**Feature: test-improvements, Property 7: Code fence collision handling**
@@ -509,7 +509,7 @@ class TestCodeFenceCollisionProperty:
             f"Original content should be preserved in result. Content: {code_content!r}, Result: {result!r}"
     
     @given(st.text(min_size=0, max_size=200), st.text(alphabet=st.characters(whitelist_categories=('L', 'N')), min_size=0, max_size=20))
-    # Complex text strategy with constraints: 20 examples
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_code_serialization_round_trip_property(self, code_content, language):
         """**Feature: test-improvements, Property 8: Code serialization round-trip**

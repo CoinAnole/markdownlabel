@@ -92,7 +92,7 @@ class TestSharedStrategyAvailability:
         assert '(' in link and ')' in link, f"Link should contain parentheses: {link}"
         assert link.startswith('['), f"Link should start with [: {link}"
         
-        # Complex strategy with custom domain strategy: 20 examples
+        # Complex strategy: 20 examples (adequate coverage)
         # Verify it can be used with MarkdownLabel
         label = MarkdownLabel(text=link)
         assert len(label.children) >= 1, "Link should produce at least one widget"
@@ -153,7 +153,7 @@ class TestSharedStrategyAvailability:
         # Verify fonts can be used with MarkdownLabel
         label = MarkdownLabel(text="Test", font_name=KIVY_FONTS[0])
         labels = find_labels_recursive(label)
-        # Complex strategy with text generation: 30 examples
+        # Complex strategy: 30 examples (adequate coverage)
         if labels:
             assert labels[0].font_name == KIVY_FONTS[0], "Font should be applied to labels"
 
@@ -162,7 +162,7 @@ class TestHelperFunctionConsolidation:
     """Property tests for helper function consolidation (Property 7)."""
     
     @given(st.text(min_size=1, max_size=50))
-    # Complex text strategy with constraints: 50 examples
+    # Complex strategy: 50 examples (adequate coverage)
     @settings(max_examples=30, deadline=None)
     def test_find_labels_recursive_function_available(self, text):
         """**Feature: test-refactoring, Property 7: Helper Function Consolidation**
@@ -210,7 +210,7 @@ class TestHelperFunctionConsolidation:
     
     @given(st.floats(min_value=0.0, max_value=100.0, allow_nan=False, allow_infinity=False),
            st.floats(min_value=0.0, max_value=100.0, allow_nan=False, allow_infinity=False))
-    # Float strategy with constraints: 20 examples
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_floats_equal_function_available(self, float1, float2):
         """floats_equal helper function is available and works correctly."""

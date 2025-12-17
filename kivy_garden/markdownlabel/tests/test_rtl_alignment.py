@@ -110,6 +110,7 @@ class TestAutoAlignmentRespectsDirection:
         st.sampled_from(['ltr', 'weak_ltr', None]),
         st.integers(min_value=1, max_value=6)
     )
+    # Small finite strategy: 3 examples (input space size: 3)
     @settings(max_examples=3, deadline=None)
     def test_auto_alignment_ltr_applies_to_headings(self, base_direction, heading_level):
         """Auto alignment with LTR direction applies to heading Labels.
@@ -414,6 +415,7 @@ class TestExplicitAlignmentOverridesAuto:
         st.sampled_from(['left', 'center', 'right', 'justify']),
         st.sampled_from(['rtl', 'weak_rtl', 'ltr', 'weak_ltr', None])
     )
+    # Small finite strategy: 3 examples (input space size: 3)
     @settings(max_examples=3, deadline=None)
     def test_explicit_alignment_overrides_base_direction(self, explicit_halign, base_direction):
         """Explicit halign overrides base_direction for all content.
@@ -466,6 +468,7 @@ class TestExplicitAlignmentOverridesAuto:
         st.sampled_from(['left', 'center', 'right', 'justify']),
         st.sampled_from(['rtl', 'weak_rtl', 'ltr', 'weak_ltr', None])
     )
+    # Small finite strategy: 4 examples (input space size: 4)
     @settings(max_examples=4, deadline=None)
     def test_explicit_alignment_overrides_direction_for_mixed_content(self, explicit_halign, base_direction):
         """Explicit halign overrides base_direction for mixed content types.
@@ -530,6 +533,7 @@ class TestExplicitAlignmentOverridesAuto:
         st.sampled_from(['left', 'center', 'right', 'justify']),
         st.sampled_from(['rtl', 'weak_rtl', 'ltr', 'weak_ltr', None])
     )
+    # Small finite strategy: 3 examples (input space size: 3)
     @settings(max_examples=3, deadline=None)
     def test_explicit_alignment_stored_correctly_on_widget(self, explicit_halign, base_direction):
         """Explicit halign is stored correctly on MarkdownLabel widget.

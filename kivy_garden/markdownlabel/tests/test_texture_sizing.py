@@ -42,7 +42,7 @@ class TestComprehensiveTextureSizeCalculation:
         
         Args:
             widget: Root widget to search
-            # Complex strategy with custom domain strategy: 20 examples
+            # Complex strategy: 20 examples (adequate coverage)
             widgets: List to accumulate widgets (created if None)
             
         Returns:
@@ -55,7 +55,7 @@ class TestComprehensiveTextureSizeCalculation:
         
         if hasattr(widget, 'children'):
             for child in widget.children:
-                # Complex strategy with custom domain strategy: 20 examples
+                # Complex strategy: 20 examples (adequate coverage)
                 self._find_all_widgets_recursive(child, widgets)
         
         return widgets
@@ -228,7 +228,7 @@ class TestComprehensiveTextureSizeCalculation:
 This is a paragraph.
 
 ```python
-# Complex strategy with custom domain strategy: 20 examples
+# Complex strategy: 20 examples (adequate coverage)
 code = "block"
 ```
 
@@ -278,7 +278,7 @@ code = "block"
         label = MarkdownLabel(text=markdown)
         
         # Verify nested list creates children
-        # Complex strategy with custom domain strategy: 20 examples
+        # Complex strategy: 20 examples (adequate coverage)
         assert len(label.children) >= 1, \
             f"Expected at least 1 child for nested list, got {len(label.children)}"
         
@@ -349,6 +349,7 @@ code = "block"
             f"Expected children for image markdown, got {len(label.children)}"
     
     @given(st.integers(min_value=1, max_value=6))
+    # Complex strategy: 6 examples (adequate coverage)
     @settings(max_examples=6, deadline=None)
     def test_all_heading_levels_create_label_widgets(self, level):
         """All heading levels create Label widgets for texture_size calculation."""

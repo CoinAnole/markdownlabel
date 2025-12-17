@@ -77,6 +77,7 @@ class TestStrategyClassification:
         assert analysis.input_space_size == range_size
     
     @given(st.sampled_from(['st.text()', 'st.floats()', 'st.integers()']))
+    # Small finite strategy: 3 examples (input space size: 3)
     @settings(max_examples=3, deadline=None)
     def test_complex_strategy_classification(self, strategy_code):
         """Complex/infinite strategies are classified as COMPLEX."""
@@ -152,6 +153,7 @@ class TestMaxExamplesCalculation:
     
     # **Feature: test-performance-optimization, Property 4: Complex strategies use appropriate ranges**
     @given(st.integers(min_value=1, max_value=4))
+    # Complex strategy: 4 examples (adequate coverage)
     @settings(max_examples=4, deadline=None)
     def test_complex_strategy_uses_complexity_based_examples(self, complexity_level):
         """Complex strategies should use examples based on complexity level.
@@ -232,6 +234,7 @@ class TestCombinationStrategies:
     
     # **Feature: test-performance-optimization, Property 3: Combination strategies use product formula**
     @given(st.integers(min_value=2, max_value=5), st.integers(min_value=2, max_value=5))
+    # Complex strategy: 4 examples (adequate coverage)
     @settings(max_examples=4, deadline=None)
     def test_combination_uses_product_formula(self, size1, size2):
         """Combination strategies should use product of individual strategy sizes.

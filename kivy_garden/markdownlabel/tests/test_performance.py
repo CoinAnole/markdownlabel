@@ -65,7 +65,7 @@ class TestEfficientStyleUpdates:
 
     @given(st.floats(min_value=10, max_value=50, allow_nan=False, allow_infinity=False),
            st.floats(min_value=10, max_value=50, allow_nan=False, allow_infinity=False))
-    # Float strategy with constraints: 20 examples
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20 if os.getenv('CI') else 100, deadline=None)
     def test_font_size_change_preserves_widget_tree(self, initial_size, new_size):
         """Changing font_size preserves widget tree structure (widget identities).
@@ -98,7 +98,7 @@ class TestEfficientStyleUpdates:
         st.floats(min_value=0, max_value=1, allow_nan=False, allow_infinity=False),
         st.floats(min_value=0, max_value=1, allow_nan=False, allow_infinity=False)
     ))
-    # Performance testing: 20 examples for widget tree validation
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20 if os.getenv('CI') else 100, deadline=None)
     def test_color_change_preserves_widget_tree(self, new_color):
         """Changing color preserves widget tree structure (widget identities).
@@ -129,7 +129,7 @@ class TestEfficientStyleUpdates:
         st.floats(min_value=0, max_value=1, allow_nan=False, allow_infinity=False),
         st.floats(min_value=0, max_value=1, allow_nan=False, allow_infinity=False)
     ))
-    # Performance testing: 20 examples for widget tree validation
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20 if os.getenv('CI') else 100, deadline=None)
     def test_color_change_updates_descendant_labels(self, new_color):
         """Changing color updates all descendant Label widgets.
@@ -246,7 +246,7 @@ class TestEfficientStyleUpdates:
                 f"Expected valign {new_valign}, got {child_label.valign}"
 
     @given(st.floats(min_value=0.5, max_value=3.0, allow_nan=False, allow_infinity=False))
-    # Float strategy with constraints: 20 examples
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20 if os.getenv('CI') else 100, deadline=None)
     def test_line_height_change_preserves_widget_tree(self, new_line_height):
         """Changing line_height preserves widget tree structure (widget identities).
@@ -272,7 +272,7 @@ class TestEfficientStyleUpdates:
             "Widget tree changed after line_height update"
 
     @given(st.floats(min_value=0.5, max_value=3.0, allow_nan=False, allow_infinity=False))
-    # Float strategy with constraints: 20 examples
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20 if os.getenv('CI') else 100, deadline=None)
     def test_line_height_change_updates_descendant_labels(self, new_line_height):
         """Changing line_height updates all descendant Label widgets.
@@ -389,7 +389,7 @@ class TestEfficientStyleUpdates:
         st.sampled_from(['top', 'middle', 'bottom']),
         st.floats(min_value=0.8, max_value=2.0, allow_nan=False, allow_infinity=False)
     )
-    # Performance testing: 20 examples for widget tree validation
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20 if os.getenv('CI') else 100, deadline=None)
     def test_multiple_style_changes_preserve_widget_tree(self, font_size, color, 
                                                           halign, valign, line_height):
@@ -433,7 +433,7 @@ class TestEfficientStyleUpdates:
             st.floats(min_value=0, max_value=1, allow_nan=False, allow_infinity=False)
         )
     )
-    # Performance testing: 20 examples for widget tree validation
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20 if os.getenv('CI') else 100, deadline=None)
     def test_disabled_color_switching(self, normal_color, disabled_color):
         """Disabled state correctly switches between color and disabled_color.
@@ -509,6 +509,7 @@ class TestPerformanceImprovements:
     @pytest.mark.slow
     @given(st.just(None))  # Dummy strategy since we're testing real performance data
     # max_examples=1: Only run once since we're checking real performance data files
+    # Complex strategy: 1 examples (adequate coverage)
     @settings(max_examples=1, deadline=None)
     def test_overall_performance_improvement_measurable(self, _):
         """Overall test suite performance improvement is measurable and significant.
@@ -541,6 +542,7 @@ class TestPerformanceImprovements:
 
     @pytest.mark.slow
     @given(st.sampled_from(['boolean', 'small_finite', 'medium_finite', 'complex']))
+    # Small finite strategy: 4 examples (input space size: 4)
     @settings(max_examples=4, deadline=None)  # Test each strategy type once
     def test_strategy_category_improvements_measurable(self, strategy_type):
         """Performance improvements by strategy category are measurable.
@@ -580,6 +582,7 @@ class TestPerformanceImprovements:
 
     @given(st.just(None))  # Dummy strategy since we're testing real data
     # max_examples=1: Only run once since we're validating real performance data files
+    # Complex strategy: 1 examples (adequate coverage)
     @settings(max_examples=1, deadline=None)
     def test_file_level_improvements_measurable(self, _):
         """File-level performance improvements are measurable.
@@ -624,6 +627,7 @@ class TestPerformanceImprovements:
 
     @given(st.just(None))  # Dummy strategy since we're testing real data
     # max_examples=1: Only run once since we're validating real performance data files
+    # Complex strategy: 1 examples (adequate coverage)
     @settings(max_examples=1, deadline=None)
     def test_optimization_effectiveness_measurable(self, _):
         """Optimization effectiveness metrics are measurable and meaningful.
@@ -663,6 +667,7 @@ class TestPerformanceImprovements:
 
     @given(st.just(None))  # Dummy strategy since we're testing real data  
     # max_examples=1: Only run once since we're validating real performance data files
+    # Complex strategy: 1 examples (adequate coverage)
     @settings(max_examples=1, deadline=None)
     def test_target_verification_measurable(self, _):
         """Performance target verification produces measurable results.

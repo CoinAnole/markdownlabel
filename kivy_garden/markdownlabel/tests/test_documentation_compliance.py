@@ -120,7 +120,7 @@ class TestDocumentationCompliance:
         return "unknown_test"
     
     @given(st.integers(min_value=11, max_value=200))
-    # Integer strategy: 20 examples for adequate coverage of custom value detection
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_custom_value_detection_property(self, custom_value):
         """Property test for custom value detection logic."""
@@ -135,7 +135,7 @@ class TestDocumentationCompliance:
             f"Custom value detection failed for {custom_value}: expected {expected_custom}, got {is_custom}"
     
     @given(st.text(min_size=1, max_size=100))
-    # Text strategy: 15 examples for comment detection testing
+    # Complex strategy: 15 examples (adequate coverage)
     @settings(max_examples=15, deadline=None)
     def test_comment_detection_property(self, comment_text):
         """Property test for explanatory comment detection."""

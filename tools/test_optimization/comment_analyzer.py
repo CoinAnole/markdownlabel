@@ -495,27 +495,43 @@ class CommentAnalyzer:
         return comments
     
     def _looks_like_max_examples_comment(self, comment: str) -> bool:
-        """Check if a comment looks like it's trying to document max_examples."""
+        """Check if a comment looks like it's trying to document max_examples.
+        
+        This function is intentionally strict to avoid false positives from
+        regular code comments that happen to contain words like 'strategy' or
+        'property'. A max_examples documentation comment should follow a
+        specific pattern.
+        """
         comment_lower = comment.lower()
-        indicators = [
-            'strategy',
-            'examples',
-            'coverage',
-            'boolean',
-            'finite',
-            'complex',
-            'combination',
-            'performance',
-            'optimized',
-            'format',  # "Wrong format: 25 examples"
-            'proper',
-            'comment'
-        ]
         
-        # Also check for patterns like "N examples" where N is a number
+        # Skip property test documentation comments (e.g., "# **Feature: ...")
+        # These are test property documentation, not max_examples documentation
+        if '**feature:' in comment_lower or '**property' in comment_lower:
+            return False
+        
+        # Skip comments that are clearly not max_examples documentation
+        if comment_lower.startswith('# *for any*'):
+            return False
+        
+        # Pattern 1: Contains "N examples" where N is a number
+        # This is the most reliable indicator
         has_examples_pattern = re.search(r'\d+\s+examples', comment_lower)
+        if has_examples_pattern:
+            return True
         
-        return any(indicator in comment_lower for indicator in indicators) or bool(has_examples_pattern)
+        # Pattern 2: Contains "strategy:" followed by something
+        # e.g., "# Boolean strategy: ..." or "# Complex strategy: ..."
+        has_strategy_colon = re.search(r'\b(boolean|complex|combination|finite|small finite|medium finite)\s+strategy\s*:', comment_lower)
+        if has_strategy_colon:
+            return True
+        
+        # Pattern 3: Starts with a strategy type name followed by "strategy"
+        # e.g., "# Boolean strategy" at the start (but not "# Boolean strategy documentation")
+        if re.match(r'^#\s*(boolean|complex|combination|small finite|medium finite)\s+strategy\s*:', comment_lower):
+            return True
+        
+        # Don't flag other comments - they're likely regular code comments
+        return False
     
     def _suggest_comment_fix(self, original_comment: str, max_examples: Optional[int]) -> Optional[str]:
         """Suggest a fix for a malformed comment."""

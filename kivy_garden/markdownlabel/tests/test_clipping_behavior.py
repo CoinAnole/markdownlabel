@@ -45,7 +45,7 @@ class TestContentClippingWhenHeightConstrained:
         ),
         st.floats(min_value=10.0, max_value=500.0, allow_nan=False, allow_infinity=False),
     )
-    # Clipping behavior testing: 20 examples for layout validation
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_text_size_height_enables_clipping(self, text, height):
         """Setting text_size[1] to a value enables content clipping."""
@@ -69,7 +69,7 @@ class TestContentClippingWhenHeightConstrained:
         ),
         st.floats(min_value=10.0, max_value=500.0, allow_nan=False, allow_infinity=False),
     )
-    # Clipping behavior testing: 20 examples for layout validation
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_strict_label_mode_with_fixed_height_enables_clipping(self, text, height):
         """strict_label_mode=True with size_hint_y=None enables clipping."""
@@ -88,7 +88,7 @@ class TestContentClippingWhenHeightConstrained:
         )
 
     @given(st.floats(min_value=10.0, max_value=500.0, allow_nan=False, allow_infinity=False))
-    # Float strategy with constraints: 50 examples (25 in CI for performance)
+    # Complex strategy: 50 examples (adequate coverage)
     @settings(max_examples=50 if not os.getenv('CI') else 25, deadline=None)
     def test_clipping_container_height_matches_text_size(self, height):
         """Clipping container height matches text_size[1]."""
@@ -116,6 +116,7 @@ class TestContentClippingWhenHeightConstrained:
         st.integers(min_value=1, max_value=6),
         st.floats(min_value=50.0, max_value=200.0, allow_nan=False, allow_infinity=False),
     )
+    # Complex strategy: 6 examples (adequate coverage)
     @settings(max_examples=6, deadline=None)
     def test_heading_content_clipped_when_height_constrained(self, level, height):
         """Heading content is clipped when height is constrained."""
@@ -177,7 +178,7 @@ class TestNoClippingWhenUnconstrained:
             ),
         )
     )
-    # Clipping behavior testing: 20 examples for layout validation
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_no_clipping_when_text_size_height_none(self, text):
         """No clipping when text_size[1] is None."""
@@ -200,7 +201,7 @@ class TestNoClippingWhenUnconstrained:
             ),
         )
     )
-    # Clipping behavior testing: 20 examples for layout validation
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_no_clipping_when_strict_label_mode_false(self, text):
         """No clipping when strict_label_mode is False (default)."""
@@ -223,7 +224,7 @@ class TestNoClippingWhenUnconstrained:
             ),
         )
     )
-    # Clipping behavior testing: 20 examples for layout validation
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_content_added_directly_when_unconstrained(self, text):
         """Content is added directly to MarkdownLabel when unconstrained."""
@@ -241,6 +242,7 @@ class TestNoClippingWhenUnconstrained:
             )
 
     @given(st.integers(min_value=1, max_value=6))
+    # Complex strategy: 6 examples (adequate coverage)
     @settings(max_examples=6, deadline=None)
     def test_heading_expands_naturally_when_unconstrained(self, level):
         """Heading content expands naturally when unconstrained."""
@@ -262,9 +264,9 @@ class TestNoClippingWhenUnconstrained:
             "Default settings should not enable clipping"
         )
 
-    # Complex strategy with float generation, NaN exclusion, infinity exclusion: 50 examples
+    # Complex strategy: 50 examples (adequate coverage)
     @given(st.floats(min_value=100.0, max_value=500.0, allow_nan=False, allow_infinity=False))
-    # Float strategy with constraints: 50 examples
+    # Complex strategy: 50 examples (adequate coverage)
     @settings(max_examples=50 if not os.getenv('CI') else 25, deadline=None)
     def test_text_size_width_only_no_clipping(self, width):
         """Setting only text_size width (not height) does not enable clipping."""

@@ -187,6 +187,7 @@ class TestHeadingFontHierarchy:
         assert widget.markup is True, "Heading should have markup=True"
     
     @given(st.integers(min_value=1, max_value=6), st.floats(min_value=10, max_value=30))
+    # Complex strategy: 6 examples (adequate coverage)
     @settings(max_examples=6)
     def test_heading_font_size_scales_with_base(self, level, base_size):
         """Heading font size scales proportionally with base_font_size."""
@@ -327,6 +328,7 @@ class TestNestedListIndentation:
     """Property tests for nested list indentation (Property 7)."""
     
     @given(st.integers(min_value=1, max_value=4))
+    # Complex strategy: 4 examples (adequate coverage)
     @settings(max_examples=4)
     def test_nested_list_increases_indentation(self, depth):
         """Nested lists have increasing left padding."""
@@ -808,6 +810,7 @@ class TestTableAlignmentApplication:
             f"Expected halign='{alignment}', got '{widget.halign}'"
     
     @given(st.integers(min_value=1, max_value=3), st.integers(min_value=2, max_value=4))
+    # Complex strategy: 3 examples (adequate coverage)
     @settings(max_examples=3, deadline=None)
     def test_table_preserves_column_alignments(self, num_rows, num_cols):
         """Table preserves alignment for each column."""

@@ -347,7 +347,7 @@ class TestFontAdvancedPropertyForwardingPhase2:
         whitelist_categories=['L', 'N'],
         blacklist_characters='[]&\n\r'
     )))
-    # Complex text strategy with constraints: 20 examples
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_font_family_excluded_from_code_blocks(self, font_family_value):
         """font_family is NOT forwarded to code block Labels.
@@ -371,7 +371,7 @@ class TestFontAdvancedPropertyForwardingPhase2:
         whitelist_categories=['L', 'N'],
         blacklist_characters='[]&\n\r'
     )))
-    # Complex text strategy with constraints: 20 examples
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_font_family_forwarded_to_non_code_labels(self, font_family_value):
         """font_family IS forwarded to non-code block Labels.
@@ -396,7 +396,7 @@ class TestFontAdvancedPropertyForwardingPhase2:
         whitelist_categories=['L', 'N'],
         blacklist_characters='[]&\n\r'
     )))
-    # Complex text strategy with constraints: 20 examples
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_font_context_forwarded_to_all_labels_including_code(self, font_context_value):
         """font_context IS forwarded to ALL Labels including code blocks.
@@ -421,7 +421,7 @@ class TestFontAdvancedPropertyForwardingPhase2:
         whitelist_categories=['L', 'N', 'P'],
         blacklist_characters='[]&\n\r'
     )))
-    # Complex text strategy with constraints: 20 examples
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_font_features_forwarded_to_all_labels_including_code(self, font_features_value):
         """font_features IS forwarded to ALL Labels including code blocks.
@@ -555,7 +555,7 @@ class TestFontSizeImmediateUpdate:
         st.floats(min_value=8.0, max_value=50.0, allow_nan=False, allow_infinity=False),
         st.floats(min_value=8.0, max_value=50.0, allow_nan=False, allow_infinity=False)
     )
-    # Font property testing: 20 examples for property forwarding validation
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_base_font_size_updates_all_labels_immediately(self, markdown_text, initial_size, new_size):
         """Changing base_font_size immediately updates all child Label font_size properties."""
@@ -603,6 +603,7 @@ class TestFontSizeImmediateUpdate:
         st.floats(min_value=10.0, max_value=30.0, allow_nan=False, allow_infinity=False),
         st.floats(min_value=10.0, max_value=30.0, allow_nan=False, allow_infinity=False)
     )
+    # Complex strategy: 6 examples (adequate coverage)
     @settings(max_examples=6, deadline=None)
     def test_heading_font_size_updates_with_scale(self, heading_level, initial_size, new_size):
         """Heading font sizes update immediately with correct scale factors."""
@@ -635,7 +636,7 @@ class TestFontSizeImmediateUpdate:
         
         # Verify updated font size
         new_expected = new_size * expected_scale
-        # Complex strategy with float generation, NaN exclusion, infinity exclusion: 50 examples
+        # Complex strategy: 50 examples (adequate coverage)
         assert abs(heading_label.font_size - new_expected) < 0.1, \
             f"Updated heading font_size incorrect: expected {new_expected}, got {heading_label.font_size}"
     
@@ -679,6 +680,7 @@ class TestHeadingScalePreservation:
         st.integers(min_value=1, max_value=6),  # Heading levels
         st.floats(min_value=8.0, max_value=50.0, allow_nan=False, allow_infinity=False)
     )
+    # Complex strategy: 6 examples (adequate coverage)
     @settings(max_examples=6, deadline=None)
     def test_heading_scale_factors_preserved(self, heading_level, base_size):
         """Heading scale factors are preserved according to HEADING_SIZES."""
@@ -719,6 +721,7 @@ class TestHeadingScalePreservation:
         ),
         st.floats(min_value=12.0, max_value=24.0, allow_nan=False, allow_infinity=False)
     )
+    # Complex strategy: 6 examples (adequate coverage)
     @settings(max_examples=6, deadline=None)
     def test_multiple_headings_preserve_relative_scales(self, heading_levels, base_size):
         """Multiple headings preserve correct relative scale factors."""
@@ -764,6 +767,7 @@ class TestHeadingScalePreservation:
         st.floats(min_value=10.0, max_value=20.0, allow_nan=False, allow_infinity=False),
         st.floats(min_value=20.0, max_value=40.0, allow_nan=False, allow_infinity=False)
     )
+    # Complex strategy: 6 examples (adequate coverage)
     @settings(max_examples=6, deadline=None)
     def test_heading_scale_preserved_after_base_font_size_change(self, heading_level, initial_size, new_size):
         """Heading scale factors are preserved when base_font_size changes."""
@@ -824,7 +828,7 @@ class TestNoRebuildOnFontSizeChange:
         st.floats(min_value=10.0, max_value=20.0, allow_nan=False, allow_infinity=False),
         st.floats(min_value=20.0, max_value=40.0, allow_nan=False, allow_infinity=False)
     )
-    # Font property testing: 20 examples for property forwarding validation
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_widget_identities_preserved_on_font_size_change(self, markdown_text, initial_size, new_size):
         """Widget object identities are preserved when base_font_size changes."""
@@ -853,6 +857,7 @@ class TestNoRebuildOnFontSizeChange:
         st.floats(min_value=12.0, max_value=18.0, allow_nan=False, allow_infinity=False),
         st.floats(min_value=20.0, max_value=30.0, allow_nan=False, allow_infinity=False)
     )
+    # Complex strategy: 6 examples (adequate coverage)
     @settings(max_examples=6, deadline=None)
     def test_heading_widget_identity_preserved(self, heading_level, initial_size, new_size):
         """Heading Label widget identity is preserved when base_font_size changes."""
@@ -894,7 +899,7 @@ class TestNoRebuildOnFontSizeChange:
         st.floats(min_value=20.0, max_value=25.0, allow_nan=False, allow_infinity=False),
         st.floats(min_value=30.0, max_value=35.0, allow_nan=False, allow_infinity=False)
     )
-    # Font property testing: 20 examples for property forwarding validation
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_multiple_font_size_changes_preserve_identities(self, size1, size2, size3):
         """Multiple font size changes preserve widget identities."""

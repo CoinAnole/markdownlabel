@@ -41,7 +41,7 @@ class TestAdvancedFontPropertiesForwarding:
         whitelist_categories=['L', 'N'],
         blacklist_characters='[]&\n\r'
     )))
-    # Complex text strategy with constraints: 20 examples
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_font_family_forwarded_to_labels(self, font_family_value):
         """font_family is forwarded to all internal Labels."""
@@ -58,7 +58,7 @@ class TestAdvancedFontPropertiesForwarding:
         whitelist_categories=['L', 'N'],
         blacklist_characters='[]&\n\r'
     )))
-    # Complex text strategy with constraints: 20 examples
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_font_context_forwarded_to_labels(self, font_context_value):
         """font_context is forwarded to all internal Labels."""
@@ -75,7 +75,7 @@ class TestAdvancedFontPropertiesForwarding:
         whitelist_categories=['L', 'N', 'P'],
         blacklist_characters='[]&\n\r'
     )))
-    # Complex text strategy with constraints: 20 examples
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_font_features_forwarded_to_labels(self, font_features_value):
         """font_features is forwarded to all internal Labels."""
@@ -256,7 +256,7 @@ class TestDisabledColorApplication:
         st.floats(min_value=0, max_value=1, allow_nan=False, allow_infinity=False),
         min_size=4, max_size=4
     ))
-    # List strategy: 20 examples for varied list sizes
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_disabled_color_stored_correctly(self, disabled_color):
         """disabled_color property stores the value correctly."""
@@ -269,7 +269,7 @@ class TestDisabledColorApplication:
         st.floats(min_value=0, max_value=1, allow_nan=False, allow_infinity=False),
         min_size=4, max_size=4
     ))
-    # List strategy: 20 examples for varied list sizes
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_disabled_color_applied_when_disabled(self, disabled_color):
         """When disabled=True, internal Labels use disabled_color instead of color."""
@@ -296,7 +296,7 @@ class TestDisabledColorApplication:
         st.floats(min_value=0, max_value=1, allow_nan=False, allow_infinity=False),
         min_size=4, max_size=4
     ))
-    # List strategy: 20 examples for varied list sizes
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_regular_color_applied_when_not_disabled(self, regular_color):
         """When disabled=False, internal Labels use regular color."""
@@ -766,7 +766,7 @@ class TestReactiveRebuildOnPropertyChange:
         labels_after = find_labels_recursive(label)
         assert len(labels_after) >= 1, "Expected at least one Label after rebuild"
         for lbl in labels_after:
-            # Complex strategy with custom domain strategy: 20 examples
+            # Complex strategy: 20 examples (adequate coverage)
             assert colors_equal(list(lbl.color), expected_color2), \
                 f"After change, expected color={expected_color2}, got {list(lbl.color)}"
     

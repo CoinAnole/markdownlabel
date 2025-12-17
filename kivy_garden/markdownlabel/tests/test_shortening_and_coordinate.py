@@ -127,7 +127,7 @@ class TestShorteningPropertyForwarding:
                 f"Expected shorten_from={shorten_from_value}, got {lbl.shorten_from}"
     
     @given(st.text(min_size=0, max_size=5, alphabet='abc '))
-    # Complex strategy with text generation, custom alphabet: 30 examples
+    # Complex strategy: 30 examples (adequate coverage)
     @settings(max_examples=30 if not os.getenv('CI') else 15, deadline=None)
     def test_split_str_forwarded_to_paragraph(self, split_str_value):
         """split_str property is forwarded to paragraph Labels."""
@@ -140,9 +140,9 @@ class TestShorteningPropertyForwarding:
             assert lbl.split_str == split_str_value, \
                 f"Expected split_str={split_str_value!r}, got {lbl.split_str!r}"
     
-    # Complex strategy with text generation, custom alphabet: 30 examples
+    # Complex strategy: 30 examples (adequate coverage)
     @given(st.text(min_size=0, max_size=5, alphabet='abc '))
-    # Complex text strategy with constraints: 30 examples
+    # Complex strategy: 30 examples (adequate coverage)
     @settings(max_examples=30 if not os.getenv('CI') else 15, deadline=None)
     def test_split_str_forwarded_to_heading(self, split_str_value):
         """split_str property is forwarded to heading Labels."""
@@ -201,6 +201,7 @@ class TestShorteningPropertyForwarding:
     @given(st.fixed_dictionaries({
         'markup_color': st.sampled_from([[1, 0, 0, 1], [0, 1, 0, 1], [0, 0, 1, 1]])
     }))
+    # Small finite strategy: 3 examples (input space size: 3)
     @settings(max_examples=3, deadline=None)
     def test_ellipsis_options_forwarded_to_paragraph(self, ellipsis_opts):
         """ellipsis_options property is forwarded to paragraph Labels."""
@@ -216,6 +217,7 @@ class TestShorteningPropertyForwarding:
     @given(st.fixed_dictionaries({
         'markup_color': st.sampled_from([[1, 0, 0, 1], [0, 1, 0, 1], [0, 0, 1, 1]])
     }))
+    # Small finite strategy: 3 examples (input space size: 3)
     @settings(max_examples=3, deadline=None)
     def test_ellipsis_options_forwarded_to_heading(self, ellipsis_opts):
         """ellipsis_options property is forwarded to heading Labels."""
@@ -231,6 +233,7 @@ class TestShorteningPropertyForwarding:
     @given(st.fixed_dictionaries({
         'markup_color': st.sampled_from([[1, 0, 0, 1], [0, 1, 0, 1], [0, 0, 1, 1]])
     }))
+    # Small finite strategy: 3 examples (input space size: 3)
     @settings(max_examples=3, deadline=None)
     def test_ellipsis_options_forwarded_to_list_items(self, ellipsis_opts):
         """ellipsis_options property is forwarded to list item Labels."""
@@ -247,6 +250,7 @@ class TestShorteningPropertyForwarding:
     @given(st.fixed_dictionaries({
         'markup_color': st.sampled_from([[1, 0, 0, 1], [0, 1, 0, 1], [0, 0, 1, 1]])
     }))
+    # Small finite strategy: 3 examples (input space size: 3)
     @settings(max_examples=3, deadline=None)
     def test_ellipsis_options_forwarded_to_table_cells(self, ellipsis_opts):
         """ellipsis_options property is forwarded to table cell Labels."""
@@ -404,6 +408,7 @@ class TestCoordinateTranslation:
         whitelist_categories=['L', 'N'],
         blacklist_characters='[]()&\n\r'
     )))
+    # Complex strategy: 3 examples (adequate coverage)
     @settings(max_examples=3, deadline=None)
     def test_link_produces_ref_markup_for_translation(self, link_text):
         """Links produce ref markup that will be translated when rendered.
@@ -440,7 +445,7 @@ class TestCoordinateTranslation:
         )),
         min_size=2, max_size=4
     ))
-    # Coordinate and markup testing: 20 examples for complex interactions
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_multiple_links_produce_ref_markup(self, link_texts):
         """Multiple links in different paragraphs produce ref markup.
@@ -604,7 +609,7 @@ class TestCoordinateTranslation:
         whitelist_categories=['L', 'N'],
         blacklist_characters='[]()&\n\r'
     )))
-    # Coordinate and markup testing: 20 examples for complex interactions
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_ref_markup_updates_when_text_changes(self, link_text1, link_text2):
         """ref markup updates correctly when text property changes."""
@@ -642,7 +647,7 @@ class TestCoordinateTranslation:
            st.floats(min_value=0, max_value=100),
            st.floats(min_value=0, max_value=100),
            st.floats(min_value=0, max_value=100))
-    # Float strategy: 20 examples
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_coordinate_translation_math(self, x1, y1, x2, y2):
         """Test that coordinate translation math is correct.
@@ -672,7 +677,7 @@ class TestCoordinateTranslation:
     
     @given(st.floats(min_value=0, max_value=100),
            st.floats(min_value=0, max_value=100))
-    # Float strategy: 20 examples
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_anchor_translation_math(self, x, y):
         """Test that anchor coordinate translation math is correct.

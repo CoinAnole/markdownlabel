@@ -27,6 +27,7 @@ class TestBatchedRebuilds:
     """
 
     @given(st.integers(min_value=2, max_value=5))
+    # Complex strategy: 4 examples (adequate coverage)
     @settings(max_examples=4, deadline=None)
     def test_multiple_text_changes_batch_to_single_rebuild(self, num_changes):
         """Multiple text changes within same frame batch to single rebuild.
@@ -165,7 +166,7 @@ class TestDeferredRebuildScheduling:
             ),
         )
     )
-    # Rebuild scheduling testing: 20 examples for deferred operations
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_text_change_schedules_deferred_rebuild(self, new_text):
         """Text property change schedules deferred rebuild, not synchronous.
@@ -311,7 +312,7 @@ class TestDeferredRebuildScheduling:
             max_size=5,
         )
     )
-    # Rebuild scheduling testing: 20 examples for deferred operations
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_multiple_changes_all_deferred(self, text_values):
         """Multiple property changes are all deferred until next frame.

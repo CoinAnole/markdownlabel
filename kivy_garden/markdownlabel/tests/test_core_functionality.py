@@ -30,7 +30,7 @@ class TestWidgetTreeGeneration:
     """Property tests for widget tree generation (Property 1)."""
     
     @given(simple_markdown_document())
-    # Complex strategy with custom domain strategy: 20 examples
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
     def test_markdown_produces_widgets(self, markdown_text):
         """Valid Markdown text produces at least one widget."""
@@ -127,6 +127,7 @@ class TestReactiveTextUpdates:
             f"Expected text to be {text2!r}, got {label.text!r}"
     
     @given(st.integers(min_value=1, max_value=3), st.integers(min_value=1, max_value=3))
+    # Complex strategy: 3 examples (adequate coverage)
     @settings(max_examples=3, deadline=None)
     def test_different_block_counts_update_correctly(self, count1, count2):
         """Changing from N blocks to M blocks updates widget count."""
@@ -166,7 +167,7 @@ class TestReactiveTextUpdates:
         label.text = ''
         label.force_rebuild()
         
-        # Complex strategy with custom domain strategy: 20 examples
+        # Complex strategy: 20 examples (adequate coverage)
         assert len(label.children) == 0, \
             f"Expected 0 children after clearing text, got {len(label.children)}"
     
@@ -227,7 +228,7 @@ class TestLinkRefMarkup:
         whitelist_categories=['L', 'N'],
         blacklist_characters='[]()&\n\r'
     )))
-    # Complex text strategy with constraints: 20 examples
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_link_url_in_ref_tag(self, link_text):
         """Link URL appears in ref tag."""
