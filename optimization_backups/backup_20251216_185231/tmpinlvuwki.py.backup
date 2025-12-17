@@ -1,6 +1,0 @@
-
-This is not valid Python code
-@given(st.booleans())
-@settings(max_examples=15
-def test_broken_syntax(value):
-    assert True
