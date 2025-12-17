@@ -1,0 +1,8 @@
+
+from hypothesis import given, settings
+import hypothesis.strategies as st
+
+@given(st.booleans())
+@settings(max_examples=12, deadline=None)
+def test_file_2_function(value):
+    assert isinstance(value, bool)

@@ -226,7 +226,7 @@ class TestCustomValueDocumentation:
         test_code_without_comment = f'''
 @given(data=st.text())
 @settings(max_examples={max_examples}, deadline=None)
-def test_example_function(data):
+def test_undocumented_function(data):
     """Test function without documentation comment."""
     assert len(data) >= 0
 '''
@@ -236,7 +236,7 @@ def test_example_function(data):
 # {strategy_type} strategy: {max_examples} examples (adequate coverage)
 @given(data=st.text())
 @settings(max_examples={max_examples}, deadline=None)
-def test_example_function(data):
+def test_documented_function(data):
     """Test function with documentation comment."""
     assert len(data) >= 0
 '''
@@ -272,7 +272,7 @@ def test_example_function(data):
         test_code = f'''
 @given(data=st.text())
 @settings(max_examples={standard_max_examples}, deadline=None)
-def test_example_function(data):
+def test_standard_function(data):
     """Test function with standard max_examples."""
     assert len(data) >= 0
 '''
@@ -301,13 +301,13 @@ def test_example_function(data):
         test_code = '''
 @given(data=st.text())
 @settings(max_examples=15, deadline=None)
-def test_undocumented_function(data):
+def test_missing_doc_function(data):
     """This function has custom max_examples but no documentation comment."""
     assert len(data) >= 0
 
 @given(data=st.integers())
 @settings(max_examples=25, deadline=None)
-def test_another_undocumented(data):
+def test_another_missing_doc(data):
     """Another function without documentation."""
     assert data is not None
 '''
@@ -323,8 +323,8 @@ def test_another_undocumented(data):
         func_names = [doc[0] for doc in missing_docs]
         max_examples_values = [doc[2] for doc in missing_docs]
         
-        assert "test_undocumented_function" in func_names
-        assert "test_another_undocumented" in func_names
+        assert "test_missing_doc_function" in func_names
+        assert "test_another_missing_doc" in func_names
         assert 15 in max_examples_values
         assert 25 in max_examples_values
     
@@ -565,7 +565,7 @@ class TestMachineReadableFormat:
 {comment}
 @given(data=st.text())
 @settings(max_examples={max_examples}, deadline=None)
-def test_example_function(data):
+def test_machine_readable_function(data):
     """Test function with standardized comment."""
     assert len(data) >= 0
 '''

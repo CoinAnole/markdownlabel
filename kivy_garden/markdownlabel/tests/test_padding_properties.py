@@ -296,8 +296,8 @@ Regular paragraph
             assert self._padding_equal(list(lbl.padding), padding2), \
                 f"After change, expected padding={padding2}, got {list(lbl.padding)}"
     
-    def test_default_padding_is_zero(self):
-        """Default padding is [0, 0, 0, 0]."""
+    def test_default_padding_is_zero_for_all_labels(self):
+        """Default padding is [0, 0, 0, 0] for all labels."""
         label = MarkdownLabel(text='Hello World')
         
         labels = self._find_labels_recursive(label)

@@ -176,6 +176,7 @@ class TestMaxExamplesCalculation:
     
     # **Feature: test-performance-optimization, Property 5: CI environment reduces examples appropriately**
     @given(st.sampled_from([StrategyType.COMPLEX, StrategyType.COMBINATION]))
+    # Small finite strategy: 2 examples (input space size: 2)
     @settings(max_examples=2, deadline=None)
     def test_ci_environment_reduces_examples_appropriately(self, strategy_type):
         """CI environment should reduce examples for complex and large combination strategies.
@@ -355,13 +356,13 @@ from hypothesis import given, strategies as st, settings
 class TestExample:
     @given(st.booleans())
     @settings(max_examples=100, deadline=None)
-    def test_boolean_property(self, value):
+    def test_boolean_property_classification(self, value):
         """Test with over-testing."""
         assert isinstance(value, bool)
     
     @given(st.integers(min_value=0, max_value=2))
     @settings(max_examples=100, deadline=None)
-    def test_small_range_property(self, value):
+    def test_small_range_property_classification(self, value):
         """Test with over-testing."""
         assert 0 <= value <= 2
 '''

@@ -377,10 +377,10 @@ class TestNoOpPropertyAcceptanceAndStorage:
            st.dictionaries(st.text(min_size=1, max_size=5), st.booleans(), max_size=3),
            simple_markdown_document())
     @settings(max_examples=2, deadline=None)
-    def test_noop_properties_do_not_affect_rendering(self, mipmap, outline_width, outline_color,
-                                                     text_language, base_direction, ellipsis_options,
-                                                     markdown_text):
-        """No-op properties do not affect the rendered output."""
+    def test_advanced_noop_properties_do_not_affect_rendering(self, mipmap, outline_width, outline_color,
+                                                              text_language, base_direction, ellipsis_options,
+                                                              markdown_text):
+        """Advanced no-op properties do not affect the rendered output."""
         assume(markdown_text.strip())
         
         # Create label with default no-op property values

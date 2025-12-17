@@ -1615,8 +1615,8 @@ def test_standard_2(num):
 # Complex strategy: 8 examples (adequate coverage)
 @given(data=st.text(min_size=50, max_size=200))
 @settings(max_examples=20 if not os.getenv('CI') else 8, deadline=None)
-def test_enhancement_example(data):
-    """Test for comment enhancement."""
+def test_ci_enhancement_example(data):
+    """Test for CI comment enhancement."""
     processed = data.upper().lower().strip()
     assert len(processed) > 0
 '''
@@ -1705,3 +1705,322 @@ def test_optimization_opportunity(data):
             for file_path in test_files:
                 if os.path.exists(file_path):
                     os.unlink(file_path)
+
+
+class TestCommentStandardizationIntegration:
+    """Integration tests for the complete comment standardization workflow."""
+    
+    def setup_method(self):
+        """Set up test fixtures."""
+        self.standardizer = CommentStandardizer()
+        self.analyzer = None
+        
+        # Import analyzer only when needed to avoid circular imports
+        try:
+            from test_optimization.comment_analyzer import CommentAnalyzer
+            self.analyzer = CommentAnalyzer()
+        except ImportError:
+            pytest.skip("CommentAnalyzer not available for integration tests")
+    
+    def test_end_to_end_standardization_workflow(self):
+        """Test complete workflow: analyze -> standardize -> validate.
+        
+        **Validates: Requirements 3.4, 4.4**
+        """
+        # Create a test file with various comment issues
+        test_content = '''
+from hypothesis import given, settings
+import hypothesis.strategies as st
+
+# Missing comment for custom max_examples
+@given(st.booleans())
+@settings(max_examples=15, deadline=None)
+def test_undocumented_boolean(value):
+    assert isinstance(value, bool)
+
+# Wrong format comment
+@given(st.integers(min_value=1, max_value=3))
+@settings(max_examples=8, deadline=None)
+def test_wrong_format_comment(value):
+    assert 1 <= value <= 3
+
+@given(st.text())
+# Complex strategy: 25 examples (adequate coverage)
+@settings(max_examples=25, deadline=None)
+def test_already_documented(text):
+    assert isinstance(text, str)
+'''
+        
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.py', delete=False) as f:
+            f.write(test_content)
+            temp_file = f.name
+        
+        try:
+            # Step 1: Analyze the file
+            initial_analysis = self.analyzer.analyze_file(temp_file)
+            
+            # Should find issues
+            assert initial_analysis.total_property_tests == 3
+            assert initial_analysis.undocumented_tests > 0
+            assert initial_analysis.documented_tests < initial_analysis.total_property_tests
+            
+            # Step 2: Standardize the file
+            result = self.standardizer.standardize_file(temp_file, dry_run=False)
+            
+            # Should succeed and make changes
+            assert result.success, f"Standardization failed: {result.errors}"
+            assert result.changes_made > 0, "Should have made changes"
+            
+            # Step 3: Re-analyze to validate improvements
+            final_analysis = self.analyzer.analyze_file(temp_file)
+            
+            # Should be improved
+            assert final_analysis.total_property_tests == 3
+            assert final_analysis.undocumented_tests < initial_analysis.undocumented_tests
+            assert final_analysis.documented_tests > initial_analysis.documented_tests
+            
+            # Step 4: Verify backup was created
+            if result.backup_path:
+                assert os.path.exists(result.backup_path), "Backup file should exist"
+                
+        finally:
+            # Clean up
+            if os.path.exists(temp_file):
+                os.unlink(temp_file)
+            if hasattr(result, 'backup_path') and result.backup_path and os.path.exists(result.backup_path):
+                os.unlink(result.backup_path)
+    
+    def test_batch_standardization_workflow(self):
+        """Test batch processing of multiple files.
+        
+        **Validates: Requirements 3.4, 4.4**
+        """
+        # Create multiple test files
+        test_files = []
+        
+        for i in range(3):
+            content = f'''
+from hypothesis import given, settings
+import hypothesis.strategies as st
+
+@given(st.booleans())
+@settings(max_examples={10 + i}, deadline=None)
+def test_file_{i}_function(value):
+    assert isinstance(value, bool)
+'''
+            
+            with tempfile.NamedTemporaryFile(mode='w', suffix=f'_test_{i}.py', delete=False) as f:
+                f.write(content)
+                test_files.append(f.name)
+        
+        try:
+            # Analyze all files initially
+            initial_undocumented = 0
+            for file_path in test_files:
+                analysis = self.analyzer.analyze_file(file_path)
+                initial_undocumented += analysis.undocumented_tests
+            
+            assert initial_undocumented > 0, "Should have undocumented tests initially"
+            
+            # Batch standardize
+            batch_result = self.standardizer.apply_standardization(test_files)
+            
+            # Should process all files successfully
+            assert batch_result.successful_files == len(test_files)
+            assert batch_result.failed_files == 0
+            assert batch_result.total_changes > 0
+            
+            # Verify improvements
+            final_undocumented = 0
+            for file_path in test_files:
+                analysis = self.analyzer.analyze_file(file_path)
+                final_undocumented += analysis.undocumented_tests
+            
+            assert final_undocumented < initial_undocumented, "Should have fewer undocumented tests"
+            
+        finally:
+            # Clean up
+            for file_path in test_files:
+                if os.path.exists(file_path):
+                    os.unlink(file_path)
+    
+    def test_backup_and_rollback_functionality(self):
+        """Test backup creation and rollback capability.
+        
+        **Validates: Requirements 3.4**
+        """
+        original_content = '''
+from hypothesis import given, settings
+import hypothesis.strategies as st
+
+@given(st.booleans())
+@settings(max_examples=15, deadline=None)
+def test_example(value):
+    assert isinstance(value, bool)
+'''
+        
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.py', delete=False) as f:
+            f.write(original_content)
+            temp_file = f.name
+        
+        try:
+            # Standardize with backup
+            result = self.standardizer.standardize_file(temp_file, dry_run=False)
+            
+            assert result.success, "Standardization should succeed"
+            assert result.backup_path, "Should create backup"
+            assert os.path.exists(result.backup_path), "Backup file should exist"
+            
+            # Verify backup contains original content
+            with open(result.backup_path, 'r') as f:
+                backup_content = f.read()
+            
+            assert backup_content.strip() == original_content.strip(), "Backup should contain original content"
+            
+            # Verify main file was modified
+            with open(temp_file, 'r') as f:
+                modified_content = f.read()
+            
+            assert modified_content != original_content, "Main file should be modified"
+            assert "# Boolean strategy:" in modified_content, "Should contain standardized comment"
+            
+            # Test rollback by restoring from backup
+            with open(result.backup_path, 'r') as f:
+                backup_content = f.read()
+            
+            with open(temp_file, 'w') as f:
+                f.write(backup_content)
+            
+            # Verify rollback worked
+            with open(temp_file, 'r') as f:
+                restored_content = f.read()
+            
+            assert restored_content.strip() == original_content.strip(), "Rollback should restore original content"
+            
+        finally:
+            # Clean up
+            if os.path.exists(temp_file):
+                os.unlink(temp_file)
+            if hasattr(result, 'backup_path') and result.backup_path and os.path.exists(result.backup_path):
+                os.unlink(result.backup_path)
+    
+    def test_standardization_tool_integration_compatibility(self):
+        """Test integration with existing optimization tools.
+        
+        **Validates: Requirements 4.4, 5.4**
+        """
+        # Create a file with standardized comments
+        test_content = '''
+from hypothesis import given, settings
+import hypothesis.strategies as st
+
+@given(st.booleans())
+# Boolean strategy: 2 examples (True/False coverage)
+@settings(max_examples=2, deadline=None)
+def test_boolean_example(value):
+    assert isinstance(value, bool)
+
+@given(st.integers(min_value=1, max_value=5))
+# Small finite strategy: 5 examples (input space size: 5)
+@settings(max_examples=5, deadline=None)
+def test_finite_example(value):
+    assert 1 <= value <= 5
+
+@given(st.text())
+# Complex strategy: 20 examples (adequate coverage)
+@settings(max_examples=20, deadline=None)
+def test_complex_example(text):
+    assert isinstance(text, str)
+'''
+        
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.py', delete=False) as f:
+            f.write(test_content)
+            temp_file = f.name
+        
+        try:
+            # Test that analyzer can parse standardized comments
+            analysis = self.analyzer.analyze_file(temp_file)
+            
+            assert analysis.total_property_tests == 3
+            assert analysis.documented_tests == 3
+            assert analysis.undocumented_tests == 0
+            assert len(analysis.format_violations) == 0
+            assert len(analysis.valid_comments) == 3
+            
+            # Test that comments contain expected strategy types
+            strategy_types = [comment.strategy_type for comment in analysis.valid_comments]
+            assert 'Boolean' in strategy_types
+            assert 'Small finite' in strategy_types
+            assert 'Complex' in strategy_types
+            
+            # Test that rationales are appropriate
+            rationales = [comment.rationale for comment in analysis.valid_comments]
+            assert any('True/False coverage' in rationale for rationale in rationales)
+            assert any('input space size' in rationale for rationale in rationales)
+            assert any('adequate coverage' in rationale for rationale in rationales)
+            
+            # Test terminology consistency check
+            terminology = self.analyzer.check_terminology_consistency([analysis])
+            
+            # Each strategy type should have consistent terminology
+            for strategy_type, rationale_list in terminology.items():
+                assert len(rationale_list) == 1, f"Strategy type '{strategy_type}' should have consistent terminology"
+            
+        finally:
+            # Clean up
+            if os.path.exists(temp_file):
+                os.unlink(temp_file)
+    
+    def test_error_handling_and_recovery(self):
+        """Test error handling in standardization workflow.
+        
+        **Validates: Requirements 3.4**
+        """
+        # Test with invalid Python file
+        invalid_content = '''
+This is not valid Python code
+@given(st.booleans())
+@settings(max_examples=15
+def test_broken_syntax(value):
+    assert True
+'''
+        
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.py', delete=False) as f:
+            f.write(invalid_content)
+            temp_file = f.name
+        
+        try:
+            # Should handle syntax errors gracefully
+            result = self.standardizer.standardize_file(temp_file, dry_run=False)
+            
+            # May succeed or fail, but should not crash
+            if not result.success:
+                assert len(result.errors) > 0, "Should report errors"
+            
+            # Test with read-only file (if possible)
+            try:
+                os.chmod(temp_file, 0o444)  # Make read-only
+                
+                result = self.standardizer.standardize_file(temp_file, dry_run=False)
+                
+                # Should handle permission errors
+                if not result.success:
+                    assert len(result.errors) > 0, "Should report permission errors"
+                    
+            except (OSError, PermissionError):
+                # Skip if we can't change permissions
+                pass
+            finally:
+                # Restore permissions for cleanup
+                try:
+                    os.chmod(temp_file, 0o644)
+                except (OSError, PermissionError):
+                    pass
+            
+        finally:
+            # Clean up
+            if os.path.exists(temp_file):
+                try:
+                    os.unlink(temp_file)
+                except (OSError, PermissionError):
+                    pass
