@@ -164,23 +164,107 @@ def test_text_property(text):
 
 ## Documentation Requirements
 
-### Custom Values
+### Comment Format Specification
 
-When using non-standard `max_examples` values, document the rationale:
+All property-based tests with custom `max_examples` values MUST include standardized comments that follow this format:
+
+```
+# [Strategy Type] strategy: [N] examples ([Rationale])
+@settings(max_examples=N, deadline=None)
+```
+
+### Strategy Type Classifications
+
+Use these standardized strategy type classifications in comments:
+
+- **Boolean** - For `st.booleans()` strategies
+- **Small finite** - For finite ranges ≤10 elements  
+- **Medium finite** - For finite ranges 11-50 elements
+- **Complex** - For complex strategies requiring many examples
+- **Combination** - For multiple combined strategies
+
+### Rationale Templates
+
+Use these standardized rationale templates:
+
+- **Boolean:** `(True/False coverage)`
+- **Small finite:** `(input space size: N)` where N is the actual input space size
+- **Medium finite:** `(adequate finite coverage)`
+- **Complex:** `(adequate coverage)` or `(performance optimized)` 
+- **Combination:** `(combination coverage)`
+- **CI optimized:** `(CI performance optimized)`
+
+### Comment Format Examples
 
 ```python
-# ✅ Documented custom value
-@given(st.text(min_size=100))
-@settings(max_examples=25)  # Reduced due to expensive processing of large strings
-def test_large_text_processing(text):
+# ✅ Boolean strategy documentation
+@given(st.booleans())
+# Boolean strategy: 2 examples (True/False coverage)
+@settings(max_examples=2, deadline=None)
+def test_boolean_property(value):
+    assert isinstance(value, bool)
+
+# ✅ Small finite strategy documentation  
+@given(st.integers(min_value=1, max_value=6))
+# Small finite strategy: 6 examples (input space size: 6)
+@settings(max_examples=6, deadline=None)
+def test_dice_roll(value):
+    assert 1 <= value <= 6
+
+# ✅ Medium finite strategy documentation
+@given(st.integers(min_value=1, max_value=20))
+# Medium finite strategy: 20 examples (adequate finite coverage)
+@settings(max_examples=20, deadline=None)
+def test_medium_range(value):
+    assert 1 <= value <= 20
+
+# ✅ Complex strategy documentation
+@given(st.text())
+# Complex strategy: 25 examples (performance optimized)
+@settings(max_examples=25, deadline=None)
+def test_text_processing(text):
     result = expensive_text_analysis(text)
     assert result.is_valid()
 
-# ✅ Documented complexity assessment
+# ✅ Combination strategy documentation
+@given(st.tuples(st.booleans(), st.sampled_from(['a', 'b', 'c'])))
+# Combination strategy: 6 examples (combination coverage)
+@settings(max_examples=6, deadline=None)
+def test_boolean_enum_combination(value):
+    bool_val, enum_val = value
+    assert isinstance(bool_val, bool)
+    assert enum_val in ['a', 'b', 'c']
+
+# ✅ CI-optimized complex strategy documentation
 @given(st.recursive(st.integers(), lambda x: st.lists(x)))
-@settings(max_examples=15)  # Complex recursive structure needs fewer examples
+# Complex strategy: 15 examples (CI performance optimized)
+@settings(max_examples=15, deadline=None)
 def test_recursive_structure(data):
     assert validate_recursive_data(data)
+```
+
+### Legacy Documentation (Deprecated)
+
+The following comment styles are deprecated and should be updated to use the standardized format:
+
+```python
+# ❌ Deprecated - Inconsistent format
+@given(st.text())
+@settings(max_examples=25)  # Reduced due to expensive processing
+def test_old_style(text):
+    pass
+
+# ❌ Deprecated - Missing strategy type
+@given(st.booleans())
+@settings(max_examples=2)  # Only need True/False
+def test_missing_strategy_type(value):
+    pass
+
+# ❌ Deprecated - Non-standard terminology
+@given(st.integers(1, 5))
+@settings(max_examples=5)  # Test all possible integers
+def test_non_standard_terminology(value):
+    pass
 ```
 
 ## Validation Checklist
@@ -191,8 +275,11 @@ Before committing property-based tests, verify:
 2. **Small finite strategies use input space size**
 3. **Combination strategies use product formula (capped at 50)**
 4. **Complex strategies use 10-50 examples based on complexity**
-5. **Custom values are documented with rationale**
-6. **CI optimization is considered for complex strategies**
+5. **All custom values include standardized comments**
+6. **Comments follow the format: `# [Strategy Type] strategy: [N] examples ([Rationale])`**
+7. **Strategy type classifications use standardized terminology**
+8. **Rationale templates match the strategy type**
+9. **CI optimization is considered for complex strategies**
 
 ## Common Anti-Patterns
 
@@ -223,6 +310,34 @@ Before committing property-based tests, verify:
 @settings(max_examples=73)  # Why 73? Document the reasoning!
 ```
 
+### ❌ Inconsistent comment formats
+```python
+# Don't use inconsistent comment formats
+@given(st.booleans())
+@settings(max_examples=2)  # Only need True/False  # Missing strategy type
+
+@given(st.integers(1, 5))
+@settings(max_examples=5)  # Test all integers  # Non-standard terminology
+
+@given(st.text())
+# Random comment format without standardization
+@settings(max_examples=25)
+def test_inconsistent_format(text):
+    pass
+```
+
+### ❌ Wrong strategy type classifications
+```python
+# Don't misclassify strategy types
+@given(st.booleans())
+# Complex strategy: 2 examples (True/False coverage)  # Wrong: should be "Boolean"
+@settings(max_examples=2)
+
+@given(st.integers(1, 3))
+# Boolean strategy: 3 examples (input space size: 3)  # Wrong: should be "Small finite"
+@settings(max_examples=3)
+```
+
 ## Performance Impact
 
 Following these guidelines typically results in:
@@ -233,6 +348,8 @@ Following these guidelines typically results in:
 - **Complex tests:** 0-50% time reduction (may already be appropriate)
 
 ## Tools and Automation
+
+### Test Optimization Analysis
 
 Use the provided optimization tools to identify over-testing:
 
@@ -249,13 +366,70 @@ for file_analysis in report.file_analyses:
         print(f"{recommendation.test_name}: {recommendation.current_examples} → {recommendation.recommended_examples}")
 ```
 
+### Comment Standardization Tools
+
+Use the comment standardization tools to ensure consistent documentation:
+
+```python
+from tools.test_optimization.comment_analyzer import CommentAnalyzer
+from tools.test_optimization.comment_standardizer import CommentStandardizer
+
+# Analyze comment consistency
+analyzer = CommentAnalyzer()
+analysis = analyzer.analyze_directory('kivy_garden/markdownlabel/tests/')
+
+# Report missing or inconsistent comments
+for file_analysis in analysis.file_analyses:
+    if file_analysis.undocumented_tests > 0:
+        print(f"{file_analysis.file_path}: {file_analysis.undocumented_tests} undocumented tests")
+    
+    for violation in file_analysis.format_violations:
+        print(f"Format violation: {violation.description}")
+
+# Apply standardized comments (with dry-run)
+standardizer = CommentStandardizer()
+result = standardizer.standardize_file('test_example.py', dry_run=True)
+print(f"Would update {len(result.changes)} comments")
+
+# Apply changes (removes dry_run)
+if input("Apply changes? (y/n): ").lower() == 'y':
+    result = standardizer.standardize_file('test_example.py', dry_run=False)
+    print(f"Updated {len(result.changes)} comments")
+```
+
+### Command-Line Validation
+
+Use the command-line tools for batch operations:
+
+```bash
+# Analyze all test files for comment compliance
+python tools/validate_comments.py kivy_garden/markdownlabel/tests/
+
+# Generate standardization report
+python tools/validate_comments.py --report kivy_garden/markdownlabel/tests/
+
+# Apply standardization (with confirmation)
+python tools/validate_comments.py --fix kivy_garden/markdownlabel/tests/
+```
+
 ## Summary
 
-The key principle is **right-sizing** `max_examples` based on actual input complexity:
+The key principles for optimized property-based testing are:
 
+### Right-Sizing Examples
 - **Finite strategies:** Use input space size (test each value once)
 - **Infinite strategies:** Use moderate counts based on property complexity
-- **Always document:** Explain custom values and complexity assessments
+- **Combination strategies:** Calculate combinations, cap at reasonable limits
+
+### Standardized Documentation
+- **Always document:** Use standardized comment format for all custom values
+- **Consistent terminology:** Use standardized strategy type classifications
+- **Clear rationale:** Follow rationale templates for each strategy type
+- **Machine-readable:** Enable automated analysis and validation
+
+### Quality Assurance
+- **Validate format:** Ensure comments follow `# [Strategy Type] strategy: [N] examples ([Rationale])` pattern
+- **Use tools:** Leverage automated analysis and standardization tools
 - **Measure impact:** Verify that optimizations maintain coverage while improving performance
 
-By following these guidelines, you can achieve significant test performance improvements while maintaining or improving coverage quality.
+By following these guidelines, you can achieve significant test performance improvements while maintaining consistent, well-documented, and high-quality test coverage.
