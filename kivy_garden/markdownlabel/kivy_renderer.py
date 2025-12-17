@@ -44,9 +44,13 @@ class KivyRenderer:
                  base_font_size: float = 15,
                  code_font_name: str = 'RobotoMono-Regular',
                  link_color: Optional[List[float]] = None,
+                 link_style: str = 'unstyled',
                  code_bg_color: Optional[List[float]] = None,
                  font_name: str = 'Roboto',
                  color: Optional[List[float]] = None,
+                 outline_width: Optional[float] = None,
+                 outline_color: Optional[List[float]] = None,
+                 disabled_outline_color: Optional[List[float]] = None,
                  line_height: float = 1.0,
                  halign: str = 'auto',
                  valign: str = 'bottom',
@@ -61,11 +65,15 @@ class KivyRenderer:
                  font_blended: bool = True,
                  disabled: bool = False,
                  disabled_color: Optional[List[float]] = None,
+                 mipmap: bool = False,
+                 base_direction: Optional[str] = None,
+                 text_language: Optional[str] = None,
+                 limit_render_to_text_bbox: bool = False,
                  shorten: bool = False,
                  max_lines: int = 0,
                  shorten_from: str = 'center',
                  split_str: str = '',
-                 padding: Optional[List[float]] = None,
+                 text_padding: Optional[List[float]] = None,
                  strict_label_mode: bool = False,
                  ellipsis_options: Optional[Dict] = None):
         """Initialize the KivyRenderer.
@@ -74,9 +82,13 @@ class KivyRenderer:
             base_font_size: Base font size in sp for body text
             code_font_name: Font name for code blocks and inline code
             link_color: RGBA color list for link text (default: blue)
+            link_style: 'unstyled' (Label-like) or 'styled' (color + underline)
             code_bg_color: RGBA color list for code block background
             font_name: Font name for body text (default: 'Roboto')
             color: RGBA color list for body text (default: white)
+            outline_width: Outline width for text (default: None)
+            outline_color: Outline color for text (default: black)
+            disabled_outline_color: Outline color when disabled (default: black)
             line_height: Line height multiplier for text (default: 1.0)
             halign: Horizontal alignment for text (default: 'auto', converted to 'left')
             valign: Vertical alignment for text (default: 'bottom')
@@ -91,11 +103,15 @@ class KivyRenderer:
             font_blended: Whether to use blended font rendering (default: True)
             disabled: Whether the widget is disabled (default: False)
             disabled_color: RGBA color list for disabled text (default: semi-transparent white)
+            mipmap: Whether to enable mipmapping on text textures (default: False)
+            base_direction: Base text direction, matches Label.base_direction (default: None)
+            text_language: Language tag for text shaping (default: None)
+            limit_render_to_text_bbox: Whether to limit rendering to the text bbox (default: False)
             shorten: Whether to shorten text with ellipsis (default: False)
             max_lines: Maximum number of lines to display, 0 for no limit (default: 0)
             shorten_from: Direction to truncate from: 'left', 'center', 'right' (default: 'center')
             split_str: String used as word boundary for shortening (default: '')
-            padding: Padding values [left, top, right, bottom] for child Labels (default: [0, 0, 0, 0])
+            text_padding: Padding values [left, top, right, bottom] for child Labels (default: [0, 0, 0, 0])
             strict_label_mode: When True, only apply text_size bindings if text_size is
                 explicitly set. When False (default), auto-bind width for text wrapping.
             ellipsis_options: Dictionary of ellipsis options for text shortening (default: {})
@@ -103,12 +119,16 @@ class KivyRenderer:
         self.base_font_size = base_font_size
         self.code_font_name = code_font_name
         self.link_color = link_color or [0, 0.5, 1, 1]
+        self.link_style = link_style
         self.code_bg_color = code_bg_color or [0.15, 0.15, 0.15, 1]
         self.font_name = font_name
         self.color = color or [1, 1, 1, 1]
+        self.outline_width = outline_width
+        self.outline_color = outline_color or [0, 0, 0, 1]
+        self.disabled_outline_color = disabled_outline_color or [0, 0, 0, 1]
         self.line_height = line_height
-        # Convert 'auto' to 'left' for actual rendering
-        self.halign = 'left' if halign == 'auto' else halign
+        # Use the effective halign passed from MarkdownLabel
+        self.halign = halign
         self.valign = valign
         self.text_size = text_size or [None, None]
         self.unicode_errors = unicode_errors
@@ -121,20 +141,28 @@ class KivyRenderer:
         self.font_blended = font_blended
         self.disabled = disabled
         self.disabled_color = disabled_color or [1, 1, 1, 0.3]
+        self.mipmap = mipmap
+        self.base_direction = base_direction
+        self.text_language = text_language
+        self.limit_render_to_text_bbox = limit_render_to_text_bbox
         self.shorten = shorten
         self.max_lines = max_lines
         self.shorten_from = shorten_from
         self.split_str = split_str
-        self.padding = padding or [0, 0, 0, 0]
+        self.text_padding = text_padding or [0, 0, 0, 0]
         self.strict_label_mode = strict_label_mode
         self.ellipsis_options = ellipsis_options or {}
         
         # Compute effective color based on disabled state
         self.effective_color = self.disabled_color if self.disabled else self.color
+        self.effective_outline_color = (
+            self.disabled_outline_color if self.disabled else self.outline_color
+        )
         
         self.inline_renderer = InlineRenderer(
             link_color=self.link_color,
-            code_font_name=self.code_font_name
+            code_font_name=self.code_font_name,
+            link_style=self.link_style,
         )
 
         # Track nesting depth for deep nesting protection
@@ -294,7 +322,15 @@ class KivyRenderer:
             'shorten': self.shorten,
             'shorten_from': self.shorten_from,
             'split_str': self.split_str,
-            'padding': self.padding,
+            'padding': self.text_padding,
+            'mipmap': self.mipmap,
+            'outline_width': self.outline_width,
+            'outline_color': self.effective_outline_color,
+            'disabled_outline_color': self.disabled_outline_color,
+            'base_direction': self.base_direction,
+            'text_language': self.text_language,
+            'limit_render_to_text_bbox': self.limit_render_to_text_bbox,
+            'ellipsis_options': self.ellipsis_options,
         }
         
         # Add max_lines only if set (non-zero)
@@ -317,6 +353,9 @@ class KivyRenderer:
         
         # Apply text_size binding based on mode
         self._apply_text_size_binding(label)
+        
+        # Set font scale metadata for body text
+        label._font_scale = 1.0
         
         return label
     
@@ -352,7 +391,15 @@ class KivyRenderer:
             'shorten': self.shorten,
             'shorten_from': self.shorten_from,
             'split_str': self.split_str,
-            'padding': self.padding,
+            'padding': self.text_padding,
+            'mipmap': self.mipmap,
+            'outline_width': self.outline_width,
+            'outline_color': self.effective_outline_color,
+            'disabled_outline_color': self.disabled_outline_color,
+            'base_direction': self.base_direction,
+            'text_language': self.text_language,
+            'limit_render_to_text_bbox': self.limit_render_to_text_bbox,
+            'ellipsis_options': self.ellipsis_options,
         }
         
         # Add max_lines only if set (non-zero)
@@ -375,6 +422,9 @@ class KivyRenderer:
         
         # Apply text_size binding based on mode
         self._apply_text_size_binding(label)
+        
+        # Set font scale metadata for body text
+        label._font_scale = 1.0
         
         return label
     
@@ -427,7 +477,15 @@ class KivyRenderer:
             'shorten': self.shorten,
             'shorten_from': self.shorten_from,
             'split_str': self.split_str,
-            'padding': self.padding,
+            'padding': self.text_padding,
+            'mipmap': self.mipmap,
+            'outline_width': self.outline_width,
+            'outline_color': self.effective_outline_color,
+            'disabled_outline_color': self.disabled_outline_color,
+            'base_direction': self.base_direction,
+            'text_language': self.text_language,
+            'limit_render_to_text_bbox': self.limit_render_to_text_bbox,
+            'ellipsis_options': self.ellipsis_options,
         }
         
         # Add max_lines only if set (non-zero)
@@ -453,6 +511,9 @@ class KivyRenderer:
         
         # Store heading level as metadata
         label.heading_level = level
+        
+        # Set font scale metadata for headings
+        label._font_scale = multiplier
         
         return label
     
@@ -562,7 +623,15 @@ class KivyRenderer:
             'shorten': self.shorten,
             'shorten_from': self.shorten_from,
             'split_str': self.split_str,
-            'padding': self.padding,
+            'padding': self.text_padding,
+            'mipmap': self.mipmap,
+            'outline_width': self.outline_width,
+            'outline_color': self.effective_outline_color,
+            'disabled_outline_color': self.disabled_outline_color,
+            'base_direction': self.base_direction,
+            'text_language': self.text_language,
+            'limit_render_to_text_bbox': self.limit_render_to_text_bbox,
+            'ellipsis_options': self.ellipsis_options,
         }
         
         # Add max_lines only if set (non-zero)
@@ -584,6 +653,9 @@ class KivyRenderer:
         marker = Label(**marker_kwargs)
         # Bind text_size to enable valign to work properly
         marker.bind(size=lambda inst, val: setattr(inst, 'text_size', val))
+        
+        # Set font scale metadata for list markers
+        marker._font_scale = 1.0
         
         item_layout.add_widget(marker)
         
@@ -681,12 +753,20 @@ class KivyRenderer:
             'size_hint_y': None,
             'halign': 'left',
             'valign': 'top',
-            'color': [0.9, 0.9, 0.9, 1],  # Light text on dark background
+            'color': self.disabled_color if self.disabled else [0.9, 0.9, 0.9, 1],
             'unicode_errors': self.unicode_errors,
             'strip': self.strip,
             'font_features': self.font_features,
             'font_kerning': self.font_kerning,
             'font_blended': self.font_blended,
+            'mipmap': self.mipmap,
+            'outline_width': self.outline_width,
+            'outline_color': self.effective_outline_color,
+            'disabled_outline_color': self.disabled_outline_color,
+            'base_direction': self.base_direction,
+            'text_language': self.text_language,
+            'limit_render_to_text_bbox': self.limit_render_to_text_bbox,
+            'ellipsis_options': self.ellipsis_options,
         }
         
         # Add optional font properties if set (excluding font_family for code blocks)
@@ -698,6 +778,10 @@ class KivyRenderer:
         label = Label(**label_kwargs)
         label.bind(texture_size=label.setter('size'))
         label.bind(size=lambda instance, value: setattr(instance, 'text_size', (value[0], None)))
+        
+        # Set font scale metadata for code blocks
+        label._font_scale = 1.0
+        label._is_code = True
         
         container.add_widget(label)
         container.bind(minimum_height=container.setter('height'))
@@ -967,9 +1051,13 @@ class KivyRenderer:
         attrs = cell.get('attrs', {})
         
         # Get alignment from attrs - table cells use their own alignment from markdown
-        # but fall back to the renderer's halign if not specified
+        # but fall back to the renderer's halign if not specified or invalid
         align = attrs.get('align', None)
-        cell_halign = align if align in ('left', 'center', 'right') else self.halign
+        if align in ('left', 'center', 'right'):
+            cell_halign = align
+        else:
+            # Fall back to renderer's halign, but convert 'auto' to 'left' for table cells
+            cell_halign = 'left' if self.halign == 'auto' else self.halign
         
         # Render inline content
         text = self._render_inline(children) if children else ''
@@ -995,7 +1083,15 @@ class KivyRenderer:
             'shorten': self.shorten,
             'shorten_from': self.shorten_from,
             'split_str': self.split_str,
-            'padding': self.padding,
+            'padding': self.text_padding,
+            'mipmap': self.mipmap,
+            'outline_width': self.outline_width,
+            'outline_color': self.effective_outline_color,
+            'disabled_outline_color': self.disabled_outline_color,
+            'base_direction': self.base_direction,
+            'text_language': self.text_language,
+            'limit_render_to_text_bbox': self.limit_render_to_text_bbox,
+            'ellipsis_options': self.ellipsis_options,
         }
         
         # Add max_lines only if set (non-zero)
@@ -1022,6 +1118,9 @@ class KivyRenderer:
         # Store alignment as metadata
         label.cell_align = cell_halign
         label.is_header = is_head
+        
+        # Set font scale metadata for table cells
+        label._font_scale = 1.0
         
         return label
     

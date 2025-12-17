@@ -15,6 +15,9 @@ Example usage::
 
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label import Label
+from kivy.uix.image import Image
+from kivy.clock import Clock
+from kivy.graphics import Fbo, ClearColor, ClearBuffers, Color, Rectangle
 from kivy.properties import (
     StringProperty, 
     NumericProperty, 
@@ -32,11 +35,33 @@ import mistune
 from mistune.plugins.table import table
 from mistune.plugins.formatting import strikethrough
 
+from kivy.uix.stencilview import StencilView
+
 from .inline_renderer import InlineRenderer
 from .kivy_renderer import KivyRenderer
 from .markdown_serializer import MarkdownSerializer
 
 __all__ = ('MarkdownLabel', 'InlineRenderer', 'KivyRenderer', 'MarkdownSerializer')
+
+
+class _ClippingContainer(StencilView):
+    """Internal container that clips content to its bounds.
+    
+    This class extends StencilView to provide content clipping when:
+    - text_size[1] is not None (height-constrained), OR
+    - strict_label_mode is True with a fixed height
+    
+    The StencilView uses stencil graphics instructions to efficiently clip
+    any drawing outside its bounding box.
+    
+    Note: StencilView is not a Layout, so it doesn't have minimum_height.
+    The height must be set explicitly by the parent MarkdownLabel.
+    """
+    
+    def __init__(self, **kwargs):
+        super(_ClippingContainer, self).__init__(**kwargs)
+        # Disable size_hint_y so we can set explicit height
+        self.size_hint_y = None
 
 from ._version import __version__
 
@@ -50,12 +75,11 @@ class MarkdownLabel(BoxLayout):
     tables, code blocks, block quotes, images, and inline formatting.
     
     Note:
-        MarkdownLabel is NOT a true Label subclass. It provides a Label-compatible
-        API for common styling properties, but because Markdown rendering requires
-        multiple widgets (headings, lists, tables, images, code blocks), it extends
-        BoxLayout instead. Some Label-specific APIs like `texture`, `mipmap`,
-        `outline_*`, `base_direction`, and `text_language` are not available.
-        
+        MarkdownLabel is NOT a true Label subclass. It mirrors most Label styling
+        properties (including outline, mipmap, base_direction, text_language)
+        but extends BoxLayout because Markdown rendering builds multiple widgets
+        (headings, lists, tables, images, code blocks). The `texture` property is
+        available as an aggregated texture when ``aggregate_texture_enabled`` is True.
         Properties like `texture_size`, `refs`, and `anchors` are provided as
         aggregated read-only properties from child Label widgets.
     
@@ -74,14 +98,13 @@ class MarkdownLabel(BoxLayout):
     # Structure properties require a full widget tree rebuild
     
     STYLE_ONLY_PROPERTIES = frozenset({
-        'font_size',
-        'base_font_size',
         'color',
         'halign',
         'valign',
         'line_height',
         'disabled',
         'disabled_color',
+        'base_direction',
     })
     """Properties that affect only visual styling and can be updated in-place.
     
@@ -93,9 +116,17 @@ class MarkdownLabel(BoxLayout):
         'text',
         'font_name',
         'code_font_name',
+        'link_style',
         'text_size',
         'strict_label_mode',
         'padding',
+        'text_padding',
+        'outline_width',
+        'outline_color',
+        'disabled_outline_color',
+        'mipmap',
+        'text_language',
+        'limit_render_to_text_bbox',
     })
     """Properties that affect widget structure and require a full rebuild.
     
@@ -137,6 +168,19 @@ class MarkdownLabel(BoxLayout):
     
     :attr:`link_color` is a :class:`~kivy.properties.ColorProperty`
     and defaults to [0, 0.5, 1, 1] (blue).
+    """
+
+    link_style = OptionProperty(
+        'unstyled',
+        options=['unstyled', 'styled']
+    )
+    """Link rendering style.
+    
+    - 'unstyled' (default): produces Label-like refs without forced color/underline.
+    - 'styled': applies link_color and underline for visual emphasis.
+    
+    :attr:`link_style` is a :class:`~kivy.properties.OptionProperty`
+    and defaults to 'unstyled'.
     """
     
     code_bg_color = ColorProperty([0.15, 0.15, 0.15, 1])
@@ -223,67 +267,6 @@ class MarkdownLabel(BoxLayout):
     and defaults to True.
     """
     
-    mipmap = BooleanProperty(False)
-    """No-op property for Label API compatibility.
-    
-    This property is accepted but has no effect on rendering.
-    MarkdownLabel does not use texture mipmapping.
-    
-    :attr:`mipmap` is a :class:`~kivy.properties.BooleanProperty`
-    and defaults to False.
-    """
-    
-    outline_width = NumericProperty(0)
-    """No-op property for Label API compatibility.
-    
-    This property is accepted but has no effect on rendering.
-    Text outline is not supported in MarkdownLabel.
-    
-    :attr:`outline_width` is a :class:`~kivy.properties.NumericProperty`
-    and defaults to 0.
-    """
-    
-    outline_color = ColorProperty([0, 0, 0, 1])
-    """No-op property for Label API compatibility.
-    
-    This property is accepted but has no effect on rendering.
-    Text outline is not supported in MarkdownLabel.
-    
-    :attr:`outline_color` is a :class:`~kivy.properties.ColorProperty`
-    and defaults to [0, 0, 0, 1].
-    """
-    
-    text_language = StringProperty(None, allownone=True)
-    """No-op property for Label API compatibility.
-    
-    This property is accepted but has no effect on rendering.
-    MarkdownLabel does not support language-specific text shaping.
-    
-    :attr:`text_language` is a :class:`~kivy.properties.StringProperty`
-    and defaults to None.
-    """
-    
-    base_direction = OptionProperty(
-        None,
-        options=[None, 'ltr', 'rtl', 'weak_ltr', 'weak_rtl'],
-        allownone=True
-    )
-    """No-op property for Label API compatibility.
-    
-    This property is accepted but has no effect on rendering.
-    MarkdownLabel does not support bidirectional text layout.
-    
-    Options:
-        - None: No direction specified (default)
-        - 'ltr': Left-to-right
-        - 'rtl': Right-to-left
-        - 'weak_ltr': Weak left-to-right
-        - 'weak_rtl': Weak right-to-left
-    
-    :attr:`base_direction` is an :class:`~kivy.properties.OptionProperty`
-    and defaults to None.
-    """
-    
     # Forwarding properties - these are passed to KivyRenderer and applied to internal Labels
     
     font_name = StringProperty('Roboto')
@@ -336,13 +319,55 @@ class MarkdownLabel(BoxLayout):
     """
     
     padding = VariableListProperty([0, 0, 0, 0])
-    """Padding for the MarkdownLabel container.
+    """Padding for the MarkdownLabel container (BoxLayout).
+    
+    This padding is applied to the outer BoxLayout container and affects
+    the spacing between the container edges and its child widgets. It does
+    NOT affect the padding of individual Label widgets within the content.
+    
+    For padding that applies to the text content within Labels, use
+    :attr:`text_padding` or :attr:`label_padding` instead.
     
     Can be specified as a single value (applied to all sides),
     two values [horizontal, vertical], or four values [left, top, right, bottom].
     
     :attr:`padding` is a :class:`~kivy.properties.VariableListProperty`
     and defaults to [0, 0, 0, 0].
+    """
+
+    text_padding = VariableListProperty([0, 0, 0, 0])
+    """Padding applied to internal Label widgets.
+    
+    This mirrors :attr:`kivy.uix.label.Label.padding` without affecting the
+    MarkdownLabel container layout. Use this to inset rendered text while
+    keeping outer BoxLayout padding independent.
+    
+    :attr:`text_padding` is a :class:`~kivy.properties.VariableListProperty`
+    and defaults to [0, 0, 0, 0].
+    """
+    
+    def _get_label_padding(self):
+        """Getter for label_padding alias property."""
+        return self.text_padding
+    
+    def _set_label_padding(self, value):
+        """Setter for label_padding alias property."""
+        self.text_padding = value
+    
+    label_padding = AliasProperty(
+        _get_label_padding,
+        _set_label_padding,
+        bind=['text_padding']
+    )
+    """Alias for :attr:`text_padding` for Label API compatibility.
+    
+    Setting this property updates :attr:`text_padding`, and reading it
+    returns the current :attr:`text_padding` value. This provides an
+    alternative name that clearly indicates this padding applies to
+    child Label widgets, not the container.
+    
+    :attr:`label_padding` is an :class:`~kivy.properties.AliasProperty` that
+    maps to :attr:`text_padding`.
     """
     
     text_size = ListProperty([None, None])
@@ -455,6 +480,31 @@ class MarkdownLabel(BoxLayout):
     :attr:`disabled_color` is a :class:`~kivy.properties.ColorProperty`
     and defaults to [1, 1, 1, 0.3] (semi-transparent white).
     """
+
+    outline_width = NumericProperty(None, allownone=True)
+    """Outline width for text rendering (mirrors Label.outline_width)."""
+
+    outline_color = ColorProperty([0, 0, 0, 1])
+    """Outline color for text (mirrors Label.outline_color)."""
+
+    disabled_outline_color = ColorProperty([0, 0, 0, 1])
+    """Outline color when the widget is disabled (Label.disabled_outline_color)."""
+
+    mipmap = BooleanProperty(False)
+    """Enable mipmapping on text textures (Label.mipmap)."""
+
+    base_direction = OptionProperty(
+        None,
+        options=['ltr', 'rtl', 'weak_rtl', 'weak_ltr', None],
+        allownone=True
+    )
+    """Base text direction hint (Label.base_direction)."""
+
+    text_language = StringProperty(None, allownone=True)
+    """Language tag for text shaping (Label.text_language)."""
+
+    limit_render_to_text_bbox = BooleanProperty(False)
+    """Limit rendering to text bounding box (Label.limit_render_to_text_bbox)."""
     
     # Truncation properties
     
@@ -518,10 +568,10 @@ class MarkdownLabel(BoxLayout):
     causing the texture_size AliasProperty to be recalculated.
     """
     
-    auto_size_height = BooleanProperty(True)
+    auto_size_height = BooleanProperty(False)
     """Control automatic height sizing behavior.
     
-    When True (default):
+    When True:
         - size_hint_y is set to None
         - height is bound to minimum_height
         - Widget auto-sizes to fit content
@@ -533,9 +583,8 @@ class MarkdownLabel(BoxLayout):
     
     This property allows MarkdownLabel to be used in layouts that expect
     widgets to participate in size hints by setting auto_size_height=False.
-    
     :attr:`auto_size_height` is a :class:`~kivy.properties.BooleanProperty`
-    and defaults to True.
+    and defaults to False for Label-like sizing semantics.
     """
     
     strict_label_mode = BooleanProperty(False)
@@ -544,11 +593,10 @@ class MarkdownLabel(BoxLayout):
     This property controls how MarkdownLabel handles sizing and text_size
     semantics, allowing it to behave more like Kivy's standard Label widget.
     
-    When False (default, Markdown-friendly mode):
-        - auto_size_height behavior is enabled (widget auto-sizes to content)
+    When False (default):
+        - auto_size_height can be toggled on explicitly (default is off)
         - Internal Labels bind their width to the parent for text wrapping
-        - Widget uses Markdown-friendly auto-wrap and auto-size behavior
-        - Ideal for displaying Markdown content that should flow naturally
+        - Widget uses Markdown-friendly auto-wrap behavior by default
     
     When True (strict Label compatibility mode):
         - auto_size_height behavior is disabled (size_hint_y is preserved)
@@ -563,6 +611,37 @@ class MarkdownLabel(BoxLayout):
     
     :attr:`strict_label_mode` is a :class:`~kivy.properties.BooleanProperty`
     and defaults to False.
+    """
+    
+    render_mode = OptionProperty('widgets', options=['widgets', 'texture', 'auto'])
+    """Rendering mode for content display.
+    
+    Controls how MarkdownLabel renders its content:
+    
+    - 'widgets' (default): Renders content as a tree of Kivy widgets (Labels,
+      BoxLayouts, etc.). This provides full interactivity and is best for
+      most use cases.
+    
+    - 'texture': Renders all content to a single texture and displays it via
+      an Image widget. This provides maximum Label compatibility and is useful
+      in complex layouts where widget-tree rendering causes issues. Links are
+      still clickable via hit-testing against aggregated reference zones.
+    
+    - 'auto': Automatically selects the appropriate mode based on content
+      complexity and layout constraints. Uses 'texture' when strict_label_mode
+      is True with height constraints, otherwise uses 'widgets'.
+    
+    :attr:`render_mode` is an :class:`~kivy.properties.OptionProperty`
+    and defaults to 'widgets'.
+    """
+    
+    # Internal storage for texture mode hit-testing
+    _aggregated_refs = DictProperty({})
+    """Internal storage for aggregated reference zones in texture mode.
+    
+    Maps ref names (typically URLs) to lists of bounding box tuples
+    (x, y, width, height) in widget coordinates. Used for hit-testing
+    when render_mode is 'texture'.
     """
     
     # Read-only aggregated properties from child Labels
@@ -656,60 +735,78 @@ class MarkdownLabel(BoxLayout):
     
     :attr:`texture_size` is a read-only :class:`~kivy.properties.AliasProperty`.
     """
+
+    aggregate_texture_enabled = BooleanProperty(False)
+    """Enable rendering the entire widget tree to a single texture.
+    
+    When True, the :attr:`texture` property returns an aggregated texture
+    produced via :meth:`export_as_image`. This is opt-in and may be
+    expensive; it is disabled by default to avoid unnecessary FBO work.
+    """
+
+    def _get_texture(self):
+        """Return an aggregated texture when enabled."""
+        if not self.aggregate_texture_enabled:
+            return None
+        
+        try:
+            image = self.export_as_image()
+        except Exception:
+            return None
+        
+        return getattr(image, 'texture', None)
+    
+    texture = AliasProperty(
+        _get_texture,
+        bind=['aggregate_texture_enabled', '_texture_size_version', 'size', 'pos', 'children', 'text']
+    )
+    """Aggregated texture mirroring Label.texture when enabled."""
     
     def _get_refs(self):
-        """Aggregate refs from all child Labels with coordinate translation.
+        """Aggregate refs from child Labels using Label-style coordinates.
         
-        Returns a dictionary mapping ref names to bounding boxes in
-        MarkdownLabel's local coordinate space.
-        
-        Keys are ref names (URLs), values are lists of bounding box coordinates
-        [x1, y1, x2, y2] translated to MarkdownLabel's coordinate space.
+        Returned bounding boxes are translated from each Label's texture space
+        into the MarkdownLabel's local coordinate system, mirroring how
+        ``Label.refs`` is interpreted when converted to widget coordinates.
         """
         refs = {}
         
-        def get_widget_offset(widget):
-            """Calculate widget's position relative to MarkdownLabel.
-            
-            Walks up the widget tree from the given widget to self,
-            accumulating position offsets.
-            
-            Args:
-                widget: Widget to calculate offset for
-                
-            Returns:
-                Tuple (offset_x, offset_y) relative to MarkdownLabel
-            """
+        def get_parent_offset(widget):
+            """Return cumulative parent offset relative to MarkdownLabel."""
             offset_x = 0
             offset_y = 0
-            current = widget
-            
+            current = widget.parent
             while current is not None and current is not self:
                 offset_x += current.x
                 offset_y += current.y
                 current = current.parent
-            
             return offset_x, offset_y
         
+        def translate_box(label, box):
+            """Translate a ref box from label texture space to local coords."""
+            tex_w, tex_h = getattr(label, 'texture_size', (0, 0))
+            if not tex_w and not tex_h:
+                tex_w, tex_h = label.width, label.height
+            
+            parent_offset_x, parent_offset_y = get_parent_offset(label)
+            base_x = parent_offset_x + (label.center_x - tex_w / 2.0)
+            base_y = parent_offset_y + (label.center_y + tex_h / 2.0)
+            
+            x1, y1, x2, y2 = box
+            return [
+                base_x + x1,
+                base_y - y1,
+                base_x + x2,
+                base_y - y2,
+            ]
+        
         def collect_refs(widget):
-            if isinstance(widget, Label) and hasattr(widget, 'refs'):
-                if widget.refs:
-                    # Calculate this widget's offset relative to MarkdownLabel
-                    offset_x, offset_y = get_widget_offset(widget)
-                    
-                    for ref_name, ref_boxes in widget.refs.items():
-                        if ref_name not in refs:
-                            refs[ref_name] = []
-                        # Translate each bounding box
-                        for box in ref_boxes:
-                            # box is [x1, y1, x2, y2] relative to Label
-                            translated_box = [
-                                box[0] + offset_x,
-                                box[1] + offset_y,
-                                box[2] + offset_x,
-                                box[3] + offset_y
-                            ]
-                            refs[ref_name].append(translated_box)
+            if isinstance(widget, Label) and hasattr(widget, 'refs') and widget.refs:
+                for ref_name, ref_boxes in widget.refs.items():
+                    if ref_name not in refs:
+                        refs[ref_name] = []
+                    for box in ref_boxes:
+                        refs[ref_name].append(translate_box(widget, box))
             
             if hasattr(widget, 'children'):
                 for child in widget.children:
@@ -720,7 +817,10 @@ class MarkdownLabel(BoxLayout):
         
         return refs
     
-    refs = AliasProperty(_get_refs, bind=['children', 'text'])
+    refs = AliasProperty(
+        _get_refs,
+        bind=['children', 'text', '_texture_size_version']
+    )
     """Aggregated refs from all child Label widgets.
     
     Returns a dictionary mapping ref names (typically URLs) to lists of
@@ -734,51 +834,43 @@ class MarkdownLabel(BoxLayout):
     """
     
     def _get_anchors(self):
-        """Aggregate anchors from all child Labels with coordinate translation.
+        """Aggregate anchors from child Labels using Label-style coordinates.
         
-        Returns a dictionary mapping anchor names to positions in
-        MarkdownLabel's local coordinate space.
-        
-        Keys are anchor names, values are position tuples (x, y) translated
-        to MarkdownLabel's coordinate space.
+        Anchor positions are translated from each Label's texture space into
+        MarkdownLabel's local coordinates to mirror ``Label.anchors`` usage.
         """
         anchors = {}
         
-        def get_widget_offset(widget):
-            """Calculate widget's position relative to MarkdownLabel.
-            
-            Walks up the widget tree from the given widget to self,
-            accumulating position offsets.
-            
-            Args:
-                widget: Widget to calculate offset for
-                
-            Returns:
-                Tuple (offset_x, offset_y) relative to MarkdownLabel
-            """
+        def get_parent_offset(widget):
+            """Return cumulative parent offset relative to MarkdownLabel."""
             offset_x = 0
             offset_y = 0
-            current = widget
-            
+            current = widget.parent
             while current is not None and current is not self:
                 offset_x += current.x
                 offset_y += current.y
                 current = current.parent
-            
             return offset_x, offset_y
         
+        def translate_anchor(label, pos):
+            """Translate an anchor point from label texture space to local coords."""
+            tex_w, tex_h = getattr(label, 'texture_size', (0, 0))
+            if not tex_w and not tex_h:
+                tex_w, tex_h = label.width, label.height
+            
+            parent_offset_x, parent_offset_y = get_parent_offset(label)
+            base_x = parent_offset_x + (label.center_x - tex_w / 2.0)
+            base_y = parent_offset_y + (label.center_y + tex_h / 2.0)
+            
+            return (
+                base_x + pos[0],
+                base_y - pos[1],
+            )
+        
         def collect_anchors(widget):
-            if isinstance(widget, Label) and hasattr(widget, 'anchors'):
-                if widget.anchors:
-                    # Calculate this widget's offset relative to MarkdownLabel
-                    offset_x, offset_y = get_widget_offset(widget)
-                    
-                    for anchor_name, pos in widget.anchors.items():
-                        # pos is (x, y) relative to Label
-                        anchors[anchor_name] = (
-                            pos[0] + offset_x,
-                            pos[1] + offset_y
-                        )
+            if isinstance(widget, Label) and hasattr(widget, 'anchors') and widget.anchors:
+                for anchor_name, pos in widget.anchors.items():
+                    anchors[anchor_name] = translate_anchor(widget, pos)
             
             if hasattr(widget, 'children'):
                 for child in widget.children:
@@ -789,7 +881,10 @@ class MarkdownLabel(BoxLayout):
         
         return anchors
     
-    anchors = AliasProperty(_get_anchors, bind=['children', 'text'])
+    anchors = AliasProperty(
+        _get_anchors,
+        bind=['children', 'text', '_texture_size_version']
+    )
     """Aggregated anchors from all child Label widgets.
     
     Returns a dictionary mapping anchor names to position tuples. This
@@ -806,6 +901,15 @@ class MarkdownLabel(BoxLayout):
     def __init__(self, **kwargs):
         super(MarkdownLabel, self).__init__(**kwargs)
         self.orientation = 'vertical'
+        
+        # Deferred rebuild system for batching property changes
+        # _pending_rebuild tracks whether a rebuild is scheduled
+        self._pending_rebuild = False
+        # _rebuild_trigger is a Clock trigger for deferred rebuilds
+        # timeout=-1 means it fires on the next frame
+        self._rebuild_trigger = Clock.create_trigger(
+            self._do_rebuild, timeout=-1
+        )
         
         # Store user's size_hint_y value before potential override
         self._user_size_hint_y = kwargs.get('size_hint_y', 1)
@@ -824,6 +928,9 @@ class MarkdownLabel(BoxLayout):
         
         # Bind strict_label_mode changes to handler
         self.bind(strict_label_mode=self._on_strict_label_mode_changed)
+        
+        # Bind render_mode changes to handler
+        self.bind(render_mode=self._on_render_mode_changed)
         
         # Store the parsed AST tokens
         self._ast_tokens = []
@@ -846,11 +953,20 @@ class MarkdownLabel(BoxLayout):
         self.bind(valign=self._make_style_callback('valign'))
         self.bind(disabled=self._make_style_callback('disabled'))
         self.bind(disabled_color=self._make_style_callback('disabled_color'))
+        self.bind(base_direction=self._make_style_callback('base_direction'))
 
         # Bind structure properties (require full rebuild)
         self.bind(font_name=self._make_style_callback('font_name'))
+        self.bind(link_style=self._make_style_callback('link_style'))
         self.bind(text_size=self._make_style_callback('text_size'))
         self.bind(padding=self._make_style_callback('padding'))
+        self.bind(text_padding=self._make_style_callback('text_padding'))
+        self.bind(outline_width=self._make_style_callback('outline_width'))
+        self.bind(outline_color=self._make_style_callback('outline_color'))
+        self.bind(disabled_outline_color=self._make_style_callback('disabled_outline_color'))
+        self.bind(mipmap=self._make_style_callback('mipmap'))
+        self.bind(text_language=self._make_style_callback('text_language'))
+        self.bind(limit_render_to_text_bbox=self._make_style_callback('limit_render_to_text_bbox'))
 
         # Bind other properties (require full rebuild)
         self.bind(unicode_errors=self._make_style_callback('unicode_errors'))
@@ -875,8 +991,12 @@ class MarkdownLabel(BoxLayout):
             self._rebuild_widgets()
     
     def _on_text_changed(self, instance, value):
-        """Callback when text property changes."""
-        self._rebuild_widgets()
+        """Callback when text property changes.
+        
+        Uses deferred rebuild to batch multiple text changes within the
+        same frame into a single rebuild operation.
+        """
+        self._schedule_rebuild()
 
     def _make_style_callback(self, prop_name):
         """Create a callback for a specific property that tracks which changed.
@@ -903,32 +1023,87 @@ class MarkdownLabel(BoxLayout):
 
         For structure properties (text, font_name, code_font_name,
         text_size, strict_label_mode, padding) and other properties,
-        a full widget rebuild is performed.
+        a deferred widget rebuild is scheduled to batch multiple changes.
 
         Args:
             instance: The widget instance (self)
             value: The new property value
             prop_name: Name of the property that changed (optional)
         """
-        # If we don't know which property changed, do a full rebuild
+        # If we don't know which property changed, schedule a rebuild
         if prop_name is None:
-            self._rebuild_widgets()
+            self._schedule_rebuild()
             return
 
+        # Check if this is a font size property that can be updated in-place
+        if prop_name in ('base_font_size', 'font_size'):
+            # Only update in-place if we have children to update
+            if self.children:
+                self._update_font_sizes_in_place()
+            # No rebuild needed for font size changes
         # Check if this is a style-only property that can be updated in-place
-        if prop_name in self.STYLE_ONLY_PROPERTIES:
+        elif prop_name in self.STYLE_ONLY_PROPERTIES:
             # Only update in-place if we have children to update
             if self.children:
                 self._update_styles_in_place()
             # No rebuild needed for style-only changes
         else:
-            # Structure property or other - requires full rebuild
-            self._rebuild_widgets()
+            # Structure property or other - schedule deferred rebuild
+            self._schedule_rebuild()
+
+    def _update_font_sizes_in_place(self):
+        """Update font sizes on existing child widgets without rebuild.
+
+        This method updates font_size properties on all descendant Label
+        widgets using their stored _font_scale metadata to preserve
+        heading scale factors. This is more efficient than a full rebuild
+        when only font size changes.
+
+        Note:
+            This method preserves widget identities and only updates
+            font_size properties, leaving all other styling unchanged.
+        """
+        def update_font_size(widget):
+            """Recursively update font_size on widget and children.
+
+            Args:
+                widget: Widget to update font size on
+            """
+            if isinstance(widget, Label):
+                # Update font_size using base_font_size and scale metadata
+                if hasattr(widget, '_font_scale'):
+                    # Use the stored scale factor to compute font size
+                    widget.font_size = self.base_font_size * widget._font_scale
+                else:
+                    # Fallback for Labels without scale metadata (use base_font_size)
+                    widget.font_size = self.base_font_size
+
+            # Recursively update children
+            if hasattr(widget, 'children'):
+                for child in widget.children:
+                    update_font_size(child)
+
+        # Update all children
+        for child in self.children:
+            update_font_size(child)
+
+    def _get_effective_halign(self):
+        """Compute effective halign based on auto and base_direction.
+        
+        Returns:
+            str: The effective horizontal alignment ('left', 'center', 'right', 'justify')
+        """
+        if self.halign != 'auto':
+            return self.halign
+        
+        if self.base_direction in ('rtl', 'weak_rtl'):
+            return 'right'
+        return 'left'
 
     def _update_styles_in_place(self):
         """Update style properties on existing child widgets without rebuild.
 
-        This method updates purely stylistic properties (font_size, color,
+        This method updates purely stylistic properties (color,
         halign, valign, line_height, disabled state) on all descendant Label
         widgets without reconstructing the widget tree.
 
@@ -939,15 +1114,19 @@ class MarkdownLabel(BoxLayout):
         Note:
             This method only updates properties that don't affect widget
             structure. For structural changes (text, font_name, text_size,
-            etc.), use _rebuild_widgets() instead.
+            etc.), use _rebuild_widgets() instead. For font size changes,
+            use _update_font_sizes_in_place() instead.
         """
         # Determine effective color based on disabled state
         effective_color = (
             list(self.disabled_color) if self.disabled else list(self.color)
         )
+        effective_outline_color = (
+            list(self.disabled_outline_color) if self.disabled else list(self.outline_color)
+        )
 
-        # Determine effective halign (convert 'auto' to 'left')
-        effective_halign = 'left' if self.halign == 'auto' else self.halign
+        # Determine effective halign using the new method
+        effective_halign = self._get_effective_halign()
 
         def update_widget(widget):
             """Recursively update style properties on widget and children.
@@ -956,15 +1135,24 @@ class MarkdownLabel(BoxLayout):
                 widget: Widget to update styles on
             """
             if isinstance(widget, Label):
-                # Update font_size - use base_font_size for body text
-                # Note: Headings have scaled font sizes, but we update
-                # base_font_size which will be used on next rebuild.
-                # For in-place updates, we preserve the current font_size
-                # ratio if the widget has a custom size.
                 widget.color = effective_color
                 widget.halign = effective_halign
                 widget.valign = self.valign
                 widget.line_height = self.line_height
+                if hasattr(widget, 'outline_color'):
+                    widget.outline_color = effective_outline_color
+                if hasattr(widget, 'disabled_outline_color'):
+                    widget.disabled_outline_color = list(self.disabled_outline_color)
+                if hasattr(widget, 'mipmap'):
+                    widget.mipmap = self.mipmap
+                if hasattr(widget, 'base_direction'):
+                    widget.base_direction = self.base_direction
+                if hasattr(widget, 'text_language'):
+                    widget.text_language = self.text_language
+                if hasattr(widget, 'limit_render_to_text_bbox'):
+                    widget.limit_render_to_text_bbox = self.limit_render_to_text_bbox
+                if hasattr(widget, 'ellipsis_options'):
+                    widget.ellipsis_options = dict(self.ellipsis_options)
 
             # Recursively update children
             if hasattr(widget, 'children'):
@@ -1019,13 +1207,94 @@ class MarkdownLabel(BoxLayout):
                 self.size_hint_y = None
                 self.bind(minimum_height=self.setter('height'))
         
-        # Trigger rebuild to apply new mode behavior
-        self._rebuild_widgets()
+        # Schedule deferred rebuild to apply new mode behavior
+        self._schedule_rebuild()
     
+    def _on_render_mode_changed(self, instance, value):
+        """Handle render_mode property changes.
+        
+        When render_mode changes, a full rebuild is required to switch
+        between widget-tree rendering and texture rendering.
+        """
+        # Schedule deferred rebuild to apply new render mode
+        self._schedule_rebuild()
+    
+    def _schedule_rebuild(self):
+        """Schedule a rebuild for the next frame.
+        
+        This method sets the _pending_rebuild flag and triggers the deferred
+        rebuild via Clock.create_trigger. Multiple calls within the same frame
+        will result in only one rebuild operation, enabling efficient batching
+        of property changes.
+        
+        Use this method instead of calling _rebuild_widgets() directly when
+        you want to batch multiple property changes into a single rebuild.
+        """
+        self._pending_rebuild = True
+        self._rebuild_trigger()
+    
+    def _do_rebuild(self, dt=None):
+        """Execute the deferred rebuild.
+        
+        This is the callback for _rebuild_trigger. It checks if a rebuild
+        is actually pending and executes it if so.
+        
+        Args:
+            dt: Delta time from Clock (unused but required by Clock API)
+        """
+        if self._pending_rebuild:
+            self._pending_rebuild = False
+            self._rebuild_widgets()
+
+    def force_rebuild(self):
+        """Force an immediate synchronous rebuild.
+        
+        This method cancels any pending deferred rebuild and executes
+        the rebuild synchronously. Use this when you need the widget
+        tree to be updated immediately rather than waiting for the
+        next frame.
+        
+        This is useful in scenarios where:
+        - You need to query widget properties immediately after changes
+        - You're performing measurements that depend on the rebuilt tree
+        - You need deterministic timing for testing
+        
+        Note:
+            In most cases, you should let the deferred rebuild system
+            handle updates automatically. Use force_rebuild() only when
+            immediate synchronous updates are required.
+        """
+        self._rebuild_trigger.cancel()
+        self._pending_rebuild = False
+        self._rebuild_widgets()
+
+    def _needs_clipping(self):
+        """Determine if content clipping is needed.
+        
+        Clipping is needed when:
+        - text_size[1] is not None (height-constrained), OR
+        - strict_label_mode is True AND height is explicitly set
+        
+        Returns:
+            bool: True if clipping should be applied
+        """
+        # Check if text_size height is constrained
+        if self.text_size and self.text_size[1] is not None:
+            return True
+        
+        # Check if strict_label_mode is True with explicit height
+        if self.strict_label_mode and self.size_hint_y is None:
+            return True
+        
+        return False
+
     def _rebuild_widgets(self):
         """Parse the Markdown text and rebuild the widget tree."""
         # Clear existing children
         self.clear_widgets()
+        
+        # Clear aggregated refs for texture mode
+        self._aggregated_refs = {}
         
         # Handle empty text
         if not self.text:
@@ -1042,11 +1311,15 @@ class MarkdownLabel(BoxLayout):
             base_font_size=self.base_font_size,
             code_font_name=self.code_font_name,
             link_color=list(self.link_color),
+            link_style=self.link_style,
             code_bg_color=list(self.code_bg_color),
             font_name=self.font_name,
             color=list(self.color),
+            outline_width=self.outline_width,
+            outline_color=list(self.outline_color),
+            disabled_outline_color=list(self.disabled_outline_color),
             line_height=self.line_height,
-            halign=self.halign,
+            halign=self._get_effective_halign(),
             valign=self.valign,
             text_size=list(self.text_size) if self.text_size else [None, None],
             unicode_errors=self.unicode_errors,
@@ -1059,29 +1332,289 @@ class MarkdownLabel(BoxLayout):
             font_blended=self.font_blended,
             disabled=self.disabled,
             disabled_color=list(self.disabled_color),
+            mipmap=self.mipmap,
+            base_direction=self.base_direction,
+            text_language=self.text_language,
             shorten=self.shorten,
             max_lines=int(self.max_lines),
             shorten_from=self.shorten_from,
             split_str=self.split_str,
-            padding=list(self.padding),
+            text_padding=list(self.text_padding),
             strict_label_mode=self.strict_label_mode,
-            ellipsis_options=dict(self.ellipsis_options)
+            ellipsis_options=dict(self.ellipsis_options),
+            limit_render_to_text_bbox=self.limit_render_to_text_bbox
         )
         
         # Render AST to widget tree
         content = renderer(self._ast_tokens, None)
         
+        # Determine effective render mode
+        effective_render_mode = self._get_effective_render_mode()
+        
+        # Handle texture render mode
+        if effective_render_mode == 'texture':
+            # Bind ref_press events first (needed for collecting refs)
+            self._bind_ref_press_events(content)
+            
+            # Render to texture
+            image = self._render_as_texture(content)
+            
+            if image is not None:
+                # Successfully rendered to texture
+                # Determine if clipping is needed
+                needs_clipping = self._needs_clipping()
+                
+                if needs_clipping:
+                    # Wrap image in a clipping container
+                    clipping_container = _ClippingContainer()
+                    
+                    # Set the clipping container height based on constraints
+                    if self.text_size and self.text_size[1] is not None:
+                        clipping_container.height = self.text_size[1]
+                    elif self.strict_label_mode and self.height:
+                        clipping_container.height = self.height
+                        self.bind(height=clipping_container.setter('height'))
+                    
+                    # Bind width to parent for proper layout
+                    clipping_container.size_hint_x = None
+                    self.bind(width=clipping_container.setter('width'))
+                    clipping_container.width = self.width
+                    
+                    clipping_container.add_widget(image)
+                    self.add_widget(clipping_container)
+                else:
+                    self.add_widget(image)
+                
+                # Bind to child widget size changes for texture_size updates
+                self._bind_child_size_changes(self)
+                return
+            
+            # Fall through to widget mode if texture rendering failed
+        
+        # Widget render mode (default)
         # Bind ref_press events from child Labels to bubble up
         self._bind_ref_press_events(content)
         
-        # Add rendered content
-        # Note: content.children is in reverse order, so we reverse it to maintain document order
-        for child in reversed(list(content.children)):
-            content.remove_widget(child)
-            self.add_widget(child)
+        # Determine if clipping is needed
+        needs_clipping = self._needs_clipping()
+        
+        if needs_clipping:
+            # Wrap content in a clipping container
+            clipping_container = _ClippingContainer()
+            
+            # Set the clipping container height based on constraints
+            if self.text_size and self.text_size[1] is not None:
+                # Use text_size height as the clipping height
+                clipping_container.height = self.text_size[1]
+            elif self.strict_label_mode and self.height:
+                # Use widget height as the clipping height
+                clipping_container.height = self.height
+                # Bind to parent height changes
+                self.bind(height=clipping_container.setter('height'))
+            
+            # Bind width to parent for proper layout
+            clipping_container.size_hint_x = None
+            self.bind(width=clipping_container.setter('width'))
+            clipping_container.width = self.width
+            
+            # Add rendered content to clipping container
+            for child in reversed(list(content.children)):
+                content.remove_widget(child)
+                clipping_container.add_widget(child)
+            
+            # Add clipping container to self
+            self.add_widget(clipping_container)
+        else:
+            # No clipping needed - add content directly
+            for child in reversed(list(content.children)):
+                content.remove_widget(child)
+                self.add_widget(child)
         
         # Bind to child widget size changes for texture_size updates
         self._bind_child_size_changes(self)
+    
+    def _get_effective_render_mode(self):
+        """Determine the effective render mode based on settings and content.
+        
+        For 'auto' mode, selects between 'widgets' and 'texture' based on:
+        - Use 'texture' when strict_label_mode is True with height constraints
+        - Use 'widgets' for simple content or when no constraints
+        
+        Returns:
+            str: 'widgets' or 'texture'
+        """
+        if self.render_mode == 'widgets':
+            return 'widgets'
+        elif self.render_mode == 'texture':
+            return 'texture'
+        else:  # 'auto' mode
+            # Use texture mode when strict_label_mode with height constraints
+            if self.strict_label_mode:
+                # Check for height constraints
+                has_height_constraint = (
+                    (self.text_size and self.text_size[1] is not None) or
+                    self.size_hint_y is None
+                )
+                if has_height_constraint:
+                    return 'texture'
+            
+            # Default to widgets mode
+            return 'widgets'
+    
+    def _render_as_texture(self, content):
+        """Render content widget tree to a single texture.
+        
+        This method renders the widget tree off-screen using an FBO,
+        creates a texture from it, and displays it via an Image widget.
+        It also stores aggregated refs for hit-testing link clicks.
+        
+        Args:
+            content: The BoxLayout containing rendered Markdown widgets
+            
+        Returns:
+            Image widget displaying the rendered texture, or None on failure
+        """
+        from kivy.uix.image import AsyncImage
+        from kivy.uix.gridlayout import GridLayout
+        from kivy.uix.widget import Widget
+        
+        # Calculate the size needed for the content
+        # We need to measure the content first
+        content_width = self.width if self.width > 0 else 800
+        content_height = 0
+        
+        # Calculate total height from content children
+        for child in content.children:
+            if isinstance(child, Label):
+                # Force texture creation to get accurate size
+                child.texture_update()
+                if child.texture_size[1] > 0:
+                    content_height += child.texture_size[1]
+                else:
+                    content_height += child.height
+            elif isinstance(child, GridLayout):
+                if hasattr(child, 'minimum_height') and child.minimum_height:
+                    content_height += child.minimum_height
+                else:
+                    content_height += child.height
+            else:
+                content_height += child.height
+        
+        # Ensure minimum size
+        if content_height <= 0:
+            content_height = 100
+        if content_width <= 0:
+            content_width = 100
+        
+        # Set content size for rendering
+        content.size = (content_width, content_height)
+        content.size_hint = (None, None)
+        
+        # Position content at origin for FBO rendering
+        content.pos = (0, 0)
+        
+        # Collect refs from content before rendering
+        self._collect_refs_for_texture(content, content_height)
+        
+        try:
+            # Create FBO for off-screen rendering
+            fbo = Fbo(size=(int(content_width), int(content_height)))
+            
+            with fbo:
+                ClearColor(0, 0, 0, 0)  # Transparent background
+                ClearBuffers()
+            
+            # Add content to FBO and render
+            fbo.add(content.canvas)
+            fbo.draw()
+            
+            # Get the texture from FBO
+            texture = fbo.texture
+            
+            # Create Image widget to display the texture
+            image = Image(
+                texture=texture,
+                size=(content_width, content_height),
+                size_hint=(None, None),
+                allow_stretch=True,
+                keep_ratio=False
+            )
+            
+            # Clean up - remove content canvas from FBO
+            fbo.remove(content.canvas)
+            
+            return image
+            
+        except Exception as e:
+            # Fall back to widget mode on failure
+            import warnings
+            warnings.warn(
+                f"Texture rendering failed, falling back to widget mode: {e}",
+                RuntimeWarning
+            )
+            return None
+    
+    def _collect_refs_for_texture(self, widget, content_height, offset_x=0, offset_y=0):
+        """Collect reference zones from widget tree for texture mode hit-testing.
+        
+        This method traverses the widget tree and collects bounding boxes
+        for all refs (links) in Label widgets. The coordinates are stored
+        in widget space for hit-testing when the texture is displayed.
+        
+        Args:
+            widget: Widget to collect refs from
+            content_height: Total height of content (for Y coordinate conversion)
+            offset_x: X offset from parent widgets
+            offset_y: Y offset from parent widgets
+        """
+        # Clear existing refs at the start of collection
+        if widget is self or (hasattr(widget, 'parent') and widget.parent is self):
+            self._aggregated_refs = {}
+        
+        if isinstance(widget, Label) and hasattr(widget, 'refs') and widget.refs:
+            # Get label's position relative to content
+            label_x = offset_x + widget.x
+            label_y = offset_y + widget.y
+            
+            # Get texture size for coordinate translation
+            tex_w, tex_h = getattr(widget, 'texture_size', (widget.width, widget.height))
+            if tex_w <= 0:
+                tex_w = widget.width
+            if tex_h <= 0:
+                tex_h = widget.height
+            
+            # Calculate base position (center-aligned texture in label)
+            base_x = label_x + (widget.width - tex_w) / 2.0
+            base_y = label_y + (widget.height - tex_h) / 2.0
+            
+            for ref_name, ref_boxes in widget.refs.items():
+                if ref_name not in self._aggregated_refs:
+                    self._aggregated_refs[ref_name] = []
+                
+                for box in ref_boxes:
+                    # box is [x1, y1, x2, y2] in texture coordinates
+                    # Convert to widget coordinates (x, y, width, height)
+                    x1, y1, x2, y2 = box
+                    
+                    # Texture coordinates have Y=0 at top, widget coords at bottom
+                    # Convert to widget space
+                    zone_x = base_x + x1
+                    zone_y = base_y + (tex_h - y2)  # Flip Y
+                    zone_width = x2 - x1
+                    zone_height = y2 - y1
+                    
+                    self._aggregated_refs[ref_name].append(
+                        (zone_x, zone_y, zone_width, zone_height)
+                    )
+        
+        # Recursively collect from children
+        if hasattr(widget, 'children'):
+            child_offset_x = offset_x + widget.x
+            child_offset_y = offset_y + widget.y
+            for child in widget.children:
+                self._collect_refs_for_texture(
+                    child, content_height, child_offset_x, child_offset_y
+                )
     
     def _bind_ref_press_events(self, widget):
         """Recursively bind on_ref_press events from child Labels.
@@ -1140,6 +1673,55 @@ class MarkdownLabel(BoxLayout):
             ref: The URL/reference string
         """
         self.dispatch('on_ref_press', ref)
+    
+    def on_touch_down(self, touch):
+        """Handle touch events, including texture mode link hit-testing.
+        
+        In texture mode, this method performs hit-testing against the
+        aggregated reference zones to detect link clicks and dispatch
+        on_ref_press events.
+        
+        Args:
+            touch: The touch event
+            
+        Returns:
+            bool: True if the touch was handled, False otherwise
+        """
+        # Check if we're in texture mode and have aggregated refs
+        effective_mode = self._get_effective_render_mode()
+        
+        if effective_mode == 'texture' and self._aggregated_refs:
+            # Check if touch is within our bounds
+            if self.collide_point(*touch.pos):
+                # Convert touch position to local coordinates
+                local_x = touch.x - self.x
+                local_y = touch.y - self.y
+                
+                # Hit-test against aggregated refs
+                for ref_name, zones in self._aggregated_refs.items():
+                    for zone in zones:
+                        if self._point_in_zone((local_x, local_y), zone):
+                            # Found a matching ref - dispatch event
+                            self.dispatch('on_ref_press', ref_name)
+                            return True
+        
+        # Fall through to default behavior
+        return super(MarkdownLabel, self).on_touch_down(touch)
+    
+    def _point_in_zone(self, point, zone):
+        """Check if a point is within a bounding zone.
+        
+        Args:
+            point: Tuple (x, y) of the point to test
+            zone: Tuple (x, y, width, height) of the zone
+            
+        Returns:
+            bool: True if point is within zone
+        """
+        px, py = point
+        zx, zy, zw, zh = zone
+        
+        return (zx <= px <= zx + zw) and (zy <= py <= zy + zh)
     
     def on_ref_press(self, ref):
         """Event handler for link clicks.

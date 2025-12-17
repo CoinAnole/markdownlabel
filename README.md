@@ -110,6 +110,35 @@ label.markup = True    # Always True for MarkdownLabel
 **Compatibility Properties (no-op):**
 - `bold`, `italic`, `underline`, `strikethrough`, `markup` - Accepted but ignored (Markdown controls formatting)
 
+Testing
+-------
+
+### Running Tests
+
+```bash
+# Run all tests (skips slow tests by default)
+pytest
+
+# Run with coverage
+pytest --cov=kivy_garden.markdownlabel
+
+# Run slow tests explicitly
+pytest -m slow
+
+# Run all tests including slow ones
+pytest -m ""
+
+# Run specific test file
+pytest kivy_garden/markdownlabel/tests/test_core_functionality.py
+```
+
+### Test Categories
+
+- **Fast tests** (default): Core functionality, unit tests, basic property tests
+- **Slow tests** (`@pytest.mark.slow`): Performance tests, heavy property-based tests with many examples
+
+The test suite is configured to skip slow tests by default for fast feedback during development. Slow tests are run in CI on a separate schedule or can be run explicitly when needed.
+
 CI
 --
 
