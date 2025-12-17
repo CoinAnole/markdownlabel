@@ -142,6 +142,7 @@ class TestHeadingFontHierarchy:
     """Property tests for heading font size hierarchy (Property 3)."""
     
     @given(st.integers(min_value=1, max_value=5))
+    # Small finite strategy: 5 examples (input space size: 5)
     @settings(max_examples=5, deadline=None)
     def test_smaller_level_has_larger_font(self, level):
         """Headings with smaller level numbers have larger font sizes."""
@@ -167,18 +168,17 @@ class TestHeadingFontHierarchy:
     
     @given(heading_token())
     # Complex strategy: 20 examples (adequate coverage)
-    @settings(max_examples=20 if not os.getenv('CI') else 10)
+    @settings(max_examples=20, deadline=None)
     def test_heading_returns_label(self, token):
         """Heading tokens produce Label widgets."""
         renderer = KivyRenderer()
         widget = renderer.heading(token, None)
         
         assert isinstance(widget, Label), f"Expected Label, got {type(widget)}"
-    
-    # Complex strategy: 20 examples (adequate coverage)
+
     @given(heading_token())
     # Complex strategy: 20 examples (adequate coverage)
-    @settings(max_examples=20 if not os.getenv('CI') else 10)
+    @settings(max_examples=20, deadline=None)
     def test_heading_has_markup_enabled(self, token):
         """Heading Labels have markup=True."""
         renderer = KivyRenderer()
@@ -187,8 +187,8 @@ class TestHeadingFontHierarchy:
         assert widget.markup is True, "Heading should have markup=True"
     
     @given(st.integers(min_value=1, max_value=6), st.floats(min_value=10, max_value=30))
-    # Complex strategy: 6 examples (adequate coverage)
-    @settings(max_examples=6)
+    # Complex strategy: 10 examples (adequate coverage)
+    @settings(max_examples=10, deadline=None)
     def test_heading_font_size_scales_with_base(self, level, base_size):
         """Heading font size scales proportionally with base_font_size."""
         assume(base_size > 0)
@@ -215,11 +215,10 @@ class TestHeadingFontHierarchy:
 
 class TestParagraphMarkupEnabled:
     """Property tests for paragraph markup enabled (Property 5)."""
-     # Complex strategy: 20 examples (adequate coverage)
-    
+
     @given(paragraph_token())
     # Complex strategy: 20 examples (adequate coverage)
-    @settings(max_examples=20 if not os.getenv('CI') else 10)
+    @settings(max_examples=20, deadline=None)
     def test_paragraph_has_markup_enabled(self, token):
         """Paragraph Labels have markup=True."""
         renderer = KivyRenderer()
@@ -228,10 +227,10 @@ class TestParagraphMarkupEnabled:
         assert isinstance(widget, Label), f"Expected Label, got {type(widget)}"
         # Complex strategy: 20 examples (adequate coverage)
         assert widget.markup is True, "Paragraph should have markup=True"
-    
+
     @given(paragraph_token())
     # Complex strategy: 20 examples (adequate coverage)
-    @settings(max_examples=20 if not os.getenv('CI') else 10)
+    @settings(max_examples=20, deadline=None)
     def test_paragraph_returns_label(self, token):
         """Paragraph tokens produce Label widgets."""
         renderer = KivyRenderer()
@@ -247,39 +246,36 @@ class TestParagraphMarkupEnabled:
 # SHALL be prefixed with the appropriate marker (bullet or number).
 # **Validates: Requirements 4.1, 4.2**
 
-# Complex strategy: 20 examples (adequate coverage)
 class TestListStructurePreservation:
     """Property tests for list structure preservation (Property 6)."""
     
     @given(list_token())
     # Complex strategy: 20 examples (adequate coverage)
-    @settings(max_examples=20 if not os.getenv('CI') else 10)
+    @settings(max_examples=20, deadline=None)
     def test_list_returns_boxlayout(self, token):
         """List tokens produce BoxLayout widgets."""
         renderer = KivyRenderer()
-        # Complex strategy: 20 examples (adequate coverage)
         widget = renderer.list(token, None)
-        
+
         assert isinstance(widget, BoxLayout), f"Expected BoxLayout, got {type(widget)}"
-    
+
     @given(list_token())
     # Complex strategy: 20 examples (adequate coverage)
-    @settings(max_examples=20 if not os.getenv('CI') else 10)
+    @settings(max_examples=20, deadline=None)
     def test_list_has_correct_item_count(self, token):
         """List has one child per list item."""
         renderer = KivyRenderer()
         widget = renderer.list(token, None)
         
         expected_count = len(token['children'])
-        # Complex strategy: 20 examples (adequate coverage)
         actual_count = len(widget.children)
-        
+
         assert actual_count == expected_count, \
             f"Expected {expected_count} children, got {actual_count}"
-    
+
     @given(list_token(ordered=False))
     # Complex strategy: 20 examples (adequate coverage)
-    @settings(max_examples=20 if not os.getenv('CI') else 10)
+    @settings(max_examples=20, deadline=None)
     def test_unordered_list_has_bullet_markers(self, token):
         """Unordered list items have bullet markers."""
         renderer = KivyRenderer()
@@ -288,16 +284,15 @@ class TestListStructurePreservation:
         # Each child should be a horizontal BoxLayout with a marker Label
         for child in widget.children:
             assert isinstance(child, BoxLayout), f"List item should be BoxLayout"
-            # Complex strategy: 20 examples (adequate coverage)
             # First child of item layout should be the marker
             # Note: Kivy children are in reverse order (last added is first)
             marker = child.children[-1]  # Last in list = first added = marker
             assert isinstance(marker, Label), f"Marker should be Label"
             assert '•' in marker.text, f"Unordered list marker should contain bullet, got: {marker.text}"
-    
+
     @given(list_token(ordered=True))
     # Complex strategy: 20 examples (adequate coverage)
-    @settings(max_examples=20 if not os.getenv('CI') else 10)
+    @settings(max_examples=20, deadline=None)
     def test_ordered_list_has_number_markers(self, token):
         """Ordered list items have number markers."""
         renderer = KivyRenderer()
@@ -328,8 +323,8 @@ class TestNestedListIndentation:
     """Property tests for nested list indentation (Property 7)."""
     
     @given(st.integers(min_value=1, max_value=4))
-    # Complex strategy: 4 examples (adequate coverage)
-    @settings(max_examples=4)
+    # Small finite strategy: 4 examples (input space size: 4)
+    @settings(max_examples=4, deadline=None)
     def test_nested_list_increases_indentation(self, depth):
         """Nested lists have increasing left padding."""
         renderer = KivyRenderer()
@@ -383,8 +378,7 @@ class TestCodeBlockStyling:
     
     @given(code_block_token())
     # Complex strategy: 20 examples (adequate coverage)
-    @settings(max_examples=20 if not os.getenv('CI') else 10)
-    # Complex strategy: 20 examples (adequate coverage)
+    @settings(max_examples=20, deadline=None)
     def test_code_block_returns_widget(self, token):
         """Code block tokens produce Widget containers."""
         renderer = KivyRenderer()
@@ -394,7 +388,7 @@ class TestCodeBlockStyling:
     
     @given(code_block_token())
     # Complex strategy: 20 examples (adequate coverage)
-    @settings(max_examples=20 if not os.getenv('CI') else 10)
+    @settings(max_examples=20, deadline=None)
     def test_code_block_has_monospace_font(self, token):
         """Code block uses monospace font."""
         renderer = KivyRenderer(code_font_name='RobotoMono-Regular')
@@ -406,18 +400,17 @@ class TestCodeBlockStyling:
         # Find the Label child
         label = None
         for child in widget.children:
-            # Complex strategy: 20 examples (adequate coverage)
             if isinstance(child, Label):
                 label = child
                 break
-        
+
         assert label is not None, "Code block should contain a Label"
         assert label.font_name == 'RobotoMono-Regular', \
             f"Expected monospace font, got {label.font_name}"
-    
+
     @given(code_block_token())
     # Complex strategy: 20 examples (adequate coverage)
-    @settings(max_examples=20 if not os.getenv('CI') else 10)
+    @settings(max_examples=20, deadline=None)
     def test_code_block_has_dark_background(self, token):
         """Code block has dark background color."""
         dark_bg = [0.15, 0.15, 0.15, 1]
@@ -426,8 +419,6 @@ class TestCodeBlockStyling:
         
         # Check that canvas.before has instructions (background)
         assert hasattr(widget, '_bg_rect'), "Code block should have background rectangle"
-
- # Complex strategy: 20 examples (adequate coverage)
 
 # **Feature: markdown-label, Property 11: Code Block Language Metadata**
 # *For any* fenced code block with a language identifier, the rendered widget
@@ -439,7 +430,7 @@ class TestCodeBlockLanguageMetadata:
     
     @given(code_block_token())
     # Complex strategy: 20 examples (adequate coverage)
-    @settings(max_examples=20 if not os.getenv('CI') else 10)
+    @settings(max_examples=20, deadline=None)
     def test_code_block_stores_language_info(self, token):
         """Code block stores language info as attribute."""
         renderer = KivyRenderer()
@@ -475,23 +466,21 @@ class TestCodeBlockLanguageMetadata:
 # **Validates: Requirements 9.1**
 
 class TestBlockQuoteStructure:
-    # Complex strategy: 20 examples (adequate coverage)
     """Property tests for block quote structure (Property 14)."""
-    
+
     @given(block_quote_token())
     # Complex strategy: 20 examples (adequate coverage)
-    @settings(max_examples=20 if not os.getenv('CI') else 10)
+    @settings(max_examples=20, deadline=None)
     def test_block_quote_returns_boxlayout(self, token):
         """Block quote tokens produce BoxLayout widgets."""
         renderer = KivyRenderer()
         widget = renderer.block_quote(token, None)
         
         assert isinstance(widget, BoxLayout), f"Expected BoxLayout, got {type(widget)}"
-     # Complex strategy: 20 examples (adequate coverage)
-    
+
     @given(block_quote_token())
     # Complex strategy: 20 examples (adequate coverage)
-    @settings(max_examples=20 if not os.getenv('CI') else 10)
+    @settings(max_examples=20, deadline=None)
     def test_block_quote_has_left_padding(self, token):
         """Block quote has left padding for indentation."""
         renderer = KivyRenderer()
@@ -500,16 +489,15 @@ class TestBlockQuoteStructure:
         # Check left padding (first element of padding tuple)
         assert widget.padding[0] > 0, \
             f"Block quote should have left padding, got {widget.padding[0]}"
-    
+
     @given(block_quote_token())
     # Complex strategy: 20 examples (adequate coverage)
-    @settings(max_examples=20 if not os.getenv('CI') else 10)
+    @settings(max_examples=20, deadline=None)
     def test_block_quote_has_left_border(self, token):
         """Block quote has left border line."""
         renderer = KivyRenderer()
         widget = renderer.block_quote(token, None)
-         # Complex strategy: 20 examples (adequate coverage)
-        
+
         # Check that canvas.before has border line
         assert hasattr(widget, '_border_line'), "Block quote should have border line"
 
@@ -523,19 +511,18 @@ class TestThematicBreakRendering:
     """Property tests for thematic break rendering (Property 15)."""
     
     @given(st.just({'type': 'thematic_break'}))
-    # Complex strategy: 20 examples (adequate coverage)
-    @settings(max_examples=20 if not os.getenv('CI') else 10)
+    # Small finite strategy: 1 examples (input space size: 1)
+    @settings(max_examples=1, deadline=None)
     def test_thematic_break_returns_widget(self, token):
         """Thematic break tokens produce Widget."""
         renderer = KivyRenderer()
-        # Complex strategy: 20 examples (adequate coverage)
         widget = renderer.thematic_break(token, None)
-        
+
         assert isinstance(widget, Widget), f"Expected Widget, got {type(widget)}"
-    
+
     @given(st.just({'type': 'thematic_break'}))
-    # Complex strategy: 20 examples (adequate coverage)
-    @settings(max_examples=20 if not os.getenv('CI') else 10)
+    # Small finite strategy: 1 examples (input space size: 1)
+    @settings(max_examples=1, deadline=None)
     def test_thematic_break_has_fixed_height(self, token):
         """Thematic break has fixed height."""
         renderer = KivyRenderer()
@@ -543,16 +530,15 @@ class TestThematicBreakRendering:
         
         assert widget.size_hint_y is None, "Thematic break should have size_hint_y=None"
         assert widget.height > 0, "Thematic break should have positive height"
-    
+
     @given(st.just({'type': 'thematic_break'}))
-    # Complex strategy: 20 examples (adequate coverage)
-    @settings(max_examples=20 if not os.getenv('CI') else 10)
+    # Small finite strategy: 1 examples (input space size: 1)
+    @settings(max_examples=1, deadline=None)
     def test_thematic_break_has_horizontal_line(self, token):
         """Thematic break has horizontal line on canvas."""
-        # Complex strategy: 20 examples (adequate coverage)
         renderer = KivyRenderer()
         widget = renderer.thematic_break(token, None)
-        
+
         # Check that canvas has line instruction
         assert hasattr(widget, '_hr_line'), "Thematic break should have horizontal line"
 
@@ -567,18 +553,17 @@ class TestImageWidgetCreation:
     
     @given(image_token())
     # Complex strategy: 20 examples (adequate coverage)
-    @settings(max_examples=20 if not os.getenv('CI') else 10)
+    @settings(max_examples=20, deadline=None)
     def test_image_returns_asyncimage(self, token):
         """Image tokens produce AsyncImage widgets."""
-        # Complex strategy: 20 examples (adequate coverage)
         renderer = KivyRenderer()
         widget = renderer.image(token, None)
-        
+
         assert isinstance(widget, AsyncImage), f"Expected AsyncImage, got {type(widget)}"
-    
+
     @given(image_token())
     # Complex strategy: 20 examples (adequate coverage)
-    @settings(max_examples=20 if not os.getenv('CI') else 10)
+    @settings(max_examples=20, deadline=None)
     def test_image_has_correct_source(self, token):
         """Image widget has correct source URL."""
         renderer = KivyRenderer()
@@ -590,7 +575,7 @@ class TestImageWidgetCreation:
     
     @given(image_token())
     # Complex strategy: 20 examples (adequate coverage)
-    @settings(max_examples=20 if not os.getenv('CI') else 10)
+    @settings(max_examples=20, deadline=None)
     def test_image_stores_alt_text(self, token):
         """Image widget stores alt text for fallback."""
         renderer = KivyRenderer()
@@ -678,7 +663,8 @@ class TestTableGridStructure:
     """Property tests for table grid structure (Property 8)."""
     
     @given(st.integers(min_value=1, max_value=5), st.integers(min_value=1, max_value=5))
-    @settings(max_examples=5, deadline=None)
+    # Combination strategy: 25 examples (combination coverage)
+    @settings(max_examples=25, deadline=None)
     def test_table_has_correct_column_count(self, num_rows, num_cols):
         """Table GridLayout has correct number of columns."""
         renderer = KivyRenderer()
@@ -720,7 +706,8 @@ class TestTableGridStructure:
             f"Expected {num_cols} columns, got {widget.cols}"
     
     @given(st.integers(min_value=1, max_value=5), st.integers(min_value=1, max_value=5))
-    @settings(max_examples=5, deadline=None)
+    # Combination strategy: 25 examples (combination coverage)
+    @settings(max_examples=25, deadline=None)
     def test_table_has_correct_cell_count(self, num_rows, num_cols):
         """Table contains exactly R×C Label widgets."""
         renderer = KivyRenderer()
@@ -743,7 +730,6 @@ class TestTableGridStructure:
             ]
             body_rows.append({'type': 'table_row', 'children': body_cells})
         
-        # Complex strategy: 20 examples (adequate coverage)
         token = {
             'type': 'table',
             'children': [
@@ -751,20 +737,19 @@ class TestTableGridStructure:
                 {'type': 'table_body', 'children': body_rows}
             ]
         }
-        
-        # Complex strategy: 20 examples (adequate coverage)
+
         widget = renderer.table(token, None)
-        
+
         # Count Label widgets in the grid
         label_count = sum(1 for child in widget.children if isinstance(child, Label))
         expected_count = num_rows * num_cols
-        
+
         assert label_count == expected_count, \
             f"Expected {expected_count} cells (R={num_rows} × C={num_cols}), got {label_count}"
-    
+
     @given(table_token())
     # Complex strategy: 20 examples (adequate coverage)
-    @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
+    @settings(max_examples=20, deadline=None)
     def test_table_returns_gridlayout(self, token):
         """Table tokens produce GridLayout widgets."""
         renderer = KivyRenderer()
@@ -774,7 +759,7 @@ class TestTableGridStructure:
     
     @given(table_token())
     # Complex strategy: 20 examples (adequate coverage)
-    @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
+    @settings(max_examples=20, deadline=None)
     def test_table_cells_are_labels(self, token):
         """All table cells are Label widgets."""
         renderer = KivyRenderer()
@@ -810,8 +795,8 @@ class TestTableAlignmentApplication:
             f"Expected halign='{alignment}', got '{widget.halign}'"
     
     @given(st.integers(min_value=1, max_value=3), st.integers(min_value=2, max_value=4))
-    # Complex strategy: 3 examples (adequate coverage)
-    @settings(max_examples=3, deadline=None)
+    # Combination strategy: 9 examples (combination coverage)
+    @settings(max_examples=9, deadline=None)
     def test_table_preserves_column_alignments(self, num_rows, num_cols):
         """Table preserves alignment for each column."""
         renderer = KivyRenderer()
@@ -858,8 +843,7 @@ class TestTableAlignmentApplication:
                 cell_idx = row_idx * num_cols + col_idx
                 cell = children[cell_idx]
                 expected_align = alignments[col_idx]
-                
-                # Complex strategy: 20 examples (adequate coverage)
+
                 assert cell.halign == expected_align, \
                     f"Cell [{row_idx}][{col_idx}] expected halign='{expected_align}', got '{cell.halign}'"
     
@@ -881,7 +865,7 @@ class TestTableAlignmentApplication:
     
     @given(table_token())
     # Complex strategy: 20 examples (adequate coverage)
-    @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
+    @settings(max_examples=20, deadline=None)
     def test_cell_stores_alignment_metadata(self, token):
         """Table cells store alignment as metadata."""
         renderer = KivyRenderer()

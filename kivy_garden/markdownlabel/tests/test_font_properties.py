@@ -181,7 +181,7 @@ class TestLineHeightForwarding:
     
     @given(line_height_strategy)
     # Complex strategy: 20 examples (adequate coverage)
-    @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
+    @settings(max_examples=20, deadline=None)
     def test_line_height_applied_to_paragraph(self, line_height):
         """line_height is applied to paragraph Labels."""
         label = MarkdownLabel(text='Hello World', line_height=line_height)
@@ -193,11 +193,10 @@ class TestLineHeightForwarding:
         for lbl in labels:
             assert floats_equal(lbl.line_height, line_height), \
                 f"Expected line_height={line_height}, got {lbl.line_height}"
-    
-    # Complex strategy: 20 examples (adequate coverage)
+
     @given(line_height_strategy)
     # Complex strategy: 20 examples (adequate coverage)
-    @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
+    @settings(max_examples=20, deadline=None)
     def test_line_height_applied_to_heading(self, line_height):
         """line_height is applied to heading Labels."""
         label = MarkdownLabel(text='# Heading', line_height=line_height)
@@ -209,11 +208,10 @@ class TestLineHeightForwarding:
         for lbl in labels:
             assert floats_equal(lbl.line_height, line_height), \
                 f"Expected line_height={line_height}, got {lbl.line_height}"
-     # Complex strategy: 20 examples (adequate coverage)
-    
+
     @given(line_height_strategy)
     # Complex strategy: 20 examples (adequate coverage)
-    @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
+    @settings(max_examples=20, deadline=None)
     def test_line_height_applied_to_code_block(self, line_height):
         """line_height is applied to code block Labels."""
         markdown = '```python\nprint("hello")\n```'
@@ -225,13 +223,12 @@ class TestLineHeightForwarding:
         
         # Code block labels should also have the specified line_height
         for lbl in labels:
-            # Complex strategy: 20 examples (adequate coverage)
             assert floats_equal(lbl.line_height, line_height), \
                 f"Expected line_height={line_height}, got {lbl.line_height}"
     
     @given(line_height_strategy, line_height_strategy)
     # Combination strategy: 20 examples (combination coverage)
-    @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
+    @settings(max_examples=20, deadline=None)
     def test_line_height_change_triggers_rebuild(self, lh1, lh2):
         """Changing line_height triggers widget rebuild with new value."""
         assume(not floats_equal(lh1, lh2))
@@ -249,13 +246,12 @@ class TestLineHeightForwarding:
         # Verify new line_height
         labels = find_labels_recursive(label)
         for lbl in labels:
-            # Complex strategy: 20 examples (adequate coverage)
             assert floats_equal(lbl.line_height, lh2), \
                 f"After change, expected line_height={lh2}, got {lbl.line_height}"
     
     @given(line_height_strategy)
     # Complex strategy: 20 examples (adequate coverage)
-    @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
+    @settings(max_examples=20, deadline=None)
     def test_line_height_applied_to_list_items(self, line_height):
         """line_height is applied to list item Labels."""
         markdown = '- Item 1\n- Item 2'
@@ -271,7 +267,7 @@ class TestLineHeightForwarding:
     
     @given(line_height_strategy)
     # Complex strategy: 20 examples (adequate coverage)
-    @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
+    @settings(max_examples=20, deadline=None)
     def test_line_height_applied_to_table_cells(self, line_height):
         """line_height is applied to table cell Labels."""
         markdown = '| A | B |\n| --- | --- |\n| 1 | 2 |'
@@ -287,7 +283,7 @@ class TestLineHeightForwarding:
     
     @given(line_height_strategy)
     # Complex strategy: 20 examples (adequate coverage)
-    @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
+    @settings(max_examples=20, deadline=None)
     def test_line_height_applied_to_all_content_types(self, line_height):
         """line_height is applied to all content types including code."""
         markdown = 'Regular text\n\n```\ncode\n```\n\n# Heading\n\n- List item'
@@ -464,6 +460,7 @@ class TestFontAdvancedPropertyForwardingPhase2:
                     f"Expected font_hinting={font_hinting_value!r}, got {lbl.font_hinting!r}"
     
     @given(st.booleans())
+    # Boolean strategy: 2 examples (True/False coverage)
     @settings(max_examples=2, deadline=None)
     def test_font_kerning_forwarded_to_all_labels_including_code(self, font_kerning_value):
         """font_kerning IS forwarded to ALL Labels including code blocks.
@@ -494,7 +491,8 @@ class TestFontAdvancedPropertyForwardingPhase2:
     )),
            st.sampled_from([None, 'normal', 'light', 'mono']),
            st.booleans())
-    @settings(max_examples=2, deadline=None)
+    # Combination strategy: 20 examples (combination coverage)
+    @settings(max_examples=20, deadline=None)
     def test_combined_font_properties_with_code_block(self, font_family, font_context, 
                                                        font_hinting, font_kerning):
         """Combined font properties are correctly forwarded with code block exclusion.
@@ -603,7 +601,7 @@ class TestFontSizeImmediateUpdate:
         st.floats(min_value=10.0, max_value=30.0, allow_nan=False, allow_infinity=False),
         st.floats(min_value=10.0, max_value=30.0, allow_nan=False, allow_infinity=False)
     )
-    # Complex strategy: 6 examples (adequate coverage)
+    # Combination strategy: 6 examples (combination coverage)
     @settings(max_examples=6, deadline=None)
     def test_heading_font_size_updates_with_scale(self, heading_level, initial_size, new_size):
         """Heading font sizes update immediately with correct scale factors."""
@@ -636,7 +634,6 @@ class TestFontSizeImmediateUpdate:
         
         # Verify updated font size
         new_expected = new_size * expected_scale
-        # Complex strategy: 50 examples (adequate coverage)
         assert abs(heading_label.font_size - new_expected) < 0.1, \
             f"Updated heading font_size incorrect: expected {new_expected}, got {heading_label.font_size}"
     
@@ -644,7 +641,7 @@ class TestFontSizeImmediateUpdate:
         st.floats(min_value=10.0, max_value=30.0, allow_nan=False, allow_infinity=False)
     )
     # Complex strategy: 50 examples (adequate coverage)
-    @settings(max_examples=50 if not os.getenv('CI') else 25, deadline=None)
+    @settings(max_examples=50, deadline=None)
     def test_paragraph_font_size_updates_immediately(self, new_size):
         """Paragraph font sizes update immediately when base_font_size changes."""
         # Create simple paragraph
@@ -680,7 +677,7 @@ class TestHeadingScalePreservation:
         st.integers(min_value=1, max_value=6),  # Heading levels
         st.floats(min_value=8.0, max_value=50.0, allow_nan=False, allow_infinity=False)
     )
-    # Complex strategy: 6 examples (adequate coverage)
+    # Combination strategy: 6 examples (combination coverage)
     @settings(max_examples=6, deadline=None)
     def test_heading_scale_factors_preserved(self, heading_level, base_size):
         """Heading scale factors are preserved according to HEADING_SIZES."""
@@ -857,7 +854,7 @@ class TestNoRebuildOnFontSizeChange:
         st.floats(min_value=12.0, max_value=18.0, allow_nan=False, allow_infinity=False),
         st.floats(min_value=20.0, max_value=30.0, allow_nan=False, allow_infinity=False)
     )
-    # Complex strategy: 6 examples (adequate coverage)
+    # Combination strategy: 6 examples (combination coverage)
     @settings(max_examples=6, deadline=None)
     def test_heading_widget_identity_preserved(self, heading_level, initial_size, new_size):
         """Heading Label widget identity is preserved when base_font_size changes."""
@@ -926,7 +923,7 @@ class TestNoRebuildOnFontSizeChange:
         st.floats(min_value=12.0, max_value=24.0, allow_nan=False, allow_infinity=False)
     )
     # Complex strategy: 50 examples (adequate coverage)
-    @settings(max_examples=50 if not os.getenv('CI') else 25, deadline=None)
+    @settings(max_examples=50, deadline=None)
     def test_rebuild_counter_not_incremented_on_font_size_change(self, new_size):
         """Rebuild operations are not triggered by font size changes."""
         # Create label with content

@@ -175,6 +175,7 @@ Examples:
         print(f"  Documented tests: {stats.get('total_documented_tests', 0)}")
         print(f"  Undocumented tests: {stats.get('total_undocumented_tests', 0)}")
         print(f"  Format violations: {stats.get('total_format_violations', 0)}")
+        print(f"  Strategy mismatches: {stats.get('total_strategy_mismatches', 0)}")
         print(f"  Compliance: {stats.get('compliance_percentage', 0):.1f}%")
         
         # Show detailed results if requested
@@ -190,6 +191,7 @@ Examples:
         has_issues = (
             stats.get('total_undocumented_tests', 0) > 0 or
             stats.get('total_format_violations', 0) > 0 or
+            stats.get('total_strategy_mismatches', 0) > 0 or
             len(analysis.global_inconsistencies) > 0
         )
         
@@ -377,7 +379,9 @@ Examples:
         print(f"\nDetailed Results:")
         
         for file_analysis in analysis.file_analyses:
-            if file_analysis.format_violations or file_analysis.missing_documentation:
+            if (file_analysis.format_violations or 
+                file_analysis.missing_documentation or
+                file_analysis.strategy_mismatches):
                 print(f"\n📁 {file_analysis.file_path}:")
                 
                 if file_analysis.missing_documentation:
@@ -389,6 +393,14 @@ Examples:
                     print(f"  Format violations:")
                     for violation in file_analysis.format_violations:
                         print(f"    - Line {violation.line_number}: {violation.message}")
+
+                if file_analysis.strategy_mismatches:
+                    print(f"  Strategy mismatches:")
+                    for mismatch in file_analysis.strategy_mismatches:
+                        print(f"    - {mismatch.function_name} (line {mismatch.line_number}): Documented='{mismatch.documented_type}', Implemented='{mismatch.implemented_type}'")
+                        print(f"      Use: {mismatch.rationale}")
+
+
         
         if analysis.global_inconsistencies:
             print(f"\nGlobal Inconsistencies:")

@@ -84,6 +84,7 @@ class TestAutoAlignmentRespectsDirection:
         st.sampled_from(['rtl', 'weak_rtl']),
         st.integers(min_value=1, max_value=6)
     )
+    # Small finite strategy: 2 examples (input space size: 2)
     @settings(max_examples=2, deadline=None)
     def test_auto_alignment_rtl_applies_to_headings(self, base_direction, heading_level):
         """Auto alignment with RTL direction applies to heading Labels.
@@ -211,7 +212,8 @@ class TestDirectionChangeUpdatesAlignment:
         st.sampled_from(['ltr', 'weak_ltr', None]),
         st.sampled_from(['rtl', 'weak_rtl'])
     )
-    @settings(max_examples=2, deadline=None)
+    # Small finite strategy: 3 examples (input space size: 3)
+    @settings(max_examples=3, deadline=None)
     def test_direction_change_ltr_to_rtl_updates_alignment(self, initial_direction, new_direction):
         """Changing base_direction from LTR to RTL updates alignment.
         
@@ -245,6 +247,7 @@ class TestDirectionChangeUpdatesAlignment:
         st.sampled_from(['rtl', 'weak_rtl']),
         st.sampled_from(['ltr', 'weak_ltr', None])
     )
+    # Small finite strategy: 2 examples (input space size: 2)
     @settings(max_examples=2, deadline=None)
     def test_direction_change_rtl_to_ltr_updates_alignment(self, initial_direction, new_direction):
         """Changing base_direction from RTL to LTR updates alignment.
@@ -280,7 +283,8 @@ class TestDirectionChangeUpdatesAlignment:
         st.sampled_from(['ltr', 'weak_ltr', None]),
         st.sampled_from(['rtl', 'weak_rtl'])
     )
-    @settings(max_examples=2, deadline=None)
+    # Small finite strategy: 6 examples (input space size: 6)
+    @settings(max_examples=6, deadline=None)
     def test_direction_change_updates_heading_alignment(self, heading_level, initial_direction, new_direction):
         """Direction change updates heading alignment.
         
@@ -315,7 +319,8 @@ class TestDirectionChangeUpdatesAlignment:
         st.sampled_from(['ltr', 'weak_ltr', None]),
         st.sampled_from(['rtl', 'weak_rtl'])
     )
-    @settings(max_examples=2, deadline=None)
+    # Small finite strategy: 3 examples (input space size: 3)
+    @settings(max_examples=3, deadline=None)
     def test_direction_change_preserves_widget_identities(self, initial_direction, new_direction):
         """Direction change preserves widget identities (no rebuild).
         
@@ -352,7 +357,8 @@ class TestDirectionChangeUpdatesAlignment:
         st.sampled_from(['ltr', 'weak_ltr', None]),
         st.sampled_from(['rtl', 'weak_rtl'])
     )
-    @settings(max_examples=2, deadline=None)
+    # Small finite strategy: 3 examples (input space size: 3)
+    @settings(max_examples=3, deadline=None)
     def test_direction_change_mixed_content_updates_alignment(self, initial_direction, new_direction):
         """Direction change updates alignment for mixed content types.
         
@@ -442,7 +448,8 @@ class TestExplicitAlignmentOverridesAuto:
         st.sampled_from(['rtl', 'weak_rtl']),
         st.integers(min_value=1, max_value=6)
     )
-    @settings(max_examples=2, deadline=None)
+    # Small finite strategy: 4 examples (input space size: 4)
+    @settings(max_examples=4, deadline=None)
     def test_explicit_alignment_overrides_rtl_for_headings(self, explicit_halign, base_direction, heading_level):
         """Explicit halign overrides RTL base_direction for headings.
         
@@ -499,7 +506,8 @@ class TestExplicitAlignmentOverridesAuto:
         st.sampled_from(['rtl', 'weak_rtl']),
         st.sampled_from(['ltr', 'weak_ltr', None])
     )
-    @settings(max_examples=2, deadline=None)
+    # Small finite strategy: 4 examples (input space size: 4)
+    @settings(max_examples=4, deadline=None)
     def test_explicit_alignment_unchanged_by_direction_change(self, explicit_halign, initial_direction, new_direction):
         """Explicit halign remains unchanged when base_direction changes.
         

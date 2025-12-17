@@ -6,9 +6,6 @@ This module focuses on verifying that MarkdownLabel:
 - does not clip content when unconstrained
 """
 
-import os
-
-
 
 from hypothesis import given, strategies as st, settings, assume
 
@@ -89,7 +86,7 @@ class TestContentClippingWhenHeightConstrained:
 
     @given(st.floats(min_value=10.0, max_value=500.0, allow_nan=False, allow_infinity=False))
     # Complex strategy: 50 examples (adequate coverage)
-    @settings(max_examples=50 if not os.getenv('CI') else 25, deadline=None)
+    @settings(max_examples=50, deadline=None)
     def test_clipping_container_height_matches_text_size(self, height):
         """Clipping container height matches text_size[1]."""
         from kivy.uix.stencilview import StencilView
@@ -116,7 +113,7 @@ class TestContentClippingWhenHeightConstrained:
         st.integers(min_value=1, max_value=6),
         st.floats(min_value=50.0, max_value=200.0, allow_nan=False, allow_infinity=False),
     )
-    # Complex strategy: 6 examples (adequate coverage)
+    # Small finite strategy: 6 examples (input space size: 6)
     @settings(max_examples=6, deadline=None)
     def test_heading_content_clipped_when_height_constrained(self, level, height):
         """Heading content is clipped when height is constrained."""
@@ -242,7 +239,7 @@ class TestNoClippingWhenUnconstrained:
             )
 
     @given(st.integers(min_value=1, max_value=6))
-    # Complex strategy: 6 examples (adequate coverage)
+    # Small finite strategy: 6 examples (input space size: 6)
     @settings(max_examples=6, deadline=None)
     def test_heading_expands_naturally_when_unconstrained(self, level):
         """Heading content expands naturally when unconstrained."""
@@ -264,10 +261,9 @@ class TestNoClippingWhenUnconstrained:
             "Default settings should not enable clipping"
         )
 
-    # Complex strategy: 50 examples (adequate coverage)
     @given(st.floats(min_value=100.0, max_value=500.0, allow_nan=False, allow_infinity=False))
     # Complex strategy: 50 examples (adequate coverage)
-    @settings(max_examples=50 if not os.getenv('CI') else 25, deadline=None)
+    @settings(max_examples=50, deadline=None)
     def test_text_size_width_only_no_clipping(self, width):
         """Setting only text_size width (not height) does not enable clipping."""
         label = MarkdownLabel(

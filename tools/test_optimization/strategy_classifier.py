@@ -4,6 +4,7 @@ This module provides tools to analyze Hypothesis strategies and classify them
 by input space size and complexity for optimal max_examples calculation.
 """
 
+import ast
 import re
 from enum import Enum
 from dataclasses import dataclass
@@ -46,27 +47,39 @@ class StrategyClassifier:
         
     def classify_strategy(self, strategy_code: str) -> StrategyAnalysis:
         """Analyze strategy code and return classification.
-        
+
         Args:
             strategy_code: String containing Hypothesis strategy definition
-            
+
         Returns:
             StrategyAnalysis with type, size, and complexity information
         """
         strategy_code = strategy_code.strip()
-        
-        # Check for tuple combinations FIRST (before individual strategies)
+
+        # First, detect tuple-based combinations so we correctly expand st.tuples(...)
         if self.tuples_pattern.search(strategy_code):
             components = self._extract_tuple_components(strategy_code)
             if len(components) > 1:  # Only treat as combination if multiple components
                 total_size = self._calculate_combination_size(components)
-                
+
                 return StrategyAnalysis(
                     strategy_type=StrategyType.COMBINATION,
                     input_space_size=total_size,
                     components=components
                 )
-        
+
+        # Check for multi-argument @given usage (variables or inline strategies)
+        # Use AST so we can recognize variable-based strategies, not just inline st.* calls.
+        if self._is_combination_strategy(strategy_code):
+            components = self._extract_strategy_components(strategy_code)
+            total_size = self._calculate_combination_size(components)
+
+            return StrategyAnalysis(
+                strategy_type=StrategyType.COMBINATION,
+                input_space_size=total_size,
+                components=components
+            )
+
         # Check for boolean strategies
         if self.boolean_pattern.search(strategy_code):
             return StrategyAnalysis(
@@ -74,28 +87,29 @@ class StrategyClassifier:
                 input_space_size=2,
                 components=['st.booleans()']
             )
-        
+
         # Check for integer range strategies
         integer_match = self.integer_pattern.search(strategy_code)
         if integer_match:
             min_val = int(integer_match.group(1))
             max_val = int(integer_match.group(2))
             size = max_val - min_val + 1
-            
+
+            # Treat 51-value ranges as finite (medium) instead of complex.
             if size <= 10:
                 strategy_type = StrategyType.SMALL_FINITE
-            elif size <= 50:
+            elif size <= 51:
                 strategy_type = StrategyType.MEDIUM_FINITE
             else:
                 strategy_type = StrategyType.COMPLEX
                 size = None  # Large ranges are effectively infinite
-                
+
             return StrategyAnalysis(
                 strategy_type=strategy_type,
                 input_space_size=size,
                 components=[f'st.integers(min_value={min_val}, max_value={max_val})']
             )
-        
+
         # Check for sampled_from strategies
         sampled_match = self.sampled_from_pattern.search(strategy_code)
         if sampled_match:
@@ -103,7 +117,7 @@ class StrategyClassifier:
             # Count items by splitting on commas (simple heuristic)
             items = [item.strip() for item in items_str.split(',') if item.strip()]
             size = len(items)
-            
+
             if size <= 10:
                 strategy_type = StrategyType.SMALL_FINITE
             elif size <= 50:
@@ -111,24 +125,13 @@ class StrategyClassifier:
             else:
                 strategy_type = StrategyType.COMPLEX
                 size = None
-                
+
             return StrategyAnalysis(
                 strategy_type=strategy_type,
                 input_space_size=size,
                 components=[f'st.sampled_from([{items_str}])']
             )
-        
-        # Check for combination strategies (multiple @given arguments)
-        if self._is_combination_strategy(strategy_code):
-            components = self._extract_strategy_components(strategy_code)
-            total_size = self._calculate_combination_size(components)
-            
-            return StrategyAnalysis(
-                strategy_type=StrategyType.COMBINATION,
-                input_space_size=total_size,
-                components=components
-            )
-        
+
         # Default to complex for text, floats, and other infinite strategies
         complexity = self._assess_complexity(strategy_code)
         return StrategyAnalysis(
@@ -151,14 +154,34 @@ class StrategyClassifier:
         return analysis.input_space_size
     
     def _is_combination_strategy(self, strategy_code: str) -> bool:
-        """Check if strategy code represents multiple combined strategies."""
-        # Look for multiple strategy calls or tuple/composite patterns
+        """Check if strategy code represents multiple combined strategies.
+
+        Prefer an AST-based check so we correctly handle @given(a, b) even when
+        a/b are variables defined elsewhere, not just inline st.* calls.
+        """
+        call = self._parse_as_call(strategy_code)
+        if call:
+            total_args = len(call.args) + len(call.keywords)
+            if total_args > 1:
+                return True
+
+        # Fallback: look for multiple inline st.* calls as before
         strategy_calls = len(re.findall(r'st\.\w+\(', strategy_code))
         return strategy_calls > 1
     
     def _extract_strategy_components(self, strategy_code: str) -> List[str]:
         """Extract individual strategy components from combination."""
-        # Find all st.* calls
+        call = self._parse_as_call(strategy_code)
+        if call:
+            components: List[str] = []
+            for arg in call.args:
+                components.append(self._stringify_expr(arg))
+            for kw in call.keywords:
+                kw_value = self._stringify_expr(kw.value)
+                components.append(f"{kw.arg}={kw_value}")
+            return components
+
+        # Fallback: find all st.* calls (legacy heuristic)
         components = re.findall(r'st\.\w+\([^)]*\)', strategy_code)
         return components
     
@@ -225,6 +248,26 @@ class StrategyClassifier:
             complexity += 1
             
         return min(complexity, 4)  # Cap at level 4
+
+    def _parse_as_call(self, strategy_code: str) -> Optional[ast.Call]:
+        """Parse strategy code fragment as a call expression for inspection."""
+        try:
+            expr = ast.parse(f"f({strategy_code})", mode="eval").body
+        except SyntaxError:
+            return None
+
+        if isinstance(expr, ast.Call):
+            return expr
+        return None
+
+    def _stringify_expr(self, node: ast.AST) -> str:
+        """Render an AST node back to a readable string."""
+        try:
+            # ast.unparse is available on Python 3.9+
+            return ast.unparse(node)  # type: ignore[attr-defined]
+        except Exception:
+            # Fallback to a coarse dump; better than losing the component entirely
+            return ast.dump(node)
     
     def _extract_tuple_components(self, strategy_code: str) -> List[str]:
         """Extract components from st.tuples() strategy."""

@@ -84,7 +84,7 @@ class TestDiscoveryPerformance:
         test_dir = os.path.dirname(__file__)
         
         # Run test discovery with stable configuration
-        # Use -o addopts= to clear default addopts (which includes -m "not slow")
+        # Use -o addopts= to clear default addopts and keep discovery deterministic
         result = subprocess.run([
             'pytest', '--collect-only', test_dir, '-q', '-o', 'addopts='
         ], capture_output=True, text=True, cwd=os.path.dirname(test_dir),
@@ -138,7 +138,7 @@ class TestDiscoveryPerformance:
             return
         
         # Run discovery for this specific module with stable configuration
-        # Use -o addopts= to clear default addopts (which includes -m "not slow")
+        # Use -o addopts= to clear default addopts and keep discovery deterministic
         result = subprocess.run([
             'pytest', '--collect-only', module_path, '-q', '-o', 'addopts='
         ], capture_output=True, text=True, cwd=os.path.dirname(test_dir),
@@ -177,7 +177,7 @@ class TestDiscoveryPerformance:
             pytest.skip(f"Minimal test module {minimal_module} not found")
         
         # Run discovery with stable configuration
-        # Use -o addopts= to clear default addopts (which includes -m "not slow")
+        # Use -o addopts= to clear default addopts and keep discovery deterministic
         result = subprocess.run([
             'pytest', '--collect-only', module_path, '-q', '-o', 'addopts='
         ], capture_output=True, text=True, cwd=os.path.dirname(test_dir),

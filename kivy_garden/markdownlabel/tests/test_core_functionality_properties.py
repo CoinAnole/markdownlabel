@@ -655,7 +655,7 @@ class TestFixedListPropertyTestsConverted:
 
 # **Feature: test-improvements, Property 10: Performance tests marked**
 # *For any* genuinely performance-intensive test, the test SHALL be marked with 
-# @pytest.mark.slow and SHALL use reduced Hypothesis max_examples in CI environments.
+# @pytest.mark.slow.
 # **Validates: Requirements 7.1, 7.3**
 
 class TestPerformanceTestsMarked:
@@ -673,7 +673,6 @@ class TestPerformanceTestsMarked:
         analysis = {
             'slow_markers': [],
             'hypothesis_settings': [],
-            'ci_reduced_examples': [],
             'unmarked_performance_tests': []
         }
         
@@ -691,10 +690,6 @@ class TestPerformanceTestsMarked:
         for match in settings_matches:
             max_examples_expr = match.group(1).strip()
             analysis['hypothesis_settings'].append(max_examples_expr)
-            
-            # Check if it uses CI-aware reduced examples
-            if 'CI' in max_examples_expr or 'os.getenv' in max_examples_expr:
-                analysis['ci_reduced_examples'].append(max_examples_expr)
         
         # Look for test methods that might be performance-intensive but unmarked
         # These are heuristics based on test method names specifically
@@ -740,11 +735,6 @@ class TestPerformanceTestsMarked:
         # Performance test file should have slow markers
         assert len(analysis['slow_markers']) > 0, \
             "Performance test file should contain @pytest.mark.slow markers"
-        
-        # Should have CI-aware reduced examples
-        assert len(analysis['ci_reduced_examples']) > 0, \
-            f"Performance tests should use reduced max_examples in CI. " \
-            f"Found settings: {analysis['hypothesis_settings']}"
         
         # Should not have unmarked performance tests
         assert len(analysis['unmarked_performance_tests']) == 0, \

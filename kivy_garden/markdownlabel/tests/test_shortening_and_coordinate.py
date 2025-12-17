@@ -36,6 +36,7 @@ class TestShorteningPropertyForwarding:
     """Property tests for shortening property forwarding (Property 4)."""
     
     @given(st.booleans())
+    # Boolean strategy: 2 examples (True/False coverage)
     @settings(max_examples=2, deadline=None)
     def test_shorten_forwarded_to_paragraph(self, shorten_value):
         """shorten property is forwarded to paragraph Labels."""
@@ -49,6 +50,7 @@ class TestShorteningPropertyForwarding:
                 f"Expected shorten={shorten_value}, got {lbl.shorten}"
     
     @given(st.booleans())
+    # Boolean strategy: 2 examples (True/False coverage)
     @settings(max_examples=2, deadline=None)
     def test_shorten_forwarded_to_heading(self, shorten_value):
         """shorten property is forwarded to heading Labels."""
@@ -62,6 +64,7 @@ class TestShorteningPropertyForwarding:
                 f"Expected shorten={shorten_value}, got {lbl.shorten}"
     
     @given(st.booleans())
+    # Boolean strategy: 2 examples (True/False coverage)
     @settings(max_examples=2, deadline=None)
     def test_shorten_forwarded_to_list_items(self, shorten_value):
         """shorten property is forwarded to list item Labels."""
@@ -76,6 +79,7 @@ class TestShorteningPropertyForwarding:
                 f"Expected shorten={shorten_value}, got {lbl.shorten}"
     
     @given(st.booleans())
+    # Boolean strategy: 2 examples (True/False coverage)
     @settings(max_examples=2, deadline=None)
     def test_shorten_forwarded_to_table_cells(self, shorten_value):
         """shorten property is forwarded to table cell Labels."""
@@ -118,32 +122,31 @@ class TestShorteningPropertyForwarding:
         """shorten_from property is forwarded to list item Labels."""
         markdown = '- Item 1\n- Item 2'
         label = MarkdownLabel(text=markdown, shorten_from=shorten_from_value)
-        
+
         labels = find_labels_recursive(label)
         assert len(labels) >= 2, "Expected at least 2 Labels for list items"
-        
+
         for lbl in labels:
             assert lbl.shorten_from == shorten_from_value, \
                 f"Expected shorten_from={shorten_from_value}, got {lbl.shorten_from}"
-    
+
     @given(st.text(min_size=0, max_size=5, alphabet='abc '))
     # Complex strategy: 30 examples (adequate coverage)
-    @settings(max_examples=30 if not os.getenv('CI') else 15, deadline=None)
+    @settings(max_examples=30, deadline=None)
     def test_split_str_forwarded_to_paragraph(self, split_str_value):
         """split_str property is forwarded to paragraph Labels."""
         label = MarkdownLabel(text='Hello World', split_str=split_str_value)
-        
+
         labels = find_labels_recursive(label)
         assert len(labels) >= 1, "Expected at least one Label"
-        
+
         for lbl in labels:
             assert lbl.split_str == split_str_value, \
                 f"Expected split_str={split_str_value!r}, got {lbl.split_str!r}"
-    
-    # Complex strategy: 30 examples (adequate coverage)
+
     @given(st.text(min_size=0, max_size=5, alphabet='abc '))
     # Complex strategy: 30 examples (adequate coverage)
-    @settings(max_examples=30 if not os.getenv('CI') else 15, deadline=None)
+    @settings(max_examples=30, deadline=None)
     def test_split_str_forwarded_to_heading(self, split_str_value):
         """split_str property is forwarded to heading Labels."""
         label = MarkdownLabel(text='# Heading', split_str=split_str_value)
@@ -156,7 +159,7 @@ class TestShorteningPropertyForwarding:
                 f"Expected split_str={split_str_value!r}, got {lbl.split_str!r}"
     
     @given(st.integers(min_value=0, max_value=10))
-    # Small finite strategy: 11 examples (input space size: 11)
+    # Medium finite strategy: 11 examples (adequate finite coverage)
     @settings(max_examples=11, deadline=None)
     def test_max_lines_forwarded_to_paragraph(self, max_lines_value):
         """max_lines property is forwarded to paragraph Labels when non-zero."""
@@ -172,6 +175,7 @@ class TestShorteningPropertyForwarding:
             # When max_lines=0, it may not be set on child Labels (default behavior)
     
     @given(st.integers(min_value=1, max_value=10))
+    # Small finite strategy: 10 examples (input space size: 10)
     @settings(max_examples=10, deadline=None)
     def test_max_lines_forwarded_to_heading(self, max_lines_value):
         """max_lines property is forwarded to heading Labels when non-zero."""
@@ -185,6 +189,7 @@ class TestShorteningPropertyForwarding:
                 f"Expected max_lines={max_lines_value}, got {lbl.max_lines}"
     
     @given(st.integers(min_value=1, max_value=10))
+    # Small finite strategy: 10 examples (input space size: 10)
     @settings(max_examples=10, deadline=None)
     def test_max_lines_forwarded_to_list_items(self, max_lines_value):
         """max_lines property is forwarded to list item Labels when non-zero."""
@@ -279,7 +284,8 @@ class TestShorteningPropertyForwarding:
     @given(st.booleans(), st.sampled_from(['left', 'center', 'right']),
            st.text(min_size=0, max_size=3, alphabet='ab '),
            st.integers(min_value=1, max_value=5))
-    @settings(max_examples=2, deadline=None)
+    # Combination strategy: 50 examples (combination coverage)
+    @settings(max_examples=50, deadline=None)
     def test_all_shortening_properties_forwarded_together(
             self, shorten_val, shorten_from_val, split_str_val, max_lines_val):
         """All shortening properties are forwarded together to child Labels."""
@@ -316,6 +322,7 @@ Paragraph text
                 f"Expected max_lines={max_lines_val}, got {lbl.max_lines}"
     
     @given(st.booleans(), st.booleans())
+    # Combination strategy: 2 examples (combination coverage)
     @settings(max_examples=2, deadline=None)
     def test_shorten_change_triggers_rebuild(self, shorten1, shorten2):
         """Changing shorten triggers widget rebuild with new value."""
@@ -408,8 +415,8 @@ class TestCoordinateTranslation:
         whitelist_categories=['L', 'N'],
         blacklist_characters='[]()&\n\r'
     )))
-    # Complex strategy: 3 examples (adequate coverage)
-    @settings(max_examples=3, deadline=None)
+    # Complex strategy: 20 examples (adequate coverage)
+    @settings(max_examples=20, deadline=None)
     def test_link_produces_ref_markup_for_translation(self, link_text):
         """Links produce ref markup that will be translated when rendered.
         
