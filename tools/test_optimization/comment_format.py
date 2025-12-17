@@ -66,11 +66,14 @@ class CommentFormatValidator:
             StrategyType.COMPLEX: [
                 "adequate coverage",
                 "performance optimized",
-                "complexity coverage"
+                "complexity coverage",
+                "CI optimized"
             ],
             StrategyType.COMBINATION: [
                 "combination coverage",
-                "product coverage"
+                "product coverage",
+                "performance optimized",
+                "CI optimized"
             ]
         }
         

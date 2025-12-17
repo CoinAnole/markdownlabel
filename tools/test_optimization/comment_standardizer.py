@@ -318,11 +318,22 @@ class CommentStandardizer:
             # Insert the comment
             lines.insert(insert_line, comment_text)
             
-            # Track the generated comment
+            # Parse the generated comment to extract the actual rationale
+            validation_result = self.validator.validate_comment_format(comment_text)
+            if validation_result.is_valid and validation_result.parsed_pattern:
+                # Use the parsed rationale from the actual generated comment
+                actual_rationale = validation_result.parsed_pattern.rationale
+                actual_strategy_type = validation_result.parsed_pattern.strategy_type
+            else:
+                # Fall back to strategy classification
+                actual_rationale = strategy_classification.rationale
+                actual_strategy_type = strategy_classification.strategy_type.value
+            
+            # Track the generated comment with the actual rationale
             generated_comments.append(CommentPattern(
-                strategy_type=strategy_classification.strategy_type.value,
+                strategy_type=actual_strategy_type,
                 max_examples=max_examples,
-                rationale=strategy_classification.rationale,
+                rationale=actual_rationale,
                 line_number=insert_line + 1,
                 original_comment=None
             ))

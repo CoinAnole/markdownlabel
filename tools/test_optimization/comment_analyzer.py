@@ -366,7 +366,20 @@ class CommentAnalyzer:
                 documented_tests += 1
             
             # Check if this test needs documentation
-            if not has_valid_comment and max_examples and max_examples not in self.standard_values:
+            # Extract the function code to check for CI optimization patterns
+            func_code = '\n'.join(lines[max(0, start_line - 5):end_line])
+            has_ci_optimization = self._has_ci_optimization_pattern(func_code)
+            
+            # Tests need documentation if:
+            # 1. They have non-standard max_examples values, OR
+            # 2. They have CI optimization patterns (even with standard values)
+            needs_documentation = (
+                not has_valid_comment and 
+                max_examples and 
+                (max_examples not in self.standard_values or has_ci_optimization)
+            )
+            
+            if needs_documentation:
                 undocumented_tests += 1
                 missing_documentation.append((func_name, start_line, max_examples))
         
@@ -604,6 +617,30 @@ class CommentAnalyzer:
             return min(int(n) for n in numbers)
         
         return None
+    
+    def _has_ci_optimization_pattern(self, func_code: str) -> bool:
+        """Check if function code contains CI optimization patterns.
+        
+        Args:
+            func_code: The function source code
+            
+        Returns:
+            True if CI optimization pattern is detected
+        """
+        # Patterns that indicate CI optimization
+        ci_patterns = [
+            r"os\.getenv\s*\(\s*['\"]CI['\"]\s*\)",
+            r"os\.environ\.get\s*\(\s*['\"]CI['\"]\s*\)",
+            r"if\s+not.*CI.*else",
+            r"if.*CI.*else",
+            r"max_examples\s*=\s*\d+\s+if.*CI",
+        ]
+        
+        for pattern in ci_patterns:
+            if re.search(pattern, func_code, re.IGNORECASE):
+                return True
+        
+        return False
     
     def _calculate_summary_stats(self, file_analyses: List[FileAnalysis]) -> Dict[str, int]:
         """Calculate summary statistics across all file analyses."""

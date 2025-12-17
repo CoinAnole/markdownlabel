@@ -6,6 +6,7 @@ comments for property-based tests with proper strategy documentation.
 
 import pytest
 import os
+import re
 import sys
 import tempfile
 from hypothesis import given, strategies as st, settings
@@ -795,6 +796,7 @@ class TestPerformanceRationaleDocumentation:
         )
         self.detector = PerformanceRationaleDetector()
         self.generator = PerformanceCommentGenerator()
+        self.PerformanceReason = PerformanceReason  # Make accessible to test methods
     
     # **Feature: test-comment-standardization, Property 6: Performance Rationale Documentation**
     # *For any* property-based test with reduced max_examples for performance reasons, 
@@ -963,14 +965,13 @@ def {function_name}(data):
             
             # Should identify the correct performance reason type
             if "execution time" in performance_keywords:
-                from test_optimization.performance_rationale_handler import PerformanceReason
-                assert performance_rationale.reason == PerformanceReason.EXECUTION_TIME
+                assert performance_rationale.reason == self.PerformanceReason.EXECUTION_TIME
             elif "memory" in performance_keywords:
-                assert performance_rationale.reason == PerformanceReason.MEMORY_OPTIMIZATION
+                assert performance_rationale.reason == self.PerformanceReason.MEMORY_OPTIMIZATION
             elif "deadline" in performance_keywords:
-                assert performance_rationale.reason == PerformanceReason.DEADLINE_CONSTRAINT
+                assert performance_rationale.reason == self.PerformanceReason.DEADLINE_CONSTRAINT
             elif "complexity" in performance_keywords:
-                assert performance_rationale.reason == PerformanceReason.COMPLEXITY_REDUCTION
+                assert performance_rationale.reason == self.PerformanceReason.COMPLEXITY_REDUCTION
             
             # Generate performance-aware comment
             performance_comment = self.generator.generate_performance_comment(test_code, max_examples)

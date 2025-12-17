@@ -161,7 +161,28 @@ class PerformanceRationaleDetector:
     
     def _detect_implicit_performance(self, test_code: str, max_examples: int) -> Optional[PerformanceRationale]:
         """Detect implicit performance optimization indicators."""
-        # Check if max_examples is unusually low for the strategy type
+        # Check for explicit complex strategy patterns first (st.composite, st.text, st.floats)
+        # These are always complex regardless of classification
+        complex_patterns = ['st.composite(', 'st.text(', 'st.floats(']
+        is_complex_strategy = any(pattern in test_code for pattern in complex_patterns)
+        
+        # For complex strategies with low max_examples, detect performance optimization
+        if is_complex_strategy and max_examples in self.performance_values:
+            # Check for deadline=None which often accompanies performance optimization
+            if "deadline=None" in test_code:
+                return PerformanceRationale(
+                    reason=PerformanceReason.DEADLINE_CONSTRAINT,
+                    base_examples=None,
+                    reduced_examples=max_examples
+                )
+            
+            return PerformanceRationale(
+                reason=PerformanceReason.EXECUTION_TIME,
+                base_examples=None,
+                reduced_examples=max_examples
+            )
+        
+        # Fall back to strategy classification check
         strategy_classification = self.mapper.detect_strategy_from_test_code(test_code)
         if not strategy_classification:
             return None
