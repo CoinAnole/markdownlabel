@@ -37,6 +37,16 @@ class Inconsistency:
 
 
 @dataclass
+class StrategyMismatch:
+    """Represents a mismatch between documented and implemented strategy."""
+    line_number: int
+    function_name: str
+    documented_type: str
+    implemented_type: str
+    rationale: str
+
+
+@dataclass
 class FileAnalysis:
     """Analysis result for a single test file."""
     file_path: str
@@ -46,6 +56,7 @@ class FileAnalysis:
     format_violations: List[FormatViolation] = field(default_factory=list)
     inconsistencies: List[Inconsistency] = field(default_factory=list)
     missing_documentation: List[Tuple[str, int, int]] = field(default_factory=list)  # (function_name, line_number, max_examples)
+    strategy_mismatches: List[StrategyMismatch] = field(default_factory=list)
     valid_comments: List[CommentPattern] = field(default_factory=list)
 
 
@@ -141,9 +152,25 @@ class CommentAnalyzer:
         
         # Find all Python test files
         test_files = []
+        excluded_patterns = {
+            'test_comment_format.py', 
+            'test_comment_standardizer.py', 
+            'test_file_analyzer.py',
+            'tools/test_optimization',
+            'tools/validate_comments.py'
+        }
+        
         for root, dirs, files in os.walk(directory_path):
+            # Skip excluded directories
+            if any(ex in root for ex in excluded_patterns):
+                continue
+                
             for file in files:
                 if file.startswith('test_') and file.endswith('.py'):
+                    # Check for excluded files
+                    if file in excluded_patterns:
+                        continue
+                        
                     test_files.append(os.path.join(root, file))
         
         # Analyze each file
@@ -200,6 +227,36 @@ class CommentAnalyzer:
         
         # Detect max_examples value inconsistencies
         inconsistencies.extend(self._detect_max_examples_inconsistencies(file_analyses))
+        
+        # Detect strategy mismatches
+        inconsistencies.extend(self._detect_strategy_mismatch_patterns(file_analyses))
+        
+        return inconsistencies
+    
+    def _detect_strategy_mismatch_patterns(self, file_analyses: List[FileAnalysis]) -> List[Inconsistency]:
+        """Detect strategy mismatch patterns."""
+        inconsistencies = []
+        
+        files_with_mismatches = [
+            analysis for analysis in file_analyses 
+            if analysis.strategy_mismatches
+        ]
+        
+        if files_with_mismatches:
+            total_mismatches = sum(len(analysis.strategy_mismatches) for analysis in files_with_mismatches)
+            affected_lines = []
+            
+            for analysis in files_with_mismatches:
+                for mismatch in analysis.strategy_mismatches:
+                    affected_lines.append((analysis.file_path, mismatch.line_number))
+            
+            inconsistencies.append(Inconsistency(
+                inconsistency_type="STRATEGY_MISMATCH",
+                description=f"Found {total_mismatches} strategy mismatches (documented vs implemented) across {len(files_with_mismatches)} files",
+                affected_files=[analysis.file_path for analysis in files_with_mismatches],
+                affected_lines=affected_lines,
+                suggested_resolution="Update comments to match actual implementation strategy"
+            ))
         
         return inconsistencies
     
@@ -335,13 +392,14 @@ class CommentAnalyzer:
         format_violations = []
         valid_comments = []
         missing_documentation = []
+        strategy_mismatches = []
         
         for test_info in property_tests:
-            func_name, start_line, end_line, max_examples = test_info
+            func_name, start_line, end_line, max_examples, decorator_start = test_info
             
-            # Look for comments in the function and a few lines before (for documentation comments)
-            search_start = max(1, start_line - 5)  # Look up to 5 lines before the function
-            comments_in_function = self._extract_comments_in_range(lines, search_start, end_line)
+            # Look for comments in the function and before it (starting from decorator)
+            # Use decorator_start as the anchor for search
+            comments_in_function = self._extract_comments_in_range(lines, decorator_start, end_line)
             
             # Check if any comment is a valid standardized comment
             has_valid_comment = False
@@ -350,7 +408,9 @@ class CommentAnalyzer:
                 
                 if validation_result.is_valid:
                     has_valid_comment = True
-                    valid_comments.append(validation_result.parsed_pattern)
+                    pattern = validation_result.parsed_pattern
+                    pattern.line_number = line_num
+                    valid_comments.append(pattern)
                 elif self._looks_like_max_examples_comment(comment_text):
                     # This looks like it's trying to document max_examples but has format issues
                     format_violations.append(FormatViolation(
@@ -362,12 +422,45 @@ class CommentAnalyzer:
                     ))
             
             # Count this test as documented if it has a valid comment
-            if has_valid_comment:
+            if has_valid_comment and valid_comments:
                 documented_tests += 1
+                
+                # Get the most recent valid comment for this function
+                current_comment = valid_comments[-1]
+                
+                # Extract full function code including decorators
+                func_code = '\n'.join(lines[decorator_start:end_line])
+                
+                # Analyze actual strategy from code
+                strategy_classification = self.code_analyzer.analyze_test_function(func_code)
+                
+                if strategy_classification:
+                    actual_type = strategy_classification.strategy_type.value.lower()
+                    doc_type = current_comment.strategy_type.lower()
+                    
+                    # Check for mismatch
+                    # Allow slight variations or specific upgrades (e.g. finite -> small finite)
+                    # But flag gross mismatches like Boolean vs Complex
+                    mismatch = False
+                    if actual_type == 'boolean' and doc_type != 'boolean':
+                        mismatch = True
+                    elif 'finite' in actual_type and 'finite' not in doc_type and doc_type != 'boolean':
+                        # Small/Medium finite should be documented as finite
+                        # Allow "Complex" for finite? No, guidelines say be specific.
+                        mismatch = True
+                    
+                    if mismatch:
+                        strategy_mismatches.append(StrategyMismatch(
+                            line_number=current_comment.line_number,
+                            function_name=func_name,
+                            documented_type=current_comment.strategy_type,
+                            implemented_type=strategy_classification.strategy_type.value,
+                            rationale=f"Code implements '{strategy_classification.strategy_type.value}' but is documented as '{current_comment.strategy_type}'"
+                        ))
             
             # Check if this test needs documentation
             # Extract the function code to check for CI optimization patterns
-            func_code = '\n'.join(lines[max(0, start_line - 5):end_line])
+            func_code = '\n'.join(lines[decorator_start:end_line])
             has_ci_optimization = self._has_ci_optimization_pattern(func_code)
             
             # Tests need documentation if:
@@ -382,6 +475,21 @@ class CommentAnalyzer:
             if needs_documentation:
                 undocumented_tests += 1
                 missing_documentation.append((func_name, start_line, max_examples))
+                
+            # Check for strategy mismatches if we have a valid comment
+            if has_valid_comment:
+                # Extract full function code including decorators
+                func_code = '\n'.join(lines[decorator_start:end_line])
+                
+                # Analyze actual strategy from code
+                strategy_classification = self.code_analyzer.analyze_test_function(func_code)
+                
+                if strategy_classification:
+                    actual_type = strategy_classification.strategy_type.value
+                    
+                    # Check against all valid comments found for this function (usually just one)
+                # Strategy mismatch detection is handled in the block above
+                pass
         
         return FileAnalysis(
             file_path=file_path,
@@ -390,14 +498,15 @@ class CommentAnalyzer:
             undocumented_tests=undocumented_tests,
             format_violations=format_violations,
             missing_documentation=missing_documentation,
+            strategy_mismatches=strategy_mismatches,
             valid_comments=valid_comments
         )
     
-    def _find_property_tests(self, content: str) -> List[Tuple[str, int, int, Optional[int]]]:
+    def _find_property_tests(self, content: str) -> List[Tuple[str, int, int, Optional[int], int]]:
         """Find all property-based test functions in the content.
         
         Returns:
-            List of tuples: (function_name, start_line, end_line, max_examples)
+            List of tuples: (function_name, start_line, end_line, max_examples, decorator_start_line)
         """
         property_tests = []
         
@@ -430,25 +539,43 @@ class CommentAnalyzer:
                     
                     elif next_line.startswith('def test_'):
                         # Found the function definition
+                        # Get indentation level from the raw line
+                        raw_line = lines[j]
+                        indentation = len(raw_line) - len(raw_line.lstrip())
+                        
                         func_match = re.match(r'def\s+(test_\w+)\s*\(', next_line)
                         if func_match:
                             func_name = func_match.group(1)
                             
-                            # Find the end of the function (next function or class)
+                            # Find the end of the function
+                            # Stop at next line with same or lower indentation (that isn't a comment/empty)
                             end_line = j + 1
                             while end_line < len(lines):
-                                end_line_content = lines[end_line]
-                                if (end_line_content.strip().startswith('def ') or 
-                                    end_line_content.strip().startswith('class ') or
-                                    (end_line_content and not end_line_content.startswith(' ') and not end_line_content.startswith('\t'))):
+                                line_content = lines[end_line]
+                                stripped = line_content.strip()
+                                
+                                # Skip empty lines and comments
+                                if not stripped or stripped.startswith('#'):
+                                    end_line += 1
+                                    continue
+                                
+                                # Check indentation
+                                current_indent = len(line_content) - len(line_content.lstrip())
+                                if current_indent <= indentation:
+                                    # Found start of next block (could be decorator or def)
+                                    # But wait, decorators for next function might be at same indentation
+                                    # If it's a decorator, it belongs to the NEXT function, so we stop here.
                                     break
+                                
                                 end_line += 1
+                            
                             
                             property_tests.append((
                                 func_name,
-                                j + 1,  # Line numbers are 1-based
+                                j + 1,  # Line numbers are 1-based (function definition line)
                                 end_line,
-                                max_examples
+                                max_examples,
+                                i  # Decorator start line (0-based index)
                             ))
                         break
                     
@@ -665,6 +792,7 @@ class CommentAnalyzer:
             'total_documented_tests': sum(analysis.documented_tests for analysis in file_analyses),
             'total_undocumented_tests': sum(analysis.undocumented_tests for analysis in file_analyses),
             'total_format_violations': sum(len(analysis.format_violations) for analysis in file_analyses),
+            'total_strategy_mismatches': sum(len(analysis.strategy_mismatches) for analysis in file_analyses),
             'files_with_violations': len([a for a in file_analyses if a.format_violations]),
             'files_with_missing_docs': len([a for a in file_analyses if a.missing_documentation]),
             'total_valid_comments': sum(len(analysis.valid_comments) for analysis in file_analyses)
