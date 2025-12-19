@@ -22,6 +22,7 @@ class PropertyTest:
     name: str
     file_path: str
     line_number: int
+    def_line_number: Optional[int]
     strategy_code: str
     current_max_examples: int
     decorator_line: str
@@ -228,7 +229,8 @@ class FileAnalyzer:
                             tests.append(PropertyTest(
                                 name=func_name,
                                 file_path="",  # Will be set by caller
-                                line_number=i + 1,  # 1-based line numbers
+                                line_number=i + 1,  # 1-based line numbers (decorator start)
+                                def_line_number=func_line + 1,  # 1-based function definition line
                                 strategy_code=strategy_code,
                                 current_max_examples=max_examples,
                                 decorator_line=lines[settings_line]
@@ -333,11 +335,13 @@ class FileAnalyzer:
         Returns:
             CommentInfo with standardized comment details
         """
+        anchor_line = test.def_line_number or test.line_number
+
         # Look for valid comments that might correspond to this test
         for comment_pattern in comment_analysis.valid_comments:
             # Check if comment is near the test (within reasonable range)
             if (comment_pattern.line_number and 
-                abs(comment_pattern.line_number - test.line_number) <= 5):
+                abs(comment_pattern.line_number - anchor_line) <= 5):
                 
                 return CommentInfo(
                     has_standardized_comment=True,
@@ -349,7 +353,7 @@ class FileAnalyzer:
         
         # Check if test is in missing documentation list
         for func_name, line_num, max_examples in comment_analysis.missing_documentation:
-            if func_name == test.name and line_num == test.line_number:
+            if func_name == test.name and line_num == anchor_line:
                 return CommentInfo(
                     has_standardized_comment=False,
                     comment_text=None,

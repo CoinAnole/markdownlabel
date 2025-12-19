@@ -3,6 +3,7 @@
 Add missing comments to tests that have no documentation at all.
 """
 
+import os
 import re
 import sys
 from pathlib import Path
@@ -13,8 +14,9 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 from tools.test_optimization.comment_analyzer import CommentAnalyzer
 
 
-# Standard values that don't need documentation (per test_documentation_compliance.py)
-STANDARD_VALUES = {2, 3, 4, 5, 6, 7, 8, 9, 10, 100}
+_always_document = os.getenv("ALWAYS_DOCUMENT_MAX_EXAMPLES", "").lower() in {"1", "true", "yes", "on"}
+# Standard values that historically were exempt; honor env to force documentation
+STANDARD_VALUES = set() if _always_document else {2, 3, 4, 5, 6, 7, 8, 9, 10, 100}
 
 # Files to skip (test fixtures)
 SKIP_FILES = {
@@ -27,12 +29,13 @@ SKIP_FILES = {
 
 def get_strategy_type_and_rationale(max_examples):
     """Determine strategy type and rationale based on max_examples value."""
+    if max_examples == 2:
+        return "Boolean", "True/False coverage"
     if max_examples <= 10:
         return "Small finite", f"input space size: {max_examples}"
-    elif max_examples <= 30:
-        return "Complex", "adequate coverage"
-    else:
-        return "Complex", "adequate coverage"
+    if max_examples <= 50:
+        return "Medium finite", "adequate finite coverage"
+    return "Complex", "adequate coverage"
 
 
 def add_comment_to_file(filepath, line_num, max_examples):
@@ -73,8 +76,11 @@ def add_comment_to_file(filepath, line_num, max_examples):
 
 
 def main():
+    default_dir = Path(__file__).parent.parent / 'kivy_garden' / 'markdownlabel' / 'tests'
+    test_dir = os.getenv("TEST_DIR", str(default_dir.resolve()))
+
     analyzer = CommentAnalyzer()
-    analysis = analyzer.analyze_directory('kivy_garden/markdownlabel/tests/')
+    analysis = analyzer.analyze_directory(test_dir)
     
     total_added = 0
     

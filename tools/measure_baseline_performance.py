@@ -6,6 +6,7 @@ This script records execution times for all test categories, documents current
 max_examples usage patterns, and establishes performance benchmarks.
 """
 
+import os
 import sys
 import time
 import json
@@ -14,10 +15,11 @@ from pathlib import Path
 from datetime import datetime
 from typing import Dict, List, Tuple, Any
 
-# Add the package to Python path
+# Add the tools directory to Python path so local imports work regardless of CWD
 sys.path.insert(0, str(Path(__file__).parent))
 
-from kivy_garden.markdownlabel.test_file_analyzer import FileAnalyzer
+# Use local analyzer implementation from tools instead of the package namespace.
+from test_optimization.test_file_analyzer import FileAnalyzer
 
 
 class BaselinePerformanceMeasurer:
@@ -25,7 +27,8 @@ class BaselinePerformanceMeasurer:
     
     def __init__(self):
         self.analyzer = FileAnalyzer()
-        self.test_directory = "kivy_garden/markdownlabel/tests"
+        default_dir = Path(__file__).parent.parent / "kivy_garden" / "markdownlabel" / "tests"
+        self.test_directory = os.getenv("TEST_DIR", str(default_dir.resolve()))
         
     def measure_full_suite_performance(self) -> Dict[str, Any]:
         """Measure performance of the entire test suite."""

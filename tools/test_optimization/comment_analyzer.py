@@ -80,8 +80,10 @@ class CommentAnalyzer:
         self.mapper = StrategyTypeMapper()
         self.code_analyzer = TestCodeAnalyzer()
         
-        # Standard max_examples values that typically don't need documentation
-        self.standard_values = {2, 5, 10, 20, 50, 100}
+        # Standard max_examples values that may be skipped unless overridden
+        default_standard_values = {2, 5, 10, 20, 50, 100}
+        always_document = os.getenv("ALWAYS_DOCUMENT_MAX_EXAMPLES", "").lower() in {"1", "true", "yes", "on"}
+        self.standard_values = set() if always_document else default_standard_values
         
         # Pattern to match property-based test functions
         self.property_test_pattern = re.compile(r'def\s+(test_\w+).*@given', re.DOTALL)

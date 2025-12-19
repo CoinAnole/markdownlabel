@@ -60,7 +60,8 @@ class CommentStandardizer:
         self.ci_integrator = CIOptimizationIntegrator()
         
         # Set up backup directory
-        self.backups_enabled = enable_backups or backup_dir is not None
+        env_enable = os.getenv("COMMENT_STANDARDIZER_ENABLE_BACKUPS", "").lower() in {"1", "true", "yes", "on"}
+        self.backups_enabled = enable_backups or env_enable or backup_dir is not None
         if self.backups_enabled:
             if backup_dir is None:
                 backup_dir = os.path.join(
@@ -72,8 +73,9 @@ class CommentStandardizer:
         else:
             self.backup_dir = None
         
-        # Standard max_examples values that typically don't need documentation
-        self.standard_values = {2, 5, 10, 20, 50, 100}
+        default_standard_values = {2, 5, 10, 20, 50, 100}
+        always_document = os.getenv("ALWAYS_DOCUMENT_MAX_EXAMPLES", "").lower() in {"1", "true", "yes", "on"}
+        self.standard_values = set() if always_document else default_standard_values
         
         # Pattern to match @settings decorator with max_examples
         self.settings_pattern = re.compile(r'(@settings\([^)]*max_examples\s*=\s*\d+[^)]*\))', re.DOTALL)
