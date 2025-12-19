@@ -631,22 +631,31 @@ class CommentAnalyzer:
 
         comments.reverse()
 
-        # Also collect comments immediately after the @given decorator until
-        # we hit another decorator or non-comment content.
+        # Also collect comments after the @given decorator.
+        #
+        # IMPORTANT:
+        # @given decorators frequently span multiple lines, e.g.
+        #
+        #   @given(
+        #       st.integers(...),
+        #       st.floats(...),
+        #   )
+        #   # Small finite strategy: 6 examples (input space size: 6)
+        #   @settings(max_examples=6, deadline=None)
+        #
+        # We must scan forward until we reach the next decorator that ends the
+        # "decorator block" for this test (typically @settings or def).
         forward_idx = decorator_start + 1
         while forward_idx < len(lines):
             stripped = lines[forward_idx].strip()
+            # Stop at the next decorator that begins settings, or the function
+            # definition itself. This makes the scan robust to multi-line
+            # @given(...) arguments.
+            if stripped.startswith('@settings') or stripped.startswith('def ') or stripped.startswith('class '):
+                break
             if stripped.startswith('#'):
                 comments.append((forward_idx + 1, f"# {stripped.lstrip('#').strip()}"))
-                forward_idx += 1
-                continue
-            if stripped == '':
-                forward_idx += 1
-                continue
-            # Stop at the next decorator or any other code.
-            if stripped.startswith('@') or stripped.startswith('def '):
-                break
-            break
+            forward_idx += 1
 
         return sorted(comments, key=lambda c: c[0])
     

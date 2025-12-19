@@ -99,6 +99,17 @@ class FileAnalyzer:
         self.given_pattern = re.compile(r'@given\((.*?)\)', re.DOTALL)
         self.settings_pattern = re.compile(r'@settings\(.*?max_examples\s*=\s*(\d+).*?\)', re.DOTALL)
         self.function_pattern = re.compile(r'def\s+(test_\w+)\s*\(')
+
+        # Keep optimization reports aligned with comment validation reports by
+        # excluding meta-validator tests (these often contain intentionally
+        # malformed examples and/or different semantics).
+        #
+        # This mirrors the exclusions in tools/test_optimization/comment_analyzer.py.
+        self.excluded_test_files = {
+            'test_comment_format.py',
+            'test_comment_standardizer.py',
+            'test_file_analyzer.py',
+        }
     
     def analyze_file(self, file_path: str) -> FileAnalysis:
         """Analyze a test file and return optimization recommendations.
@@ -388,6 +399,8 @@ class FileAnalyzer:
         
         # Find all Python test files
         for test_file in test_dir.glob('test_*.py'):
+            if test_file.name in self.excluded_test_files:
+                continue
             analysis = self.analyze_file(str(test_file))
             analysis.file_path = str(test_file)  # Set the correct path
             
