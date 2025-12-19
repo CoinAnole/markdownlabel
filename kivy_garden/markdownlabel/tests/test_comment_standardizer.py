@@ -35,8 +35,8 @@ class TestBooleanStrategyDocumentation:
         max_examples=st.integers(min_value=1, max_value=100).filter(lambda x: x not in {2, 5, 10, 20, 50, 100}),
         function_name=st.text(min_size=5, max_size=30, alphabet=st.characters(whitelist_categories=('Lu', 'Ll', 'Nd', 'Pc'))).map(lambda x: f"test_{x}")
     )
-    # Boolean strategy: 2 examples (True/False coverage)
-    @settings(max_examples=2, deadline=None)
+    # Complex strategy: 20 examples (adequate coverage)
+    @settings(max_examples=20, deadline=None)
     def test_boolean_strategy_comments_reference_true_false_coverage(self, max_examples, function_name):
         """Boolean strategy comments always reference True/False coverage."""
         # Create test code with boolean strategy but no comment
@@ -297,8 +297,8 @@ class TestFiniteStrategyDocumentation:
         max_value=st.integers(min_value=11, max_value=50),
         max_examples=st.integers(min_value=1, max_value=100).filter(lambda x: x not in {2, 5, 10, 20, 50, 100})
     )
-    # Small finite strategy: 8 examples (input space size: 8)
-    @settings(max_examples=8, deadline=None)
+    # Complex strategy: 25 examples (adequate coverage)
+    @settings(max_examples=25, deadline=None)
     def test_finite_strategy_comments_reference_input_space_size(self, min_value, max_value, max_examples):
         """Finite strategy comments reference input space size in rationale."""
         # Ensure we have a finite range
@@ -363,8 +363,8 @@ def test_finite_strategy(num):
         items=st.lists(st.text(min_size=1, max_size=10), min_size=1, max_size=20),
         max_examples=st.integers(min_value=1, max_value=50).filter(lambda x: x not in {2, 5, 10, 20, 50, 100})
     )
-    # Medium finite strategy: 15 examples (adequate finite coverage)
-    @settings(max_examples=15, deadline=None)
+    # Complex strategy: 30 examples (adequate coverage)
+    @settings(max_examples=30, deadline=None)
     def test_sampled_from_finite_strategy_documentation(self, items, max_examples):
         """Sampled_from finite strategies are properly documented."""
         # Create unique items to avoid duplicates affecting size calculation
@@ -1245,8 +1245,8 @@ class TestCIOptimizationDocumentation:
         ci_examples=st.integers(min_value=1, max_value=10).filter(lambda x: x not in {2, 5, 10}),  # Exclude standard values
         function_name=st.text(min_size=5, max_size=30, alphabet=st.characters(whitelist_categories=('Lu', 'Ll', 'Nd', 'Pc'))).map(lambda x: f"test_{x}")
     )
-    # Complex strategy: 3 examples (adequate coverage)
-    @settings(max_examples=3, deadline=None)
+    # Complex strategy: 15 examples (adequate coverage)
+    @settings(max_examples=15, deadline=None)
     def test_ci_optimization_documentation_includes_both_values(self, base_examples, ci_examples, function_name):
         """CI optimization documentation includes both base and CI values."""
         # Create test code with CI optimization pattern
@@ -1319,8 +1319,8 @@ def {function_name}(data):
         ]),
         function_name=st.text(min_size=5, max_size=30, alphabet=st.characters(whitelist_categories=('Lu', 'Ll', 'Nd', 'Pc'))).map(lambda x: f"test_{x}")
     )
-    # Complex strategy: 4 examples (adequate coverage)
-    @settings(max_examples=4, deadline=None)
+    # Complex strategy: 20 examples (adequate coverage)
+    @settings(max_examples=20, deadline=None)
     def test_ci_optimization_patterns_consistently_documented(self, ci_pattern, function_name):
         """Different CI optimization patterns are consistently documented."""
         # Create test code with specific CI pattern
@@ -1373,15 +1373,15 @@ def {function_name}(data):
     @given(
         optimization_reference=st.sampled_from([
             "automated CI optimization",
-            "CI environment optimization", 
+            "CI environment optimization",
             "continuous integration performance",
             "CI pipeline optimization"
         ]),
         max_examples=st.integers(min_value=1, max_value=15).filter(lambda x: x not in {2, 5, 10}),
         function_name=st.text(min_size=5, max_size=30, alphabet=st.characters(whitelist_categories=('Lu', 'Ll', 'Nd', 'Pc'))).map(lambda x: f"test_{x}")
     )
-    # Complex strategy: 6 examples (adequate coverage)
-    @settings(max_examples=6, deadline=None)
+    # Complex strategy: 25 examples (adequate coverage)
+    @settings(max_examples=25, deadline=None)
     def test_ci_optimization_process_referenced_in_comments(self, optimization_reference, max_examples, function_name):
         """CI optimization process is properly referenced in comments."""
         # Create test code with CI optimization reference in comment
