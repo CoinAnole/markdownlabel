@@ -1,0 +1,94 @@
+---
+alwaysApply: true
+---
+
+# Python Setup for This Project
+
+**CRITICAL**: This project uses Python 3 with a virtual environment. If commands or modules cannot be found, run `source .venv/bin/activate`.
+
+## Python Version Support
+
+- **Python**: 3.8+ (supports 3.8, 3.9, 3.10, 3.11, 3.12)
+
+## Build System
+
+- **setuptools**: Standard Python packaging
+- **namespace packages**: Uses `find_namespace_packages` for `kivy_garden.*` structure
+- **Virtual environment**: `.venv/` directory
+
+## Development Dependencies
+
+```
+pytest>=3.6          # Testing framework
+pytest-cov           # Coverage reporting
+pytest-asyncio       # Async test support
+hypothesis>=6.0.0    # Property-based testing
+sphinx_rtd_theme     # Documentation theme
+pycodestyle          # Code style checking
+coveralls            # CI coverage integration
+```
+
+## Commands should already be placed in PATH from `.venv/bin` automatically when terminal opens:
+
+- **Run Python**: `python3 script.py`
+- **Run pip**: `pip install package`
+- **Run pytest**: `pytest tests/`
+- **Run any Python tool**: `tool_name`
+
+## Common Commands
+
+### Setup
+```bash
+# Install package in development mode
+pip install -e .
+
+# Install with dev dependencies
+pip install -e ".[dev]"
+```
+
+### Testing
+```bash
+# Run all tests
+pytest kivy_garden/markdownlabel/tests/
+
+# Run with coverage
+pytest --cov=kivy_garden.markdownlabel kivy_garden/markdownlabel/tests/
+
+# Run specific test file
+pytest kivy_garden/markdownlabel/tests/test_core_functionality.py
+```
+
+**CRITICAL TESTING RULES:**
+- **NEVER use `| head` with pytest commands** - this truncates test output and prevents tests from completing
+- **NEVER use `2>&1 | head -100`** or similar output truncation with pytest
+- Always let pytest run to completion to see full test results
+- Use pytest's built-in options like `-v`, `--tb=short`, `-x` for controlling output instead of shell pipes
+
+### Code Quality
+```bash
+# Check code style (flake8)
+python3 -m flake8 kivy_garden/
+
+# Run pre-commit hook manually
+./tools/hooks/pre-commit
+```
+
+### Building Distribution
+```bash
+# Build wheel and source distribution
+python3 setup.py bdist_wheel --universal
+python3 setup.py sdist
+
+# Check distribution
+twine check dist/*
+
+# Upload to PyPI (maintainers only)
+twine upload dist/*
+```
+
+## Code Style
+
+- **PEP8 compliance** with exceptions defined in `setup.cfg`
+- **Max line length**: 80 characters
+- **Flake8 configuration**: See `setup.cfg` for ignored rules
+- Pre-commit hook available in `tools/hooks/pre-commit`
