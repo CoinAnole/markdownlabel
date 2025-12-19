@@ -1,17 +1,18 @@
-# Developer Guide: Writing Properly Documented Property-Based Tests
+# Property-Based Testing Guide
 
-This guide provides comprehensive instructions for writing well-documented property-based tests using Hypothesis in the MarkdownLabel project. It covers comment standardization, tool usage, and troubleshooting common issues.
+This guide provides comprehensive instructions for writing optimized and well-documented property-based tests using Hypothesis in the MarkdownLabel project.
 
 ## Table of Contents
 
 1. [Quick Start](#quick-start)
-2. [Comment Format Requirements](#comment-format-requirements)
-3. [Strategy Type Classification](#strategy-type-classification)
-4. [Writing Documented Tests](#writing-documented-tests)
-5. [Standardization Tools](#standardization-tools)
-6. [Validation and CI Integration](#validation-and-ci-integration)
-7. [Troubleshooting Guide](#troubleshooting-guide)
-8. [Best Practices](#best-practices)
+2. [Optimization Guidelines](#optimization-guidelines)
+3. [Comment Format Requirements](#comment-format-requirements)
+4. [Strategy Classifications](#strategy-classifications)
+5. [Writing Documented Tests](#writing-documented-tests)
+6. [Standardization Tools](#standardization-tools)
+7. [Validation and CI Integration](#validation-and-ci-integration)
+8. [Troubleshooting Guide](#troubleshooting-guide)
+9. [Best Practices](#best-practices)
 
 ## Quick Start
 
@@ -35,6 +36,27 @@ def test_example(value):
 def test_boolean_property(value):
     assert isinstance(value, bool)
 ```
+
+## Optimization Guidelines
+
+### Overview
+
+Property-based testing with Hypothesis generates random inputs to verify that properties hold across many examples. However, using excessive `max_examples` values can lead to unnecessary test execution time without proportional coverage benefits.
+
+### Right-Sizing Principles
+
+- **Finite strategies:** Use input space size (test each value once)
+- **Infinite strategies:** Use moderate counts based on property complexity
+- **Combination strategies:** Calculate combinations, cap at reasonable limits
+
+### Performance Impact
+
+Following these guidelines typically results in:
+
+- **Boolean tests:** 98% time reduction (100 → 2 examples)
+- **Small finite tests:** 80-95% time reduction
+- **Medium finite tests:** 50-80% time reduction  
+- **Complex tests:** 0-50% time reduction (may already be appropriate)
 
 ## Comment Format Requirements
 
@@ -64,94 +86,145 @@ All comments documenting `max_examples` values MUST follow this exact format:
 # Combination strategy: 6 examples (combination coverage)
 ```
 
-### Invalid Examples
+## Strategy Classifications
 
-```python
-# ❌ Wrong format - missing strategy type
-# 2 examples (True/False coverage)
+### 1. Boolean Strategies
 
-# ❌ Wrong format - incorrect terminology
-# Bool strategy: 2 examples (True/False coverage)
-
-# ❌ Wrong format - missing parentheses
-# Boolean strategy: 2 examples True/False coverage
-
-# ❌ Wrong format - extra text
-# Boolean strategy: 2 examples (True/False coverage) - optimized
-
-# ❌ Wrong format - incorrect spacing
-#Boolean strategy:2 examples(True/False coverage)
-```
-
-## Strategy Type Classification
-
-### Boolean Strategies
-
-**When to use:** Tests using `st.booleans()`
+**Pattern:** `st.booleans()`
+**Recommended max_examples:** `2`
+**Rationale:** Boolean strategies have exactly 2 possible values (True/False). Testing with more than 2 examples provides no additional coverage.
 
 **Format:** `Boolean strategy: 2 examples (True/False coverage)`
 
-**Example:**
 ```python
+# ✅ Optimal
 @given(st.booleans())
 # Boolean strategy: 2 examples (True/False coverage)
 @settings(max_examples=2, deadline=None)
-def test_boolean_flag(enabled):
-    result = process_with_flag(enabled)
-    assert result.success == enabled
+def test_boolean_property(value):
+    assert isinstance(value, bool)
+
+# ❌ Over-testing
+@given(st.booleans())
+@settings(max_examples=100)  # Tests True/False 50x each
+def test_boolean_property(value):
+    assert isinstance(value, bool)
 ```
 
-### Small Finite Strategies
+### 2. Small Finite Strategies
 
-**When to use:** Finite input spaces with ≤10 possible values
+**Pattern:** Small integer ranges (≤10 values), small `sampled_from` lists
+**Recommended max_examples:** Equal to input space size
+**Rationale:** For finite strategies with small input spaces, use exactly the number of possible values to test each value once.
 
 **Format:** `Small finite strategy: [N] examples (input space size: [N])`
 
-**Examples:**
 ```python
+# ✅ Optimal - 6 possible values
 @given(st.integers(min_value=1, max_value=6))
 # Small finite strategy: 6 examples (input space size: 6)
 @settings(max_examples=6, deadline=None)
 def test_dice_roll(value):
     assert 1 <= value <= 6
 
+# ✅ Optimal - 3 possible values
 @given(st.sampled_from(['red', 'green', 'blue']))
 # Small finite strategy: 3 examples (input space size: 3)
 @settings(max_examples=3, deadline=None)
-def test_color_validation(color):
-    assert color in VALID_COLORS
+def test_color_property(color):
+    assert color in ['red', 'green', 'blue']
+
+# ❌ Over-testing
+@given(st.integers(min_value=1, max_value=6))
+@settings(max_examples=100)  # Tests 6 values ~17x each
+def test_dice_roll(value):
+    assert 1 <= value <= 6
 ```
 
-### Medium Finite Strategies
+### 3. Medium Finite Strategies
 
-**When to use:** Finite input spaces with 11-50 possible values
+**Pattern:** Integer ranges or lists with 11-50 values
+**Recommended max_examples:** Input space size, capped at 20-50
+**Rationale:** For medium-sized finite strategies, test all values when practical, but cap to prevent excessive execution time.
 
 **Format:** `Medium finite strategy: [N] examples (adequate finite coverage)`
 
-**Example:**
 ```python
+# ✅ Optimal - 20 possible values
 @given(st.integers(min_value=1, max_value=20))
 # Medium finite strategy: 20 examples (adequate finite coverage)
 @settings(max_examples=20, deadline=None)
 def test_medium_range(value):
-    assert validate_range(value)
+    assert 1 <= value <= 20
+
+# ✅ Acceptable - Large range capped at 50
+@given(st.integers(min_value=1, max_value=100))
+# Medium finite strategy: 50 examples (adequate finite coverage)
+@settings(max_examples=50, deadline=None)
+def test_large_range(value):
+    assert 1 <= value <= 100
 ```
 
-### Complex Strategies
+### 4. Combination Strategies
 
-**When to use:** Infinite or very large input spaces (text, floats, large ranges)
+**Pattern:** Multiple strategies combined (tuples, multiple @given arguments)
+**Recommended max_examples:** Product of individual strategy sizes, capped at 50
+**Rationale:** Combination strategies create cartesian products. Calculate the total combinations and cap at reasonable limits.
+
+**Format:** `Combination strategy: [N] examples (combination coverage)`
+
+```python
+# ✅ Optimal - 2 × 3 = 6 combinations
+@given(st.tuples(st.booleans(), st.sampled_from(['a', 'b', 'c'])))
+# Combination strategy: 6 examples (combination coverage)
+@settings(max_examples=6, deadline=None)
+def test_boolean_enum_combination(value):
+    bool_val, enum_val = value
+    assert isinstance(bool_val, bool)
+    assert enum_val in ['a', 'b', 'c']
+
+# ✅ Optimal - 2 × 2 = 4 combinations
+@given(flag=st.booleans(), mode=st.booleans())
+# Combination strategy: 4 examples (combination coverage)
+@settings(max_examples=4, deadline=None)
+def test_two_booleans(flag, mode):
+    assert isinstance(flag, bool)
+    assert isinstance(mode, bool)
+
+# ✅ Capped - Large combination space
+@given(st.tuples(st.integers(1, 20), st.integers(1, 20)))
+# Combination strategy: 50 examples (combination coverage)
+@settings(max_examples=50, deadline=None)  # 400 combinations capped at 50
+def test_large_combination(value):
+    x, y = value
+    assert x * y > 0
+```
+
+### 5. Complex/Infinite Strategies
+
+**Pattern:** `st.text()`, `st.floats()`, large ranges, recursive strategies
+**Recommended max_examples:** 10-50 based on complexity
+**Rationale:** For infinite or very large input spaces, use moderate example counts based on the complexity of the property being tested.
 
 **Format:** `Complex strategy: [N] examples (adequate coverage)` or `Complex strategy: [N] examples (performance optimized)`
 
-**Examples:**
 ```python
+# ✅ Simple property - lower examples
 @given(st.text())
+# Complex strategy: 10 examples (adequate coverage)
+@settings(max_examples=10, deadline=None)
+def test_text_length_property(text):
+    assert len(text) >= 0
+
+# ✅ Complex property - higher examples
+@given(st.text(min_size=1), st.floats(allow_nan=False))
 # Complex strategy: 30 examples (adequate coverage)
 @settings(max_examples=30, deadline=None)
-def test_text_processing(text):
-    result = process_text(text)
-    assert result is not None
+def test_complex_text_float_interaction(text, number):
+    result = complex_processing(text, number)
+    assert validate_complex_result(result)
 
+# ✅ Performance-sensitive property
 @given(st.text())
 # Complex strategy: 15 examples (performance optimized)
 @settings(max_examples=15, deadline=None)
@@ -160,36 +233,13 @@ def test_expensive_text_analysis(text):
     assert result.is_valid()
 ```
 
-### Combination Strategies
-
-**When to use:** Multiple strategies combined (tuples, multiple @given arguments)
-
-**Format:** `Combination strategy: [N] examples (combination coverage)`
-
-**Examples:**
-```python
-@given(st.tuples(st.booleans(), st.sampled_from(['a', 'b', 'c'])))
-# Combination strategy: 6 examples (combination coverage)
-@settings(max_examples=6, deadline=None)
-def test_boolean_enum_combination(value):
-    bool_val, enum_val = value
-    assert process_combination(bool_val, enum_val)
-
-@given(flag=st.booleans(), mode=st.booleans())
-# Combination strategy: 4 examples (combination coverage)
-@settings(max_examples=4, deadline=None)
-def test_two_flags(flag, mode):
-    result = process_flags(flag, mode)
-    assert result.is_configured()
-```
-
 ## Writing Documented Tests
 
 ### Step-by-Step Process
 
 1. **Write the test function with @given decorator**
 2. **Analyze the strategy type** (see classification above)
-3. **Calculate appropriate max_examples** (see HYPOTHESIS_OPTIMIZATION_GUIDELINES.md)
+3. **Calculate appropriate max_examples** based on strategy type
 4. **Add standardized comment** using the correct format
 5. **Add @settings decorator** with max_examples and deadline=None
 
@@ -481,23 +531,6 @@ Ensure rationale is in parentheses:
 # Boolean strategy: 2 examples (True/False coverage)
 ```
 
-#### Issue: "Inconsistent spacing"
-
-**Symptoms:**
-```
-ValidationError: Invalid format - spacing issues detected
-```
-
-**Solution:**
-Follow exact spacing requirements:
-```python
-# ❌ Incorrect spacing
-#Boolean strategy:2 examples(True/False coverage)
-
-# ✅ Correct spacing
-# Boolean strategy: 2 examples (True/False coverage)
-```
-
 #### Issue: "Strategy type mismatch"
 
 **Symptoms:**
@@ -515,57 +548,6 @@ Analyze your strategy and use the correct classification:
 # ✅ Correctly classified
 @given(st.booleans())
 # Boolean strategy: 2 examples (True/False coverage)
-```
-
-#### Issue: "Undocumented custom max_examples"
-
-**Symptoms:**
-```
-Error: Test 'test_example' uses custom max_examples=25 but has no documentation comment
-```
-
-**Solution:**
-Add a standardized comment above the @settings decorator:
-```python
-@given(st.text())
-# Complex strategy: 25 examples (performance optimized)
-@settings(max_examples=25, deadline=None)
-def test_example(text):
-    pass
-```
-
-#### Issue: "Tool integration failures"
-
-**Symptoms:**
-```
-ImportError: cannot import name 'CommentAnalyzer' from 'tools.test_optimization'
-```
-
-**Solution:**
-Ensure you're importing from the correct module:
-```python
-# ❌ Incorrect import
-from tools.test_optimization import CommentAnalyzer
-
-# ✅ Correct import
-from tools.test_optimization.comment_analyzer import CommentAnalyzer
-```
-
-#### Issue: "Backup file conflicts"
-
-**Symptoms:**
-```
-Error: Backup file already exists: test_example.py.backup.20231216_143022
-```
-
-**Solution:**
-Either remove old backups or specify a different backup directory:
-```bash
-# Remove old backups
-rm *.backup.*
-
-# Or use different backup directory
-python tools/validate_comments.py standardize tests/ --backup-dir ./new_backups
 ```
 
 ### Debugging Steps
@@ -596,26 +578,6 @@ python tools/validate_comments.py standardize tests/ --backup-dir ./new_backups
    print(f"Recommended examples: {strategy_info.recommended_examples}")
    ```
 
-4. **Verify tool installation:**
-   ```bash
-   python -c "from tools.test_optimization.comment_analyzer import CommentAnalyzer; print('Tools installed correctly')"
-   ```
-
-### Getting Help
-
-If you encounter issues not covered in this guide:
-
-1. **Check existing issues:** Look for similar problems in project documentation
-2. **Run diagnostic commands:**
-   ```bash
-   python tools/validate_comments.py validate --verbose kivy_garden/markdownlabel/tests/
-   ```
-3. **Generate detailed report:**
-   ```bash
-   python tools/validate_comments.py report kivy_garden/markdownlabel/tests/ --output debug_report.json
-   ```
-4. **Test with minimal example:** Create a simple test to isolate the issue
-
 ## Best Practices
 
 ### Writing Quality Comments
@@ -640,15 +602,6 @@ If you encounter issues not covered in this guide:
    # Boolean strategy: 2 examples (True/False coverage)
    ```
 
-3. **Use performance rationale appropriately:**
-   ```python
-   # ✅ Good - explains performance consideration
-   # Complex strategy: 15 examples (performance optimized)
-   
-   # ✅ Good - explains adequate coverage
-   # Complex strategy: 30 examples (adequate coverage)
-   ```
-
 ### Code Organization
 
 1. **Group related tests:**
@@ -671,45 +624,6 @@ If you encounter issues not covered in this guide:
    def test_complex_text_processing(self, text):
    ```
 
-3. **Document complex strategies:**
-   ```python
-   @given(st.recursive(
-       st.integers(min_value=0, max_value=10),
-       lambda x: st.lists(x, min_size=0, max_size=3)
-   ))
-   # Complex strategy: 25 examples (adequate coverage)
-   @settings(max_examples=25, deadline=None)
-   def test_recursive_data_structure(self, data):
-       """Test recursive data structure validation.
-       
-       Uses recursive strategy to generate nested lists of integers.
-       Requires adequate examples to cover various nesting levels.
-       """
-       pass
-   ```
-
-### Maintenance
-
-1. **Regular validation:**
-   ```bash
-   # Run weekly validation
-   python tools/validate_comments.py validate kivy_garden/markdownlabel/tests/
-   ```
-
-2. **Update comments when changing strategies:**
-   ```python
-   # When changing from:
-   @given(st.integers(min_value=1, max_value=5))
-   # Small finite strategy: 5 examples (input space size: 5)
-   
-   # To:
-   @given(st.integers(min_value=1, max_value=50))
-   # Medium finite strategy: 50 examples (adequate finite coverage)
-   ```
-
-3. **Review generated comments:**
-   Always review auto-generated comments for accuracy and clarity before committing.
-
 ### Performance Considerations
 
 1. **Profile before optimizing:**
@@ -730,10 +644,77 @@ If you encounter issues not covered in this guide:
        pass
    ```
 
-3. **Monitor test suite performance:**
-   ```bash
-   # Track performance over time
-   python tools/analyze_tests.py --performance-report
-   ```
+## Common Anti-Patterns
 
-By following this guide, you'll write well-documented, efficient property-based tests that integrate seamlessly with the project's optimization and validation infrastructure.
+### ❌ Default max_examples=100 for everything
+```python
+# Don't use the same value for all tests
+@given(st.booleans())
+@settings(max_examples=100)  # 98% wasted time
+
+@given(st.integers(1, 3))
+@settings(max_examples=100)  # 97% wasted time
+
+@given(st.text())
+@settings(max_examples=100)  # May be appropriate, but should be justified
+```
+
+### ❌ Ignoring input space size
+```python
+# Don't ignore finite input spaces
+@given(st.sampled_from(['A', 'B']))
+@settings(max_examples=50)  # Only 2 possible values!
+```
+
+### ❌ Undocumented custom values
+```python
+# Don't use custom values without explanation
+@given(st.text())
+@settings(max_examples=73)  # Why 73? Document the reasoning!
+```
+
+### ❌ Inconsistent comment formats
+```python
+# Don't use inconsistent comment formats
+@given(st.booleans())
+@settings(max_examples=2)  # Only need True/False  # Missing strategy type
+
+@given(st.integers(1, 5))
+@settings(max_examples=5)  # Test all integers  # Non-standard terminology
+```
+
+## Validation Checklist
+
+Before committing property-based tests, verify:
+
+1. **Boolean strategies use max_examples=2**
+2. **Small finite strategies use input space size**
+3. **Combination strategies use product formula (capped at 50)**
+4. **Complex strategies use 10-50 examples based on complexity**
+5. **All custom values include standardized comments**
+6. **Comments follow the format: `# [Strategy Type] strategy: [N] examples ([Rationale])`**
+7. **Strategy type classifications use standardized terminology**
+8. **Rationale templates match the strategy type**
+9. **CI optimization is considered for complex strategies**
+
+## Summary
+
+The key principles for optimized property-based testing are:
+
+### Right-Sizing Examples
+- **Finite strategies:** Use input space size (test each value once)
+- **Infinite strategies:** Use moderate counts based on property complexity
+- **Combination strategies:** Calculate combinations, cap at reasonable limits
+
+### Standardized Documentation
+- **Always document:** Use standardized comment format for all custom values
+- **Consistent terminology:** Use standardized strategy type classifications
+- **Clear rationale:** Follow rationale templates for each strategy type
+- **Machine-readable:** Enable automated analysis and validation
+
+### Quality Assurance
+- **Validate format:** Ensure comments follow standardized pattern
+- **Use tools:** Leverage automated analysis and standardization tools
+- **Measure impact:** Verify that optimizations maintain coverage while improving performance
+
+By following this guide, you can achieve significant test performance improvements while maintaining consistent, well-documented, and high-quality test coverage.
