@@ -196,6 +196,7 @@ from hypothesis import given, strategies as st, settings
     st.booleans(),
     st.integers(min_value=0, max_value=2)
 ))
+# Combination strategy: 6 examples (combination coverage)
 @settings(max_examples=6, deadline=None)
 def test_multiline_given(self, value):
     bool_val, int_val = value
@@ -290,6 +291,7 @@ class TestRationaleGeneration:
         self.analyzer = FileAnalyzer()
     
     @given(st.sampled_from(['boolean', 'small_finite', 'medium_finite', 'combination', 'complex']))
+    # Small finite strategy: 5 examples (input space size: 5)
     @settings(max_examples=5, deadline=None)
     def test_rationale_generation_for_strategy_types(self, strategy_type):
         """Generates appropriate rationales for different strategy types."""
@@ -460,12 +462,12 @@ class TestToolIntegrationCompatibility:
         """Set up test fixtures."""
         self.analyzer = FileAnalyzer()
     
-    # Complex strategy: 20 examples (adequate coverage)
     @given(
         strategy_type=st.sampled_from(['Boolean', 'Small finite', 'Medium finite', 'Complex', 'Combination']),
         max_examples=st.integers(min_value=1, max_value=100),
         has_comment=st.booleans()
     )
+    # Combination strategy: 20 examples (performance optimized)
     @settings(max_examples=20, deadline=None)
     def test_tool_integration_compatibility(self, strategy_type, max_examples, has_comment):
         """**Feature: test-comment-standardization, Property 9: Tool Integration Compatibility**
