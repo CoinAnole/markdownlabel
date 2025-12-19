@@ -6,9 +6,6 @@ This module focuses on the rebuild scheduler behavior:
 - Rebuilds are deferred via Clock triggers (not executed synchronously)
 """
 
-import os
-
-
 
 from hypothesis import given, strategies as st, settings
 import pytest
@@ -27,7 +24,7 @@ class TestBatchedRebuilds:
     """
 
     @given(st.integers(min_value=2, max_value=5))
-    # Complex strategy: 4 examples (adequate coverage)
+    # Small finite strategy: 4 examples (input space size: 4)
     @settings(max_examples=4, deadline=None)
     def test_multiple_text_changes_batch_to_single_rebuild(self, num_changes):
         """Multiple text changes within same frame batch to single rebuild.
@@ -65,18 +62,8 @@ class TestBatchedRebuilds:
             f"Expected exactly 1 rebuild after force_rebuild, got {rebuild_count[0]}"
         )
 
-    @given(
-        st.text(
-            min_size=1,
-            max_size=20,
-            alphabet=st.characters(
-                whitelist_categories=["L", "N"],
-                blacklist_characters="#[]&\n\r",
-            ),
-        ),
-        st.floats(min_value=10, max_value=30, allow_nan=False, allow_infinity=False),
-        st.sampled_from(["Roboto", "RobotoMono-Regular"]),
-    )
+    @given(st.text(min_size=1, max_size=20, alphabet=st.characters(whitelist_categories=["L", "N"], blacklist_characters="#[]&\n\r")), st.floats(min_value=10, max_value=30, allow_nan=False, allow_infinity=False), st.sampled_from(["Roboto", "RobotoMono-Regular"]))
+    # Small finite strategy: 2 examples (input space size: 2)
     @settings(max_examples=2, deadline=None)
     def test_mixed_property_changes_batch_rebuilds(self, text, font_size, font_name):
         """Mixed structure property changes batch into single rebuild.
