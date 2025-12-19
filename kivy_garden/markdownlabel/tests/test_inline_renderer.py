@@ -85,7 +85,7 @@ class TestInlineFormattingConversion:
     
     @given(strong_token())
     # Complex strategy: 20 examples (adequate coverage)
-    @settings(max_examples=20 if not os.getenv('CI') else 10)
+    @settings(max_examples=20, deadline=None)
     def test_strong_produces_bold_tags(self, token):
         """Strong tokens produce [b]...[/b] markup."""
         renderer = InlineRenderer()
@@ -94,9 +94,9 @@ class TestInlineFormattingConversion:
         assert result.startswith('[b]'), f"Strong should start with [b], got: {result}"
         assert result.endswith('[/b]'), f"Strong should end with [/b], got: {result}"
     
-    # Complex strategy: 20 examples (adequate coverage)
     @given(emphasis_token())
-    @settings(max_examples=20)
+    # Complex strategy: 20 examples (adequate coverage)
+    @settings(max_examples=20, deadline=None)
     def test_emphasis_produces_italic_tags(self, token):
         """Emphasis tokens produce [i]...[/i] markup."""
         renderer = InlineRenderer()
@@ -104,22 +104,21 @@ class TestInlineFormattingConversion:
         
         assert result.startswith('[i]'), f"Emphasis should start with [i], got: {result}"
         assert result.endswith('[/i]'), f"Emphasis should end with [/i], got: {result}"
-     # Complex strategy: 20 examples (adequate coverage)
-    
+
     @given(codespan_token())
-    @settings(max_examples=20)
+    # Complex strategy: 20 examples (adequate coverage)
+    @settings(max_examples=20, deadline=None)
     def test_codespan_produces_font_tags(self, token):
         """Codespan tokens produce [font=...]...[/font] markup."""
         renderer = InlineRenderer()
         result = renderer.codespan(token)
         
         assert result.startswith('[font='), f"Codespan should start with [font=, got: {result}"
-        # Complex strategy: 20 examples (adequate coverage)
         assert result.endswith('[/font]'), f"Codespan should end with [/font], got: {result}"
-    
+
     @given(strikethrough_token())
     # Complex strategy: 20 examples (adequate coverage)
-    @settings(max_examples=20)
+    @settings(max_examples=20, deadline=None)
     def test_strikethrough_produces_s_tags(self, token):
         """Strikethrough tokens produce [s]...[/s] markup."""
         renderer = InlineRenderer()
