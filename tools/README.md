@@ -125,6 +125,6 @@ Add to GitHub Actions workflow:
 
 ## Related Documentation
 
-- `HYPOTHESIS_OPTIMIZATION_GUIDELINES.md` - Detailed optimization guidelines
+- `PROPERTY_BASED_TESTING_GUIDE.md` - Detailed optimization guidelines
 - `kivy_garden/markdownlabel/tests/test_strategy_classification.py` - Tests for the optimization system
 - `kivy_garden/markdownlabel/tests/test_file_analyzer.py` - Tests for the file analyzer
