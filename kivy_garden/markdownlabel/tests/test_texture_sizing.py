@@ -5,8 +5,6 @@ This module contains tests for texture size calculation behavior and
 logical test grouping validation.
 """
 
-import os
-
 import pytest
 from hypothesis import given, strategies as st, settings, assume
 
@@ -39,10 +37,9 @@ class TestComprehensiveTextureSizeCalculation:
     
     def _find_all_widgets_recursive(self, widget, widgets=None):
         """Recursively find all widgets in a widget tree.
-        
+
         Args:
             widget: Root widget to search
-            # Complex strategy: 20 examples (adequate coverage)
             widgets: List to accumulate widgets (created if None)
             
         Returns:
@@ -62,7 +59,7 @@ class TestComprehensiveTextureSizeCalculation:
     
     @given(simple_markdown_document())
     # Complex strategy: 20 examples (adequate coverage)
-    @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
+    @settings(max_examples=20, deadline=None)
     def test_texture_size_returns_tuple(self, markdown_text):
         """texture_size returns a list/tuple with two elements."""
         label = MarkdownLabel(text=markdown_text)
@@ -76,10 +73,9 @@ class TestComprehensiveTextureSizeCalculation:
     
     @given(simple_markdown_document())
     # Complex strategy: 20 examples (adequate coverage)
-    @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
+    @settings(max_examples=20, deadline=None)
     def test_texture_size_non_negative(self, markdown_text):
         """texture_size width and height are non-negative."""
-        # Complex strategy: 20 examples (adequate coverage)
         label = MarkdownLabel(text=markdown_text)
         
         texture_size = label.texture_size
@@ -94,14 +90,13 @@ class TestComprehensiveTextureSizeCalculation:
         label = MarkdownLabel(text='')
         
         texture_size = label.texture_size
-         # Complex strategy: 20 examples (adequate coverage)
-        
+
         assert texture_size == [0, 0], \
             f"Expected texture_size [0, 0] for empty label, got {texture_size}"
     
     @given(markdown_heading())
     # Complex strategy: 20 examples (adequate coverage)
-    @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
+    @settings(max_examples=20, deadline=None)
     def test_heading_creates_label_widget(self, heading):
         """Heading content creates a Label widget that is included in texture_size calculation."""
         label = MarkdownLabel(text=heading)
@@ -117,7 +112,7 @@ class TestComprehensiveTextureSizeCalculation:
     
     @given(markdown_paragraph())
     # Complex strategy: 20 examples (adequate coverage)
-    @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
+    @settings(max_examples=20, deadline=None)
     def test_paragraph_creates_label_widget(self, paragraph):
         """Paragraph content creates a Label widget that is included in texture_size calculation."""
         assume(paragraph.strip())
@@ -206,6 +201,7 @@ class TestComprehensiveTextureSizeCalculation:
             f"Expected texture_size height > 0 for thematic break, got {texture_size[1]}"
     
     @given(st.integers(min_value=1, max_value=5))
+    # Small finite strategy: 5 examples (input space size: 5)
     @settings(max_examples=5, deadline=None)
     def test_more_content_increases_texture_height(self, num_paragraphs):
         """More content results in larger texture_size height."""
@@ -228,7 +224,6 @@ class TestComprehensiveTextureSizeCalculation:
 This is a paragraph.
 
 ```python
-# Complex strategy: 20 examples (adequate coverage)
 code = "block"
 ```
 
@@ -251,7 +246,7 @@ code = "block"
     
     @given(simple_markdown_document())
     # Complex strategy: 20 examples (adequate coverage)
-    @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
+    @settings(max_examples=20, deadline=None)
     def test_texture_size_accessible_for_all_content(self, markdown_text):
         """texture_size is accessible and valid for all markdown content."""
         assume(markdown_text.strip())
@@ -278,7 +273,6 @@ code = "block"
         label = MarkdownLabel(text=markdown)
         
         # Verify nested list creates children
-        # Complex strategy: 20 examples (adequate coverage)
         assert len(label.children) >= 1, \
             f"Expected at least 1 child for nested list, got {len(label.children)}"
         
@@ -302,8 +296,8 @@ code = "block"
         assert texture_size[0] >= 0 and texture_size[1] >= 0
     
     @given(simple_markdown_document(), simple_markdown_document())
-    # Complex strategy: 20 examples (adequate coverage)
-    @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
+    # Combination strategy: 20 examples (combination coverage)
+    @settings(max_examples=20, deadline=None)
     def test_texture_size_updates_on_text_change(self, text1, text2):
         """texture_size updates when text property changes."""
         assume(text1.strip() and text2.strip())
@@ -349,7 +343,7 @@ code = "block"
             f"Expected children for image markdown, got {len(label.children)}"
     
     @given(st.integers(min_value=1, max_value=6))
-    # Complex strategy: 6 examples (adequate coverage)
+    # Small finite strategy: 6 examples (input space size: 6)
     @settings(max_examples=6, deadline=None)
     def test_all_heading_levels_create_label_widgets(self, level):
         """All heading levels create Label widgets for texture_size calculation."""
