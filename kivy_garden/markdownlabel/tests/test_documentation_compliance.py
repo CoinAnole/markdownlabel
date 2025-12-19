@@ -4,7 +4,6 @@ This module tests that custom max_examples values are properly documented
 according to the optimization guidelines.
 """
 
-import os
 import re
 from pathlib import Path
 from hypothesis import given, settings
