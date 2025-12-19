@@ -24,8 +24,8 @@ class TestFontSizeAliasBidirectionality:
     """Property tests for font_size/base_font_size alias (Property 1)."""
     
     @given(st.floats(min_value=1, max_value=200, allow_nan=False, allow_infinity=False))
+    @settings(max_examples=50, deadline=None)
     # Complex strategy: 50 examples (adequate coverage)
-    @settings(max_examples=50 if not os.getenv('CI') else 25, deadline=None)
     def test_font_size_sets_base_font_size(self, font_size_value):
         """Setting font_size updates base_font_size to the same value."""
         label = MarkdownLabel(font_size=font_size_value)
@@ -33,9 +33,9 @@ class TestFontSizeAliasBidirectionality:
         assert label.base_font_size == font_size_value, \
             f"Expected base_font_size={font_size_value}, got {label.base_font_size}"
     
-    # Complex strategy: 50 examples (adequate coverage)
     @given(st.floats(min_value=1, max_value=200, allow_nan=False, allow_infinity=False))
     @settings(max_examples=50, deadline=None)
+    # Complex strategy: 50 examples (adequate coverage)
     def test_base_font_size_returns_via_font_size(self, base_font_size_value):
         """Setting base_font_size is returned when reading font_size."""
         label = MarkdownLabel(base_font_size=base_font_size_value)
@@ -45,8 +45,8 @@ class TestFontSizeAliasBidirectionality:
     
     @given(st.floats(min_value=1, max_value=200, allow_nan=False, allow_infinity=False),
            st.floats(min_value=1, max_value=200, allow_nan=False, allow_infinity=False))
-    # Complex strategy: 20 examples (adequate coverage)
-    @settings(max_examples=20, deadline=None)
+    @settings(max_examples=50, deadline=None)
+    # Combination strategy: 50 examples (combination coverage)
     def test_font_size_change_updates_base_font_size(self, initial_value, new_value):
         """Changing font_size after creation updates base_font_size."""
         label = MarkdownLabel(font_size=initial_value)
@@ -57,8 +57,8 @@ class TestFontSizeAliasBidirectionality:
     
     @given(st.floats(min_value=1, max_value=200, allow_nan=False, allow_infinity=False),
            st.floats(min_value=1, max_value=200, allow_nan=False, allow_infinity=False))
-    # Complex strategy: 20 examples (adequate coverage)
-    @settings(max_examples=20, deadline=None)
+    @settings(max_examples=50, deadline=None)
+    # Combination strategy: 50 examples (combination coverage)
     def test_base_font_size_change_updates_font_size(self, initial_value, new_value):
         """Changing base_font_size after creation updates font_size."""
         label = MarkdownLabel(base_font_size=initial_value)
@@ -66,10 +66,10 @@ class TestFontSizeAliasBidirectionality:
         
         assert label.font_size == new_value, \
             f"Expected font_size={new_value}, got {label.font_size}"
-     # Complex strategy: 50 examples (adequate coverage)
-    
+
     @given(st.floats(min_value=1, max_value=200, allow_nan=False, allow_infinity=False))
     @settings(max_examples=50, deadline=None)
+    # Complex strategy: 50 examples (adequate coverage)
     def test_bidirectional_equivalence(self, value):
         """font_size and base_font_size are always equivalent."""
         label = MarkdownLabel()
@@ -150,7 +150,8 @@ class TestNoOpPropertiesAcceptance:
     @given(st.booleans(), st.booleans(), st.booleans(), st.booleans(), st.booleans(),
            simple_markdown_document())
     @settings(max_examples=2, deadline=None)
-    def test_noop_properties_do_not_affect_rendering(self, bold, italic, underline, 
+    # Combination strategy: 2 examples (combination coverage)
+    def test_noop_properties_do_not_affect_rendering(self, bold, italic, underline,
                                                       strikethrough, markup, markdown_text):
         """No-op properties do not affect the rendered output."""
         assume(markdown_text.strip())
@@ -229,12 +230,11 @@ class TestNoOpPropertyAcceptanceAndStorage:
     def test_mipmap_property_accepted_and_stored(self, value):
         """Setting mipmap property accepts and stores the value."""
         label = MarkdownLabel(text='# Hello World', mipmap=value)
-        # Complex strategy: 50 examples (adequate coverage)
         assert label.mipmap == value
     
     @given(st.floats(min_value=0, max_value=100, allow_nan=False, allow_infinity=False))
-    # Complex strategy: 50 examples (adequate coverage)
     @settings(max_examples=50, deadline=None)
+    # Complex strategy: 50 examples (adequate coverage)
     def test_outline_width_property_accepted_and_stored(self, value):
         """Setting outline_width property accepts and stores the value."""
         label = MarkdownLabel(text='# Hello World', outline_width=value)
@@ -244,8 +244,8 @@ class TestNoOpPropertyAcceptanceAndStorage:
         st.floats(min_value=0.0, max_value=1.0, allow_nan=False, allow_infinity=False),
         min_size=4, max_size=4
     ))
-    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
+    # Complex strategy: 20 examples (adequate coverage)
     def test_outline_color_property_accepted_and_stored(self, value):
         """Setting outline_color property accepts and stores the value."""
         label = MarkdownLabel(text='# Hello World', outline_color=value)
@@ -256,8 +256,8 @@ class TestNoOpPropertyAcceptanceAndStorage:
         whitelist_categories=['L', 'N'],
         blacklist_characters='\n\r'
     ))))
-    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
+    # Complex strategy: 20 examples (adequate coverage)
     def test_text_language_property_accepted_and_stored(self, value):
         """Setting text_language property accepts and stores the value."""
         label = MarkdownLabel(text='# Hello World', text_language=value)
@@ -275,20 +275,22 @@ class TestNoOpPropertyAcceptanceAndStorage:
         )),
         st.one_of(st.booleans(), st.integers(), st.text(max_size=20))
     ))
-    @settings(max_examples=2, deadline=None)
+    @settings(max_examples=20, deadline=None)
+    # Complex strategy: 20 examples (adequate coverage)
     def test_ellipsis_options_property_accepted_and_stored(self, value):
         """Setting ellipsis_options property accepts and stores the value."""
         label = MarkdownLabel(text='# Hello World', ellipsis_options=value)
         assert label.ellipsis_options == value
     
-    @given(st.booleans(), st.floats(min_value=0, max_value=10), 
+    @given(st.booleans(), st.floats(min_value=0, max_value=10),
            st.lists(st.floats(min_value=0.0, max_value=1.0), min_size=4, max_size=4),
            st.one_of(st.none(), st.text(min_size=1, max_size=5)),
            st.sampled_from([None, 'ltr', 'rtl', 'weak_ltr', 'weak_rtl']),
            st.dictionaries(st.text(min_size=1, max_size=5), st.booleans(), max_size=3))
-    @settings(max_examples=2, deadline=None)
-    def test_all_noop_properties_together_accepted_and_stored(self, mipmap, outline_width, 
-                                                              outline_color, text_language, 
+    @settings(max_examples=50, deadline=None)
+    # Combination strategy: 50 examples (combination coverage)
+    def test_all_noop_properties_together_accepted_and_stored(self, mipmap, outline_width,
+                                                              outline_color, text_language,
                                                               base_direction, ellipsis_options):
         """Setting all no-op properties together accepts and stores all values."""
         label = MarkdownLabel(
@@ -313,13 +315,12 @@ class TestNoOpPropertyAcceptanceAndStorage:
     def test_mipmap_property_change_after_creation(self, value):
         """Changing mipmap property after creation accepts and stores the value."""
         label = MarkdownLabel(text='# Hello')
-        # Complex strategy: 50 examples (adequate coverage)
         label.mipmap = value
         assert label.mipmap == value
     
     @given(st.floats(min_value=0, max_value=100, allow_nan=False, allow_infinity=False))
-    # Complex strategy: 50 examples (adequate coverage)
     @settings(max_examples=50, deadline=None)
+    # Complex strategy: 50 examples (adequate coverage)
     def test_outline_width_property_change_after_creation(self, value):
         """Changing outline_width property after creation accepts and stores the value."""
         label = MarkdownLabel(text='# Hello')
@@ -330,8 +331,8 @@ class TestNoOpPropertyAcceptanceAndStorage:
         st.floats(min_value=0.0, max_value=1.0, allow_nan=False, allow_infinity=False),
         min_size=4, max_size=4
     ))
-    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
+    # Complex strategy: 20 examples (adequate coverage)
     def test_outline_color_property_change_after_creation(self, value):
         """Changing outline_color property after creation accepts and stores the value."""
         label = MarkdownLabel(text='# Hello')
@@ -342,8 +343,8 @@ class TestNoOpPropertyAcceptanceAndStorage:
         whitelist_categories=['L', 'N'],
         blacklist_characters='\n\r'
     ))))
-    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
+    # Complex strategy: 20 examples (adequate coverage)
     def test_text_language_property_change_after_creation(self, value):
         """Changing text_language property after creation accepts and stores the value."""
         label = MarkdownLabel(text='# Hello')
@@ -363,20 +364,22 @@ class TestNoOpPropertyAcceptanceAndStorage:
         )),
         st.one_of(st.booleans(), st.integers(), st.text(max_size=20))
     ))
-    @settings(max_examples=2, deadline=None)
+    @settings(max_examples=20, deadline=None)
+    # Complex strategy: 20 examples (adequate coverage)
     def test_ellipsis_options_property_change_after_creation(self, value):
         """Changing ellipsis_options property after creation accepts and stores the value."""
         label = MarkdownLabel(text='# Hello')
         label.ellipsis_options = value
         assert label.ellipsis_options == value
     
-    @given(st.booleans(), st.floats(min_value=0, max_value=10), 
+    @given(st.booleans(), st.floats(min_value=0, max_value=10),
            st.lists(st.floats(min_value=0.0, max_value=1.0), min_size=4, max_size=4),
            st.one_of(st.none(), st.text(min_size=1, max_size=5)),
            st.sampled_from([None, 'ltr', 'rtl', 'weak_ltr', 'weak_rtl']),
            st.dictionaries(st.text(min_size=1, max_size=5), st.booleans(), max_size=3),
            simple_markdown_document())
     @settings(max_examples=2, deadline=None)
+    # Combination strategy: 2 examples (combination coverage)
     def test_advanced_noop_properties_do_not_affect_rendering(self, mipmap, outline_width, outline_color,
                                                               text_language, base_direction, ellipsis_options,
                                                               markdown_text):
