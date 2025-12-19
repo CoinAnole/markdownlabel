@@ -266,8 +266,8 @@ def test_documented_function(data):
     )
     # Small finite strategy: 6 examples (input space size: 6)
     @settings(max_examples=6, deadline=None)
-    def test_standard_max_examples_do_not_require_documentation(self, standard_max_examples):
-        """Standard max_examples values do not require documentation."""
+    def test_standard_max_examples_require_documentation(self, standard_max_examples):
+        """All max_examples values require documentation (strict mode)."""
         # Create a test function with standard max_examples and no comment
         test_code = f'''
 @given(data=st.text())
@@ -279,14 +279,13 @@ def test_standard_function(data):
         
         analysis = self.analyzer._analyze_file_content("test_standard.py", test_code)
         
-        # Standard values should not require documentation
+        # Even historically standard values require documentation now
         assert analysis.total_property_tests == 1
-        assert len(analysis.missing_documentation) == 0
-        # Should not be counted as undocumented since it doesn't need documentation
-        assert analysis.undocumented_tests == 0
+        assert len(analysis.missing_documentation) == 1
+        assert analysis.undocumented_tests == 1
     
     def test_custom_value_detection_accuracy(self):
-        """Custom value detection correctly identifies non-standard values."""
+        """Custom value detection treats all values as needing docs by default."""
         custom_values = [1, 3, 4, 6, 7, 8, 9, 11, 15, 25, 30, 75, 150, 200, 500]
         standard_values = [2, 5, 10, 20, 50, 100]
         
@@ -294,7 +293,7 @@ def test_standard_function(data):
             assert value not in self.analyzer.standard_values, f"Value {value} should be custom"
         
         for value in standard_values:
-            assert value in self.analyzer.standard_values, f"Value {value} should be standard"
+            assert value not in self.analyzer.standard_values, f"Value {value} should be documented"
     
     def test_missing_documentation_reporting(self):
         """Missing documentation is correctly reported with function details."""

@@ -74,8 +74,8 @@ class CommentStandardizer:
             self.backup_dir = None
         
         default_standard_values = {2, 5, 10, 20, 50, 100}
-        always_document = os.getenv("ALWAYS_DOCUMENT_MAX_EXAMPLES", "").lower() in {"1", "true", "yes", "on"}
-        self.standard_values = set() if always_document else default_standard_values
+        skip_standard = os.getenv("SKIP_STANDARD_MAX_EXAMPLES", "").lower() in {"1", "true", "yes", "on"}
+        self.standard_values = default_standard_values if skip_standard else set()
         
         # Pattern to match @settings decorator with max_examples
         self.settings_pattern = re.compile(r'(@settings\([^)]*max_examples\s*=\s*\d+[^)]*\))', re.DOTALL)

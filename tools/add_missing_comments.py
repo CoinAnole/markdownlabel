@@ -14,9 +14,9 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 from tools.test_optimization.comment_analyzer import CommentAnalyzer
 
 
-_always_document = os.getenv("ALWAYS_DOCUMENT_MAX_EXAMPLES", "").lower() in {"1", "true", "yes", "on"}
-# Standard values that historically were exempt; honor env to force documentation
-STANDARD_VALUES = set() if _always_document else {2, 3, 4, 5, 6, 7, 8, 9, 10, 100}
+_skip_standard = os.getenv("SKIP_STANDARD_MAX_EXAMPLES", "").lower() in {"1", "true", "yes", "on"}
+# Default: document all custom max_examples values. Set env above to allow legacy skip.
+STANDARD_VALUES = {2, 3, 4, 5, 6, 7, 8, 9, 10, 100} if _skip_standard else set()
 
 # Files to skip (test fixtures)
 SKIP_FILES = {
