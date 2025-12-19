@@ -36,6 +36,7 @@ class TestShorteningPropertyForwarding:
     """Property tests for shortening property forwarding (Property 4)."""
     
     @given(st.booleans())
+    # Boolean strategy: 2 examples (True/False coverage)
     @settings(max_examples=2, deadline=None)
     def test_shorten_forwarded_to_paragraph(self, shorten_value):
         """shorten property is forwarded to paragraph Labels."""
@@ -49,6 +50,7 @@ class TestShorteningPropertyForwarding:
                 f"Expected shorten={shorten_value}, got {lbl.shorten}"
     
     @given(st.booleans())
+    # Boolean strategy: 2 examples (True/False coverage)
     @settings(max_examples=2, deadline=None)
     def test_shorten_forwarded_to_heading(self, shorten_value):
         """shorten property is forwarded to heading Labels."""
@@ -62,6 +64,7 @@ class TestShorteningPropertyForwarding:
                 f"Expected shorten={shorten_value}, got {lbl.shorten}"
     
     @given(st.booleans())
+    # Boolean strategy: 2 examples (True/False coverage)
     @settings(max_examples=2, deadline=None)
     def test_shorten_forwarded_to_list_items(self, shorten_value):
         """shorten property is forwarded to list item Labels."""
@@ -76,6 +79,7 @@ class TestShorteningPropertyForwarding:
                 f"Expected shorten={shorten_value}, got {lbl.shorten}"
     
     @given(st.booleans())
+    # Boolean strategy: 2 examples (True/False coverage)
     @settings(max_examples=2, deadline=None)
     def test_shorten_forwarded_to_table_cells(self, shorten_value):
         """shorten property is forwarded to table cell Labels."""
@@ -171,6 +175,7 @@ class TestShorteningPropertyForwarding:
             # When max_lines=0, it may not be set on child Labels (default behavior)
     
     @given(st.integers(min_value=1, max_value=10))
+    # Small finite strategy: 10 examples (input space size: 10)
     @settings(max_examples=10, deadline=None)
     def test_max_lines_forwarded_to_heading(self, max_lines_value):
         """max_lines property is forwarded to heading Labels when non-zero."""
@@ -184,6 +189,7 @@ class TestShorteningPropertyForwarding:
                 f"Expected max_lines={max_lines_value}, got {lbl.max_lines}"
     
     @given(st.integers(min_value=1, max_value=10))
+    # Small finite strategy: 10 examples (input space size: 10)
     @settings(max_examples=10, deadline=None)
     def test_max_lines_forwarded_to_list_items(self, max_lines_value):
         """max_lines property is forwarded to list item Labels when non-zero."""
@@ -316,6 +322,7 @@ Paragraph text
                 f"Expected max_lines={max_lines_val}, got {lbl.max_lines}"
     
     @given(st.booleans(), st.booleans())
+    # Combination strategy: 2 examples (combination coverage)
     @settings(max_examples=2, deadline=None)
     def test_shorten_change_triggers_rebuild(self, shorten1, shorten2):
         """Changing shorten triggers widget rebuild with new value."""

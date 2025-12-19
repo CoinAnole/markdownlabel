@@ -68,6 +68,7 @@ class TestAutoSizingBehavior:
         assert len(label.children) == 0
     
     @given(st.integers(min_value=1, max_value=5))
+    # Small finite strategy: 5 examples (input space size: 5)
     @settings(max_examples=5, deadline=None)
     def test_more_content_means_more_height_potential(self, num_paragraphs):
         """More content should result in more minimum height."""

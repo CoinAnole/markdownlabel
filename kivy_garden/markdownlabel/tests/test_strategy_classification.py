@@ -225,6 +225,7 @@ class TestCombinationStrategies:
         assert optimal == expected, f"Boolean + 3-item enum should use 6 examples, got {optimal}"
     
     @given(st.integers(min_value=6, max_value=10))
+    # Small finite strategy: 5 examples (input space size: 5)
     @settings(max_examples=5, deadline=None)
     def test_large_combination_capped_at_fifty(self, large_size):
         """Large combinations should be capped at 50 examples."""
@@ -311,12 +312,14 @@ from hypothesis import given, strategies as st, settings
 
 class TestExample:
     @given(st.booleans())
+    # Boolean strategy: 100 examples (True/False coverage)
     @settings(max_examples=100, deadline=None)
     def test_boolean_property_classification(self, value):
         """Test with over-testing."""
         assert isinstance(value, bool)
     
     @given(st.integers(min_value=0, max_value=2))
+    # Small finite strategy: 3 examples (input space size: 3)
     @settings(max_examples=100, deadline=None)
     def test_small_range_property_classification(self, value):
         """Test with over-testing."""

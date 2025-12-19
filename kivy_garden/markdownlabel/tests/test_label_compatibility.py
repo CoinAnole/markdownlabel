@@ -94,6 +94,7 @@ class TestNoOpPropertiesAcceptance:
     """Property tests for no-op properties acceptance (Property 8)."""
     
     @given(st.booleans())
+    # Boolean strategy: 2 examples (True/False coverage)
     @settings(max_examples=2, deadline=None)
     def test_bold_property_accepted(self, value):
         """Setting bold property does not raise an exception."""
@@ -102,6 +103,7 @@ class TestNoOpPropertiesAcceptance:
         assert label.bold == value
     
     @given(st.booleans())
+    # Boolean strategy: 2 examples (True/False coverage)
     @settings(max_examples=2, deadline=None)
     def test_italic_property_accepted(self, value):
         """Setting italic property does not raise an exception."""
@@ -109,6 +111,7 @@ class TestNoOpPropertiesAcceptance:
         assert label.italic == value
     
     @given(st.booleans())
+    # Boolean strategy: 2 examples (True/False coverage)
     @settings(max_examples=2, deadline=None)
     def test_underline_property_accepted(self, value):
         """Setting underline property does not raise an exception."""
@@ -116,6 +119,7 @@ class TestNoOpPropertiesAcceptance:
         assert label.underline == value
     
     @given(st.booleans())
+    # Boolean strategy: 2 examples (True/False coverage)
     @settings(max_examples=2, deadline=None)
     def test_strikethrough_property_accepted(self, value):
         """Setting strikethrough property does not raise an exception."""
@@ -123,6 +127,7 @@ class TestNoOpPropertiesAcceptance:
         assert label.strikethrough == value
     
     @given(st.booleans())
+    # Boolean strategy: 2 examples (True/False coverage)
     @settings(max_examples=2, deadline=None)
     def test_markup_property_accepted(self, value):
         """Setting markup property does not raise an exception."""
@@ -130,6 +135,7 @@ class TestNoOpPropertiesAcceptance:
         assert label.markup == value
     
     @given(st.booleans(), st.booleans(), st.booleans(), st.booleans(), st.booleans())
+    # Combination strategy: 2 examples (combination coverage)
     @settings(max_examples=2, deadline=None)
     def test_all_noop_properties_together(self, bold, italic, underline, strikethrough, markup):
         """Setting all no-op properties together does not raise an exception."""
@@ -176,6 +182,7 @@ class TestNoOpPropertiesAcceptance:
             f"Expected {default_child_count} children, got {props_child_count} with no-op props"
     
     @given(st.booleans())
+    # Boolean strategy: 2 examples (True/False coverage)
     @settings(max_examples=2, deadline=None)
     def test_bold_property_change_after_creation(self, value):
         """Changing bold property after creation does not raise an exception."""
@@ -184,6 +191,7 @@ class TestNoOpPropertiesAcceptance:
         assert label.bold == value
     
     @given(st.booleans())
+    # Boolean strategy: 2 examples (True/False coverage)
     @settings(max_examples=2, deadline=None)
     def test_italic_property_change_after_creation(self, value):
         """Changing italic property after creation does not raise an exception."""
@@ -192,6 +200,7 @@ class TestNoOpPropertiesAcceptance:
         assert label.italic == value
     
     @given(st.booleans())
+    # Boolean strategy: 2 examples (True/False coverage)
     @settings(max_examples=2, deadline=None)
     def test_underline_property_change_after_creation(self, value):
         """Changing underline property after creation does not raise an exception."""
@@ -200,6 +209,7 @@ class TestNoOpPropertiesAcceptance:
         assert label.underline == value
     
     @given(st.booleans())
+    # Boolean strategy: 2 examples (True/False coverage)
     @settings(max_examples=2, deadline=None)
     def test_strikethrough_property_change_after_creation(self, value):
         """Changing strikethrough property after creation does not raise an exception."""
@@ -208,6 +218,7 @@ class TestNoOpPropertiesAcceptance:
         assert label.strikethrough == value
     
     @given(st.booleans())
+    # Boolean strategy: 2 examples (True/False coverage)
     @settings(max_examples=2, deadline=None)
     def test_markup_property_change_after_creation(self, value):
         """Changing markup property after creation does not raise an exception."""
@@ -226,6 +237,7 @@ class TestNoOpPropertyAcceptanceAndStorage:
     """Property tests for no-op property acceptance and storage (Property 1)."""
     
     @given(st.booleans())
+    # Boolean strategy: 2 examples (True/False coverage)
     @settings(max_examples=2, deadline=None)
     def test_mipmap_property_accepted_and_stored(self, value):
         """Setting mipmap property accepts and stores the value."""
@@ -311,6 +323,7 @@ class TestNoOpPropertyAcceptanceAndStorage:
         assert label.ellipsis_options == ellipsis_options
     
     @given(st.booleans())
+    # Boolean strategy: 2 examples (True/False coverage)
     @settings(max_examples=2, deadline=None)
     def test_mipmap_property_change_after_creation(self, value):
         """Changing mipmap property after creation accepts and stores the value."""

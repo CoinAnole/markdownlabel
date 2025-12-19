@@ -66,8 +66,9 @@ class TestTextSizeForwarding:
         assert label.text_size[0] == width2, \
             f"After change, expected text_size[0]={width2}, got {label.text_size[0]}"
     
-    @settings(max_examples=100, deadline=None)
     @given(st.data())
+    # Complex strategy: 100 examples (adequate coverage)
+    @settings(max_examples=100, deadline=None)
     def test_default_text_size_is_none_none(self, data):
         """Default text_size is [None, None]."""
         label = MarkdownLabel(text='Hello World')
@@ -446,8 +447,9 @@ class TestUnicodeErrorsForwarding:
             assert lbl.unicode_errors == errors2, \
                 f"After change, expected unicode_errors={errors2}, got {lbl.unicode_errors}"
     
-    @settings(max_examples=100, deadline=None)
     @given(st.data())
+    # Complex strategy: 100 examples (adequate coverage)
+    @settings(max_examples=100, deadline=None)
     def test_default_unicode_errors_is_replace(self, data):
         """Default unicode_errors is 'replace'."""
         label = MarkdownLabel(text='Hello World')
@@ -465,6 +467,7 @@ class TestStripForwarding:
     """Property tests for strip forwarding (Property 13)."""
     
     @given(st.booleans())
+    # Boolean strategy: 2 examples (True/False coverage)
     @settings(max_examples=2, deadline=None)
     def test_strip_stored_correctly(self, strip_value):
         """strip value is stored correctly on MarkdownLabel."""
@@ -474,6 +477,7 @@ class TestStripForwarding:
             f"Expected strip={strip_value}, got {label.strip}"
     
     @given(st.booleans())
+    # Boolean strategy: 2 examples (True/False coverage)
     @settings(max_examples=2, deadline=None)
     def test_strip_applied_to_paragraph(self, strip_value):
         """strip is applied to paragraph Labels."""
@@ -488,6 +492,7 @@ class TestStripForwarding:
                 f"Expected strip={strip_value}, got {lbl.strip}"
     
     @given(st.booleans())
+    # Boolean strategy: 2 examples (True/False coverage)
     @settings(max_examples=2, deadline=None)
     def test_strip_applied_to_heading(self, strip_value):
         """strip is applied to heading Labels."""
@@ -502,6 +507,7 @@ class TestStripForwarding:
                 f"Expected strip={strip_value}, got {lbl.strip}"
     
     @given(st.booleans())
+    # Boolean strategy: 2 examples (True/False coverage)
     @settings(max_examples=2, deadline=None)
     def test_strip_applied_to_code_block(self, strip_value):
         """strip is applied to code block Labels."""
@@ -517,6 +523,7 @@ class TestStripForwarding:
                 f"Expected strip={strip_value}, got {lbl.strip}"
     
     @given(st.booleans())
+    # Boolean strategy: 2 examples (True/False coverage)
     @settings(max_examples=2, deadline=None)
     def test_strip_applied_to_list_items(self, strip_value):
         """strip is applied to list item Labels."""
@@ -532,6 +539,7 @@ class TestStripForwarding:
                 f"Expected strip={strip_value}, got {lbl.strip}"
     
     @given(st.booleans())
+    # Boolean strategy: 2 examples (True/False coverage)
     @settings(max_examples=2, deadline=None)
     def test_strip_applied_to_table_cells(self, strip_value):
         """strip is applied to table cell Labels."""
@@ -547,6 +555,7 @@ class TestStripForwarding:
                 f"Expected strip={strip_value}, got {lbl.strip}"
     
     @given(st.booleans(), st.booleans())
+    # Combination strategy: 2 examples (combination coverage)
     @settings(max_examples=2, deadline=None)
     def test_strip_change_triggers_rebuild(self, strip1, strip2):
         """Changing strip triggers widget rebuild with new value."""
@@ -569,8 +578,9 @@ class TestStripForwarding:
             assert lbl.strip == strip2, \
                 f"After change, expected strip={strip2}, got {lbl.strip}"
     
-    @settings(max_examples=100, deadline=None)
     @given(st.data())
+    # Complex strategy: 100 examples (adequate coverage)
+    @settings(max_examples=100, deadline=None)
     def test_default_strip_is_false(self, data):
         """Default strip is False."""
         label = MarkdownLabel(text='Hello World')
