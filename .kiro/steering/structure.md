@@ -1,8 +1,12 @@
-# Project Structure
+---
+inclusion: always
+---
 
-## Package Layout
+# Project Structure & Architecture Guide
 
-This is a **Kivy Garden flower** using the modern namespace package structure (`kivy_garden.markdownlabel`), not the legacy `garden.flower` format.
+## Package Layout Rules
+
+**CRITICAL**: This is a **Kivy Garden flower** using modern namespace package structure (`kivy_garden.markdownlabel`). Always use this import pattern, never legacy `garden.flower` format.
 
 ```
 kivy_garden/
@@ -12,7 +16,7 @@ kivy_garden/
     ├── kivy_renderer.py     # Block-level Markdown → Kivy widgets
     ├── inline_renderer.py   # Inline Markdown → Kivy markup strings
     ├── markdown_serializer.py  # AST → Markdown serialization
-    └── tests/               # Test suite
+    └── tests/               # Test suite (organized by functionality)
         ├── __init__.py
         ├── test_import.py
         ├── test_inline_renderer.py
@@ -33,45 +37,86 @@ kivy_garden/
         └── test_utils.py                 # Shared test utilities and strategies
 ```
 
-## Architecture
+### Import Conventions
+- **Always use**: `from kivy_garden.markdownlabel import MarkdownLabel`
+- **Package namespace**: `kivy_garden.markdownlabel`
+- **Never use**: Legacy `garden.flower` imports
 
-### Three-Layer Rendering Pipeline
+## Architecture: Three-Layer Rendering Pipeline
 
-1. **Parsing**: mistune parses Markdown text → AST tokens
-2. **Block Rendering**: `KivyRenderer` converts block tokens → Kivy widgets (BoxLayout, Label, GridLayout, etc.)
-3. **Inline Rendering**: `InlineRenderer` converts inline tokens → Kivy markup strings (BBCode-like)
+The codebase follows a strict three-layer architecture for converting Markdown to Kivy UI:
 
-### Key Components
+1. **Parsing Layer**: mistune parses Markdown text → AST tokens
+2. **Block Rendering Layer**: `KivyRenderer` converts block tokens → Kivy widgets
+3. **Inline Rendering Layer**: `InlineRenderer` converts inline tokens → Kivy markup strings
 
-- **MarkdownLabel** (`__init__.py`): Main widget class, extends BoxLayout
+### Core Component Responsibilities
+
+#### MarkdownLabel (`__init__.py`)
+- **Role**: Main widget class, extends `BoxLayout` (NOT Label - Markdown requires multiple widgets)
+- **Responsibilities**:
   - Manages parsing and rendering lifecycle
-  - Exposes Kivy Label-compatible properties
+  - Exposes Kivy Label-compatible properties for easy migration
   - Dispatches `on_ref_press` events for link clicks
+- **When modifying**: Ensure Label API compatibility is maintained
 
-- **KivyRenderer** (`kivy_renderer.py`): Block-level renderer
-  - Handles paragraphs, headings, lists, tables, code blocks, quotes
+#### KivyRenderer (`kivy_renderer.py`)
+- **Role**: Block-level renderer (paragraphs, headings, lists, tables, code blocks, quotes)
+- **Responsibilities**:
   - Creates widget hierarchies (BoxLayout, GridLayout, Label, AsyncImage)
-  - Manages nesting depth protection and list indentation
+  - Manages nesting depth protection (prevents infinite recursion)
+  - Handles list indentation and numbering
+- **Key pattern**: Each block type has a dedicated `render_*` method
+- **When modifying**: Test nesting depth limits and complex nested structures
 
-- **InlineRenderer** (`inline_renderer.py`): Inline markup converter
-  - Converts bold, italic, code, links, strikethrough to Kivy markup
+#### InlineRenderer (`inline_renderer.py`)
+- **Role**: Inline markup converter (bold, italic, code, links, strikethrough)
+- **Responsibilities**:
+  - Converts inline tokens to Kivy markup strings (BBCode-like: `[b]`, `[i]`, `[ref=url]`)
   - Escapes special characters for markup safety
-  - Generates `[b]`, `[i]`, `[ref=url]`, etc. tags
+  - Handles nested inline formatting
+- **Key pattern**: Returns strings, not widgets
+- **When modifying**: Always escape user content to prevent markup injection
 
-- **MarkdownSerializer** (`markdown_serializer.py`): AST serialization
-  - Converts parsed AST back to Markdown text
-  - Used for round-trip conversion
+#### MarkdownSerializer (`markdown_serializer.py`)
+- **Role**: AST → Markdown text serialization
+- **Responsibilities**: Round-trip conversion (parse → serialize → parse should be idempotent)
+- **When modifying**: Ensure round-trip tests pass
 
-## External Dependencies
+## File Organization Patterns
 
-### Submodules (external/)
+### Test Suite Organization
+Tests are organized by **functionality**, not by implementation file:
+- `test_core_functionality.py`: Core parsing and rendering
+- `test_*_properties.py`: Property forwarding tests (font, color, text, padding)
+- `test_*_compatibility.py`: Label API compatibility
+- `test_performance.py`: Performance and stability (uses Hypothesis property-based testing)
+- `test_utils.py`: Shared test utilities and Hypothesis strategies
 
-- **kivy**: Full Kivy framework source (git submodule)
-- **mistune**: Markdown parser source (git submodule)
+**When adding tests**: Place in the appropriate functional test file, not necessarily matching the implementation file.
 
-These are included for development/reference but not used directly in the package (dependencies are installed via pip).
+### Tools Directory (`tools/`)
+Contains test optimization and analysis tools:
+- `test_optimization/`: Hypothesis test performance optimization infrastructure
+- `analyze_tests.py`: Command-line tool for analyzing test performance
+- **When modifying tests**: Run `python tools/analyze_tests.py` to validate performance
 
-## Documentation
+## External Dependencies (Submodules)
+
+Located in `external/`:
+- `kivy/`: Full Kivy framework source (git submodule)
+- `mistune/`: Markdown parser source (git submodule)
+
+**IMPORTANT**: These are for development/reference only. The package uses pip-installed versions, not these submodules directly.
+
+## Configuration Files
+
+- `setup.py`: Package metadata, dependencies, entry points
+- `setup.cfg`: Flake8 configuration, code style rules (80 char line limit, PEP8 compliance)
+- `pytest.ini`: Pytest configuration
+- `PROPERTY_BASED_TESTING_GUIDE.md`: Guidelines for optimizing property-based tests
+
+## Documentation Structure
 
 ```
 doc/
@@ -81,39 +126,34 @@ doc/
 │   ├── api.rst          # API reference
 │   ├── examples.rst     # Usage examples
 │   └── ...
-└── Makefile             # Build documentation
+└── Makefile             # Build with: cd doc && make html
 ```
 
-## Tools
+## Key Architectural Constraints
 
-```
-tools/
-├── test_optimization/           # Test performance optimization tools
-│   ├── __init__.py             # Package exports
-│   ├── strategy_classifier.py  # Hypothesis strategy analysis
-│   ├── max_examples_calculator.py  # Optimal max_examples calculation
-│   ├── test_file_analyzer.py   # Test file analysis and reporting
-│   └── over_testing_validator.py  # CI validation and automated fixing
-├── analyze_tests.py            # Command-line analysis tool
-└── README.md                   # Tools documentation
-```
+1. **MarkdownLabel extends BoxLayout**: Cannot extend Label directly because Markdown rendering requires multiple child widgets
+2. **Nesting depth protection**: KivyRenderer limits nesting to prevent infinite recursion
+3. **Markup safety**: InlineRenderer must escape all user content to prevent markup injection
+4. **Label API compatibility**: MarkdownLabel exposes Label-compatible properties for easy migration from standard Kivy Labels
+5. **Namespace package structure**: Uses `find_namespace_packages` in setup.py to support `kivy_garden.*` namespace
 
-## Configuration Files
+## Common Modification Patterns
 
-- **setup.py**: Package metadata, dependencies, entry points
-- **setup.cfg**: Flake8 configuration, code style rules
-- **README.md**: User-facing documentation
-- **CHANGELOG.md**: Version history
-- **CONTRIBUTING.md**: Contribution guidelines
-- **LICENSE.txt**: MIT license
-- **HYPOTHESIS_OPTIMIZATION_GUIDELINES.md**: Guidelines for optimizing property-based tests
+### Adding a new Markdown feature
+1. Check if mistune supports it (may need plugin)
+2. Add block rendering in `KivyRenderer` or inline rendering in `InlineRenderer`
+3. Add serialization support in `MarkdownSerializer`
+4. Add tests in appropriate test file (by functionality, not by file)
+5. Update documentation in `doc/source/`
 
-## Namespace Package Convention
+### Adding a new Label-compatible property
+1. Add property to `MarkdownLabel` in `__init__.py`
+2. Forward to child Labels in rendering methods
+3. Add tests in appropriate `test_*_properties.py` file
+4. Document in API reference
 
-This package uses Python namespace packages to integrate with the Kivy Garden ecosystem:
-
-- Import as: `from kivy_garden.markdownlabel import MarkdownLabel`
-- Package name: `kivy_garden.markdownlabel`
-- PyPI name: `kivy_garden.markdownlabel`
-
-All Kivy Garden flowers share the `kivy_garden` namespace, allowing multiple flowers to coexist without conflicts.
+### Optimizing test performance
+1. Review `PROPERTY_BASED_TESTING_GUIDE.md`
+2. Run `python tools/analyze_tests.py` to identify slow tests
+3. Adjust `max_examples` based on strategy complexity
+4. Add performance rationale comments to tests
