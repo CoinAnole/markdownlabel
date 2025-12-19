@@ -6,7 +6,7 @@ The goal is to manually repair the test suite's comment standardization and hypo
 
 ## Workflow
 
-For each test file in `kivy_garden/markdownlabel/tests/`:
+For the named test file in `kivy_garden/markdownlabel/tests/`:
 
 1.  **Analyze**: Run `python tools/validate_comments.py validate <path_to_file> --verbose` to see reported issues.
 2.  **Inspect**: Read the file code. *Do not blindly trust the tool's report*, especially regarding line numbers or content inside string literals.
