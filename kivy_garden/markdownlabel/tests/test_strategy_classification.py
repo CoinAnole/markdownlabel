@@ -5,7 +5,6 @@ Hypothesis strategies for max_examples optimization.
 """
 
 import pytest
-import os
 from hypothesis import given, strategies as st, settings
 
 import sys
@@ -26,7 +25,8 @@ class TestStrategyClassification:
     
     # **Feature: test-performance-optimization, Property 1: Boolean tests use exactly 2 examples**
     @given(st.just('st.booleans()'))
-    @settings(max_examples=2, deadline=None)
+    # Small finite strategy: 1 examples (input space size: 1)
+    @settings(max_examples=1, deadline=None)
     def test_boolean_strategy_classification(self, strategy_code):
         """Boolean strategies are correctly classified with input space size 2.
         
@@ -39,7 +39,8 @@ class TestStrategyClassification:
         assert 'st.booleans()' in analysis.components
     
     @given(st.integers(min_value=1, max_value=10), st.integers(min_value=0, max_value=5))
-    @settings(max_examples=10, deadline=None)
+    # Combination strategy: 50 examples (combination coverage)
+    @settings(max_examples=50, deadline=None)
     def test_small_integer_range_classification(self, range_size, min_offset):
         """Small integer ranges are classified as SMALL_FINITE with correct size."""
         min_val = min_offset
@@ -53,6 +54,7 @@ class TestStrategyClassification:
         assert len(analysis.components) == 1
     
     @given(st.lists(st.text(min_size=1, max_size=3, alphabet='abc'), min_size=1, max_size=10))
+    # Complex strategy: 10 examples (adequate coverage)
     @settings(max_examples=10, deadline=None)
     def test_small_sampled_from_classification(self, items):
         """Small sampled_from lists are classified as SMALL_FINITE with correct size."""
@@ -66,7 +68,8 @@ class TestStrategyClassification:
         assert len(analysis.components) == 1
     
     @given(st.integers(min_value=11, max_value=50))
-    @settings(max_examples=10, deadline=None)
+    # Medium finite strategy: 40 examples (adequate finite coverage)
+    @settings(max_examples=40, deadline=None)
     def test_medium_finite_classification(self, range_size):
         """Medium-sized finite strategies are classified as MEDIUM_FINITE."""
         strategy_code = f'st.integers(min_value=0, max_value={range_size-1})'
@@ -109,6 +112,7 @@ class TestMaxExamplesCalculation:
     
     # **Feature: test-performance-optimization, Property 2: Small finite strategies use input space size**
     @given(st.integers(min_value=1, max_value=10))
+    # Small finite strategy: 10 examples (input space size: 10)
     @settings(max_examples=10, deadline=None)
     def test_small_finite_uses_input_space_size(self, range_size):
         """Small finite strategies should use max_examples equal to input space size.
@@ -122,6 +126,7 @@ class TestMaxExamplesCalculation:
         assert optimal == range_size, f"Expected {range_size} examples for range of size {range_size}, got {optimal}"
     
     @given(st.lists(st.text(min_size=1, max_size=2, alphabet='ab'), min_size=1, max_size=10))
+    # Complex strategy: 10 examples (adequate coverage)
     @settings(max_examples=10, deadline=None)
     def test_sampled_from_uses_list_length(self, items):
         """sampled_from strategies should use max_examples equal to list length."""
@@ -141,7 +146,8 @@ class TestMaxExamplesCalculation:
         assert optimal == 2, f"Boolean strategy should use exactly 2 examples, got {optimal}"
     
     @given(st.integers(min_value=11, max_value=50))
-    @settings(max_examples=10, deadline=None)
+    # Medium finite strategy: 40 examples (adequate finite coverage)
+    @settings(max_examples=40, deadline=None)
     def test_medium_finite_capped_appropriately(self, range_size):
         """Medium finite strategies should be capped at reasonable limits."""
         strategy_code = f'st.integers(min_value=0, max_value={range_size-1})'
@@ -153,7 +159,7 @@ class TestMaxExamplesCalculation:
     
     # **Feature: test-performance-optimization, Property 4: Complex strategies use appropriate ranges**
     @given(st.integers(min_value=1, max_value=4))
-    # Complex strategy: 4 examples (adequate coverage)
+    # Small finite strategy: 4 examples (input space size: 4)
     @settings(max_examples=4, deadline=None)
     def test_complex_strategy_uses_complexity_based_examples(self, complexity_level):
         """Complex strategies should use examples based on complexity level.
@@ -235,8 +241,8 @@ class TestCombinationStrategies:
     
     # **Feature: test-performance-optimization, Property 3: Combination strategies use product formula**
     @given(st.integers(min_value=2, max_value=5), st.integers(min_value=2, max_value=5))
-    # Complex strategy: 4 examples (adequate coverage)
-    @settings(max_examples=4, deadline=None)
+    # Combination strategy: 16 examples (combination coverage)
+    @settings(max_examples=16, deadline=None)
     def test_combination_uses_product_formula(self, size1, size2):
         """Combination strategies should use product of individual strategy sizes.
         
@@ -304,8 +310,8 @@ class TestOverTestingDetection:
     
     # **Feature: test-performance-optimization, Property 7: Over-testing detection works correctly**
     @given(st.integers(min_value=101, max_value=200))
-    # Combination strategy: 20 examples (combination coverage)
-    @settings(max_examples=20 if not os.getenv('CI') else 10, deadline=None)
+    # Medium finite strategy: 100 examples (adequate finite coverage)
+    @settings(max_examples=100, deadline=None)
     def test_boolean_over_testing_detected(self, excessive_examples):
         """Over-testing of boolean strategies should be correctly detected.
         
@@ -322,7 +328,8 @@ class TestOverTestingDetection:
         assert optimal == 2, f"Boolean optimal should be 2, got {optimal}"
     
     @given(st.integers(min_value=1, max_value=10), st.integers(min_value=50, max_value=150))
-    @settings(max_examples=10, deadline=None)
+    # Combination strategy: 50 examples (combination coverage)
+    @settings(max_examples=50, deadline=None)
     def test_small_finite_over_testing_detected(self, range_size, excessive_examples):
         """Over-testing of small finite strategies should be detected."""
         strategy_code = f'st.integers(min_value=0, max_value={range_size-1})'
