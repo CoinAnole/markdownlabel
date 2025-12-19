@@ -607,23 +607,17 @@ class CommentAnalyzer:
         return comments
     
     def _extract_documentation_comments(self, lines: List[str], decorator_start: int) -> List[Tuple[int, str]]:
-        """Extract contiguous documentation comments immediately above a test function.
+        """Extract documentation comments near a test decorator block.
         
-        Args:
-            lines: File content split into lines
-            decorator_start: 0-based line index where the first decorator (@given) appears
-        
-        Returns:
-            List of (line_number, comment_text) tuples in top-to-bottom order.
+        Picks up comments directly above @given as well as comments placed
+        between decorators (e.g., between @given and @settings).
         """
         comments = []
+
+        # Look upward from the first decorator.
         idx = decorator_start - 1
-        
-        # Skip trailing blank lines between the decorator and the comment block
         while idx >= 0 and lines[idx].strip() == '':
             idx -= 1
-        
-        # Collect contiguous comment lines directly above
         while idx >= 0:
             stripped = lines[idx].strip()
             if stripped.startswith('#'):
@@ -633,10 +627,28 @@ class CommentAnalyzer:
             if stripped == '':
                 idx -= 1
                 continue
-            break  # Hit non-comment content
-        
+            break
+
         comments.reverse()
-        return comments
+
+        # Also collect comments immediately after the @given decorator until
+        # we hit another decorator or non-comment content.
+        forward_idx = decorator_start + 1
+        while forward_idx < len(lines):
+            stripped = lines[forward_idx].strip()
+            if stripped.startswith('#'):
+                comments.append((forward_idx + 1, f"# {stripped.lstrip('#').strip()}"))
+                forward_idx += 1
+                continue
+            if stripped == '':
+                forward_idx += 1
+                continue
+            # Stop at the next decorator or any other code.
+            if stripped.startswith('@') or stripped.startswith('def '):
+                break
+            break
+
+        return sorted(comments, key=lambda c: c[0])
     
     def _looks_like_max_examples_comment(self, comment: str) -> bool:
         """Check if a comment looks like it's trying to document max_examples.

@@ -94,9 +94,10 @@ class StrategyClassifier:
             max_val = int(integer_match.group(2))
             size = max_val - min_val + 1
 
+            # Treat 51-value ranges as finite (medium) instead of complex.
             if size <= 10:
                 strategy_type = StrategyType.SMALL_FINITE
-            elif size <= 50:
+            elif size <= 51:
                 strategy_type = StrategyType.MEDIUM_FINITE
             else:
                 strategy_type = StrategyType.COMPLEX
