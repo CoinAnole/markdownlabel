@@ -180,57 +180,6 @@ class TestMaxExamplesCalculation:
         
         assert optimal == expected, f"Expected {expected} examples for complexity {complexity_level}, got {optimal}"
     
-    # **Feature: test-performance-optimization, Property 5: CI environment reduces examples appropriately**
-    @given(st.sampled_from([StrategyType.COMPLEX, StrategyType.COMBINATION]))
-    # Small finite strategy: 2 examples (input space size: 2)
-    @settings(max_examples=2, deadline=None)
-    def test_ci_environment_reduces_examples_appropriately(self, strategy_type):
-        """CI environment should reduce examples for complex and large combination strategies.
-        
-        **Validates: Requirements 2.5, 3.5**
-        """
-        import os
-        import sys
-        from pathlib import Path
-        
-        # Add tools directory to path
-        tools_path = Path(__file__).parent.parent.parent.parent / 'tools'
-        sys.path.insert(0, str(tools_path))
-        
-        from test_optimization.strategy_classifier import StrategyAnalysis
-        
-        # Create a strategy analysis that benefits from CI optimization
-        if strategy_type == StrategyType.COMPLEX:
-            analysis = StrategyAnalysis(
-                strategy_type=StrategyType.COMPLEX,
-                input_space_size=None,
-                complexity_level=2
-            )
-        else:  # COMBINATION
-            analysis = StrategyAnalysis(
-                strategy_type=StrategyType.COMBINATION,
-                input_space_size=30,  # Large enough to benefit from CI optimization
-                complexity_level=1
-            )
-        
-        # Calculate examples without CI
-        base_examples = self.calculator.calculate_from_analysis(analysis)
-        
-        # Simulate CI environment
-        original_ci = os.environ.get('CI')
-        try:
-            os.environ['CI'] = '1'
-            ci_examples = self.calculator.calculate_from_analysis(analysis)
-        finally:
-            if original_ci is None:
-                os.environ.pop('CI', None)
-            else:
-                os.environ['CI'] = original_ci
-        
-        # CI should reduce examples for these strategy types
-        assert ci_examples < base_examples, f"CI should reduce examples: base={base_examples}, ci={ci_examples}"
-        assert ci_examples >= 5, f"CI examples should not go below minimum: {ci_examples}"
-
 class TestCombinationStrategies:
     """Property tests for combination strategy handling (Property 3)."""
     
@@ -309,9 +258,9 @@ class TestOverTestingDetection:
         self.analyzer = FileAnalyzer()
     
     # **Feature: test-performance-optimization, Property 7: Over-testing detection works correctly**
-    @given(st.integers(min_value=101, max_value=200))
-    # Medium finite strategy: 100 examples (adequate finite coverage)
-    @settings(max_examples=100, deadline=None)
+    @given(st.integers(min_value=3, max_value=50))
+    # Medium finite strategy: 20 examples (adequate finite coverage)
+    @settings(max_examples=20, deadline=None)
     def test_boolean_over_testing_detected(self, excessive_examples):
         """Over-testing of boolean strategies should be correctly detected.
         

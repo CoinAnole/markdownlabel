@@ -28,8 +28,8 @@ class TestWidgetTreeGeneration:
     """Property tests for widget tree generation (Property 1)."""
 
     @given(simple_markdown_document())
-    @settings(max_examples=20, deadline=None)
     # Complex strategy: 20 examples (adequate coverage)
+    @settings(max_examples=20, deadline=None)
     def test_markdown_produces_widgets(self, markdown_text):
         """Valid Markdown text produces at least one widget."""
         assume(markdown_text.strip())  # Skip empty text
@@ -41,8 +41,8 @@ class TestWidgetTreeGeneration:
             f"Expected at least 1 child for markdown: {markdown_text!r}"
     
     @given(markdown_heading())
-    @settings(max_examples=20, deadline=None)
     # Complex strategy: 20 examples (adequate coverage)
+    @settings(max_examples=20, deadline=None)
     def test_heading_produces_label_widget(self, heading):
         """Heading Markdown produces a Label widget."""
         label = MarkdownLabel(text=heading)
@@ -58,8 +58,8 @@ class TestWidgetTreeGeneration:
             f"Expected Label, got {type(heading_widget)}"
 
     @given(markdown_paragraph())
-    @settings(max_examples=20, deadline=None)
     # Complex strategy: 20 examples (adequate coverage)
+    @settings(max_examples=20, deadline=None)
     def test_paragraph_produces_label_widget(self, paragraph):
         """Paragraph Markdown produces a Label widget."""
         assume(paragraph.strip())  # Skip empty paragraphs
@@ -71,8 +71,8 @@ class TestWidgetTreeGeneration:
             f"Expected at least 1 child for paragraph: {paragraph!r}"
     
     @given(st.integers(min_value=1, max_value=5))
-    @settings(max_examples=5, deadline=None)
     # Small finite strategy: 5 examples (input space size: 5)
+    @settings(max_examples=5, deadline=None)
     def test_multiple_blocks_produce_multiple_widgets(self, num_blocks):
         """Multiple block elements produce multiple widgets."""
         # Create markdown with multiple paragraphs
@@ -104,8 +104,8 @@ class TestReactiveTextUpdates:
     """Property tests for reactive text updates (Property 2)."""
     
     @given(markdown_heading(), markdown_paragraph())
-    @settings(max_examples=50, deadline=None)
     # Combination strategy: 50 examples (combination coverage)
+    @settings(max_examples=50, deadline=None)
     def test_text_change_updates_widgets(self, text1, text2):
         """Changing text property updates the widget tree."""
         assume(text1.strip() and text2.strip())
@@ -124,8 +124,8 @@ class TestReactiveTextUpdates:
             f"Expected text to be {text2!r}, got {label.text!r}"
     
     @given(st.integers(min_value=1, max_value=3), st.integers(min_value=1, max_value=3))
+    # Combination strategy: 9 examples (combination coverage)
     @settings(max_examples=9, deadline=None)
-    # Small finite strategy: 9 examples (input space size: 9)
     def test_different_block_counts_update_correctly(self, count1, count2):
         """Changing from N blocks to M blocks updates widget count."""
         assume(count1 != count2)
@@ -150,8 +150,8 @@ class TestReactiveTextUpdates:
             f"Expected at least {count2} children after update, got {children_after}"
     
     @given(simple_markdown_document())
-    @settings(max_examples=20, deadline=None)
     # Complex strategy: 20 examples (adequate coverage)
+    @settings(max_examples=20, deadline=None)
     def test_clear_text_removes_widgets(self, markdown_text):
         """Setting text to empty removes all widgets."""
         assume(markdown_text.strip())
@@ -168,8 +168,8 @@ class TestReactiveTextUpdates:
             f"Expected 0 children after clearing text, got {len(label.children)}"
     
     @given(simple_markdown_document(), simple_markdown_document())
-    @settings(max_examples=50, deadline=None)
     # Combination strategy: 50 examples (combination coverage)
+    @settings(max_examples=50, deadline=None)
     def test_ast_updates_with_text(self, text1, text2):
         """AST tokens update when text changes."""
         assume(text1.strip() and text2.strip())
@@ -199,8 +199,8 @@ class TestLinkRefMarkup:
     """Property tests for link ref markup (Property 12)."""
     
     @given(markdown_link())
-    @settings(max_examples=20, deadline=None)
     # Complex strategy: 20 examples (adequate coverage)
+    @settings(max_examples=20, deadline=None)
     def test_link_produces_ref_markup(self, link_markdown):
         """Markdown links produce [ref=url]...[/ref] markup in Labels."""
         label = MarkdownLabel(text=link_markdown)
@@ -224,8 +224,8 @@ class TestLinkRefMarkup:
         whitelist_categories=['L', 'N'],
         blacklist_characters='[]()&\n\r'
     )))
-    @settings(max_examples=20, deadline=None)
     # Complex strategy: 20 examples (adequate coverage)
+    @settings(max_examples=20, deadline=None)
     def test_link_url_in_ref_tag(self, link_text):
         """Link URL appears in ref tag."""
         url = 'https://example.com/page'
@@ -245,8 +245,8 @@ class TestLinkRefMarkup:
         pytest.fail(f"Expected to find [ref={url}] in markup for: {markdown!r}")
     
     @given(st.from_regex(r'https?://[a-z]+\.[a-z]+/[a-z]+', fullmatch=True))
-    @settings(max_examples=20, deadline=None)
     # Complex strategy: 20 examples (adequate coverage)
+    @settings(max_examples=20, deadline=None)
     def test_various_urls_in_links(self, url):
         """Various URL formats work in links."""
         markdown = f'[Click here]({url})'
@@ -276,8 +276,8 @@ class TestDeepNestingStability:
     """Property tests for deep nesting stability (Property 18)."""
     
     @given(st.integers(min_value=1, max_value=15))
+    # Medium finite strategy: 15 examples (adequate finite coverage)
     @settings(max_examples=15, deadline=None)
-    # Small finite strategy: 15 examples (input space size: 15)
     def test_nested_lists_render_without_exception(self, depth):
         """Deeply nested lists render without raising exceptions."""
         # Generate nested list markdown
@@ -294,8 +294,8 @@ class TestDeepNestingStability:
             pytest.fail(f"Unexpected exception at depth {depth}: {e}")
     
     @given(st.integers(min_value=1, max_value=15))
+    # Medium finite strategy: 15 examples (adequate finite coverage)
     @settings(max_examples=15, deadline=None)
-    # Small finite strategy: 15 examples (input space size: 15)
     def test_nested_quotes_render_without_exception(self, depth):
         """Deeply nested block quotes render without raising exceptions."""
         # Generate nested quote markdown
@@ -311,8 +311,8 @@ class TestDeepNestingStability:
             pytest.fail(f"Unexpected exception at depth {depth}: {e}")
     
     @given(st.integers(min_value=1, max_value=15))
+    # Medium finite strategy: 15 examples (adequate finite coverage)
     @settings(max_examples=15, deadline=None)
-    # Small finite strategy: 15 examples (input space size: 15)
     def test_mixed_nesting_renders_without_exception(self, depth):
         """Mixed nested structures (lists and quotes) render without exceptions."""
         # Generate mixed nested markdown

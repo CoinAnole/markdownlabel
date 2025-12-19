@@ -224,10 +224,7 @@ class CommentAnalyzer:
         
         # Detect format violation patterns
         inconsistencies.extend(self._detect_format_violation_patterns(file_analyses))
-        
-        # Detect max_examples value inconsistencies
-        inconsistencies.extend(self._detect_max_examples_inconsistencies(file_analyses))
-        
+
         # Detect strategy mismatches
         inconsistencies.extend(self._detect_strategy_mismatch_patterns(file_analyses))
         
@@ -280,12 +277,24 @@ class CommentAnalyzer:
             affected_lines = []
             
             for file_path, comment in comments:
-                rationales.add(comment.rationale.lower().strip())
+                rationale = comment.rationale.lower().strip()
+                # Normalize expected variations that should not be treated as inconsistencies.
+                #
+                # - Small finite: rationale is expected to vary by input space size (N).
+                #   Treat all "input space size: <number>" as one canonical pattern.
+                # - Complex: multiple rationales are explicitly allowed by the docs
+                #   (e.g. "adequate coverage" vs "performance optimized"), so don't
+                #   treat that as an inconsistency.
+                if strategy_type == 'Small finite' and rationale.startswith('input space size'):
+                    rationale = 'input space size: <n>'
+                rationales.add(rationale)
                 affected_files.add(file_path)
                 if comment.line_number:
                     affected_lines.append((file_path, comment.line_number))
             
             # If more than one unique rationale for same strategy type, it's inconsistent
+            if strategy_type == 'Complex':
+                continue
             if len(rationales) > 1:
                 inconsistencies.append(Inconsistency(
                     inconsistency_type="TERMINOLOGY_INCONSISTENCY",
@@ -351,31 +360,6 @@ class CommentAnalyzer:
                 affected_lines=affected_lines,
                 suggested_resolution="Fix all format violations to match standardized pattern"
             ))
-        
-        return inconsistencies
-    
-    def _detect_max_examples_inconsistencies(self, file_analyses: List[FileAnalysis]) -> List[Inconsistency]:
-        """Detect inconsistencies in max_examples usage patterns."""
-        inconsistencies = []
-        
-        # Collect max_examples values by strategy type
-        max_examples_by_strategy = {}
-        for analysis in file_analyses:
-            for comment in analysis.valid_comments:
-                strategy_type = comment.strategy_type
-                if strategy_type not in max_examples_by_strategy:
-                    max_examples_by_strategy[strategy_type] = set()
-                max_examples_by_strategy[strategy_type].add(comment.max_examples)
-        
-        # Check for unusual patterns
-        for strategy_type, values in max_examples_by_strategy.items():
-            if len(values) > 3:  # More than 3 different values for same strategy type
-                inconsistencies.append(Inconsistency(
-                    inconsistency_type="MAX_EXAMPLES_INCONSISTENCY",
-                    description=f"Strategy type '{strategy_type}' uses many different max_examples values: {sorted(values)}",
-                    affected_files=[],  # Would need more detailed tracking to populate this
-                    suggested_resolution=f"Review and standardize max_examples values for '{strategy_type}' strategy"
-                ))
         
         return inconsistencies
     

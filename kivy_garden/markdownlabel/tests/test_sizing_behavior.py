@@ -487,8 +487,8 @@ class TestStrictLabelModeSizingBehavior:
     
     @given(simple_markdown_document())
     # Complex strategy: 20 examples (adequate coverage)
-    @settings(max_examples=20, deadline=None)
     # Complex strategy: 20 examples (adequate coverage)
+    @settings(max_examples=20, deadline=None)
     def test_strict_mode_ignores_auto_size_height_changes(self, markdown_text):
         """When strict_label_mode=True, auto_size_height changes are ignored."""
         label = MarkdownLabel(text=markdown_text, strict_label_mode=True)
@@ -505,8 +505,8 @@ class TestStrictLabelModeSizingBehavior:
     
     @given(simple_markdown_document())
     # Complex strategy: 20 examples (adequate coverage)
-    @settings(max_examples=20, deadline=None)
     # Complex strategy: 20 examples (adequate coverage)
+    @settings(max_examples=20, deadline=None)
     def test_strict_mode_triggers_rebuild(self, markdown_text):
         """Changing strict_label_mode triggers widget rebuild."""
         assume(markdown_text.strip())

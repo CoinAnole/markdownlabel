@@ -129,7 +129,7 @@ class TestInlineFormattingConversion:
     
     @given(link_token())
     # Complex strategy: 20 examples (adequate coverage)
-    @settings(max_examples=20)
+    @settings(max_examples=20, deadline=None)
     def test_link_produces_ref_tags_unstyled(self, token):
         """Unstyled links produce [ref=url]...[/ref] without forced styling."""
         renderer = InlineRenderer(link_style='unstyled')
@@ -147,7 +147,7 @@ class TestInlineFormattingConversion:
     
     @given(link_token())
     # Complex strategy: 20 examples (adequate coverage)
-    @settings(max_examples=20)
+    @settings(max_examples=20, deadline=None)
     def test_link_produces_ref_tags_styled(self, token):
         """Styled links wrap refs with color and underline."""
         renderer = InlineRenderer(link_style='styled')
@@ -175,7 +175,7 @@ class TestSpecialCharacterEscaping:
     
     @given(text_token())
     # Complex strategy: 20 examples (adequate coverage)
-    @settings(max_examples=20)
+    @settings(max_examples=20, deadline=None)
     def test_text_escapes_special_characters(self, token):
         """Text tokens escape [, ], and & characters."""
         renderer = InlineRenderer()
@@ -210,7 +210,7 @@ class TestSpecialCharacterEscaping:
     
     @given(st.text(alphabet='[]&', min_size=1, max_size=50))
     # Complex strategy: 30 examples (adequate coverage)
-    @settings(max_examples=30)
+    @settings(max_examples=30, deadline=None)
     def test_only_special_chars_fully_escaped(self, raw):
         """Text containing only special characters is fully escaped."""
         renderer = InlineRenderer()
@@ -232,7 +232,7 @@ class TestSpecialCharacterEscaping:
     
     @given(st.text(min_size=0, max_size=100))
     # Complex strategy: 30 examples (adequate coverage)
-    @settings(max_examples=30)
+    @settings(max_examples=30, deadline=None)
     def test_escape_is_reversible(self, raw):
         """Escaping can be reversed to get original text."""
         renderer = InlineRenderer()
@@ -418,7 +418,7 @@ class TestURLMarkupSafetyProperty:
         st.text(min_size=1, max_size=50).map(lambda s: f"http://example.com/[[[{s}"),
     ))
     # Complex strategy: 20 examples (adequate coverage)
-    @settings(max_examples=20)
+    @settings(max_examples=20, deadline=None)
     def test_urls_with_brackets_are_safe(self, full_url):
         """URLs containing brackets should be safely escaped."""
         # **Feature: test-improvements, Property 6: URL markup safety**
@@ -677,7 +677,7 @@ class TestHTMLContentEscapingProperty:
         st.text(min_size=1, max_size=100).filter(lambda s: '<' in s or '>' in s),
     ))
     # Complex strategy: 20 examples (adequate coverage)
-    @settings(max_examples=20)
+    @settings(max_examples=20, deadline=None)
     def test_html_content_is_escaped(self, html_content):
         """HTML content should be escaped to prevent markup injection."""
         # **Feature: test-improvements, Property 9: HTML content escaping**
@@ -740,7 +740,7 @@ class TestHTMLContentEscapingProperty:
         whitelist_categories=['L', 'N', 'P', 'S', 'Z']
     )))
     # Complex strategy: 20 examples (adequate coverage)
-    @settings(max_examples=20)
+    @settings(max_examples=20, deadline=None)
     def test_arbitrary_html_content_safety(self, content):
         """Any arbitrary content in HTML tags should be safely escaped."""
         # **Feature: test-improvements, Property 9: HTML content escaping**

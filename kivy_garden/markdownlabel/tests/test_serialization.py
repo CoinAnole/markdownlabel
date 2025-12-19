@@ -113,8 +113,8 @@ class TestRoundTripSerialization:
         return merged
     
     @given(markdown_heading())
-    @settings(max_examples=20, deadline=None)
     # Complex strategy: 20 examples (adequate coverage)
+    @settings(max_examples=20, deadline=None)
     def test_heading_round_trip(self, heading):
         """Heading round-trips through parse-serialize-parse."""
         label = MarkdownLabel(text=heading)
@@ -132,8 +132,8 @@ class TestRoundTripSerialization:
             f"AST mismatch after round-trip:\nOriginal: {ast1}\nAfter: {ast2}\nSerialized: {serialized!r}"
     
     @given(markdown_paragraph())
-    @settings(max_examples=20, deadline=None)
     # Complex strategy: 20 examples (adequate coverage)
+    @settings(max_examples=20, deadline=None)
     def test_paragraph_round_trip(self, paragraph):
         """Paragraph round-trips through parse-serialize-parse."""
         assume(paragraph.strip())
@@ -156,8 +156,8 @@ class TestRoundTripSerialization:
      # Complex strategy: 20 examples (adequate coverage)
     
     @given(markdown_bold())
-    @settings(max_examples=20, deadline=None)
     # Complex strategy: 20 examples (adequate coverage)
+    @settings(max_examples=20, deadline=None)
     def test_bold_round_trip(self, bold_text):
         """Bold text round-trips through parse-serialize-parse."""
         label = MarkdownLabel(text=bold_text)
@@ -172,8 +172,8 @@ class TestRoundTripSerialization:
             f"AST mismatch after round-trip:\nOriginal: {ast1}\nAfter: {ast2}"
     
     @given(markdown_italic())
-    @settings(max_examples=20, deadline=None)
     # Complex strategy: 20 examples (adequate coverage)
+    @settings(max_examples=20, deadline=None)
     def test_italic_round_trip(self, italic_text):
         """Italic text round-trips through parse-serialize-parse."""
         label = MarkdownLabel(text=italic_text)
@@ -188,8 +188,8 @@ class TestRoundTripSerialization:
             f"AST mismatch after round-trip:\nOriginal: {ast1}\nAfter: {ast2}"
     
     @given(markdown_link())
-    @settings(max_examples=20, deadline=None)
     # Complex strategy: 20 examples (adequate coverage)
+    @settings(max_examples=20, deadline=None)
     def test_link_round_trip(self, link_text):
         """Link round-trips through parse-serialize-parse."""
         label = MarkdownLabel(text=link_text)
@@ -204,8 +204,8 @@ class TestRoundTripSerialization:
             f"AST mismatch after round-trip:\nOriginal: {ast1}\nAfter: {ast2}"
     
     @given(simple_markdown_document())
-    @settings(max_examples=20, deadline=None)
     # Complex strategy: 20 examples (adequate coverage)
+    @settings(max_examples=20, deadline=None)
     def test_document_round_trip(self, markdown_text):
         """Full document round-trips through parse-serialize-parse."""
         assume(markdown_text.strip())
@@ -441,8 +441,8 @@ class TestCodeFenceCollisionProperty:
     """Property-based tests for code fence collision handling."""
     
     @given(st.text(min_size=0, max_size=200))
-    @settings(max_examples=30, deadline=None)
     # Complex strategy: 30 examples (adequate coverage)
+    @settings(max_examples=30, deadline=None)
     def test_fence_collision_handling_property(self, code_content):
         """**Feature: test-improvements, Property 7: Code fence collision handling**
         

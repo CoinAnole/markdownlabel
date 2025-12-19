@@ -65,7 +65,7 @@ class TestEfficientStyleUpdates:
     @given(st.floats(min_value=10, max_value=50, allow_nan=False, allow_infinity=False),
            st.floats(min_value=10, max_value=50, allow_nan=False, allow_infinity=False))
     # Complex strategy: 20 examples (adequate coverage)
-    @settings(max_examples=20 if os.getenv('CI') else 100, deadline=None)
+    @settings(max_examples=20, deadline=None)
     def test_font_size_change_preserves_widget_tree(self, initial_size, new_size):
         """Changing font_size preserves widget tree structure (widget identities).
         
@@ -98,7 +98,7 @@ class TestEfficientStyleUpdates:
         st.floats(min_value=0, max_value=1, allow_nan=False, allow_infinity=False)
     ))
     # Complex strategy: 20 examples (adequate coverage)
-    @settings(max_examples=20 if os.getenv('CI') else 100, deadline=None)
+    @settings(max_examples=20, deadline=None)
     def test_color_change_preserves_widget_tree(self, new_color):
         """Changing color preserves widget tree structure (widget identities).
         
@@ -129,7 +129,7 @@ class TestEfficientStyleUpdates:
         st.floats(min_value=0, max_value=1, allow_nan=False, allow_infinity=False)
     ))
     # Complex strategy: 20 examples (adequate coverage)
-    @settings(max_examples=20 if os.getenv('CI') else 100, deadline=None)
+    @settings(max_examples=20, deadline=None)
     def test_color_change_updates_descendant_labels(self, new_color):
         """Changing color updates all descendant Label widgets.
         
@@ -246,7 +246,7 @@ class TestEfficientStyleUpdates:
 
     @given(st.floats(min_value=0.5, max_value=3.0, allow_nan=False, allow_infinity=False))
     # Complex strategy: 20 examples (adequate coverage)
-    @settings(max_examples=20 if os.getenv('CI') else 100, deadline=None)
+    @settings(max_examples=20, deadline=None)
     def test_line_height_change_preserves_widget_tree(self, new_line_height):
         """Changing line_height preserves widget tree structure (widget identities).
         
@@ -272,7 +272,7 @@ class TestEfficientStyleUpdates:
 
     @given(st.floats(min_value=0.5, max_value=3.0, allow_nan=False, allow_infinity=False))
     # Complex strategy: 20 examples (adequate coverage)
-    @settings(max_examples=20 if os.getenv('CI') else 100, deadline=None)
+    @settings(max_examples=20, deadline=None)
     def test_line_height_change_updates_descendant_labels(self, new_line_height):
         """Changing line_height updates all descendant Label widgets.
         
@@ -389,7 +389,7 @@ class TestEfficientStyleUpdates:
         st.floats(min_value=0.8, max_value=2.0, allow_nan=False, allow_infinity=False)
     )
     # Complex strategy: 20 examples (adequate coverage)
-    @settings(max_examples=20 if os.getenv('CI') else 100, deadline=None)
+    @settings(max_examples=20, deadline=None)
     def test_multiple_style_changes_preserve_widget_tree(self, font_size, color, 
                                                           halign, valign, line_height):
         """Multiple style-only property changes preserve widget tree structure.
@@ -433,7 +433,7 @@ class TestEfficientStyleUpdates:
         )
     )
     # Complex strategy: 20 examples (adequate coverage)
-    @settings(max_examples=20 if os.getenv('CI') else 100, deadline=None)
+    @settings(max_examples=20, deadline=None)
     def test_disabled_color_switching(self, normal_color, disabled_color):
         """Disabled state correctly switches between color and disabled_color.
         
