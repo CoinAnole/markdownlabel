@@ -118,32 +118,31 @@ class TestShorteningPropertyForwarding:
         """shorten_from property is forwarded to list item Labels."""
         markdown = '- Item 1\n- Item 2'
         label = MarkdownLabel(text=markdown, shorten_from=shorten_from_value)
-        
+
         labels = find_labels_recursive(label)
         assert len(labels) >= 2, "Expected at least 2 Labels for list items"
-        
+
         for lbl in labels:
             assert lbl.shorten_from == shorten_from_value, \
                 f"Expected shorten_from={shorten_from_value}, got {lbl.shorten_from}"
-    
+
     @given(st.text(min_size=0, max_size=5, alphabet='abc '))
     # Complex strategy: 30 examples (adequate coverage)
-    @settings(max_examples=30 if not os.getenv('CI') else 15, deadline=None)
+    @settings(max_examples=30, deadline=None)
     def test_split_str_forwarded_to_paragraph(self, split_str_value):
         """split_str property is forwarded to paragraph Labels."""
         label = MarkdownLabel(text='Hello World', split_str=split_str_value)
-        
+
         labels = find_labels_recursive(label)
         assert len(labels) >= 1, "Expected at least one Label"
-        
+
         for lbl in labels:
             assert lbl.split_str == split_str_value, \
                 f"Expected split_str={split_str_value!r}, got {lbl.split_str!r}"
-    
-    # Complex strategy: 30 examples (adequate coverage)
+
     @given(st.text(min_size=0, max_size=5, alphabet='abc '))
     # Complex strategy: 30 examples (adequate coverage)
-    @settings(max_examples=30 if not os.getenv('CI') else 15, deadline=None)
+    @settings(max_examples=30, deadline=None)
     def test_split_str_forwarded_to_heading(self, split_str_value):
         """split_str property is forwarded to heading Labels."""
         label = MarkdownLabel(text='# Heading', split_str=split_str_value)
@@ -279,7 +278,8 @@ class TestShorteningPropertyForwarding:
     @given(st.booleans(), st.sampled_from(['left', 'center', 'right']),
            st.text(min_size=0, max_size=3, alphabet='ab '),
            st.integers(min_value=1, max_value=5))
-    @settings(max_examples=2, deadline=None)
+    # Combination strategy: 50 examples (combination coverage)
+    @settings(max_examples=50, deadline=None)
     def test_all_shortening_properties_forwarded_together(
             self, shorten_val, shorten_from_val, split_str_val, max_lines_val):
         """All shortening properties are forwarded together to child Labels."""
@@ -408,8 +408,8 @@ class TestCoordinateTranslation:
         whitelist_categories=['L', 'N'],
         blacklist_characters='[]()&\n\r'
     )))
-    # Complex strategy: 3 examples (adequate coverage)
-    @settings(max_examples=3, deadline=None)
+    # Complex strategy: 20 examples (adequate coverage)
+    @settings(max_examples=20, deadline=None)
     def test_link_produces_ref_markup_for_translation(self, link_text):
         """Links produce ref markup that will be translated when rendered.
         

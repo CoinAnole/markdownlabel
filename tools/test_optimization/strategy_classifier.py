@@ -46,27 +46,39 @@ class StrategyClassifier:
         
     def classify_strategy(self, strategy_code: str) -> StrategyAnalysis:
         """Analyze strategy code and return classification.
-        
+
         Args:
             strategy_code: String containing Hypothesis strategy definition
-            
+
         Returns:
             StrategyAnalysis with type, size, and complexity information
         """
         strategy_code = strategy_code.strip()
-        
-        # Check for tuple combinations FIRST (before individual strategies)
+
+        # Check for combination strategies FIRST (multiple @given arguments)
+        # This must come before individual strategy checks to avoid false positives
+        if self._is_combination_strategy(strategy_code):
+            components = self._extract_strategy_components(strategy_code)
+            total_size = self._calculate_combination_size(components)
+
+            return StrategyAnalysis(
+                strategy_type=StrategyType.COMBINATION,
+                input_space_size=total_size,
+                components=components
+            )
+
+        # Check for tuple combinations
         if self.tuples_pattern.search(strategy_code):
             components = self._extract_tuple_components(strategy_code)
             if len(components) > 1:  # Only treat as combination if multiple components
                 total_size = self._calculate_combination_size(components)
-                
+
                 return StrategyAnalysis(
                     strategy_type=StrategyType.COMBINATION,
                     input_space_size=total_size,
                     components=components
                 )
-        
+
         # Check for boolean strategies
         if self.boolean_pattern.search(strategy_code):
             return StrategyAnalysis(
@@ -74,14 +86,14 @@ class StrategyClassifier:
                 input_space_size=2,
                 components=['st.booleans()']
             )
-        
+
         # Check for integer range strategies
         integer_match = self.integer_pattern.search(strategy_code)
         if integer_match:
             min_val = int(integer_match.group(1))
             max_val = int(integer_match.group(2))
             size = max_val - min_val + 1
-            
+
             if size <= 10:
                 strategy_type = StrategyType.SMALL_FINITE
             elif size <= 50:
@@ -89,13 +101,13 @@ class StrategyClassifier:
             else:
                 strategy_type = StrategyType.COMPLEX
                 size = None  # Large ranges are effectively infinite
-                
+
             return StrategyAnalysis(
                 strategy_type=strategy_type,
                 input_space_size=size,
                 components=[f'st.integers(min_value={min_val}, max_value={max_val})']
             )
-        
+
         # Check for sampled_from strategies
         sampled_match = self.sampled_from_pattern.search(strategy_code)
         if sampled_match:
@@ -103,7 +115,7 @@ class StrategyClassifier:
             # Count items by splitting on commas (simple heuristic)
             items = [item.strip() for item in items_str.split(',') if item.strip()]
             size = len(items)
-            
+
             if size <= 10:
                 strategy_type = StrategyType.SMALL_FINITE
             elif size <= 50:
@@ -111,24 +123,13 @@ class StrategyClassifier:
             else:
                 strategy_type = StrategyType.COMPLEX
                 size = None
-                
+
             return StrategyAnalysis(
                 strategy_type=strategy_type,
                 input_space_size=size,
                 components=[f'st.sampled_from([{items_str}])']
             )
-        
-        # Check for combination strategies (multiple @given arguments)
-        if self._is_combination_strategy(strategy_code):
-            components = self._extract_strategy_components(strategy_code)
-            total_size = self._calculate_combination_size(components)
-            
-            return StrategyAnalysis(
-                strategy_type=StrategyType.COMBINATION,
-                input_space_size=total_size,
-                components=components
-            )
-        
+
         # Default to complex for text, floats, and other infinite strategies
         complexity = self._assess_complexity(strategy_code)
         return StrategyAnalysis(
