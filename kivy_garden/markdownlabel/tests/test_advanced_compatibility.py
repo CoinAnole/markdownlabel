@@ -10,8 +10,6 @@ These tests verify that MarkdownLabel correctly implements advanced Label
 compatibility while maintaining proper Markdown rendering functionality.
 """
 
-import os
-
 import pytest
 from hypothesis import given, strategies as st, settings, assume
 
