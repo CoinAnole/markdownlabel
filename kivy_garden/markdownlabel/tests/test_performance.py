@@ -6,7 +6,6 @@ efficient style updates, batched rebuilds, deferred rebuild scheduling, and
 content clipping behavior.
 """
 
-import os
 import pytest
 from hypothesis import given, strategies as st, settings, assume
 
@@ -296,8 +295,8 @@ class TestEfficientStyleUpdates:
                 f"Expected line_height {new_line_height}, got {child_label.line_height}"
 
     @given(st.booleans())
-    # Complex strategy: 20 examples (adequate coverage)
-    @settings(max_examples=2 if os.getenv('CI') else 100, deadline=None)
+    # Boolean strategy: 2 examples (True/False coverage)
+    @settings(max_examples=2, deadline=None)
     def test_disabled_change_preserves_widget_tree(self, new_disabled):
         """Changing disabled preserves widget tree structure (widget identities).
         
