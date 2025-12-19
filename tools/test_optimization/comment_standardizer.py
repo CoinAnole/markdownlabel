@@ -45,11 +45,12 @@ class BatchResult:
 class CommentStandardizer:
     """Automated comment generation and standardization tool."""
     
-    def __init__(self, backup_dir: Optional[str] = None):
+    def __init__(self, backup_dir: Optional[str] = None, enable_backups: bool = False):
         """Initialize standardizer with analysis and validation tools.
         
         Args:
             backup_dir: Directory for backup files. If None, uses default backup location.
+            enable_backups: Whether to write backup files before modifying tests.
         """
         self.analyzer = CommentAnalyzer()
         self.validator = CommentFormatValidator()
@@ -59,10 +60,17 @@ class CommentStandardizer:
         self.ci_integrator = CIOptimizationIntegrator()
         
         # Set up backup directory
-        if backup_dir is None:
-            backup_dir = os.path.join(os.getcwd(), "optimization_backups", 
-                                    f"backup_{datetime.now().strftime('%Y%m%d_%H%M%S')}")
-        self.backup_dir = backup_dir
+        self.backups_enabled = enable_backups or backup_dir is not None
+        if self.backups_enabled:
+            if backup_dir is None:
+                backup_dir = os.path.join(
+                    os.getcwd(),
+                    "optimization_backups",
+                    f"backup_{datetime.now().strftime('%Y%m%d_%H%M%S')}",
+                )
+            self.backup_dir = backup_dir
+        else:
+            self.backup_dir = None
         
         # Standard max_examples values that typically don't need documentation
         self.standard_values = {2, 5, 10, 20, 50, 100}
@@ -74,7 +82,7 @@ class CommentStandardizer:
         self.given_pattern = re.compile(r'(@given\([^)]*\))', re.DOTALL)
         
         # Pattern to match function definition
-        self.function_pattern = re.compile(r'(def\s+test_\w+\s*\([^)]*\):)')
+        self.function_pattern = re.compile(r'(def\s+test_[^\s(]+\s*\([^)]*\):)')
     
     def standardize_file(self, file_path: str, dry_run: bool = False) -> StandardizationResult:
         """Standardize comments in a single test file.
@@ -136,7 +144,7 @@ class CommentStandardizer:
         
         # Create backup if changes will be made
         backup_path = None
-        if changes_made > 0:
+        if changes_made > 0 and self.backups_enabled:
             try:
                 backup_path = self._create_backup(file_path, original_content)
             except Exception as e:
@@ -225,7 +233,7 @@ class CommentStandardizer:
         global_errors = []
         
         # Ensure backup directory exists if not dry run
-        if not dry_run:
+        if not dry_run and self.backups_enabled:
             try:
                 os.makedirs(self.backup_dir, exist_ok=True)
             except Exception as e:
@@ -428,6 +436,8 @@ class CommentStandardizer:
         Returns:
             Path to the backup file
         """
+        if not self.backups_enabled or not self.backup_dir:
+            raise ValueError("Backups are disabled for this standardizer instance")
         # Ensure backup directory exists
         os.makedirs(self.backup_dir, exist_ok=True)
         
@@ -494,6 +504,8 @@ class CommentStandardizer:
         Returns:
             True if directory exists or was created successfully, False otherwise
         """
+        if not self.backups_enabled or not self.backup_dir:
+            return False
         try:
             os.makedirs(self.backup_dir, exist_ok=True)
             return True
@@ -506,6 +518,8 @@ class CommentStandardizer:
         Returns:
             List of backup file paths
         """
+        if not self.backups_enabled or not self.backup_dir:
+            return []
         try:
             if not os.path.exists(self.backup_dir):
                 return []
@@ -528,6 +542,8 @@ class CommentStandardizer:
         Returns:
             Number of backup files removed
         """
+        if not self.backups_enabled or not self.backup_dir:
+            return 0
         try:
             backups = self.list_backups()
             if len(backups) <= keep_count:
@@ -560,6 +576,8 @@ class CommentStandardizer:
         Returns:
             True if backup is valid, False otherwise
         """
+        if not self.backups_enabled:
+            return False
         try:
             if not os.path.exists(backup_path):
                 return False
@@ -589,6 +607,8 @@ class CommentStandardizer:
         Returns:
             Number of files successfully rolled back
         """
+        if not self.backups_enabled:
+            return 0
         rollback_count = 0
         
         for result in file_results:
@@ -607,6 +627,8 @@ class CommentStandardizer:
         Returns:
             Dictionary with backup information or None if invalid
         """
+        if not self.backups_enabled:
+            return None
         try:
             if not os.path.exists(backup_path):
                 return None

@@ -381,9 +381,8 @@ class CommentAnalyzer:
         for test_info in property_tests:
             func_name, start_line, end_line, max_examples, decorator_start = test_info
             
-            # Look for comments in the function and before it (starting from decorator)
-            # Use decorator_start as the anchor for search
-            comments_in_function = self._extract_comments_in_range(lines, decorator_start, end_line)
+            # Look for documentation comments immediately preceding the decorator
+            comments_in_function = self._extract_documentation_comments(lines, decorator_start)
             
             # Check if any comment is a valid standardized comment
             has_valid_comment = False
@@ -527,7 +526,9 @@ class CommentAnalyzer:
                         raw_line = lines[j]
                         indentation = len(raw_line) - len(raw_line.lstrip())
                         
-                        func_match = re.match(r'def\s+(test_\w+)\s*\(', next_line)
+                        # Allow broader function names, including unicode and dashes generated
+                        # by Hypothesis, by accepting any non-whitespace characters up to '('.
+                        func_match = re.match(r'def\s+(test_[^\s(]+)\s*\(', next_line)
                         if func_match:
                             func_name = func_match.group(1)
                             
@@ -603,6 +604,38 @@ class CommentAnalyzer:
                 if comment_text:  # Skip empty comments
                     comments.append((i + 1, f"# {comment_text}"))
         
+        return comments
+    
+    def _extract_documentation_comments(self, lines: List[str], decorator_start: int) -> List[Tuple[int, str]]:
+        """Extract contiguous documentation comments immediately above a test function.
+        
+        Args:
+            lines: File content split into lines
+            decorator_start: 0-based line index where the first decorator (@given) appears
+        
+        Returns:
+            List of (line_number, comment_text) tuples in top-to-bottom order.
+        """
+        comments = []
+        idx = decorator_start - 1
+        
+        # Skip trailing blank lines between the decorator and the comment block
+        while idx >= 0 and lines[idx].strip() == '':
+            idx -= 1
+        
+        # Collect contiguous comment lines directly above
+        while idx >= 0:
+            stripped = lines[idx].strip()
+            if stripped.startswith('#'):
+                comments.append((idx + 1, f"# {stripped.lstrip('#').strip()}"))
+                idx -= 1
+                continue
+            if stripped == '':
+                idx -= 1
+                continue
+            break  # Hit non-comment content
+        
+        comments.reverse()
         return comments
     
     def _looks_like_max_examples_comment(self, comment: str) -> bool:
