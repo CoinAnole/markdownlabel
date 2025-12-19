@@ -4,6 +4,7 @@ This module provides tools to analyze Hypothesis strategies and classify them
 by input space size and complexity for optimal max_examples calculation.
 """
 
+import ast
 import re
 from enum import Enum
 from dataclasses import dataclass
@@ -55,19 +56,7 @@ class StrategyClassifier:
         """
         strategy_code = strategy_code.strip()
 
-        # Check for combination strategies FIRST (multiple @given arguments)
-        # This must come before individual strategy checks to avoid false positives
-        if self._is_combination_strategy(strategy_code):
-            components = self._extract_strategy_components(strategy_code)
-            total_size = self._calculate_combination_size(components)
-
-            return StrategyAnalysis(
-                strategy_type=StrategyType.COMBINATION,
-                input_space_size=total_size,
-                components=components
-            )
-
-        # Check for tuple combinations
+        # First, detect tuple-based combinations so we correctly expand st.tuples(...)
         if self.tuples_pattern.search(strategy_code):
             components = self._extract_tuple_components(strategy_code)
             if len(components) > 1:  # Only treat as combination if multiple components
@@ -78,6 +67,18 @@ class StrategyClassifier:
                     input_space_size=total_size,
                     components=components
                 )
+
+        # Check for multi-argument @given usage (variables or inline strategies)
+        # Use AST so we can recognize variable-based strategies, not just inline st.* calls.
+        if self._is_combination_strategy(strategy_code):
+            components = self._extract_strategy_components(strategy_code)
+            total_size = self._calculate_combination_size(components)
+
+            return StrategyAnalysis(
+                strategy_type=StrategyType.COMBINATION,
+                input_space_size=total_size,
+                components=components
+            )
 
         # Check for boolean strategies
         if self.boolean_pattern.search(strategy_code):
@@ -153,14 +154,34 @@ class StrategyClassifier:
         return analysis.input_space_size
     
     def _is_combination_strategy(self, strategy_code: str) -> bool:
-        """Check if strategy code represents multiple combined strategies."""
-        # Look for multiple strategy calls or tuple/composite patterns
+        """Check if strategy code represents multiple combined strategies.
+
+        Prefer an AST-based check so we correctly handle @given(a, b) even when
+        a/b are variables defined elsewhere, not just inline st.* calls.
+        """
+        call = self._parse_as_call(strategy_code)
+        if call:
+            total_args = len(call.args) + len(call.keywords)
+            if total_args > 1:
+                return True
+
+        # Fallback: look for multiple inline st.* calls as before
         strategy_calls = len(re.findall(r'st\.\w+\(', strategy_code))
         return strategy_calls > 1
     
     def _extract_strategy_components(self, strategy_code: str) -> List[str]:
         """Extract individual strategy components from combination."""
-        # Find all st.* calls
+        call = self._parse_as_call(strategy_code)
+        if call:
+            components: List[str] = []
+            for arg in call.args:
+                components.append(self._stringify_expr(arg))
+            for kw in call.keywords:
+                kw_value = self._stringify_expr(kw.value)
+                components.append(f"{kw.arg}={kw_value}")
+            return components
+
+        # Fallback: find all st.* calls (legacy heuristic)
         components = re.findall(r'st\.\w+\([^)]*\)', strategy_code)
         return components
     
@@ -227,6 +248,26 @@ class StrategyClassifier:
             complexity += 1
             
         return min(complexity, 4)  # Cap at level 4
+
+    def _parse_as_call(self, strategy_code: str) -> Optional[ast.Call]:
+        """Parse strategy code fragment as a call expression for inspection."""
+        try:
+            expr = ast.parse(f"f({strategy_code})", mode="eval").body
+        except SyntaxError:
+            return None
+
+        if isinstance(expr, ast.Call):
+            return expr
+        return None
+
+    def _stringify_expr(self, node: ast.AST) -> str:
+        """Render an AST node back to a readable string."""
+        try:
+            # ast.unparse is available on Python 3.9+
+            return ast.unparse(node)  # type: ignore[attr-defined]
+        except Exception:
+            # Fallback to a coarse dump; better than losing the component entirely
+            return ast.dump(node)
     
     def _extract_tuple_components(self, strategy_code: str) -> List[str]:
         """Extract components from st.tuples() strategy."""

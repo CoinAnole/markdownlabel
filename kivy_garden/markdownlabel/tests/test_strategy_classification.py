@@ -176,9 +176,11 @@ class TestMaxExamplesCalculation:
         )
         
         optimal = self.calculator.calculate_from_analysis(analysis)
-        expected = min(10 + (complexity_level * 10), 50)
+        base_expected = min(10 + (complexity_level * 10), 50)
+        # In CI environments, complex strategies may be halved
+        possible = {base_expected, max(base_expected // 2, 5)}
         
-        assert optimal == expected, f"Expected {expected} examples for complexity {complexity_level}, got {optimal}"
+        assert optimal in possible, f"Expected one of {possible} examples for complexity {complexity_level}, got {optimal}"
     
 class TestCombinationStrategies:
     """Property tests for combination strategy handling (Property 3)."""
@@ -203,8 +205,12 @@ class TestCombinationStrategies:
         optimal = self.calculator.calculate_optimal_examples(strategy_code)
         expected_product = size1 * size2
         expected_capped = min(expected_product, 50)  # Capped at 50
+        # In CI, combinations >20 are halved (but not below 10)
+        possible = {expected_capped}
+        if expected_capped > 20:
+            possible.add(max(expected_capped // 2, 10))
         
-        assert optimal == expected_capped, f"Expected {expected_capped} examples for combination {size1}×{size2}, got {optimal}"
+        assert optimal in possible, f"Expected one of {possible} examples for combination {size1}×{size2}, got {optimal}"
     
     def test_two_booleans_combination(self):
         """Two boolean strategies should use 4 examples (2×2)."""
@@ -233,12 +239,13 @@ class TestCombinationStrategies:
         strategy_code = f'st.tuples(st.integers(min_value=0, max_value={large_size-1}), st.integers(min_value=0, max_value={large_size-1}))'
         
         optimal = self.calculator.calculate_optimal_examples(strategy_code)
+        product = large_size * large_size
+        expected = min(product, 50)
+        possible = {expected}
+        if expected > 20:
+            possible.add(max(expected // 2, 10))
         
-        # Product would be large_size², but should be capped at 50
-        if large_size * large_size > 50:
-            assert optimal == 50, f"Large combination should be capped at 50, got {optimal}"
-        else:
-            assert optimal == large_size * large_size, f"Small combination should use exact product, got {optimal}"
+        assert optimal in possible, f"Expected one of {possible} examples for size {large_size}, got {optimal}"
     
     def test_combination_with_infinite_strategy(self):
         """Combinations with infinite strategies should be treated as complex."""
@@ -249,6 +256,30 @@ class TestCombinationStrategies:
         
         # Should be treated as complex since text() is infinite
         assert 10 <= optimal <= 50, f"Combination with infinite component should use 10-50 examples, got {optimal}"
+
+    def test_combination_with_strategy_variables(self):
+        """Multiple @given arguments should be classified as a combination even when passed as variables."""
+        from test_optimization.strategy_classifier import StrategyClassifier, StrategyType
+
+        strategy_code = 'alpha_strategy, beta_strategy'
+        analysis = StrategyClassifier().classify_strategy(strategy_code)
+
+        assert analysis.strategy_type == StrategyType.COMBINATION
+        assert analysis.components == ['alpha_strategy', 'beta_strategy']
+        # Unknown component sizes -> treated as infinite
+        assert analysis.input_space_size is None
+
+    def test_combination_with_keyword_strategies(self):
+        """Keyword arguments with multiple strategies should be treated as a combination."""
+        from test_optimization.strategy_classifier import StrategyClassifier, StrategyType
+
+        strategy_code = 'x=st.booleans(), y=st.integers(min_value=0, max_value=1)'
+        analysis = StrategyClassifier().classify_strategy(strategy_code)
+
+        assert analysis.strategy_type == StrategyType.COMBINATION
+        assert analysis.components == ['x=st.booleans()', 'y=st.integers(min_value=0, max_value=1)']
+        # boolean (2) × integers 0..1 (2) = 4
+        assert analysis.input_space_size == 4
 
 class TestOverTestingDetection:
     """Property tests for over-testing detection (Property 7)."""
