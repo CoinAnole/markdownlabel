@@ -72,31 +72,31 @@ This implementation plan adds deterministic, headless-safe tests for MarkdownLab
 - [x] 5. Checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 6. Implement widget identity preservation tests
-  - [ ] 6.1 Create test_rebuild_semantics.py module
+- [x] 6. Implement widget identity preservation tests
+  - [x] 6.1 Create test_rebuild_semantics.py module
     - Add collect_widget_ids helper function
     - _Requirements: 4.2, 5.2_
 
-  - [ ] 6.2 Add style property identity preservation tests
+  - [x] 6.2 Add style property identity preservation tests
     - Test base_font_size, color, halign, valign, disabled, disabled_color, base_direction, line_height
     - Capture widget IDs before change
     - Apply property change
     - Assert widget IDs unchanged
     - _Requirements: 4.1_
 
-  - [ ] 6.3 Write property test for style property identity preservation
+  - [x] 6.3 Write property test for style property identity preservation
     - **Property 5: Style Property Changes Preserve Widget Identities**
     - **Validates: Requirements 4.1**
 
-  - [ ] 6.4 Add style property propagation tests
+  - [x] 6.4 Add style property propagation tests
     - Verify property values propagate to all descendant Labels
     - _Requirements: 4.4_
 
-  - [ ] 6.5 Write property test for style property propagation
+  - [x] 6.5 Write property test for style property propagation
     - **Property 6: Style Property Values Propagate to Descendants**
     - **Validates: Requirements 4.4**
 
-  - [ ] 6.6 Add structure property rebuild tests
+  - [x] 6.6 Add structure property rebuild tests
     - Test text, font_name, text_size, link_style, strict_label_mode, render_mode
     - Capture children widget IDs before change
     - Apply property change and force_rebuild()
@@ -104,11 +104,11 @@ This implementation plan adds deterministic, headless-safe tests for MarkdownLab
     - Assert root MarkdownLabel ID unchanged
     - _Requirements: 5.1, 5.4_
 
-  - [ ] 6.7 Write property test for structure property rebuild
+  - [x] 6.7 Write property test for structure property rebuild
     - **Property 7: Structure Property Changes Rebuild Widget Tree**
     - **Validates: Requirements 5.1**
 
-  - [ ] 6.8 Write property test for root ID preservation
+  - [x] 6.8 Write property test for root ID preservation
     - **Property 8: Root Widget ID Preserved Across Property Changes**
     - **Validates: Requirements 5.4**
 
