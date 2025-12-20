@@ -13,7 +13,7 @@ from pathlib import Path
 
 
 @dataclass
-class TestMethod:
+class ParsedMethod:
     """Represents a test method with its metadata."""
     name: str
     class_name: Optional[str]
@@ -27,12 +27,12 @@ class TestMethod:
 
 
 @dataclass
-class TestClass:
+class ParsedClass:
     """Represents a test class with its metadata."""
     name: str
     docstring: Optional[str]
     line_number: int
-    methods: List[TestMethod]
+    methods: List[ParsedMethod]
     helper_methods: List[str]  # Non-test methods in the class
     file_path: str
 
@@ -50,30 +50,30 @@ class HelperFunction:
 
 
 @dataclass
-class TestFileMetadata:
+class FileMetadata:
     """Complete metadata for a test file."""
     file_path: str
-    test_classes: List[TestClass] = field(default_factory=list)
-    test_methods: List[TestMethod] = field(default_factory=list)  # Module-level test functions
+    test_classes: List[ParsedClass] = field(default_factory=list)
+    test_methods: List[ParsedMethod] = field(default_factory=list)  # Module-level test functions
     helper_functions: List[HelperFunction] = field(default_factory=list)
     imports: List[str] = field(default_factory=list)
     pytest_markers: Set[str] = field(default_factory=set)
 
 
-class TestFileParser:
+class FileParser:
     """AST-based parser for extracting test file metadata."""
     
     def __init__(self):
         self.current_file_path = ""
     
-    def parse_file(self, file_path: str) -> TestFileMetadata:
+    def parse_file(self, file_path: str) -> FileMetadata:
         """Parse a Python test file and extract metadata.
         
         Args:
             file_path: Path to the Python test file
             
         Returns:
-            TestFileMetadata containing all extracted information
+            FileMetadata containing all extracted information
         """
         self.current_file_path = file_path
         
@@ -85,7 +85,7 @@ class TestFileParser:
         except SyntaxError as e:
             raise ValueError(f"Failed to parse {file_path}: {e}")
         
-        metadata = TestFileMetadata(file_path=file_path)
+        metadata = FileMetadata(file_path=file_path)
         
         # Extract imports
         metadata.imports = self._extract_imports(tree)
@@ -116,7 +116,7 @@ class TestFileParser:
         
         return metadata
     
-    def parse_directory(self, directory_path: str) -> Dict[str, TestFileMetadata]:
+    def parse_directory(self, directory_path: str) -> Dict[str, FileMetadata]:
         """Parse all Python test files in a directory.
         
         Args:
@@ -191,9 +191,9 @@ class TestFileParser:
         """Check if a function is a helper function (not a test)."""
         return not node.name.startswith("test_") and not node.name.startswith("__")
     
-    def _parse_test_class(self, node: ast.ClassDef) -> TestClass:
+    def _parse_test_class(self, node: ast.ClassDef) -> ParsedClass:
         """Parse a test class and extract its metadata."""
-        test_class = TestClass(
+        test_class = ParsedClass(
             name=node.name,
             docstring=ast.get_docstring(node),
             line_number=node.lineno,
@@ -212,7 +212,7 @@ class TestFileParser:
         
         return test_class
     
-    def _parse_test_method(self, node: ast.FunctionDef, class_name: Optional[str]) -> TestMethod:
+    def _parse_test_method(self, node: ast.FunctionDef, class_name: Optional[str]) -> ParsedMethod:
         """Parse a test method and extract its metadata."""
         decorators = []
         for decorator in node.decorator_list:
@@ -220,7 +220,7 @@ class TestFileParser:
         
         assertions = self._extract_assertions(node)
         
-        return TestMethod(
+        return ParsedMethod(
             name=node.name,
             class_name=class_name,
             docstring=ast.get_docstring(node),
@@ -324,7 +324,7 @@ def main():
         sys.exit(1)
     
     path = sys.argv[1]
-    parser = TestFileParser()
+    parser = FileParser()
     
     if os.path.isfile(path):
         metadata = parser.parse_file(path)

@@ -13,7 +13,7 @@ from pathlib import Path
 import tempfile
 import os
 
-from .assertion_analyzer import AssertionAnalyzer, AssertionType, AssertionPattern, TestAssertionAnalysis
+from .assertion_analyzer import AssertionAnalyzer, AssertionType, AssertionPattern, AssertionAnalysis
 
 
 class TestAssertionAnalyzer:

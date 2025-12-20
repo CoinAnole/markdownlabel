@@ -16,7 +16,7 @@ from pathlib import Path
 from .naming_convention_validator import (
     NamingConventionValidator, NamingViolationType, NamingViolation
 )
-from .assertion_analyzer import AssertionAnalyzer, AssertionType, TestAssertionAnalysis
+from .assertion_analyzer import AssertionAnalyzer, AssertionType, AssertionAnalysis
 
 
 class TestNamingConventionValidator:

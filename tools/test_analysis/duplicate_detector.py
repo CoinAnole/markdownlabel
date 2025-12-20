@@ -11,7 +11,7 @@ from collections import defaultdict
 import difflib
 import ast
 
-from test_file_parser import TestFileParser, HelperFunction, TestFileMetadata
+from test_file_parser import FileParser, HelperFunction, FileMetadata
 
 
 @dataclass
@@ -55,7 +55,7 @@ class DuplicateDetector:
                                 as duplicates (0.0 to 1.0)
         """
         self.similarity_threshold = similarity_threshold
-        self.parser = TestFileParser()
+        self.parser = FileParser()
     
     def analyze_directory(self, directory_path: str) -> ConsolidationReport:
         """Analyze all test files in a directory for duplicate helpers.

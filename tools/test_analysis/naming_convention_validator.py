@@ -12,13 +12,13 @@ from enum import Enum
 from pathlib import Path
 
 try:
-    from .assertion_analyzer import AssertionAnalyzer, AssertionType, TestAssertionAnalysis
+    from .assertion_analyzer import AssertionAnalyzer, AssertionType, AssertionAnalysis
 except ImportError:
     # Handle running as script
     import sys
     from pathlib import Path
     sys.path.append(str(Path(__file__).parent))
-    from assertion_analyzer import AssertionAnalyzer, AssertionType, TestAssertionAnalysis
+    from assertion_analyzer import AssertionAnalyzer, AssertionType, AssertionAnalysis
 
 
 class NamingViolationType(Enum):
@@ -86,11 +86,11 @@ class NamingConventionValidator:
         self.validation_indicators = {'validate', 'check', 'verify', 'ensure'}
         self.exception_indicators = {'raise', 'throw', 'error', 'fail', 'invalid'}
     
-    def validate_test_method(self, analysis: TestAssertionAnalysis) -> List[NamingViolation]:
+    def validate_test_method(self, analysis: AssertionAnalysis) -> List[NamingViolation]:
         """Validate a single test method's naming convention.
         
         Args:
-            analysis: TestAssertionAnalysis from assertion analyzer
+            analysis: AssertionAnalysis from assertion analyzer
             
         Returns:
             List of NamingViolation objects (empty if compliant)
@@ -120,7 +120,7 @@ class NamingConventionValidator:
         
         return violations
     
-    def _check_rebuild_naming(self, analysis: TestAssertionAnalysis) -> Optional[NamingViolation]:
+    def _check_rebuild_naming(self, analysis: AssertionAnalysis) -> Optional[NamingViolation]:
         """Check for rebuild-related naming violations."""
         test_name = analysis.test_name.lower()
         
@@ -141,7 +141,7 @@ class NamingConventionValidator:
         
         return None
     
-    def _check_value_naming(self, analysis: TestAssertionAnalysis) -> Optional[NamingViolation]:
+    def _check_value_naming(self, analysis: AssertionAnalysis) -> Optional[NamingViolation]:
         """Check for value change naming violations."""
         test_name = analysis.test_name.lower()
         
@@ -162,7 +162,7 @@ class NamingConventionValidator:
         
         return None
     
-    def _check_pattern_consistency(self, analysis: TestAssertionAnalysis) -> Optional[NamingViolation]:
+    def _check_pattern_consistency(self, analysis: AssertionAnalysis) -> Optional[NamingViolation]:
         """Check if test follows standard naming patterns."""
         test_name = analysis.test_name
         
@@ -189,7 +189,7 @@ class NamingConventionValidator:
         
         return None
     
-    def _check_naming_clarity(self, analysis: TestAssertionAnalysis) -> Optional[NamingViolation]:
+    def _check_naming_clarity(self, analysis: AssertionAnalysis) -> Optional[NamingViolation]:
         """Check if test name clearly indicates its purpose."""
         test_name = analysis.test_name.lower()
         
@@ -236,7 +236,7 @@ class NamingConventionValidator:
         else:
             return f"test_{base_name}_changes_property"
     
-    def _generate_standard_name(self, analysis: TestAssertionAnalysis) -> str:
+    def _generate_standard_name(self, analysis: AssertionAnalysis) -> str:
         """Generate a name following standard patterns."""
         base_name = self._extract_base_name(analysis.test_name)
         
@@ -253,7 +253,7 @@ class NamingConventionValidator:
         else:
             return f"test_{base_name}_behaves_correctly"
     
-    def _generate_descriptive_name(self, analysis: TestAssertionAnalysis) -> str:
+    def _generate_descriptive_name(self, analysis: AssertionAnalysis) -> str:
         """Generate a more descriptive name based on assertions."""
         # Try to infer what the test is doing from its assertions
         assertion_codes = [a.code.lower() for a in analysis.assertions]

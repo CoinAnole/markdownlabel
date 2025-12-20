@@ -34,7 +34,7 @@ class AssertionPattern:
 
 
 @dataclass
-class TestAssertionAnalysis:
+class AssertionAnalysis:
     """Analysis results for a single test method."""
     test_name: str
     file_path: str
@@ -106,7 +106,7 @@ class AssertionAnalyzer:
         self.compiled_existence_patterns = [re.compile(p, re.IGNORECASE) for p in self.existence_patterns]
         self.compiled_exception_patterns = [re.compile(p, re.IGNORECASE) for p in self.exception_patterns]
     
-    def analyze_test_method(self, test_method_node: ast.FunctionDef, file_path: str) -> TestAssertionAnalysis:
+    def analyze_test_method(self, test_method_node: ast.FunctionDef, file_path: str) -> AssertionAnalysis:
         """Analyze a single test method for assertion patterns.
         
         Args:
@@ -114,7 +114,7 @@ class AssertionAnalyzer:
             file_path: Path to the file containing the test
             
         Returns:
-            TestAssertionAnalysis with detailed assertion information
+            AssertionAnalysis with detailed assertion information
         """
         assertions = self._extract_assertions(test_method_node)
         
@@ -129,7 +129,7 @@ class AssertionAnalyzer:
         naming_mismatch = self._detect_naming_mismatch(test_method_node.name, primary_type, has_rebuild)
         suggested_name = self._suggest_name_pattern(test_method_node.name, primary_type, has_rebuild)
         
-        return TestAssertionAnalysis(
+        return AssertionAnalysis(
             test_name=test_method_node.name,
             file_path=file_path,
             line_number=test_method_node.lineno,
@@ -317,14 +317,14 @@ class AssertionAnalyzer:
         
         return None
     
-    def analyze_file(self, file_path: str) -> List[TestAssertionAnalysis]:
+    def analyze_file(self, file_path: str) -> List[AssertionAnalysis]:
         """Analyze all test methods in a file.
         
         Args:
             file_path: Path to the Python test file
             
         Returns:
-            List of TestAssertionAnalysis for all test methods in the file
+            List of AssertionAnalysis for all test methods in the file
         """
         try:
             with open(file_path, 'r', encoding='utf-8') as f:

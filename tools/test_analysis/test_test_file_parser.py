@@ -11,7 +11,7 @@ import tempfile
 import os
 from pathlib import Path
 
-from .test_file_parser import TestFileParser, TestFileMetadata
+from .test_file_parser import FileParser, FileMetadata
 
 
 # **Feature: test-suite-refactoring, Property 1: Test Name Consistency**
@@ -94,7 +94,7 @@ class TestTestNameConsistency:
             temp_file = f.name
         
         try:
-            parser = TestFileParser()
+            parser = FileParser()
             metadata = parser.parse_file(temp_file)
             
             # Find the test method
@@ -144,11 +144,11 @@ class TestExample:
             temp_file = f.name
         
         try:
-            parser = TestFileParser()
+            parser = FileParser()
             metadata = parser.parse_file(temp_file)
             
             # Should successfully parse
-            assert isinstance(metadata, TestFileMetadata)
+            assert isinstance(metadata, FileMetadata)
             assert len(metadata.test_classes) >= 1
         finally:
             os.unlink(temp_file)
@@ -182,7 +182,7 @@ class TestAnother:
             temp_file = f.name
         
         try:
-            parser = TestFileParser()
+            parser = FileParser()
             metadata = parser.parse_file(temp_file)
             
             assert len(metadata.test_classes) == 2
@@ -219,7 +219,7 @@ class TestExample:
             temp_file = f.name
         
         try:
-            parser = TestFileParser()
+            parser = FileParser()
             metadata = parser.parse_file(temp_file)
             
             assert len(metadata.helper_functions) == 2
@@ -260,7 +260,7 @@ class TestRebuild:
             temp_file = f.name
         
         try:
-            parser = TestFileParser()
+            parser = FileParser()
             metadata = parser.parse_file(temp_file)
             
             test_class = metadata.test_classes[0]
