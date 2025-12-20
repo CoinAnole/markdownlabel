@@ -112,8 +112,8 @@ This implementation plan adds deterministic, headless-safe tests for MarkdownLab
     - **Property 8: Root Widget ID Preserved Across Property Changes**
     - **Validates: Requirements 5.4**
 
-- [ ] 7. Implement texture fallback branch test
-  - [ ] 7.1 Add texture fallback test to test_texture_render_mode.py
+- [x] 7. Implement texture fallback branch test
+  - [x] 7.1 Add texture fallback test to test_texture_render_mode.py
     - Monkeypatch _render_as_texture to return None
     - Create MarkdownLabel with render_mode='texture' and non-empty text
     - Call force_rebuild()

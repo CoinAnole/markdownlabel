@@ -544,6 +544,86 @@ class TestDeterministicTextureHitTesting:
 # height constraints).
 # **Validates: Requirements 6.4**
 
+# **Feature: headless-ci-testing, Requirement 6: Texture Fallback Branch Test**
+# WHEN _render_as_texture returns None, THE MarkdownLabel SHALL fall back to
+# widgets-mode rendering.
+# **Validates: Requirements 6.1, 6.2**
+
+class TestTextureFallbackBranch:
+    """Tests for texture mode fallback to widgets mode when rendering fails."""
+    
+    def test_texture_fallback_to_widgets_mode(self, monkeypatch):
+        """When _render_as_texture returns None, fallback to widgets mode.
+        
+        **Feature: headless-ci-testing, Requirement 6: Texture Fallback Branch**
+        **Validates: Requirements 6.1, 6.2**
+        
+        This test verifies that when texture rendering fails (returns None),
+        the MarkdownLabel falls back to widgets-mode rendering, ensuring
+        content is always displayed.
+        """
+        # Monkeypatch _render_as_texture to return None (simulate failure)
+        monkeypatch.setattr(
+            MarkdownLabel,
+            '_render_as_texture',
+            lambda self, content: None
+        )
+        
+        # Create MarkdownLabel with render_mode='texture' and non-empty text
+        label = MarkdownLabel(
+            text='# Hello World\n\nThis is **bold** text.',
+            render_mode='texture',
+            size=(400, 300),
+            size_hint=(None, None)
+        )
+        
+        # Call force_rebuild() to trigger rendering
+        label.force_rebuild()
+        
+        # Assert no Image widget in tree (texture mode failed)
+        images = find_images(label)
+        assert len(images) == 0, \
+            f"Expected no Image widgets after texture fallback, found {len(images)}"
+        
+        # Assert at least one Label widget exists (widgets-mode fallback)
+        labels = find_labels_recursive(label)
+        assert len(labels) >= 1, \
+            f"Expected at least 1 Label widget in fallback mode, found {len(labels)}"
+    
+    def test_texture_fallback_preserves_content(self, monkeypatch):
+        """Fallback to widgets mode preserves all content.
+        
+        **Feature: headless-ci-testing, Requirement 6: Texture Fallback Branch**
+        **Validates: Requirements 6.1, 6.2**
+        """
+        # Monkeypatch _render_as_texture to return None
+        monkeypatch.setattr(
+            MarkdownLabel,
+            '_render_as_texture',
+            lambda self, content: None
+        )
+        
+        # Create MarkdownLabel with multiple content elements
+        label = MarkdownLabel(
+            text='# Heading\n\nParagraph text.\n\n- List item',
+            render_mode='texture',
+            size=(400, 300),
+            size_hint=(None, None)
+        )
+        
+        label.force_rebuild()
+        
+        # Verify content is rendered (at least one Label exists)
+        labels = find_labels_recursive(label)
+        assert len(labels) >= 1, \
+            "Expected content to be rendered in fallback mode"
+        
+        # Verify no Image widgets (texture mode didn't succeed)
+        images = find_images(label)
+        assert len(images) == 0, \
+            "Expected no Image widgets in fallback mode"
+
+
 class TestAutoRenderModeSelection:
     """Property tests for auto render mode selection (Property 16)."""
     
