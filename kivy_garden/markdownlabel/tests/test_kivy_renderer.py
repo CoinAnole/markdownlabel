@@ -875,3 +875,101 @@ class TestTableAlignmentApplication:
             assert hasattr(child, 'cell_align'), "Cell should have cell_align attribute"
             assert child.cell_align in ('left', 'center', 'right'), \
                 f"cell_align should be valid alignment, got '{child.cell_align}'"
+
+
+
+# **Feature: headless-ci-testing, Deep Nesting Truncation Placeholder**
+# Tests that deeply nested content is truncated with a placeholder widget.
+# **Validates: Requirements 7.1, 7.2**
+
+class TestDeepNestingTruncation:
+    """Tests for deep nesting truncation placeholder behavior."""
+
+    def test_truncation_placeholder_when_nesting_exceeds_max(self):
+        """When nesting depth exceeds max, _render_token returns placeholder.
+
+        Requirement 7.1: WHEN rendering content that exceeds _max_nesting_depth,
+        THE KivyRenderer SHALL return a truncation placeholder widget.
+        """
+        renderer = KivyRenderer()
+
+        # Manually set nesting depth beyond the maximum
+        renderer._nesting_depth = renderer._max_nesting_depth + 1
+
+        # Create a simple token to render
+        token = {
+            'type': 'paragraph',
+            'children': [{'type': 'text', 'raw': 'This should be truncated'}]
+        }
+
+        # Render the token - should return truncation placeholder
+        widget = renderer._render_token(token, None)
+
+        assert isinstance(widget, Label), \
+            f"Expected Label placeholder, got {type(widget)}"
+        assert 'content truncated' in widget.text.lower(), \
+            f"Placeholder text should contain 'content truncated', got: {widget.text}"
+
+    def test_truncation_placeholder_text_format(self):
+        """Truncation placeholder has expected text format.
+
+        Requirement 7.2: THE truncation placeholder SHALL be a Label widget
+        with text containing "content truncated".
+        """
+        renderer = KivyRenderer()
+
+        # Manually set nesting depth beyond the maximum
+        renderer._nesting_depth = renderer._max_nesting_depth + 1
+
+        # Any token type should trigger truncation
+        token = {'type': 'heading', 'children': [], 'attrs': {'level': 1}}
+
+        widget = renderer._render_token(token, None)
+
+        assert isinstance(widget, Label), \
+            f"Expected Label, got {type(widget)}"
+        assert 'content truncated' in widget.text.lower(), \
+            f"Expected 'content truncated' in text, got: {widget.text}"
+        assert 'deep nesting' in widget.text.lower(), \
+            f"Expected 'deep nesting' in text, got: {widget.text}"
+
+    def test_truncation_placeholder_styling(self):
+        """Truncation placeholder has appropriate styling (gray, italic)."""
+        renderer = KivyRenderer()
+
+        # Manually set nesting depth beyond the maximum
+        renderer._nesting_depth = renderer._max_nesting_depth + 1
+
+        token = {'type': 'paragraph', 'children': []}
+
+        widget = renderer._render_token(token, None)
+
+        assert isinstance(widget, Label), \
+            f"Expected Label, got {type(widget)}"
+        # Check gray color (approximately [0.6, 0.6, 0.6, 1])
+        assert widget.color[0] < 0.7 and widget.color[0] > 0.5, \
+            f"Expected gray color, got: {widget.color}"
+        assert widget.italic is True, \
+            f"Expected italic=True, got: {widget.italic}"
+
+    def test_normal_nesting_does_not_truncate(self):
+        """Normal nesting depth does not trigger truncation."""
+        renderer = KivyRenderer()
+
+        # Keep nesting depth at or below maximum
+        renderer._nesting_depth = renderer._max_nesting_depth
+
+        token = {
+            'type': 'paragraph',
+            'children': [{'type': 'text', 'raw': 'Normal content'}]
+        }
+
+        widget = renderer._render_token(token, None)
+
+        assert isinstance(widget, Label), \
+            f"Expected Label, got {type(widget)}"
+        # Should NOT be a truncation placeholder
+        assert 'content truncated' not in widget.text.lower(), \
+            f"Should not truncate at max depth, got: {widget.text}"
+        assert 'Normal content' in widget.text, \
+            f"Expected normal content, got: {widget.text}"

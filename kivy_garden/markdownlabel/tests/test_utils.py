@@ -11,6 +11,26 @@ from kivy.uix.widget import Widget
 from typing import List, Optional
 
 
+# Touch Simulation Classes
+
+class FakeTouch:
+    """Minimal touch simulation for headless testing.
+    
+    Provides the essential attributes needed by on_touch_down
+    without requiring a Kivy window.
+    """
+    def __init__(self, x: float, y: float):
+        """Initialize a fake touch at the given coordinates.
+        
+        Args:
+            x: X coordinate of the touch
+            y: Y coordinate of the touch
+        """
+        self.x = x
+        self.y = y
+        self.pos = (x, y)
+
+
 # Constants
 KIVY_FONTS = ['Roboto', 'Roboto-Bold', 'Roboto-Italic', 'RobotoMono-Regular']
 
