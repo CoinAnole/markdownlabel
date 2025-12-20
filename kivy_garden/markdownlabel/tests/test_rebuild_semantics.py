@@ -19,33 +19,8 @@ from kivy.uix.widget import Widget
 from kivy_garden.markdownlabel import MarkdownLabel
 from .test_utils import (
     simple_markdown_document, color_strategy, find_labels_recursive,
-    colors_equal, floats_equal
+    colors_equal, floats_equal, collect_widget_ids
 )
-
-
-# Helper Functions
-
-def collect_widget_ids(widget, exclude_root=False):
-    """Collect Python object ids of all widgets in the tree.
-    
-    This helper function traverses the widget tree and collects the Python
-    object IDs of all widgets. It's used to verify widget identity preservation
-    across property changes.
-    
-    Args:
-        widget: Root widget to collect from
-        exclude_root: If True, exclude the root widget's id from the result
-    
-    Returns:
-        Set of widget object ids
-        
-    **Validates: Requirements 4.2, 5.2**
-    """
-    ids = set() if exclude_root else {id(widget)}
-    if hasattr(widget, 'children'):
-        for child in widget.children:
-            ids.update(collect_widget_ids(child, exclude_root=False))
-    return ids
 
 
 # Style Properties for Testing

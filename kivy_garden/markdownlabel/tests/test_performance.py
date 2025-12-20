@@ -45,23 +45,6 @@ class TestEfficientStyleUpdates:
                 ids.update(self._collect_widget_ids(child))
         return ids
 
-    def _find_labels_recursive(self, widget):
-        """Find all Label widgets recursively.
-        
-        Args:
-            widget: Root widget to search from
-        
-        Returns:
-            List of Label widgets
-        """
-        labels = []
-        if isinstance(widget, Label):
-            labels.append(widget)
-        if hasattr(widget, 'children'):
-            for child in widget.children:
-                labels.extend(self._find_labels_recursive(child))
-        return labels
-
     @given(st.floats(min_value=10, max_value=50, allow_nan=False, allow_infinity=False),
            st.floats(min_value=10, max_value=50, allow_nan=False, allow_infinity=False))
     # Complex strategy: 20 examples (adequate coverage)
@@ -145,7 +128,7 @@ class TestEfficientStyleUpdates:
         label.color = new_color_list
         
         # All descendant labels should have the new color
-        child_labels = self._find_labels_recursive(label)
+        child_labels = find_labels_recursive(label)
         assert len(child_labels) >= 1, "Expected at least one child Label"
         
         for child_label in child_labels:
@@ -191,7 +174,7 @@ class TestEfficientStyleUpdates:
         label.halign = new_halign
         
         # All descendant labels should have the new halign
-        child_labels = self._find_labels_recursive(label)
+        child_labels = find_labels_recursive(label)
         assert len(child_labels) >= 1, "Expected at least one child Label"
         
         for child_label in child_labels:
@@ -237,7 +220,7 @@ class TestEfficientStyleUpdates:
         label.valign = new_valign
         
         # All descendant labels should have the new valign
-        child_labels = self._find_labels_recursive(label)
+        child_labels = find_labels_recursive(label)
         assert len(child_labels) >= 1, "Expected at least one child Label"
         
         for child_label in child_labels:
@@ -287,7 +270,7 @@ class TestEfficientStyleUpdates:
         label.line_height = new_line_height
         
         # All descendant labels should have the new line_height
-        child_labels = self._find_labels_recursive(label)
+        child_labels = find_labels_recursive(label)
         assert len(child_labels) >= 1, "Expected at least one child Label"
         
         for child_label in child_labels:
@@ -450,7 +433,7 @@ class TestEfficientStyleUpdates:
         )
         
         # Get child labels
-        child_labels = self._find_labels_recursive(label)
+        child_labels = find_labels_recursive(label)
         assert len(child_labels) >= 1, "Expected at least one child Label"
         
         # Initially should use normal color

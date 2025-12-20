@@ -198,3 +198,73 @@ def floats_equal(f1: float, f2: float, tolerance: float = 0.001) -> bool:
         True if values are equal within tolerance, False otherwise
     """
     return abs(f1 - f2) < tolerance
+
+
+# Rebuild Detection Helpers
+
+def collect_widget_ids(widget: Widget, exclude_root: bool = False) -> set:
+    """Collect Python object ids of all widgets in the tree.
+    
+    This helper function traverses the widget tree and collects the Python
+    object IDs of all widgets. It's used to verify widget identity preservation
+    across property changes.
+    
+    Args:
+        widget: Root widget to collect from
+        exclude_root: If True, exclude the root widget's id from the result
+    
+    Returns:
+        Set of widget object ids
+    """
+    ids = set() if exclude_root else {id(widget)}
+    if hasattr(widget, 'children'):
+        for child in widget.children:
+            ids.update(collect_widget_ids(child, exclude_root=False))
+    return ids
+
+
+def assert_rebuild_occurred(widget: Widget, ids_before: set, exclude_root: bool = True) -> None:
+    """Assert that a widget tree rebuild occurred.
+    
+    Verifies that the widget tree has been rebuilt by comparing widget IDs
+    before and after a change. A rebuild means new widget instances were created.
+    
+    Args:
+        widget: Root widget to check
+        ids_before: Set of widget IDs before the change
+        exclude_root: If True, exclude the root widget from comparison
+        
+    Raises:
+        AssertionError: If no rebuild occurred (widget IDs are the same)
+    """
+    ids_after = collect_widget_ids(widget, exclude_root=exclude_root)
+    
+    if exclude_root:
+        # Root should remain the same, but children should be different
+        assert ids_before != ids_after, \
+            f"Expected rebuild to occur (children should change), but widget IDs are identical"
+    else:
+        # All widgets should be different
+        assert ids_before != ids_after, \
+            f"Expected rebuild to occur, but widget IDs are identical"
+
+
+def assert_no_rebuild(widget: Widget, ids_before: set, exclude_root: bool = True) -> None:
+    """Assert that no widget tree rebuild occurred.
+    
+    Verifies that the widget tree was updated in-place without creating new
+    widget instances. This is expected for style-only property changes.
+    
+    Args:
+        widget: Root widget to check
+        ids_before: Set of widget IDs before the change
+        exclude_root: If True, exclude the root widget from comparison
+        
+    Raises:
+        AssertionError: If a rebuild occurred (widget IDs changed)
+    """
+    ids_after = collect_widget_ids(widget, exclude_root=exclude_root)
+    
+    assert ids_before == ids_after, \
+        f"Expected no rebuild (widget IDs should remain the same), but IDs changed: " \
+        f"{len(ids_before)} before, {len(ids_after)} after"

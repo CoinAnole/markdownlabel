@@ -150,19 +150,6 @@ class TestPaddingApplication:
 class TestPaddingForwarding:
     """Property tests for padding forwarding (Property 4)."""
     
-    def _find_labels_recursive(self, widget, labels=None):
-        """Recursively find all Label widgets in a widget tree."""
-        if labels is None:
-            labels = []
-        
-        if isinstance(widget, Label):
-            labels.append(widget)
-        
-        if hasattr(widget, 'children'):
-            for child in widget.children:
-                self._find_labels_recursive(child, labels)
-        
-        return labels
     
     def _padding_equal(self, p1, p2, tolerance=0.001):
         """Compare two padding values with tolerance for floating point differences."""
@@ -177,7 +164,7 @@ class TestPaddingForwarding:
         """padding is applied to paragraph Labels."""
         label = MarkdownLabel(text='Hello World', text_padding=padding)
         
-        labels = self._find_labels_recursive(label)
+        labels = find_labels_recursive(label)
         assert len(labels) >= 1, "Expected at least one Label"
 
         # All labels should have the specified padding
@@ -192,7 +179,7 @@ class TestPaddingForwarding:
         """padding is applied to heading Labels."""
         label = MarkdownLabel(text='# Heading', text_padding=padding)
 
-        labels = self._find_labels_recursive(label)
+        labels = find_labels_recursive(label)
         assert len(labels) >= 1, "Expected at least one Label"
 
         # All labels should have the specified padding
@@ -208,7 +195,7 @@ class TestPaddingForwarding:
         markdown = '- Item 1\n- Item 2'
         label = MarkdownLabel(text=markdown, text_padding=padding)
 
-        labels = self._find_labels_recursive(label)
+        labels = find_labels_recursive(label)
         assert len(labels) >= 2, "Expected at least 2 Labels for list items"
         
         # All labels should have the specified padding
@@ -224,7 +211,7 @@ class TestPaddingForwarding:
         markdown = '| A | B |\n| --- | --- |\n| 1 | 2 |'
         label = MarkdownLabel(text=markdown, text_padding=padding)
 
-        labels = self._find_labels_recursive(label)
+        labels = find_labels_recursive(label)
         assert len(labels) >= 4, "Expected at least 4 Labels for table cells"
         
         # All labels should have the specified padding
@@ -254,7 +241,7 @@ Regular paragraph
 '''
         label = MarkdownLabel(text=markdown, text_padding=padding)
         
-        labels = self._find_labels_recursive(label)
+        labels = find_labels_recursive(label)
         assert len(labels) >= 5, "Expected at least 5 Labels for various structures"
         
         # All labels should have the specified padding
@@ -272,7 +259,7 @@ Regular paragraph
         label = MarkdownLabel(text='Hello World', text_padding=padding1)
         
         # Verify initial padding
-        labels = self._find_labels_recursive(label)
+        labels = find_labels_recursive(label)
         for lbl in labels:
             assert self._padding_equal(list(lbl.padding), padding1)
         
@@ -281,7 +268,7 @@ Regular paragraph
         label.force_rebuild()  # Force immediate rebuild for test
         
         # Verify new padding
-        labels = self._find_labels_recursive(label)
+        labels = find_labels_recursive(label)
         for lbl in labels:
             assert self._padding_equal(list(lbl.padding), padding2), \
                 f"After change, expected padding={padding2}, got {list(lbl.padding)}"
@@ -290,7 +277,7 @@ Regular paragraph
         """Default padding is [0, 0, 0, 0] for all labels."""
         label = MarkdownLabel(text='Hello World')
         
-        labels = self._find_labels_recursive(label)
+        labels = find_labels_recursive(label)
         assert len(labels) >= 1, "Expected at least one Label"
         
         # All labels should have default padding of [0, 0, 0, 0]
@@ -307,20 +294,6 @@ Regular paragraph
 class TestPaddingDynamicUpdates:
     """Property tests for text_padding dynamic updates (Property 5)."""
     
-    def _find_labels_recursive(self, widget, labels=None):
-        """Recursively find all Label widgets in a widget tree."""
-        if labels is None:
-            labels = []
-        
-        if isinstance(widget, Label):
-            labels.append(widget)
-        
-        if hasattr(widget, 'children'):
-            for child in widget.children:
-                # Complex strategy: 20 examples (adequate coverage)
-                self._find_labels_recursive(child, labels)
-        
-        return labels
     
     def _padding_equal(self, p1, p2, tolerance=0.001):
         """Compare two padding values with tolerance for floating point differences."""
@@ -338,7 +311,7 @@ class TestPaddingDynamicUpdates:
         label = MarkdownLabel(text='Hello World', text_padding=initial_padding)
         
         # Verify initial padding
-        labels = self._find_labels_recursive(label)
+        labels = find_labels_recursive(label)
         assert len(labels) >= 1, "Expected at least one Label"
         for lbl in labels:
             assert self._padding_equal(list(lbl.padding), initial_padding)
@@ -348,7 +321,7 @@ class TestPaddingDynamicUpdates:
         label.force_rebuild()  # Force immediate rebuild for test
         
         # Verify all labels have new padding
-        labels = self._find_labels_recursive(label)
+        labels = find_labels_recursive(label)
         for lbl in labels:
             assert self._padding_equal(list(lbl.padding), new_padding), \
                 f"After update, expected padding={new_padding}, got {list(lbl.padding)}"
@@ -376,7 +349,7 @@ Paragraph with text.
         label = MarkdownLabel(text=markdown, text_padding=initial_padding)
         
         # Verify initial padding
-        labels = self._find_labels_recursive(label)
+        labels = find_labels_recursive(label)
         assert len(labels) >= 5, "Expected at least 5 Labels"
         for lbl in labels:
             assert self._padding_equal(list(lbl.padding), initial_padding)
@@ -386,7 +359,7 @@ Paragraph with text.
         label.force_rebuild()  # Force immediate rebuild for test
         
         # Verify all labels have new padding
-        labels = self._find_labels_recursive(label)
+        labels = find_labels_recursive(label)
         for lbl in labels:
             assert self._padding_equal(list(lbl.padding), new_padding), \
                 f"After update, expected padding={new_padding}, got {list(lbl.padding)}"
@@ -404,7 +377,7 @@ Paragraph with text.
             label.force_rebuild()  # Force immediate rebuild for test
             
             # Verify all labels have the current padding
-            labels = self._find_labels_recursive(label)
+            labels = find_labels_recursive(label)
             for lbl in labels:
                 assert self._padding_equal(list(lbl.padding), new_padding), \
                     f"Update {i}: expected padding={new_padding}, got {list(lbl.padding)}"
@@ -418,20 +391,6 @@ Paragraph with text.
 class TestPaddingWithNestedStructures:
     """Property tests for padding with nested structures (Property 6)."""
     
-    def _find_labels_recursive(self, widget, labels=None):
-        """Recursively find all Label widgets in a widget tree."""
-        if labels is None:
-            labels = []
-        
-        if isinstance(widget, Label):
-            labels.append(widget)
-        
-        # Complex strategy: 20 examples (adequate coverage)
-        if hasattr(widget, 'children'):
-            for child in widget.children:
-                self._find_labels_recursive(child, labels)
-        
-        return labels
     
     def _padding_equal(self, p1, p2, tolerance=0.001):
         """Compare two padding values with tolerance for floating point differences."""
@@ -459,7 +418,7 @@ class TestPaddingWithNestedStructures:
         assert len(label.children) >= 1, "Expected at least one child for list structure"
         
         # All Labels should have the specified padding
-        labels = self._find_labels_recursive(label)
+        labels = find_labels_recursive(label)
         assert len(labels) >= 5, "Expected at least 5 Labels for nested list items"
         
         for lbl in labels:
@@ -486,7 +445,7 @@ class TestPaddingWithNestedStructures:
         assert len(label.children) >= 1, "Expected at least one child for quote structure"
         
         # All Labels should have the specified padding
-        labels = self._find_labels_recursive(label)
+        labels = find_labels_recursive(label)
         assert len(labels) >= 1, "Expected at least 1 Label for quote content"
         
         for lbl in labels:
@@ -512,7 +471,7 @@ class TestPaddingWithNestedStructures:
         assert len(label.children) >= 1, "Expected at least one child for table structure"
         
         # All Labels should have the specified padding
-        labels = self._find_labels_recursive(label)
+        labels = find_labels_recursive(label)
         assert len(labels) >= 9, "Expected at least 9 Labels for table cells"
         
         for lbl in labels:
@@ -554,7 +513,7 @@ Final paragraph.
         assert len(label.children) >= 3, "Expected at least 3 children for complex structure"
         
         # All Labels should have the specified padding
-        labels = self._find_labels_recursive(label)
+        labels = find_labels_recursive(label)
         assert len(labels) >= 8, "Expected at least 8 Labels for mixed content"
         
         for lbl in labels:
@@ -578,7 +537,7 @@ Final paragraph.
         assert len(label.children) >= 1, "Expected at least one child for list"
         
         # Verify padding is applied but structure is intact
-        labels = self._find_labels_recursive(label)
+        labels = find_labels_recursive(label)
         assert len(labels) >= 3, "Expected at least 3 Labels (2 items + 1 nested)"
         
         for lbl in labels:
@@ -596,19 +555,6 @@ Final paragraph.
 class TestTextPaddingAppliesToChildLabels:
     """Property tests for text_padding applies to child Labels (Property 8)."""
     
-    def _find_labels_recursive(self, widget, labels=None):
-        """Recursively find all Label widgets in a widget tree."""
-        if labels is None:
-            labels = []
-
-        if isinstance(widget, Label):
-            labels.append(widget)
-
-        if hasattr(widget, 'children'):
-            for child in widget.children:
-                self._find_labels_recursive(child, labels)
-
-        return labels
     
     def _padding_equal(self, p1, p2, tolerance=0.001):
         """Compare two padding values with tolerance for floating point differences."""
@@ -623,7 +569,7 @@ class TestTextPaddingAppliesToChildLabels:
         """text_padding is applied to paragraph Labels."""
         label = MarkdownLabel(text='Hello World', text_padding=padding)
 
-        labels = self._find_labels_recursive(label)
+        labels = find_labels_recursive(label)
         assert len(labels) >= 1, "Expected at least one Label"
 
         # All labels should have the specified text_padding
@@ -638,7 +584,7 @@ class TestTextPaddingAppliesToChildLabels:
         """text_padding is applied to heading Labels."""
         label = MarkdownLabel(text='# Heading', text_padding=padding)
 
-        labels = self._find_labels_recursive(label)
+        labels = find_labels_recursive(label)
         assert len(labels) >= 1, "Expected at least one Label"
 
         # All labels should have the specified text_padding
@@ -654,7 +600,7 @@ class TestTextPaddingAppliesToChildLabels:
         markdown = '- Item 1\n- Item 2'
         label = MarkdownLabel(text=markdown, text_padding=padding)
         
-        labels = self._find_labels_recursive(label)
+        labels = find_labels_recursive(label)
         assert len(labels) >= 2, "Expected at least 2 Labels for list items"
         
         # All labels should have the specified text_padding
@@ -670,7 +616,7 @@ class TestTextPaddingAppliesToChildLabels:
         markdown = '| A | B |\n| --- | --- |\n| 1 | 2 |'
         label = MarkdownLabel(text=markdown, text_padding=padding)
         
-        labels = self._find_labels_recursive(label)
+        labels = find_labels_recursive(label)
         assert len(labels) >= 4, "Expected at least 4 Labels for table cells"
         
         # All labels should have the specified text_padding
@@ -687,19 +633,6 @@ class TestTextPaddingAppliesToChildLabels:
 class TestPaddingAppliesToContainer:
     """Property tests for padding applies to container (Property 9)."""
 
-    def _find_labels_recursive(self, widget, labels=None):
-        """Recursively find all Label widgets in a widget tree."""
-        if labels is None:
-            labels = []
-        
-        if isinstance(widget, Label):
-            labels.append(widget)
-        
-        if hasattr(widget, 'children'):
-            for child in widget.children:
-                self._find_labels_recursive(child, labels)
-        
-        return labels
     
     def _padding_equal(self, p1, p2, tolerance=0.001):
         """Compare two padding values with tolerance for floating point differences."""
@@ -719,7 +652,7 @@ class TestPaddingAppliesToContainer:
             f"Expected container padding={padding}, got {list(label.padding)}"
         
         # Child Labels should have default padding (not affected by container padding)
-        labels = self._find_labels_recursive(label)
+        labels = find_labels_recursive(label)
         assert len(labels) >= 1, "Expected at least one Label"
         
         for lbl in labels:
@@ -745,7 +678,7 @@ class TestPaddingAppliesToContainer:
             f"Expected container padding={container_padding}, got {list(label.padding)}"
         
         # Child Labels should have text_padding
-        labels = self._find_labels_recursive(label)
+        labels = find_labels_recursive(label)
         assert len(labels) >= 1, "Expected at least one Label"
         
         for lbl in labels:
@@ -760,7 +693,7 @@ class TestPaddingAppliesToContainer:
         label = MarkdownLabel(text='Hello World', padding=[0, 0, 0, 0])
         
         # Get initial child Label padding
-        labels = self._find_labels_recursive(label)
+        labels = find_labels_recursive(label)
         assert len(labels) >= 1, "Expected at least one Label"
         initial_child_padding = list(labels[0].padding)
         
@@ -772,7 +705,7 @@ class TestPaddingAppliesToContainer:
             f"Expected container padding={new_padding}, got {list(label.padding)}"
         
         # Child Labels should still have the same padding as before
-        labels = self._find_labels_recursive(label)
+        labels = find_labels_recursive(label)
         for lbl in labels:
             assert self._padding_equal(list(lbl.padding), initial_child_padding), \
                 f"Expected child Label padding unchanged={initial_child_padding}, got {list(lbl.padding)}"

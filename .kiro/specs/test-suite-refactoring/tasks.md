@@ -55,30 +55,30 @@ This implementation plan refactors the MarkdownLabel test suite to address namin
 - [x] 3. Checkpoint - Ensure analysis tools work correctly
   - Ensure all analysis tools pass their tests, ask the user if questions arise.
 
-- [ ] 4. Consolidate helper functions in test_utils.py
+- [x] 4. Consolidate helper functions in test_utils.py
   - Move duplicate helper implementations to centralized location
   - Update imports in test files to use centralized helpers
   - _Requirements: 2.1, 2.2, 2.3, 2.4_
 
-- [ ] 4.1 Extend test_utils.py with missing helpers
+- [x] 4.1 Extend test_utils.py with missing helpers
   - Add commonly needed helper functions identified by analysis
   - Implement rebuild detection utilities
   - _Requirements: 2.4, 4.3_
 
-- [ ] 4.2 Write property test for helper availability
+- [x] 4.2 Write property test for helper availability
   - **Property 7: Helper Function Availability**
   - **Validates: Requirements 2.4, 4.3**
 
-- [ ] 4.2 Remove duplicate helper implementations
+- [x] 4.2 Remove duplicate helper implementations
   - Delete duplicate `_find_labels_recursive` implementations from individual test files
   - Update all imports to use `test_utils.find_labels_recursive`
   - _Requirements: 2.2_
 
-- [ ] 4.3 Write property test for helper consolidation
+- [x] 4.3 Write property test for helper consolidation
   - **Property 3: Helper Function Consolidation**
   - **Validates: Requirements 2.1, 2.2, 2.3**
 
-- [ ] 4.4 Add rebuild detection helpers
+- [x] 4.4 Add rebuild detection helpers
   - Implement `collect_widget_ids()` helper for rebuild testing
   - Add `assert_rebuild_occurred()` and `assert_no_rebuild()` helpers
   - _Requirements: 4.3_
