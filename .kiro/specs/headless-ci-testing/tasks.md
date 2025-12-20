@@ -11,8 +11,8 @@ This implementation plan adds deterministic, headless-safe tests for MarkdownLab
   - Update addopts to exclude `needs_window` tests by default
   - _Requirements: 1.1, 1.2, 1.4_
 
-- [ ] 2. Add FakeTouch utility class
-  - [ ] 2.1 Create FakeTouch class in test_utils.py
+- [x] 2. Add FakeTouch utility class
+  - [x] 2.1 Create FakeTouch class in test_utils.py
     - Add minimal touch simulation class with x, y, pos attributes
     - _Requirements: 2.6_
 
