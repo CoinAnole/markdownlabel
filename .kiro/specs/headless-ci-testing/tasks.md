@@ -121,8 +121,8 @@ This implementation plan adds deterministic, headless-safe tests for MarkdownLab
     - Assert at least one Label widget exists (widgets-mode fallback)
     - _Requirements: 6.1, 6.2_
 
-- [ ] 8. Implement deep nesting truncation placeholder test
-  - [ ] 8.1 Add truncation placeholder test to test_kivy_renderer.py
+- [x] 8. Implement deep nesting truncation placeholder test
+  - [x] 8.1 Add truncation placeholder test to test_kivy_renderer.py
     - Construct AST token with nesting depth > _max_nesting_depth
     - Render via KivyRenderer
     - Assert Label exists with text containing "content truncated"
