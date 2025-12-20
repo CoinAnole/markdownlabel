@@ -69,7 +69,7 @@ This implementation plan adds deterministic, headless-safe tests for MarkdownLab
     - Add @pytest.mark.needs_window to tests requiring Label.refs population
     - _Requirements: 3.6_
 
-- [ ] 5. Checkpoint - Ensure all tests pass
+- [x] 5. Checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 6. Implement widget identity preservation tests
