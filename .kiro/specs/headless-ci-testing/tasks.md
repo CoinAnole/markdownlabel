@@ -16,7 +16,7 @@ This implementation plan adds deterministic, headless-safe tests for MarkdownLab
     - Add minimal touch simulation class with x, y, pos attributes
     - _Requirements: 2.6_
 
-- [ ] 3. Implement deterministic texture mode hit-testing tests
+- [x] 3. Implement deterministic texture mode hit-testing tests
   - [x] 3.1 Add inside-zone dispatch test
     - Create MarkdownLabel with render_mode='texture'
     - Manually set _aggregated_refs with known zones
@@ -25,20 +25,20 @@ This implementation plan adds deterministic, headless-safe tests for MarkdownLab
     - Assert handler called with correct ref and returns True
     - _Requirements: 2.1, 2.2_
 
-  - [ ] 3.2 Write property test for inside-zone dispatch
+  - [x] 3.2 Write property test for inside-zone dispatch
     - **Property 1: Touch Inside Ref Zone Dispatches Event**
     - **Validates: Requirements 2.1, 2.2**
 
-  - [ ] 3.3 Add outside-zone no-dispatch test
+  - [x] 3.3 Add outside-zone no-dispatch test
     - Same setup as 3.1 but touch at coordinates outside all zones
     - Assert no dispatch and method returns False
     - _Requirements: 2.3, 2.4_
 
-  - [ ] 3.4 Write property test for outside-zone behavior
+  - [x] 3.4 Write property test for outside-zone behavior
     - **Property 2: Touch Outside Ref Zones Does Not Dispatch**
     - **Validates: Requirements 2.3, 2.4**
 
-  - [ ] 3.5 Add multiple zones test
+  - [x] 3.5 Add multiple zones test
     - Set up multiple overlapping ref zones
     - Verify first matching zone triggers dispatch
     - _Requirements: 2.5_
