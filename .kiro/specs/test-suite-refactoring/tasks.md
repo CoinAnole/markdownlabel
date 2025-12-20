@@ -29,26 +29,26 @@ This implementation plan refactors the MarkdownLabel test suite to address namin
   - **Property 3: Helper Function Consolidation**
   - **Validates: Requirements 2.1, 2.2, 2.3**
 
-- [ ] 2. Implement naming convention analyzer
+- [x] 2. Implement naming convention analyzer
   - Create analyzer to identify tests with naming/assertion mismatches
   - Generate reports of tests that need renaming
   - _Requirements: 1.1, 1.2, 1.4_
 
-- [ ] 2.1 Build test assertion analyzer
+- [x] 2.1 Build test assertion analyzer
   - Parse test method bodies to identify assertion patterns
   - Detect rebuild-related assertions vs value-only assertions
   - _Requirements: 1.1, 1.2_
 
-- [ ] 2.2 Write property test for naming pattern validation
+- [x] 2.2 Write property test for naming pattern validation
   - **Property 2: Value Change Test Naming**
   - **Validates: Requirements 1.2**
 
-- [ ] 2.3 Create naming convention validator
+- [x] 2.3 Create naming convention validator
   - Implement rules for consistent test naming patterns
   - Generate suggested renames for non-compliant tests
   - _Requirements: 1.4, 5.2_
 
-- [ ] 2.4 Write property test for naming consistency
+- [x] 2.4 Write property test for naming consistency
   - **Property 6: Naming Pattern Consistency**
   - **Validates: Requirements 1.4, 5.2**
 
