@@ -43,28 +43,28 @@ This implementation plan adds deterministic, headless-safe tests for MarkdownLab
     - Verify first matching zone triggers dispatch
     - _Requirements: 2.5_
 
-- [ ] 4. Implement deterministic refs/anchors translation tests
-  - [ ] 4.1 Add refs translation test with injected geometry
+- [x] 4. Implement deterministic refs/anchors translation tests
+  - [x] 4.1 Add refs translation test with injected geometry
     - Build minimal widget tree: MarkdownLabel > BoxLayout > Label
     - Set deterministic pos, size, texture_size on all widgets
     - Inject refs onto child Label
     - Assert aggregated refs match expected translated coordinates
     - _Requirements: 3.1, 3.3, 3.4_
 
-  - [ ] 4.2 Write property test for refs translation math
+  - [x] 4.2 Write property test for refs translation math
     - **Property 3: Refs Coordinate Translation Math**
     - **Validates: Requirements 3.1, 3.3, 3.4**
 
-  - [ ] 4.3 Add anchors translation test with injected geometry
+  - [x] 4.3 Add anchors translation test with injected geometry
     - Same setup as 4.1 but inject anchors instead of refs
     - Assert aggregated anchors match expected translated coordinates
     - _Requirements: 3.2, 3.3, 3.4_
 
-  - [ ] 4.4 Write property test for anchors translation math
+  - [x] 4.4 Write property test for anchors translation math
     - **Property 4: Anchors Coordinate Translation Math**
     - **Validates: Requirements 3.2, 3.3, 3.4**
 
-  - [ ] 4.5 Mark existing window-dependent tests with needs_window
+  - [x] 4.5 Mark existing window-dependent tests with needs_window
     - Review existing coordinate translation tests
     - Add @pytest.mark.needs_window to tests requiring Label.refs population
     - _Requirements: 3.6_
