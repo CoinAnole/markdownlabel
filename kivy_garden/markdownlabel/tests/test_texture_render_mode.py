@@ -17,7 +17,7 @@ from kivy.uix.label import Label
 from kivy.uix.image import Image
 
 from kivy_garden.markdownlabel import MarkdownLabel
-from .test_utils import find_labels_recursive
+from .test_utils import find_labels_recursive, FakeTouch
 
 
 def find_images(widget):
@@ -194,6 +194,68 @@ class TestTextureModeLinksHandling:
             for ref in expected_refs:
                 assert ref in label._aggregated_refs, \
                     f"Expected ref '{ref}' in _aggregated_refs"
+
+
+# **Feature: headless-ci-testing, Property 1: Touch Inside Ref Zone Dispatches Event**
+# *For any* MarkdownLabel with render_mode='texture' and _aggregated_refs containing
+# at least one zone, and *for any* touch point (x, y) that falls inside a ref zone,
+# calling on_touch_down with that touch SHALL dispatch on_ref_press with the correct
+# ref name AND return True.
+# **Validates: Requirements 2.1, 2.2**
+
+class TestDeterministicTextureHitTesting:
+    """Deterministic tests for texture mode hit-testing without window dependency.
+    
+    These tests manually inject _aggregated_refs to verify hit-testing logic
+    without relying on actual texture rendering.
+    """
+    
+    def test_inside_zone_dispatch(self):
+        """Touch inside ref zone dispatches on_ref_press and returns True.
+        
+        **Feature: headless-ci-testing, Property 1: Touch Inside Ref Zone Dispatches Event**
+        **Validates: Requirements 2.1, 2.2**
+        """
+        # Create MarkdownLabel with render_mode='texture'
+        label = MarkdownLabel(
+            text='Test content',
+            render_mode='texture',
+            size=(400, 300),
+            size_hint=(None, None),
+            pos=(0, 0)
+        )
+        
+        # Manually set _aggregated_refs with known zones
+        # Zone format: (x, y, width, height) in local coordinates
+        label._aggregated_refs = {
+            'http://example.com': [(10, 10, 50, 20)],
+        }
+        
+        # Track dispatched refs
+        dispatched_refs = []
+        
+        def capture_ref(instance, ref):
+            dispatched_refs.append(ref)
+        
+        # Bind on_ref_press to capture dispatched ref
+        label.bind(on_ref_press=capture_ref)
+        
+        # Create FakeTouch inside the zone
+        # Zone is at (10, 10) with size (50, 20), so (25, 15) is inside
+        touch = FakeTouch(25, 15)
+        
+        # Call on_touch_down
+        result = label.on_touch_down(touch)
+        
+        # Assert handler called with correct ref
+        assert len(dispatched_refs) == 1, \
+            f"Expected 1 dispatch, got {len(dispatched_refs)}"
+        assert dispatched_refs[0] == 'http://example.com', \
+            f"Expected 'http://example.com', got '{dispatched_refs[0]}'"
+        
+        # Assert returns True
+        assert result is True, \
+            f"Expected on_touch_down to return True, got {result}"
 
 
 # **Feature: label-compatibility, Property 16: Auto render mode selection**

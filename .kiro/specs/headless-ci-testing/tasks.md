@@ -17,7 +17,7 @@ This implementation plan adds deterministic, headless-safe tests for MarkdownLab
     - _Requirements: 2.6_
 
 - [ ] 3. Implement deterministic texture mode hit-testing tests
-  - [ ] 3.1 Add inside-zone dispatch test
+  - [x] 3.1 Add inside-zone dispatch test
     - Create MarkdownLabel with render_mode='texture'
     - Manually set _aggregated_refs with known zones
     - Bind on_ref_press to capture dispatched ref
