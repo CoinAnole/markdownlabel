@@ -6,7 +6,7 @@ This implementation plan adds deterministic, headless-safe tests for MarkdownLab
 
 ## Tasks
 
-- [ ] 1. Configure pytest marker for window-dependent tests
+- [x] 1. Configure pytest marker for window-dependent tests
   - Add `needs_window` marker to pytest.ini
   - Update addopts to exclude `needs_window` tests by default
   - _Requirements: 1.1, 1.2, 1.4_
