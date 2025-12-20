@@ -83,30 +83,30 @@ This implementation plan refactors the MarkdownLabel test suite to address namin
   - Add `assert_rebuild_occurred()` and `assert_no_rebuild()` helpers
   - _Requirements: 4.3_
 
-- [ ] 5. Implement test renaming and marker application
+- [x] 5. Implement test renaming and marker application
   - Rename tests to match their actual assertions
   - Add appropriate pytest markers to categorize tests
   - _Requirements: 1.1, 1.2, 3.1, 3.2_
 
-- [ ] 5.1 Rename tests with naming/assertion mismatches
+- [x] 5.1 Rename tests with naming/assertion mismatches
   - Update test method names to accurately reflect their assertions
   - Update docstrings to match new names
   - _Requirements: 1.1, 1.2_
 
-- [ ] 5.2 Write property test for rebuild contract enforcement
+- [x] 5.2 Write property test for rebuild contract enforcement
   - **Property 5: Rebuild Contract Enforcement**
   - **Validates: Requirements 4.1, 4.2, 4.4**
 
-- [ ] 5.3 Add pytest markers for meta-tests
+- [x] 5.3 Add pytest markers for meta-tests
   - Identify tests that validate test suite structure
   - Add `@pytest.mark.test_tests` markers to meta-tests
   - _Requirements: 3.1, 3.2_
 
-- [ ] 5.4 Write property test for meta-test marking
+- [x] 5.4 Write property test for meta-test marking
   - **Property 4: Meta-Test Marking**
   - **Validates: Requirements 3.1**
 
-- [ ] 5.4 Update existing markers
+- [x] 5.5 Update existing markers
   - Ensure `@pytest.mark.slow` and `@pytest.mark.needs_window` are preserved
   - Add any missing performance test markers
   - _Requirements: 3.4_

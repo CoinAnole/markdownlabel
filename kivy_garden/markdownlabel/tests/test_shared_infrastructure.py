@@ -26,6 +26,7 @@ from kivy_garden.markdownlabel.tests.test_utils import (
 )
 
 
+@pytest.mark.test_tests
 class TestSharedStrategyAvailability:
     """Property tests for shared strategy availability (Property 6)."""
     
@@ -150,6 +151,7 @@ class TestSharedStrategyAvailability:
             assert labels[0].font_name == KIVY_FONTS[0], "Font should be applied to labels"
 
 
+@pytest.mark.test_tests
 class TestHelperFunctionConsolidation:
     """Property tests for helper function consolidation (Property 7)."""
     

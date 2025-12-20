@@ -6,10 +6,12 @@ according to the optimization guidelines.
 
 import re
 from pathlib import Path
+import pytest
 from hypothesis import given, settings
 import hypothesis.strategies as st
 
 
+@pytest.mark.test_tests
 class TestDocumentationCompliance:
     """Test documentation compliance for max_examples values."""
     

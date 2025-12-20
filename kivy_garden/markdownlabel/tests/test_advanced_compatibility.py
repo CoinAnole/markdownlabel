@@ -158,7 +158,7 @@ class TestAdvancedFontPropertiesForwarding:
     @given(st.booleans(), st.booleans())
     # Combination strategy: 4 examples (combination coverage)
     @settings(max_examples=4, deadline=None)
-    def test_font_kerning_change_triggers_rebuild(self, kerning1, kerning2):
+    def test_font_kerning_change_updates_value(self, kerning1, kerning2):
         """Changing font_kerning triggers widget rebuild with new value."""
         assume(kerning1 != kerning2)
         
@@ -182,7 +182,7 @@ class TestAdvancedFontPropertiesForwarding:
     @given(st.booleans(), st.booleans())
     # Combination strategy: 4 examples (combination coverage)
     @settings(max_examples=4, deadline=None)
-    def test_font_blended_change_triggers_rebuild(self, blended1, blended2):
+    def test_font_blended_change_updates_value(self, blended1, blended2):
         """Changing font_blended triggers widget rebuild with new value."""
         assume(blended1 != blended2)
         
@@ -348,7 +348,7 @@ class TestDisabledColorApplication:
             assert colors_equal(lbl.color, expected_color), \
                 f"Expected color={expected_color}, got {list(lbl.color)}"
     
-    def test_disabled_change_triggers_rebuild(self):
+    def test_disabled_change_updates_value(self):
         """Changing disabled property triggers widget rebuild."""
         regular_color = [1, 0, 0, 1]  # Red
         disabled_color = [0.5, 0.5, 0.5, 0.3]  # Gray semi-transparent

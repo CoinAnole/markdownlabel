@@ -9,6 +9,7 @@ import os
 import sys
 import tempfile
 from pathlib import Path
+import pytest
 from hypothesis import given, strategies as st, settings
 
 # Add tools directory to path for imports
@@ -21,6 +22,7 @@ from test_optimization.test_file_analyzer import (
 from test_optimization.strategy_classifier import StrategyType
 
 
+@pytest.mark.test_tests
 class TestFileAnalyzerBasics:
     """Basic functionality tests for FileAnalyzer."""
     
@@ -82,6 +84,7 @@ class TestRegularClass:
             os.unlink(temp_file)
 
 
+@pytest.mark.test_tests
 class TestPropertyTestExtraction:
     """Tests for extracting property tests from file content."""
     
@@ -222,6 +225,7 @@ def test_multiline_given(self, value):
             os.unlink(temp_file)
 
 
+@pytest.mark.test_tests
 class TestValidationReport:
     """Tests for test suite validation reporting."""
     
@@ -283,6 +287,7 @@ def test_boolean_good(self, value):
             assert report.estimated_time_reduction_seconds > 0
 
 
+@pytest.mark.test_tests
 class TestRationaleGeneration:
     """Tests for optimization rationale generation."""
     
@@ -320,6 +325,7 @@ class TestRationaleGeneration:
             assert 'complex' in rationale or 'complexity' in rationale
 
 
+@pytest.mark.test_tests
 class TestErrorHandling:
     """Tests for error handling in file analysis."""
     
@@ -390,6 +396,7 @@ def test_incomplete2(self):
             os.unlink(temp_file)
 
 
+@pytest.mark.test_tests
 class TestIntegrationWithOptimizationTools:
     """Integration tests with StrategyClassifier and MaxExamplesCalculator."""
     
@@ -455,6 +462,7 @@ def test_two_booleans(self, values):
             os.unlink(temp_file)
 
 
+@pytest.mark.test_tests
 class TestToolIntegrationCompatibility:
     """Property-based tests for tool integration compatibility."""
     

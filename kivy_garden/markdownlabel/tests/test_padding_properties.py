@@ -252,7 +252,7 @@ Regular paragraph
     @given(text_padding_strategy, text_padding_strategy)
     # Combination strategy: 16 examples (combination coverage)
     @settings(max_examples=16, deadline=None)
-    def test_padding_change_triggers_rebuild(self, padding1, padding2):
+    def test_padding_change_updates_value(self, padding1, padding2):
         """Changing text_padding triggers widget rebuild with new padding."""
         assume(not self._padding_equal(padding1, padding2))
         

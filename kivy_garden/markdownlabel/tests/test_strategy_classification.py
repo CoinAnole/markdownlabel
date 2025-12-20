@@ -281,6 +281,7 @@ class TestCombinationStrategies:
         # boolean (2) × integers 0..1 (2) = 4
         assert analysis.input_space_size == 4
 
+@pytest.mark.test_tests
 class TestOverTestingDetection:
     """Property tests for over-testing detection (Property 7)."""
     

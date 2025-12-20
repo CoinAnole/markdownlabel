@@ -508,7 +508,7 @@ class TestStrictLabelModeSizingBehavior:
     # Complex strategy: 20 examples (adequate coverage)
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
-    def test_strict_mode_triggers_rebuild(self, markdown_text):
+    def test_strict_mode_updates_value(self, markdown_text):
         """Changing strict_label_mode triggers widget rebuild."""
         assume(markdown_text.strip())
         

@@ -79,7 +79,7 @@ class TestColorForwarding:
     @given(color_strategy, color_strategy)
     # Combination strategy: 50 examples (combination coverage)
     @settings(max_examples=50, deadline=None)
-    def test_color_change_triggers_rebuild(self, color1, color2):
+    def test_color_change_updates_value(self, color1, color2):
         """Changing color triggers widget rebuild with new color."""
         assume(not colors_equal(color1, color2))
         

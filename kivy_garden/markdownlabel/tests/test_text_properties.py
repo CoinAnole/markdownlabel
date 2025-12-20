@@ -50,7 +50,7 @@ class TestTextSizeForwarding:
            st.floats(min_value=50, max_value=1000, allow_nan=False, allow_infinity=False))
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
-    def test_text_size_change_triggers_rebuild(self, width1, width2):
+    def test_text_size_change_updates_value(self, width1, width2):
         """Changing text_size triggers widget rebuild."""
         assume(abs(width1 - width2) > 1)  # Ensure they're different
         
@@ -426,7 +426,7 @@ class TestUnicodeErrorsForwarding:
         ('replace', 'strict'), ('replace', 'ignore'),
         ('ignore', 'strict'), ('ignore', 'replace')
     ])
-    def test_unicode_errors_change_triggers_rebuild(self, errors1, errors2):
+    def test_unicode_errors_change_updates_value(self, errors1, errors2):
         """Changing unicode_errors triggers widget rebuild with new value."""
 
         
@@ -557,7 +557,7 @@ class TestStripForwarding:
     @given(st.booleans(), st.booleans())
     # Combination strategy: 2 examples (combination coverage)
     @settings(max_examples=2, deadline=None)
-    def test_strip_change_triggers_rebuild(self, strip1, strip2):
+    def test_strip_change_updates_value(self, strip1, strip2):
         """Changing strip triggers widget rebuild with new value."""
         assume(strip1 != strip2)
         

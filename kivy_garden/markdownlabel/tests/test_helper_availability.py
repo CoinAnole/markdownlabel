@@ -26,6 +26,7 @@ from .test_utils import (
 )
 
 
+@pytest.mark.test_tests
 class TestHelperFunctionAvailability:
     """Property tests for helper function availability (Property 7)."""
 
@@ -173,6 +174,7 @@ class TestHelperFunctionAvailability:
         test_markdown_strategy()
 
 
+@pytest.mark.test_tests
 class TestHelperFunctionConsolidation:
     """Property tests for helper function consolidation (Property 3)."""
 

@@ -324,7 +324,7 @@ Paragraph text
     @given(st.booleans(), st.booleans())
     # Combination strategy: 2 examples (combination coverage)
     @settings(max_examples=2, deadline=None)
-    def test_shorten_change_triggers_rebuild(self, shorten1, shorten2):
+    def test_shorten_change_updates_value(self, shorten1, shorten2):
         """Changing shorten triggers widget rebuild with new value."""
         assume(shorten1 != shorten2)
         
@@ -726,6 +726,7 @@ class TestCoordinateTranslation:
 # **Validates: Requirements 3.1, 3.3, 3.4**
 
 
+@pytest.mark.slow
 class TestDeterministicRefsTranslation:
     """Deterministic tests for refs coordinate translation with injected geometry.
     
@@ -1086,6 +1087,7 @@ class TestDeterministicRefsTranslation:
 # **Validates: Requirements 3.2, 3.3, 3.4**
 
 
+@pytest.mark.slow
 class TestDeterministicAnchorsTranslation:
     """Deterministic tests for anchors coordinate translation with injected geometry.
     

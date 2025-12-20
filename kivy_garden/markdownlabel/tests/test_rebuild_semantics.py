@@ -268,6 +268,7 @@ class TestStylePropertyIdentityPreservation:
 
 
 
+@pytest.mark.slow
 class TestStylePropertyIdentityPreservationPBT:
     """Property-based tests for style property identity preservation.
     
@@ -489,6 +490,7 @@ class TestStylePropertyPropagation:
 
 
 
+@pytest.mark.slow
 class TestStylePropertyPropagationPBT:
     """Property-based tests for style property propagation to descendants.
     
@@ -757,6 +759,7 @@ class TestStructurePropertyRebuild:
 
 
 
+@pytest.mark.slow
 class TestStructurePropertyRebuildPBT:
     """Property-based tests for structure property rebuild behavior.
     
@@ -908,6 +911,7 @@ class TestStructurePropertyRebuildPBT:
 
 
 
+@pytest.mark.slow
 class TestRootIDPreservationPBT:
     """Property-based tests for root widget ID preservation.
     
