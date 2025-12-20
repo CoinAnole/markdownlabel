@@ -24,7 +24,7 @@ from .test_utils import (
 # block-level element in the AST.
 # **Validates: Requirements 1.1**
 
-class TestWidgetTreeGeneration:
+class TestMarkdownToWidgetTreeGeneration:
     """Property tests for widget tree generation (Property 1)."""
 
     @given(simple_markdown_document())
@@ -99,7 +99,7 @@ class TestWidgetTreeGeneration:
 # of the second text, not the first.
 # **Validates: Requirements 1.2**
 
-class TestReactiveTextUpdates:
+class TestMarkdownTextPropertyUpdates:
     # Complex strategy: 20 examples (adequate coverage)
     """Property tests for reactive text updates (Property 2)."""
     
@@ -195,7 +195,7 @@ class TestReactiveTextUpdates:
 # [ref=url]text[/ref].
 # **Validates: Requirements 7.1**
 
-class TestLinkRefMarkup:
+class TestMarkdownLinkRendering:
     """Property tests for link ref markup (Property 12)."""
     
     @given(markdown_link())
@@ -272,7 +272,7 @@ class TestLinkRefMarkup:
 # the MarkdownLabel SHALL render without raising exceptions or causing stack overflow.
 # **Validates: Requirements 13.1**
 
-class TestDeepNestingStability:
+class TestMarkdownNestingStability:
     """Property tests for deep nesting stability (Property 18)."""
     
     @given(st.integers(min_value=1, max_value=15))

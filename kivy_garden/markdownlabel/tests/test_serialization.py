@@ -21,7 +21,7 @@ from .test_utils import (
 )
 
 
-class TestRoundTripSerialization:
+class TestMarkdownRoundTripSerialization:
     """Property tests for round-trip serialization (Property 17)."""
     
     def _normalize_ast(self, tokens):

@@ -32,7 +32,7 @@ line_height_strategy = st.floats(min_value=0.5, max_value=3.0, allow_nan=False, 
 # code_font_name setting.
 # **Validates: Requirements 2.1**
 
-class TestFontNameForwarding:
+class TestFontNamePropertyForwarding:
     """Property tests for font_name forwarding (Property 2)."""
     
     def _is_code_label(self, label, code_font_name='RobotoMono-Regular'):
@@ -176,7 +176,7 @@ class TestFontNameForwarding:
 # `line_height` set to the specified value.
 # **Validates: Requirements 4.1**
 
-class TestLineHeightForwarding:
+class TestLineHeightPropertyForwarding:
     """Property tests for line_height forwarding (Property 4)."""
     
     @given(line_height_strategy)
@@ -305,7 +305,7 @@ class TestLineHeightForwarding:
 # font_family which is excluded from code blocks to preserve monospace appearance.
 # **Validates: Requirements 6.1, 6.2, 6.3, 6.4, 6.5**
 
-class TestFontAdvancedPropertyForwardingPhase2:
+class TestAdvancedFontPropertyForwarding:
     """Property tests for font advanced property forwarding (Property 6).
     
     This test class verifies that font advanced properties are correctly
@@ -545,7 +545,7 @@ class TestFontAdvancedPropertyForwardingPhase2:
 # the new base size multiplied by their respective scale factors.
 # **Validates: Requirements 2.1**
 
-class TestFontSizeImmediateUpdate:
+class TestFontSizeImmediateUpdates:
     """Property tests for font size immediate update (Property 3)."""
     
     @given(

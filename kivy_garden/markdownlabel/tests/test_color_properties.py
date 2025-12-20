@@ -25,7 +25,7 @@ from .test_utils import (
 # their light color.
 # **Validates: Requirements 3.1**
 
-class TestColorForwarding:
+class TestColorPropertyForwarding:
     """Property tests for color forwarding (Property 3)."""
     
     @given(color_strategy)
