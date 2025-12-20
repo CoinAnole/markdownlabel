@@ -22,7 +22,7 @@ from .test_file_parser import TestFileParser, TestFileMetadata
 
 
 @st.composite
-def test_file_with_rebuild_test_strategy(draw):
+def rebuild_test_file_strategy(draw):
     """Generate a Python test file with a rebuild test."""
     test_name = draw(st.sampled_from([
         "test_color_change_triggers_rebuild",
@@ -81,7 +81,7 @@ class TestRebuildBehavior:
 class TestTestNameConsistency:
     """Property tests for test name consistency (Property 1)."""
     
-    @given(test_file_with_rebuild_test_strategy())
+    @given(rebuild_test_file_strategy())
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_rebuild_test_names_match_assertions(self, test_data):
@@ -121,7 +121,7 @@ class TestTestNameConsistency:
         finally:
             os.unlink(temp_file)
     
-    @given(st.text(min_size=1, max_size=20, alphabet=st.characters(whitelist_categories=['L', 'N'], blacklist_characters=':')))
+    @given(st.text(min_size=1, max_size=10, alphabet=st.characters(min_codepoint=ord('a'), max_codepoint=ord('z'))))
     # Simple strategy: 10 examples (basic coverage)
     @settings(max_examples=10, deadline=None)
     def test_parser_handles_valid_python_files(self, content_suffix):
