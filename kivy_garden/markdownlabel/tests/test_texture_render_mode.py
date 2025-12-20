@@ -17,7 +17,7 @@ from kivy.uix.label import Label
 from kivy.uix.image import Image
 
 from kivy_garden.markdownlabel import MarkdownLabel
-from .test_utils import find_labels_recursive
+from .test_utils import find_labels_recursive, FakeTouch
 
 
 def find_images(widget):
@@ -196,12 +196,433 @@ class TestTextureModeLinksHandling:
                     f"Expected ref '{ref}' in _aggregated_refs"
 
 
+# **Feature: headless-ci-testing, Property 1: Touch Inside Ref Zone Dispatches Event**
+# *For any* MarkdownLabel with render_mode='texture' and _aggregated_refs containing
+# at least one zone, and *for any* touch point (x, y) that falls inside a ref zone,
+# calling on_touch_down with that touch SHALL dispatch on_ref_press with the correct
+# ref name AND return True.
+# **Validates: Requirements 2.1, 2.2**
+
+class TestDeterministicTextureHitTesting:
+    """Deterministic tests for texture mode hit-testing without window dependency.
+    
+    These tests manually inject _aggregated_refs to verify hit-testing logic
+    without relying on actual texture rendering.
+    """
+    
+    def test_inside_zone_dispatch(self):
+        """Touch inside ref zone dispatches on_ref_press and returns True.
+        
+        **Feature: headless-ci-testing, Property 1: Touch Inside Ref Zone Dispatches Event**
+        **Validates: Requirements 2.1, 2.2**
+        """
+        # Create MarkdownLabel with render_mode='texture'
+        label = MarkdownLabel(
+            text='Test content',
+            render_mode='texture',
+            size=(400, 300),
+            size_hint=(None, None),
+            pos=(0, 0)
+        )
+        
+        # Manually set _aggregated_refs with known zones
+        # Zone format: (x, y, width, height) in local coordinates
+        label._aggregated_refs = {
+            'http://example.com': [(10, 10, 50, 20)],
+        }
+        
+        # Track dispatched refs
+        dispatched_refs = []
+        
+        def capture_ref(instance, ref):
+            dispatched_refs.append(ref)
+        
+        # Bind on_ref_press to capture dispatched ref
+        label.bind(on_ref_press=capture_ref)
+        
+        # Create FakeTouch inside the zone
+        # Zone is at (10, 10) with size (50, 20), so (25, 15) is inside
+        touch = FakeTouch(25, 15)
+        
+        # Call on_touch_down
+        result = label.on_touch_down(touch)
+        
+        # Assert handler called with correct ref
+        assert len(dispatched_refs) == 1, \
+            f"Expected 1 dispatch, got {len(dispatched_refs)}"
+        assert dispatched_refs[0] == 'http://example.com', \
+            f"Expected 'http://example.com', got '{dispatched_refs[0]}'"
+        
+        # Assert returns True
+        assert result is True, \
+            f"Expected on_touch_down to return True, got {result}"
+    
+    # Property test strategies for hit-testing
+    @staticmethod
+    def _zone_strategy():
+        """Strategy for generating valid ref zones."""
+        return st.tuples(
+            st.floats(min_value=0, max_value=300, allow_nan=False),
+            st.floats(min_value=0, max_value=200, allow_nan=False),
+            st.floats(min_value=10, max_value=100, allow_nan=False),
+            st.floats(min_value=10, max_value=50, allow_nan=False)
+        )
+    
+    @staticmethod
+    def _ref_name_strategy():
+        """Strategy for generating valid ref names (URLs)."""
+        return st.from_regex(
+            r'https?://[a-z]{3,10}\.[a-z]{2,5}/[a-z]{1,10}',
+            fullmatch=True
+        )
+    
+    @given(
+        zone=st.tuples(
+            st.floats(min_value=0, max_value=300, allow_nan=False),
+            st.floats(min_value=0, max_value=200, allow_nan=False),
+            st.floats(min_value=10, max_value=100, allow_nan=False),
+            st.floats(min_value=10, max_value=50, allow_nan=False)
+        ),
+        ref_name=st.from_regex(
+            r'https?://[a-z]{3,10}\.[a-z]{2,5}/[a-z]{1,10}',
+            fullmatch=True
+        ),
+        touch_offset_x=st.floats(min_value=0.1, max_value=0.9, allow_nan=False),
+        touch_offset_y=st.floats(min_value=0.1, max_value=0.9, allow_nan=False)
+    )
+    @settings(max_examples=100)
+    def test_property_inside_zone_dispatch(
+        self, zone, ref_name, touch_offset_x, touch_offset_y
+    ):
+        """Property test: Touch inside ref zone dispatches on_ref_press.
+        
+        **Feature: headless-ci-testing, Property 1: Touch Inside Ref Zone Dispatches Event**
+        *For any* MarkdownLabel with render_mode='texture' and _aggregated_refs
+        containing at least one zone, and *for any* touch point (x, y) that falls
+        inside a ref zone, calling on_touch_down with that touch SHALL dispatch
+        on_ref_press with the correct ref name AND return True.
+        **Validates: Requirements 2.1, 2.2**
+        """
+        zx, zy, zw, zh = zone
+        
+        # Create MarkdownLabel with render_mode='texture'
+        label = MarkdownLabel(
+            text='Test content',
+            render_mode='texture',
+            size=(400, 300),
+            size_hint=(None, None),
+            pos=(0, 0)
+        )
+        
+        # Manually set _aggregated_refs with the generated zone
+        label._aggregated_refs = {
+            ref_name: [(zx, zy, zw, zh)],
+        }
+        
+        # Track dispatched refs
+        dispatched_refs = []
+        
+        def capture_ref(instance, ref):
+            dispatched_refs.append(ref)
+        
+        label.bind(on_ref_press=capture_ref)
+        
+        # Calculate touch point inside the zone using offsets
+        touch_x = zx + (zw * touch_offset_x)
+        touch_y = zy + (zh * touch_offset_y)
+        
+        touch = FakeTouch(touch_x, touch_y)
+        result = label.on_touch_down(touch)
+        
+        # Assert handler called with correct ref
+        assert len(dispatched_refs) == 1, \
+            f"Expected 1 dispatch for touch at ({touch_x}, {touch_y}) in zone {zone}"
+        assert dispatched_refs[0] == ref_name, \
+            f"Expected '{ref_name}', got '{dispatched_refs[0]}'"
+        assert result is True, \
+            f"Expected on_touch_down to return True"
+    
+    def test_outside_zone_no_dispatch(self):
+        """Touch outside ref zones does not dispatch on_ref_press.
+        
+        **Feature: headless-ci-testing, Property 2: Touch Outside Ref Zones Does Not Dispatch**
+        **Validates: Requirements 2.3, 2.4**
+        """
+        # Create MarkdownLabel with render_mode='texture'
+        label = MarkdownLabel(
+            text='Test content',
+            render_mode='texture',
+            size=(400, 300),
+            size_hint=(None, None),
+            pos=(0, 0)
+        )
+        
+        # Manually set _aggregated_refs with known zones
+        label._aggregated_refs = {
+            'http://example.com': [(10, 10, 50, 20)],
+        }
+        
+        # Track dispatched refs
+        dispatched_refs = []
+        
+        def capture_ref(instance, ref):
+            dispatched_refs.append(ref)
+        
+        label.bind(on_ref_press=capture_ref)
+        
+        # Create FakeTouch outside the zone
+        # Zone is at (10, 10) with size (50, 20), so (100, 100) is outside
+        touch = FakeTouch(100, 100)
+        
+        result = label.on_touch_down(touch)
+        
+        # Assert no dispatch
+        assert len(dispatched_refs) == 0, \
+            f"Expected no dispatch, got {len(dispatched_refs)}"
+        
+        # Assert returns falsy value (super().on_touch_down returns None)
+        assert not result, \
+            f"Expected on_touch_down to return falsy value, got {result}"
+    
+    @given(
+        zone=st.tuples(
+            st.floats(min_value=50, max_value=150, allow_nan=False),
+            st.floats(min_value=50, max_value=100, allow_nan=False),
+            st.floats(min_value=10, max_value=50, allow_nan=False),
+            st.floats(min_value=10, max_value=30, allow_nan=False)
+        ),
+        ref_name=st.from_regex(
+            r'https?://[a-z]{3,10}\.[a-z]{2,5}/[a-z]{1,10}',
+            fullmatch=True
+        ),
+        outside_offset=st.floats(min_value=10, max_value=50, allow_nan=False)
+    )
+    @settings(max_examples=100)
+    def test_property_outside_zone_no_dispatch(self, zone, ref_name, outside_offset):
+        """Property test: Touch outside ref zones does not dispatch.
+        
+        **Feature: headless-ci-testing, Property 2: Touch Outside Ref Zones Does Not Dispatch**
+        *For any* MarkdownLabel with render_mode='texture' and _aggregated_refs
+        containing zones, and *for any* touch point (x, y) that falls outside all
+        ref zones, calling on_touch_down with that touch SHALL NOT dispatch
+        on_ref_press AND SHALL return False.
+        **Validates: Requirements 2.3, 2.4**
+        """
+        zx, zy, zw, zh = zone
+        
+        # Create MarkdownLabel with render_mode='texture'
+        label = MarkdownLabel(
+            text='Test content',
+            render_mode='texture',
+            size=(400, 300),
+            size_hint=(None, None),
+            pos=(0, 0)
+        )
+        
+        # Manually set _aggregated_refs with the generated zone
+        label._aggregated_refs = {
+            ref_name: [(zx, zy, zw, zh)],
+        }
+        
+        # Track dispatched refs
+        dispatched_refs = []
+        
+        def capture_ref(instance, ref):
+            dispatched_refs.append(ref)
+        
+        label.bind(on_ref_press=capture_ref)
+        
+        # Calculate touch point outside the zone (to the right and above)
+        touch_x = zx + zw + outside_offset
+        touch_y = zy + zh + outside_offset
+        
+        touch = FakeTouch(touch_x, touch_y)
+        result = label.on_touch_down(touch)
+        
+        # Assert no dispatch
+        assert len(dispatched_refs) == 0, \
+            f"Expected no dispatch for touch at ({touch_x}, {touch_y}) outside zone {zone}"
+        
+        # Assert returns falsy value (super().on_touch_down returns None)
+        assert not result, \
+            f"Expected on_touch_down to return falsy value"
+    
+    def test_multiple_zones_first_match(self):
+        """Multiple zones: first matching zone triggers dispatch.
+        
+        **Feature: headless-ci-testing, Property 1: Touch Inside Ref Zone Dispatches Event**
+        **Validates: Requirements 2.5**
+        """
+        # Create MarkdownLabel with render_mode='texture'
+        label = MarkdownLabel(
+            text='Test content',
+            render_mode='texture',
+            size=(400, 300),
+            size_hint=(None, None),
+            pos=(0, 0)
+        )
+        
+        # Set up multiple overlapping ref zones
+        # Zone 1: (10, 10, 100, 50) - larger zone
+        # Zone 2: (30, 20, 40, 30) - smaller zone inside zone 1
+        label._aggregated_refs = {
+            'http://first.com': [(10, 10, 100, 50)],
+            'http://second.com': [(30, 20, 40, 30)],
+        }
+        
+        # Track dispatched refs
+        dispatched_refs = []
+        
+        def capture_ref(instance, ref):
+            dispatched_refs.append(ref)
+        
+        label.bind(on_ref_press=capture_ref)
+        
+        # Touch at (40, 30) - inside both zones
+        touch = FakeTouch(40, 30)
+        result = label.on_touch_down(touch)
+        
+        # Assert exactly one dispatch (first matching zone)
+        assert len(dispatched_refs) == 1, \
+            f"Expected 1 dispatch, got {len(dispatched_refs)}"
+        
+        # The first zone in iteration order should be dispatched
+        # (dict iteration order is insertion order in Python 3.7+)
+        assert dispatched_refs[0] == 'http://first.com', \
+            f"Expected 'http://first.com' (first zone), got '{dispatched_refs[0]}'"
+        
+        assert result is True, \
+            f"Expected on_touch_down to return True"
+    
+    def test_multiple_zones_non_overlapping(self):
+        """Multiple non-overlapping zones: correct zone triggers dispatch.
+        
+        **Feature: headless-ci-testing, Property 1: Touch Inside Ref Zone Dispatches Event**
+        **Validates: Requirements 2.5**
+        """
+        # Create MarkdownLabel with render_mode='texture'
+        label = MarkdownLabel(
+            text='Test content',
+            render_mode='texture',
+            size=(400, 300),
+            size_hint=(None, None),
+            pos=(0, 0)
+        )
+        
+        # Set up multiple non-overlapping ref zones
+        label._aggregated_refs = {
+            'http://first.com': [(10, 10, 50, 30)],
+            'http://second.com': [(100, 10, 50, 30)],
+            'http://third.com': [(200, 10, 50, 30)],
+        }
+        
+        # Track dispatched refs
+        dispatched_refs = []
+        
+        def capture_ref(instance, ref):
+            dispatched_refs.append(ref)
+        
+        label.bind(on_ref_press=capture_ref)
+        
+        # Touch at (120, 20) - inside second zone only
+        touch = FakeTouch(120, 20)
+        result = label.on_touch_down(touch)
+        
+        # Assert exactly one dispatch for the correct zone
+        assert len(dispatched_refs) == 1, \
+            f"Expected 1 dispatch, got {len(dispatched_refs)}"
+        assert dispatched_refs[0] == 'http://second.com', \
+            f"Expected 'http://second.com', got '{dispatched_refs[0]}'"
+        assert result is True, \
+            f"Expected on_touch_down to return True"
+
+
 # **Feature: label-compatibility, Property 16: Auto render mode selection**
 # *For any* MarkdownLabel with render_mode='auto', the effective render mode SHALL
 # be determined by content complexity and layout constraints (widgets for simple
 # content, texture for complex layouts or when strict_label_mode is True with
 # height constraints).
 # **Validates: Requirements 6.4**
+
+# **Feature: headless-ci-testing, Requirement 6: Texture Fallback Branch Test**
+# WHEN _render_as_texture returns None, THE MarkdownLabel SHALL fall back to
+# widgets-mode rendering.
+# **Validates: Requirements 6.1, 6.2**
+
+class TestTextureFallbackBranch:
+    """Tests for texture mode fallback to widgets mode when rendering fails."""
+    
+    def test_texture_fallback_to_widgets_mode(self, monkeypatch):
+        """When _render_as_texture returns None, fallback to widgets mode.
+        
+        **Feature: headless-ci-testing, Requirement 6: Texture Fallback Branch**
+        **Validates: Requirements 6.1, 6.2**
+        
+        This test verifies that when texture rendering fails (returns None),
+        the MarkdownLabel falls back to widgets-mode rendering, ensuring
+        content is always displayed.
+        """
+        # Monkeypatch _render_as_texture to return None (simulate failure)
+        monkeypatch.setattr(
+            MarkdownLabel,
+            '_render_as_texture',
+            lambda self, content: None
+        )
+        
+        # Create MarkdownLabel with render_mode='texture' and non-empty text
+        label = MarkdownLabel(
+            text='# Hello World\n\nThis is **bold** text.',
+            render_mode='texture',
+            size=(400, 300),
+            size_hint=(None, None)
+        )
+        
+        # Call force_rebuild() to trigger rendering
+        label.force_rebuild()
+        
+        # Assert no Image widget in tree (texture mode failed)
+        images = find_images(label)
+        assert len(images) == 0, \
+            f"Expected no Image widgets after texture fallback, found {len(images)}"
+        
+        # Assert at least one Label widget exists (widgets-mode fallback)
+        labels = find_labels_recursive(label)
+        assert len(labels) >= 1, \
+            f"Expected at least 1 Label widget in fallback mode, found {len(labels)}"
+    
+    def test_texture_fallback_preserves_content(self, monkeypatch):
+        """Fallback to widgets mode preserves all content.
+        
+        **Feature: headless-ci-testing, Requirement 6: Texture Fallback Branch**
+        **Validates: Requirements 6.1, 6.2**
+        """
+        # Monkeypatch _render_as_texture to return None
+        monkeypatch.setattr(
+            MarkdownLabel,
+            '_render_as_texture',
+            lambda self, content: None
+        )
+        
+        # Create MarkdownLabel with multiple content elements
+        label = MarkdownLabel(
+            text='# Heading\n\nParagraph text.\n\n- List item',
+            render_mode='texture',
+            size=(400, 300),
+            size_hint=(None, None)
+        )
+        
+        label.force_rebuild()
+        
+        # Verify content is rendered (at least one Label exists)
+        labels = find_labels_recursive(label)
+        assert len(labels) >= 1, \
+            "Expected content to be rendered in fallback mode"
+        
+        # Verify no Image widgets (texture mode didn't succeed)
+        images = find_images(label)
+        assert len(images) == 0, \
+            "Expected no Image widgets in fallback mode"
+
 
 class TestAutoRenderModeSelection:
     """Property tests for auto render mode selection (Property 16)."""

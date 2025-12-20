@@ -320,7 +320,7 @@ class TestEfficientStyleUpdates:
         assert ids_before == ids_after, \
             "Widget tree changed after disabled update"
 
-    def test_text_change_rebuilds_widget_tree(self):
+    def test_text_structure_property_rebuilds_tree(self):
         """Changing text (structure property) rebuilds the widget tree.
         
         **Feature: label-compatibility-phase2, Property 7: Efficient Style Updates**
@@ -349,7 +349,7 @@ class TestEfficientStyleUpdates:
         assert children_before != children_after, \
             "Widget tree should be rebuilt after text change"
 
-    def test_font_name_change_rebuilds_widget_tree(self):
+    def test_font_name_structure_property_rebuilds_tree(self):
         """Changing font_name (structure property) rebuilds the widget tree.
         
         **Feature: label-compatibility-phase2, Property 7: Efficient Style Updates**
