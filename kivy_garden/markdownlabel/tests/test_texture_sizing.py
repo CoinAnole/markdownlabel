@@ -32,6 +32,7 @@ from .test_utils import (
 # 4. Proper handling of empty content
 # 5. Widget types that have explicit heights (thematic_break, blank_line, AsyncImage)
 
+@pytest.mark.test_tests
 class TestComprehensiveTextureSizeCalculation:
     """Property tests for comprehensive texture_size calculation (Property 3)."""
     
@@ -389,6 +390,7 @@ code = "block"
 # *For any* two test classes that test the same feature area, they should be located in the same module
 # **Validates: Requirements 1.4, 4.3, 4.4**
 
+@pytest.mark.test_tests
 class TestTextureSizingTestGrouping:
     """Property tests for texture sizing test grouping (Property 9)."""
     

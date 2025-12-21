@@ -323,6 +323,7 @@ class TestAutoSizeHeightDynamicToggling:
 # `auto_size_height` settings.
 # **Validates: Requirements 2.1, 2.2, 2.3, 2.4**
 
+@pytest.mark.test_tests
 class TestStrictLabelModeSizingBehavior:
     """Property tests for strict label mode sizing behavior (Property 2)."""
     
@@ -553,6 +554,7 @@ class TestStrictLabelModeSizingBehavior:
 # *For any* two test classes that test the same feature area, they should be located in the same module
 # **Validates: Requirements 1.4, 4.3, 4.4**
 
+@pytest.mark.test_tests
 class TestLogicalTestGrouping:
     """Property tests for logical test grouping (Property 9)."""
     

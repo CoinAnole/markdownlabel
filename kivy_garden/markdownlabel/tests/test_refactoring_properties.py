@@ -12,6 +12,8 @@ from pathlib import Path
 
 import pytest
 
+from .test_utils import find_labels_recursive, collect_widget_ids
+
 
 # **Feature: test-refactoring, Property 8: Module Naming Consistency**
 # *For any* test module in the refactored structure, the filename SHALL follow
@@ -398,7 +400,7 @@ class TestTestClassOrganization:
                     })
             
             return classes
-        except Exception:
+        except (SyntaxError, UnicodeDecodeError, OSError):
             return []
     
     def _is_descriptive_class_name(self, class_name):

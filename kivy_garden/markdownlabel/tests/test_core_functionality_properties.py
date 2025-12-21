@@ -17,6 +17,7 @@ from typing import Set, List
 # *For any* test class or method in the original file, the same named test should exist in exactly one of the refactored modules
 # **Validates: Requirements 2.2**
 
+@pytest.mark.test_tests
 class TestNamePreservation:
     """Property tests for test name preservation (Property 2)."""
     
@@ -52,10 +53,10 @@ class TestNamePreservation:
         """Core functionality test classes are preserved in the new module."""
         # Expected test classes that should be in the core functionality module
         expected_classes = {
-            'TestWidgetTreeGeneration',
-            'TestReactiveTextUpdates', 
-            'TestLinkRefMarkup',
-            'TestDeepNestingStability'
+            'TestMarkdownToWidgetTreeGeneration',
+            'TestMarkdownTextPropertyUpdates', 
+            'TestMarkdownLinkRendering',
+            'TestMarkdownNestingStability'
         }
         
         # Extract test names from the new core functionality module
@@ -91,10 +92,10 @@ class TestNamePreservation:
                 all_test_names[name] = test_file.name
     
     @pytest.mark.parametrize('class_name', [
-        'TestWidgetTreeGeneration',
-        'TestReactiveTextUpdates', 
-        'TestLinkRefMarkup',
-        'TestDeepNestingStability'
+        'TestMarkdownToWidgetTreeGeneration',
+        'TestMarkdownTextPropertyUpdates', 
+        'TestMarkdownLinkRendering',
+        'TestMarkdownNestingStability'
     ])
     def test_specific_class_exists_in_core_module(self, class_name):
         """Each specific core functionality class exists in the core module."""
@@ -110,6 +111,7 @@ class TestNamePreservation:
 # *For any* generated test module, the line count should not exceed 2500 lines
 # **Validates: Requirements 1.3**
 
+@pytest.mark.test_tests
 class TestModuleLineCountConstraint:
     """Property tests for module line count constraint (Property 1)."""
     
@@ -180,6 +182,7 @@ class TestModuleLineCountConstraint:
 # flakiness across different machine speeds.
 # **Validates: Requirements 1.1, 1.2**
 
+@pytest.mark.test_tests
 class TestNoTimingAssertions:
     """Property tests for no timing assertions (Property 1)."""
     
@@ -252,6 +255,7 @@ class TestNoTimingAssertions:
 # and collection counts instead of execution timing.
 # **Validates: Requirements 1.3, 1.4**
 
+@pytest.mark.test_tests
 class TestSubprocessPytestConfiguration:
     """Property tests for subprocess pytest configuration (Property 2)."""
     
@@ -343,6 +347,7 @@ class TestSubprocessPytestConfiguration:
 # can silently pass.
 # **Validates: Requirements 2.1**
 
+@pytest.mark.test_tests
 class TestNoSilentPassFileChecks:
     """Property tests for no silent-pass file checks (Property 3)."""
     
@@ -412,6 +417,7 @@ class TestNoSilentPassFileChecks:
 # (except Exception: pass or except:) that can mask real failures.
 # **Validates: Requirements 2.2, 2.4**
 
+@pytest.mark.test_tests
 class TestNoBroadExceptionHandling:
     """Property tests for no broad exception handling (Property 4)."""
     
@@ -483,6 +489,7 @@ class TestNoBroadExceptionHandling:
 # the test SHALL be converted to pytest.mark.parametrize with descriptive parameter names.
 # **Validates: Requirements 3.1, 3.4**
 
+@pytest.mark.test_tests
 class TestFixedListPropertyTestsConverted:
     """Property tests for fixed-list property tests conversion (Property 5)."""
     
@@ -658,6 +665,7 @@ class TestFixedListPropertyTestsConverted:
 # @pytest.mark.slow.
 # **Validates: Requirements 7.1, 7.3**
 
+@pytest.mark.test_tests
 class TestPerformanceTestsMarked:
     """Property tests for performance test marking (Property 10)."""
     
@@ -782,6 +790,7 @@ class TestPerformanceTestsMarked:
 # conftest.py configuration.
 # **Validates: Requirements 8.1, 8.4**
 
+@pytest.mark.test_tests
 class TestNoDuplicateEnvironmentSetup:
     """Property tests for no duplicate environment setup (Property 11)."""
     

@@ -152,8 +152,8 @@ class TestSharedStrategyAvailability:
 
 
 @pytest.mark.test_tests
-class TestHelperFunctionConsolidation:
-    """Property tests for helper function consolidation (Property 7)."""
+class TestSharedInfrastructureHelpers:
+    """Property tests for shared infrastructure helper functions (Property 7)."""
     
     @given(st.text(min_size=1, max_size=50))
     # Complex strategy: 50 examples (adequate coverage)
