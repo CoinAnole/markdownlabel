@@ -8,6 +8,7 @@ including module naming consistency and other refactoring properties.
 import ast
 import os
 import re
+import sys
 from pathlib import Path
 
 import pytest
@@ -93,7 +94,7 @@ class TestDiscoveryPerformance:
         # Run test discovery with stable configuration
         # Use -o addopts= to clear default addopts and keep discovery deterministic
         result = subprocess.run([
-            'pytest', '--collect-only', test_dir, '-q', '-o', 'addopts='
+            sys.executable, '-m', 'pytest', '--collect-only', test_dir, '-q', '-o', 'addopts='
         ], capture_output=True, text=True, cwd=os.path.dirname(test_dir),
         env={**os.environ, 'PYTEST_DISABLE_PLUGIN_AUTOLOAD': '1'})
         
@@ -147,7 +148,7 @@ class TestDiscoveryPerformance:
         # Run discovery for this specific module with stable configuration
         # Use -o addopts= to clear default addopts and keep discovery deterministic
         result = subprocess.run([
-            'pytest', '--collect-only', module_path, '-q', '-o', 'addopts='
+            sys.executable, '-m', 'pytest', '--collect-only', module_path, '-q', '-o', 'addopts='
         ], capture_output=True, text=True, cwd=os.path.dirname(test_dir),
         env={**os.environ, 'PYTEST_DISABLE_PLUGIN_AUTOLOAD': '1'})
         
@@ -186,7 +187,7 @@ class TestDiscoveryPerformance:
         # Run discovery with stable configuration
         # Use -o addopts= to clear default addopts and keep discovery deterministic
         result = subprocess.run([
-            'pytest', '--collect-only', module_path, '-q', '-o', 'addopts='
+            sys.executable, '-m', 'pytest', '--collect-only', module_path, '-q', '-o', 'addopts='
         ], capture_output=True, text=True, cwd=os.path.dirname(test_dir),
         env={**os.environ, 'PYTEST_DISABLE_PLUGIN_AUTOLOAD': '1'})
         

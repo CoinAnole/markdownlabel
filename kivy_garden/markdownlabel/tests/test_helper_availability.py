@@ -48,12 +48,12 @@ class TestHelperFunctionAvailability:
         
         # Test collect_widget_ids is available and works
         widget_ids = collect_widget_ids(label)
-        assert isinstance(widget_ids, set)
+        assert isinstance(widget_ids, dict)
         assert len(widget_ids) >= 1  # At least the root widget
         
         # Test collect_widget_ids with exclude_root
         widget_ids_no_root = collect_widget_ids(label, exclude_root=True)
-        assert isinstance(widget_ids_no_root, set)
+        assert isinstance(widget_ids_no_root, dict)
 
     @given(color_strategy, color_strategy)
     @settings(max_examples=10, deadline=None)
