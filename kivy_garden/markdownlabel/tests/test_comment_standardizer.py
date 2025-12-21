@@ -372,7 +372,7 @@ def test_finite_strategy(num):
         if len(unique_items) == 0:
             unique_items = ['item1']
         
-        items_str = ', '.join(f'"{item}"' for item in unique_items[:10])  # Limit to 10 items
+        items_str = ', '.join(repr(item) for item in unique_items[:10])  # Limit to 10 items
         
         test_code = f'''
 @given(item=st.sampled_from([{items_str}]))

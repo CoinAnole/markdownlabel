@@ -8,7 +8,7 @@ functions used across multiple test modules in the MarkdownLabel test suite.
 from hypothesis import strategies as st
 from kivy.uix.label import Label
 from kivy.uix.widget import Widget
-from typing import List, Optional
+from typing import List, Optional, Dict
 
 
 # Touch Simulation Classes
@@ -202,69 +202,65 @@ def floats_equal(f1: float, f2: float, tolerance: float = 0.001) -> bool:
 
 # Rebuild Detection Helpers
 
-def collect_widget_ids(widget: Widget, exclude_root: bool = False) -> set:
-    """Collect Python object ids of all widgets in the tree.
+def collect_widget_ids(widget: Widget, exclude_root: bool = False) -> Dict[int, Widget]:
+    """Collect Python object ids and references of all widgets in the tree.
     
-    This helper function traverses the widget tree and collects the Python
-    object IDs of all widgets. It's used to verify widget identity preservation
-    across property changes.
+    This helper function traverses the widget tree and collects a mapping of
+    Python object IDs to the widgets themselves. Storing the widget references
+    prevents their memory addresses (IDs) from being reused by Python's
+    garbage collector during identity comparison tests.
     
     Args:
         widget: Root widget to collect from
-        exclude_root: If True, exclude the root widget's id from the result
+        exclude_root: If True, exclude the root widget from the result
     
     Returns:
-        Set of widget object ids
+        Dictionary mapping widget object ids to widget instances
     """
-    ids = set() if exclude_root else {id(widget)}
+    widgets = {} if exclude_root else {id(widget): widget}
     if hasattr(widget, 'children'):
         for child in widget.children:
-            ids.update(collect_widget_ids(child, exclude_root=False))
-    return ids
+            widgets.update(collect_widget_ids(child, exclude_root=False))
+    return widgets
 
 
-def assert_rebuild_occurred(widget: Widget, ids_before: set, exclude_root: bool = True) -> None:
+def assert_rebuild_occurred(widget: Widget, ids_before: Dict[int, Widget], exclude_root: bool = True) -> None:
     """Assert that a widget tree rebuild occurred.
     
-    Verifies that the widget tree has been rebuilt by comparing widget IDs
-    before and after a change. A rebuild means new widget instances were created.
+    Verifies that the widget tree has been rebuilt by comparing widget mappings
+    before and after a change. A rebuild means different widget instances.
     
     Args:
         widget: Root widget to check
-        ids_before: Set of widget IDs before the change
+        ids_before: Dict mapping widget IDs to objects before the change
         exclude_root: If True, exclude the root widget from comparison
         
     Raises:
-        AssertionError: If no rebuild occurred (widget IDs are the same)
+        AssertionError: If no rebuild occurred (widget mappings are identical)
     """
     ids_after = collect_widget_ids(widget, exclude_root=exclude_root)
     
-    if exclude_root:
-        # Root should remain the same, but children should be different
-        assert ids_before != ids_after, \
-            f"Expected rebuild to occur (children should change), but widget IDs are identical"
-    else:
-        # All widgets should be different
-        assert ids_before != ids_after, \
-            f"Expected rebuild to occur, but widget IDs are identical"
+    # Compare dictionaries - will be unequal if instances differ even if IDs coincide
+    assert ids_before != ids_after, \
+        f"Expected rebuild to occur, but widget instances are identical"
 
 
-def assert_no_rebuild(widget: Widget, ids_before: set, exclude_root: bool = True) -> None:
+def assert_no_rebuild(widget: Widget, ids_before: Dict[int, Widget], exclude_root: bool = True) -> None:
     """Assert that no widget tree rebuild occurred.
     
     Verifies that the widget tree was updated in-place without creating new
-    widget instances. This is expected for style-only property changes.
+    widget instances. 
     
     Args:
         widget: Root widget to check
-        ids_before: Set of widget IDs before the change
+        ids_before: Dict mapping widget IDs to objects before the change
         exclude_root: If True, exclude the root widget from comparison
         
     Raises:
-        AssertionError: If a rebuild occurred (widget IDs changed)
+        AssertionError: If a rebuild occurred (widget mappings changed)
     """
     ids_after = collect_widget_ids(widget, exclude_root=exclude_root)
     
     assert ids_before == ids_after, \
-        f"Expected no rebuild (widget IDs should remain the same), but IDs changed: " \
+        f"Expected no rebuild, but widget instances changed: " \
         f"{len(ids_before)} before, {len(ids_after)} after"

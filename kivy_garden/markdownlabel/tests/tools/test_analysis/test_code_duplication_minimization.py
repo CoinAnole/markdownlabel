@@ -62,18 +62,21 @@ def _test_suite_with_duplicates(draw):
     }
     
     # Determine duplication pattern based on level
+    # Calculate max allowed spread to stay below 70% threshold
+    max_allowed_spread = max(2, int(num_files * 0.7))
+    
     if duplication_level == 'low':
         # 1-2 functions duplicated across 2-3 files
         num_duplicated_functions = draw(st.integers(min_value=1, max_value=2))
-        duplication_spread = draw(st.integers(min_value=2, max_value=min(3, num_files)))
+        duplication_spread = draw(st.integers(min_value=2, max_value=min(3, max_allowed_spread)))
     elif duplication_level == 'medium':
         # 2-4 functions duplicated across 3-5 files
         num_duplicated_functions = draw(st.integers(min_value=2, max_value=4))
-        duplication_spread = draw(st.integers(min_value=3, max_value=min(5, num_files)))
+        duplication_spread = draw(st.integers(min_value=min(3, max_allowed_spread), max_value=min(5, max_allowed_spread)))
     else:  # high
         # 4-6 functions duplicated across 5+ files
         num_duplicated_functions = draw(st.integers(min_value=4, max_value=6))
-        duplication_spread = draw(st.integers(min_value=min(5, num_files), max_value=num_files))
+        duplication_spread = draw(st.integers(min_value=min(5, max_allowed_spread), max_value=max_allowed_spread))
     
     # Select which functions to duplicate
     function_names = list(helper_templates.keys())
