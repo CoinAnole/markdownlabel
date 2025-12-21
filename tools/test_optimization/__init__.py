@@ -6,7 +6,7 @@ in property-based tests for better performance while maintaining coverage.
 
 from .strategy_classifier import StrategyClassifier, StrategyType, StrategyAnalysis
 from .max_examples_calculator import MaxExamplesCalculator
-from .test_file_analyzer import FileAnalyzer, OptimizationRecommendation, FileAnalysis, ValidationReport
+from .file_analyzer import FileAnalyzer, OptimizationRecommendation, FileAnalysis, ValidationReport
 from .over_testing_validator import OverTestingValidator, ValidationThresholds, ValidationResult
 from .comment_analyzer import CommentAnalyzer, FileAnalysis as CommentFileAnalysis, DirectoryAnalysis, FormatViolation, Inconsistency
 
@@ -15,7 +15,7 @@ __all__ = [
     'StrategyType', 
     'StrategyAnalysis',
     'MaxExamplesCalculator',
-    'TestFileAnalyzer',
+    'FileAnalyzer',
     'OptimizationRecommendation',
     'FileAnalysis',
     'ValidationReport',

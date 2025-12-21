@@ -109,7 +109,7 @@ class FileAnalyzer:
         self.excluded_test_files = {
             'test_comment_format.py',
             'test_comment_standardizer.py',
-            'test_file_analyzer.py',
+            'file_analyzer.py',
         }
     
     def analyze_file(self, file_path: str) -> FileAnalysis:

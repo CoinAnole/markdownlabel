@@ -15,7 +15,7 @@ from hypothesis import given, strategies as st, settings
 # Add tools directory to path for imports
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', '..', 'tools'))
 
-from test_optimization.test_file_analyzer import (
+from test_optimization.file_analyzer import (
     FileAnalyzer, PropertyTest, OptimizationRecommendation, 
     FileAnalysis, ValidationReport
 )

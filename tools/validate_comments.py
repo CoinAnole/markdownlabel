@@ -18,7 +18,7 @@ sys.path.insert(0, os.path.dirname(__file__))
 
 from test_optimization.comment_analyzer import CommentAnalyzer, DirectoryAnalysis
 from test_optimization.comment_standardizer import CommentStandardizer, BatchResult
-from test_optimization.test_file_analyzer import FileAnalyzer
+from test_optimization.file_analyzer import FileAnalyzer
 
 
 class CommentValidationCLI:

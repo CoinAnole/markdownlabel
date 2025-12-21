@@ -19,7 +19,7 @@ from typing import Dict, List, Tuple, Any
 sys.path.insert(0, str(Path(__file__).parent))
 
 # Use local analyzer implementation from tools instead of the package namespace.
-from test_optimization.test_file_analyzer import FileAnalyzer
+from test_optimization.file_analyzer import FileAnalyzer
 
 
 class BaselinePerformanceMeasurer:

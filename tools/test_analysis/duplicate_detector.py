@@ -11,7 +11,7 @@ from collections import defaultdict
 import difflib
 import ast
 
-from test_file_parser import FileParser, HelperFunction, FileMetadata
+from .file_parser import FileParser, HelperFunction, FileMetadata
 
 
 @dataclass

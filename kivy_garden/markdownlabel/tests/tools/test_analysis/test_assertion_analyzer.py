@@ -8,12 +8,19 @@ and detect naming mismatches.
 
 import ast
 import pytest
-from hypothesis import given, strategies as st, settings
-from pathlib import Path
+from hypothesis import given, strategies as st, settings, assume
 import tempfile
 import os
+from pathlib import Path
+from typing import List, Dict
+import sys
 
-from .assertion_analyzer import AssertionAnalyzer, AssertionType, AssertionPattern, AssertionAnalysis
+# Add tools directory to path for imports
+tools_dir = Path(__file__).parents[5] / "tools"
+if str(tools_dir) not in sys.path:
+    sys.path.insert(0, str(tools_dir))
+
+from test_analysis.assertion_analyzer import AssertionAnalyzer, AssertionType, AssertionPattern, AssertionAnalysis
 
 
 class TestAssertionAnalyzer:
