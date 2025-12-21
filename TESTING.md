@@ -1,6 +1,6 @@
 # Testing Guidelines for MarkdownLabel
 
-This document provides comprehensive guidelines for writing, organizing, and maintaining tests in the MarkdownLabel project.
+This document provides comprehensive guidelines for writing, organizing, and maintaining tests in the MarkdownLabel project, including both general testing practices and specialized property-based testing with Hypothesis.
 
 ## Table of Contents
 
@@ -9,8 +9,12 @@ This document provides comprehensive guidelines for writing, organizing, and mai
 - [Test Types and Markers](#test-types-and-markers)
 - [Rebuild Contract Testing](#rebuild-contract-testing)
 - [Property-Based Testing](#property-based-testing)
+- [Property-Based Testing Optimization](#property-based-testing-optimization)
 - [Helper Functions](#helper-functions)
 - [Test File Structure](#test-file-structure)
+- [Standardization Tools](#standardization-tools)
+- [Validation and CI Integration](#validation-and-ci-integration)
+- [Best Practices](#best-practices)
 
 ## Test Organization
 
@@ -30,7 +34,10 @@ tests/
 ├── test_advanced_compatibility.py  # Advanced label features
 ├── test_serialization.py           # Round-trip serialization
 ├── test_performance.py             # Performance and stability tests
-└── test_utils.py                   # Shared test utilities
+├── test_strategy_classification.py # Tests for optimization infrastructure
+├── test_file_analyzer.py           # Tests for test file analysis tools
+├── test_documentation_compliance.py # Tests for max_examples documentation
+└── test_utils.py                   # Shared test utilities and strategies
 ```
 
 ### Class Organization
@@ -174,7 +181,7 @@ class TestHelperFunctionAvailability:
 - Test universal properties across many inputs
 - Use Hypothesis for input generation
 - Verify behavior holds for all valid inputs
-- Minimum 100 iterations per property test
+- Minimum 100 iterations per property test (unless optimized)
 
 ## Rebuild Contract Testing
 
@@ -296,14 +303,111 @@ class TestPropertyName:
         assert property_holds(input_value)
 ```
 
-### Strategy Selection and max_examples
+## Property-Based Testing Optimization
 
-Choose `max_examples` based on strategy complexity:
+### Overview
 
-- **Simple strategies** (booleans, small integers): 2-10 examples
-- **Medium strategies** (text, floats): 20-50 examples  
-- **Complex strategies** (nested structures): 50-100 examples
-- **Combination strategies**: Based on input space size
+Property-based testing with Hypothesis generates random inputs to verify that properties hold across many examples. However, using excessive `max_examples` values can lead to unnecessary test execution time without proportional coverage benefits.
+
+### Comment Format Requirements
+
+All property-based tests with custom `max_examples` values MUST include a standardized comment:
+
+```python
+# [Strategy Type] strategy: [N] examples ([Rationale])
+@settings(max_examples=N, deadline=None)
+def test_example(value):
+    pass
+```
+
+### Strategy Classifications
+
+#### 1. Boolean Strategies
+
+**Pattern:** `st.booleans()`
+**Recommended max_examples:** `2`
+**Format:** `Boolean strategy: 2 examples (True/False coverage)`
+
+```python
+@given(st.booleans())
+# Boolean strategy: 2 examples (True/False coverage)
+@settings(max_examples=2, deadline=None)
+def test_boolean_property(value):
+    assert isinstance(value, bool)
+```
+
+#### 2. Small Finite Strategies
+
+**Pattern:** Small integer ranges (≤10 values), small `sampled_from` lists
+**Recommended max_examples:** Equal to input space size
+**Format:** `Small finite strategy: [N] examples (input space size: [N])`
+
+```python
+@given(st.integers(min_value=1, max_value=6))
+# Small finite strategy: 6 examples (input space size: 6)
+@settings(max_examples=6, deadline=None)
+def test_dice_roll(value):
+    assert 1 <= value <= 6
+```
+
+#### 3. Medium Finite Strategies
+
+**Pattern:** Integer ranges or lists with 11-50 values
+**Recommended max_examples:** Input space size, capped at 20-50
+**Format:** `Medium finite strategy: [N] examples (adequate finite coverage)`
+
+```python
+@given(st.integers(min_value=1, max_value=20))
+# Medium finite strategy: 20 examples (adequate finite coverage)
+@settings(max_examples=20, deadline=None)
+def test_medium_range(value):
+    assert 1 <= value <= 20
+```
+
+#### 4. Combination Strategies
+
+**Pattern:** Multiple strategies combined (tuples, multiple @given arguments)
+**Recommended max_examples:** Product of individual strategy sizes, capped at 50
+**Format:** `Combination strategy: [N] examples (combination coverage)`
+
+```python
+@given(st.tuples(st.booleans(), st.sampled_from(['a', 'b', 'c'])))
+# Combination strategy: 6 examples (combination coverage)
+@settings(max_examples=6, deadline=None)
+def test_boolean_enum_combination(value):
+    bool_val, enum_val = value
+    assert isinstance(bool_val, bool)
+    assert enum_val in ['a', 'b', 'c']
+```
+
+#### 5. Complex/Infinite Strategies
+
+**Pattern:** `st.text()`, `st.floats()`, large ranges, recursive strategies
+**Recommended max_examples:** 10-50 based on complexity
+**Format:** `Complex strategy: [N] examples (adequate coverage)` or `Complex strategy: [N] examples (performance optimized)`
+
+```python
+@given(st.text())
+# Complex strategy: 10 examples (adequate coverage)
+@settings(max_examples=10, deadline=None)
+def test_text_length_property(text):
+    assert len(text) >= 0
+```
+
+### Right-Sizing Principles
+
+- **Finite strategies:** Use input space size (test each value once)
+- **Infinite strategies:** Use moderate counts based on property complexity
+- **Combination strategies:** Calculate combinations, cap at reasonable limits
+
+### Performance Impact
+
+Following these guidelines typically results in:
+
+- **Boolean tests:** 98% time reduction (100 → 2 examples)
+- **Small finite tests:** 80-95% time reduction
+- **Medium finite tests:** 50-80% time reduction  
+- **Complex tests:** 0-50% time reduction (may already be appropriate)
 
 ## Helper Functions
 
@@ -386,6 +490,7 @@ class TestDescriptiveClassName:
         # Unit test implementation
         
     @given(st.text())
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_property_holds_universally(self, input_text):
         """Test that [property] holds for all valid inputs.
@@ -403,6 +508,118 @@ class TestDescriptiveClassName:
 - Be descriptive about the functionality area
 - Group related functionality in the same file
 
+## Standardization Tools
+
+### Command-Line Tools
+
+#### validate_comments.py
+
+Primary CLI tool for comment validation and standardization:
+
+```bash
+# Validate all test files
+python tools/validate_comments.py validate kivy_garden/markdownlabel/tests/
+
+# Generate detailed report
+python tools/validate_comments.py report kivy_garden/markdownlabel/tests/ --output report.json
+
+# Standardize comments (dry run)
+python tools/validate_comments.py standardize kivy_garden/markdownlabel/tests/ --dry-run
+
+# Apply standardization with backup
+python tools/validate_comments.py standardize kivy_garden/markdownlabel/tests/ --backup-dir ./backups
+
+# Optimize max_examples and add comments
+python tools/validate_comments.py optimize kivy_garden/markdownlabel/tests/ --include-comments
+```
+
+#### analyze_tests.py
+
+Analyzes test performance and comment compliance:
+
+```bash
+# Full analysis with comment validation
+python tools/analyze_tests.py --include-comments
+
+# Generate optimization report
+python tools/analyze_tests.py --report-format json --output analysis.json
+```
+
+## Validation and CI Integration
+
+### Pre-commit Hook
+
+Add comment validation to your pre-commit hook:
+
+```bash
+#!/bin/bash
+# .git/hooks/pre-commit
+
+echo "Validating test comments..."
+python tools/validate_comments.py validate kivy_garden/markdownlabel/tests/
+
+if [ $? -ne 0 ]; then
+    echo "❌ Comment format violations detected."
+    echo "Run: python tools/validate_comments.py standardize kivy_garden/markdownlabel/tests/ --dry-run"
+    echo "to see suggested fixes."
+    exit 1
+fi
+
+echo "✅ All comments properly formatted."
+```
+
+### GitHub Actions Integration
+
+Add to your CI workflow:
+
+```yaml
+name: Test Quality Validation
+
+on: [push, pull_request]
+
+jobs:
+  validate-comments:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+    
+    - name: Install dependencies
+      run: |
+        pip install -e .
+        pip install -e ".[dev]"
+    
+    - name: Validate comment format
+      run: python tools/validate_comments.py validate kivy_garden/markdownlabel/tests/
+    
+    - name: Check for over-testing
+      run: python tools/analyze_tests.py --include-comments
+```
+
+### Local Development Workflow
+
+1. **Write your test** following the documentation format
+2. **Validate locally:**
+   ```bash
+   python tools/validate_comments.py validate kivy_garden/markdownlabel/tests/test_your_file.py
+   ```
+3. **Fix any issues:**
+   ```bash
+   python tools/validate_comments.py standardize kivy_garden/markdownlabel/tests/test_your_file.py --dry-run
+   ```
+4. **Apply fixes if needed:**
+   ```bash
+   python tools/validate_comments.py standardize kivy_garden/markdownlabel/tests/test_your_file.py
+   ```
+5. **Run tests to ensure functionality:**
+   ```bash
+   pytest kivy_garden/markdownlabel/tests/test_your_file.py
+   ```
+
 ## Best Practices
 
 ### Do's
@@ -415,6 +632,8 @@ class TestDescriptiveClassName:
 ✅ **Write property tests for universal behaviors**
 ✅ **Test rebuild contracts explicitly**
 ✅ **Document complex test logic**
+✅ **Follow standardized comment format for property tests**
+✅ **Right-size max_examples based on strategy type**
 
 ### Don'ts
 
@@ -425,13 +644,17 @@ class TestDescriptiveClassName:
 ❌ **Don't write property tests for simple examples**
 ❌ **Don't ignore test failures or skip tests without good reason**
 ❌ **Don't test implementation details instead of behavior**
+❌ **Don't use default max_examples=100 for all property tests**
+❌ **Don't ignore finite input space sizes**
+❌ **Don't use undocumented custom max_examples values**
 
 ### Performance Considerations
 
 - **Mark slow tests** with `@pytest.mark.slow`
-- **Use appropriate max_examples** for property tests
+- **Use appropriate max_examples** for property tests based on strategy type
 - **Avoid unnecessary widget creation** in test setup
 - **Use `assume()` to filter invalid inputs** in property tests
+- **Consider CI optimization** for complex strategies
 
 ### Debugging Tests
 
@@ -464,7 +687,8 @@ class TestFontSizeImmediateUpdates:
         st.floats(min_value=8.0, max_value=50.0, allow_nan=False),
         st.floats(min_value=8.0, max_value=50.0, allow_nan=False)
     )
-    @settings(max_examples=20, deadline=None)
+    # Combination strategy: 50 examples (combination coverage)
+    @settings(max_examples=50, deadline=None)
     def test_font_size_updates_preserve_scale_factors(self, initial_size, new_size):
         """Test that font size updates preserve heading scale factors.
         
@@ -487,4 +711,19 @@ class TestFontSizeImmediateUpdates:
         assert abs(heading_label.font_size - expected_size) < 0.1
 ```
 
-This testing guide ensures consistent, maintainable, and comprehensive test coverage for the MarkdownLabel project.
+### Validation Checklist
+
+Before committing tests, verify:
+
+1. **Boolean strategies use max_examples=2**
+2. **Small finite strategies use input space size**
+3. **Combination strategies use product formula (capped at 50)**
+4. **Complex strategies use 10-50 examples based on complexity**
+5. **All custom values include standardized comments**
+6. **Comments follow the format: `# [Strategy Type] strategy: [N] examples ([Rationale])`**
+7. **Strategy type classifications use standardized terminology**
+8. **Rationale templates match the strategy type**
+9. **Test names accurately reflect what they assert**
+10. **Helper functions are used from test_utils.py**
+
+This comprehensive testing guide ensures consistent, maintainable, and high-performance test coverage for the MarkdownLabel project.
