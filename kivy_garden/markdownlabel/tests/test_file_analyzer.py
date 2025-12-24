@@ -22,7 +22,7 @@ from test_optimization.file_analyzer import (
 from test_optimization.strategy_classifier import StrategyType
 
 
-@pytest.mark.unit
+@pytest.mark.test_tests
 class TestFileAnalyzerBasics:
     """Basic functionality tests for FileAnalyzer."""
     
