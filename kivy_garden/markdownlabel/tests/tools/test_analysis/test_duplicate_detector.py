@@ -94,6 +94,7 @@ class TestExample{i}:
     return function_name, files, make_identical
 
 
+@pytest.mark.test_tests
 class TestHelperFunctionConsolidation:
     """Property tests for helper function consolidation (Property 3)."""
     

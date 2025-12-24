@@ -130,6 +130,7 @@ class TestModule{i}:
     }
 
 
+@pytest.mark.test_tests
 class TestCodeDuplicationMinimization:
     """Property tests for code duplication minimization (Property 9)."""
     

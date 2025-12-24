@@ -184,6 +184,7 @@ class TestHigh{i}:
     }
 
 
+@pytest.mark.test_tests
 class TestCoveragePreservation:
     """Property tests for coverage preservation (Property 10)."""
     

@@ -16,6 +16,7 @@ from test_optimization.strategy_classifier import (
 )
 
 
+@pytest.mark.property
 class TestStrategyClassification:
     """Property tests for strategy classification (Property 1)."""
     
@@ -102,6 +103,7 @@ class TestStrategyClassification:
         assert analysis.complexity_level == 1
 
 
+@pytest.mark.property
 class TestMaxExamplesCalculation:
     """Property tests for max_examples calculation (Property 2)."""
     
@@ -182,6 +184,7 @@ class TestMaxExamplesCalculation:
         
         assert optimal in possible, f"Expected one of {possible} examples for complexity {complexity_level}, got {optimal}"
     
+@pytest.mark.property
 class TestCombinationStrategies:
     """Property tests for combination strategy handling (Property 3)."""
     

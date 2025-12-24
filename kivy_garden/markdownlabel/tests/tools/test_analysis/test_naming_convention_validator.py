@@ -25,6 +25,7 @@ from test_analysis.naming_convention_validator import (
 from test_analysis.assertion_analyzer import AssertionAnalyzer, AssertionType, AssertionAnalysis
 
 
+@pytest.mark.test_tests
 class TestNamingConventionValidator:
     """Unit tests for NamingConventionValidator."""
     

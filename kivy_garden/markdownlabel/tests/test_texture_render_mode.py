@@ -36,6 +36,7 @@ def find_images(widget):
 # tree SHALL contain an Image widget displaying the rendered content as a texture.
 # **Validates: Requirements 6.1**
 
+@pytest.mark.slow
 class TestTextureRenderModeStructure:
     """Property tests for texture render mode structure (Property 14)."""
     
@@ -128,6 +129,7 @@ class TestTextureRenderModeStructure:
 # dispatched with the correct ref value.
 # **Validates: Requirements 6.2**
 
+@pytest.mark.slow
 class TestTextureModeLinksHandling:
     """Property tests for texture mode link handling (Property 15)."""
     
@@ -203,6 +205,7 @@ class TestTextureModeLinksHandling:
 # ref name AND return True.
 # **Validates: Requirements 2.1, 2.2**
 
+@pytest.mark.slow
 class TestDeterministicTextureHitTesting:
     """Deterministic tests for texture mode hit-testing without window dependency.
     
@@ -549,6 +552,7 @@ class TestDeterministicTextureHitTesting:
 # widgets-mode rendering.
 # **Validates: Requirements 6.1, 6.2**
 
+@pytest.mark.slow
 class TestTextureFallbackBranch:
     """Tests for texture mode fallback to widgets mode when rendering fails."""
     
@@ -624,6 +628,7 @@ class TestTextureFallbackBranch:
             "Expected no Image widgets in fallback mode"
 
 
+@pytest.mark.slow
 class TestAutoRenderModeSelection:
     """Property tests for auto render mode selection (Property 16)."""
     

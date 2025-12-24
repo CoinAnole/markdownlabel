@@ -17,6 +17,7 @@ from test_optimization.comment_format import (
 )
 
 
+@pytest.mark.test_tests
 class TestCommentFormatValidation:
     """Property tests for comment format validation (Property 1)."""
     
@@ -29,6 +30,7 @@ class TestCommentFormatValidation:
     # SHALL follow the standardized format pattern "# [Strategy Type] strategy: [N] examples ([Rationale])"
     # **Validates: Requirements 1.2, 3.1, 3.5**
     
+    @pytest.mark.property
     @given(
         strategy_type=st.sampled_from([s.value for s in StrategyType]),
         max_examples=st.integers(min_value=1, max_value=1000),
@@ -55,6 +57,7 @@ class TestCommentFormatValidation:
             assert result.error_type is not None
             assert result.message is not None
     
+    @pytest.mark.property
     @given(
         strategy_type=st.sampled_from([s.value for s in StrategyType])
     )
@@ -164,6 +167,7 @@ class TestCommentFormatValidation:
             assert result.error_type is None or result.error_type in ["FORMAT_VIOLATION"]
 
 
+@pytest.mark.test_tests
 class TestCommentPatternModel:
     """Tests for CommentPattern data model."""
     
@@ -199,6 +203,7 @@ class TestCommentPatternModel:
         assert formatted == expected
 
 
+@pytest.mark.test_tests
 class TestCustomValueDocumentation:
     """Property tests for custom value documentation (Property 2)."""
     
@@ -214,6 +219,7 @@ class TestCustomValueDocumentation:
     # there SHALL exist a comment explaining the rationale
     # **Validates: Requirements 1.1, 4.5**
     
+    @pytest.mark.property
     @given(
         max_examples=st.integers(min_value=1, max_value=1000).filter(lambda x: x not in {2, 5, 10, 20, 50, 100}),
         strategy_type=st.sampled_from([s.value for s in StrategyType])
@@ -261,6 +267,7 @@ def test_documented_function(data):
             # Invalid comment case - should still detect the attempt
             assert len(analysis_with.format_violations) > 0 or len(analysis_with.missing_documentation) > 0
     
+    @pytest.mark.property
     @given(
         standard_max_examples=st.sampled_from([2, 5, 10, 20, 50, 100])
     )
@@ -354,6 +361,7 @@ def test_wrong_format(data):
         assert analysis.undocumented_tests >= 1
 
 
+@pytest.mark.test_tests
 class TestStrategyTypeConsistency:
     """Property tests for strategy type consistency (Property 3)."""
     
@@ -370,6 +378,7 @@ class TestStrategyTypeConsistency:
     # SHALL use consistent terminology across all test files
     # **Validates: Requirements 1.3, 2.1, 3.2, 4.2**
     
+    @pytest.mark.property
     @given(
         strategy_code=st.sampled_from([
             'st.booleans()',
@@ -392,6 +401,7 @@ class TestStrategyTypeConsistency:
         assert classification1.rationale == classification2.rationale
         assert classification1.input_space_size == classification2.input_space_size
     
+    @pytest.mark.property
     @given(
         strategy_type=st.sampled_from(['st.booleans()', 'st.integers(min_value=0, max_value=5)'])
     )
@@ -514,6 +524,7 @@ class TestStrategyTypeConsistency:
             assert result.input_space_size == first_result.input_space_size
 
 
+@pytest.mark.test_tests
 class TestMachineReadableFormat:
     """Property tests for machine-readable format (Property 8)."""
     
@@ -531,6 +542,7 @@ class TestMachineReadableFormat:
     # strategy type, example count, and rationale information
     # **Validates: Requirements 4.1, 4.3**
     
+    @pytest.mark.property
     @given(
         strategy_type=st.sampled_from([s.value for s in StrategyType]),
         max_examples=st.integers(min_value=1, max_value=1000),
@@ -580,6 +592,7 @@ def test_machine_readable_function(data):
                 assert valid_comment.max_examples == max_examples
                 assert valid_comment.rationale == rationale
     
+    @pytest.mark.property
     @given(
         strategy_type=st.sampled_from([s.value for s in StrategyType])
     )

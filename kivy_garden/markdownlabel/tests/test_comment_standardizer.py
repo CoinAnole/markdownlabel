@@ -18,6 +18,7 @@ from test_optimization.comment_standardizer import CommentStandardizer, Standard
 from test_optimization.comment_format import StrategyType, CommentFormatValidator
 
 
+@pytest.mark.test_tests
 class TestBooleanStrategyDocumentation:
     """Property tests for boolean strategy documentation (Property 4)."""
     
@@ -31,6 +32,7 @@ class TestBooleanStrategyDocumentation:
     # True/False coverage in the rationale
     # **Validates: Requirements 2.3**
     
+    @pytest.mark.property
     @given(
         max_examples=st.integers(min_value=1, max_value=100).filter(lambda x: x not in {2, 5, 10, 20, 50, 100}),
         function_name=st.text(min_size=5, max_size=30, alphabet=st.characters(whitelist_categories=('Lu', 'Ll', 'Nd', 'Pc'))).map(lambda x: f"test_{x}")
@@ -279,6 +281,7 @@ def test_boolean_integration(flag):
                 os.unlink(temp_file)
 
 
+@pytest.mark.test_tests
 class TestFiniteStrategyDocumentation:
     """Property tests for finite strategy documentation (Property 5)."""
     
@@ -292,6 +295,7 @@ class TestFiniteStrategyDocumentation:
     # input space size in the rationale
     # **Validates: Requirements 2.4**
     
+    @pytest.mark.property
     @given(
         min_value=st.integers(min_value=0, max_value=10),
         max_value=st.integers(min_value=11, max_value=50),
@@ -359,6 +363,7 @@ def test_finite_strategy(num):
             if os.path.exists(temp_file):
                 os.unlink(temp_file)
     
+    @pytest.mark.property
     @given(
         items=st.lists(st.text(min_size=1, max_size=10), min_size=1, max_size=20),
         max_examples=st.integers(min_value=1, max_value=50).filter(lambda x: x not in {2, 5, 10, 20, 50, 100})
@@ -556,6 +561,7 @@ def test_already_standardized(flag):
             self.standardizer.backup_dir = original_backup_dir
 
 
+@pytest.mark.test_tests
 class TestPerformanceRationaleDocumentation:
     """Property tests for performance rationale documentation (Property 6)."""
     
@@ -580,6 +586,7 @@ class TestPerformanceRationaleDocumentation:
     # the comment SHALL explain the performance rationale
     # **Validates: Requirements 2.2, 3.3, 5.2**
     
+    @pytest.mark.property
     @given(
         max_examples=st.integers(min_value=1, max_value=5),
         strategy_complexity=st.sampled_from(['text', 'floats', 'composite']),
@@ -638,10 +645,11 @@ def {function_name}(data):
             if os.path.exists(temp_file):
                 os.unlink(temp_file)
     
+    @pytest.mark.property
     @given(
         performance_keywords=st.sampled_from([
             "performance optimized",
-            "execution time optimization", 
+            "execution time optimization",
             "memory optimization",
             "deadline constraint",
             "complexity reduction"
@@ -838,6 +846,7 @@ def test_standard_file_1(flag):
                 if os.path.exists(file_path):
                     os.unlink(file_path)
 
+@pytest.mark.test_tests
 class TestCommentStandardizationIntegration:
     """Integration tests for the complete comment standardization workflow."""
     

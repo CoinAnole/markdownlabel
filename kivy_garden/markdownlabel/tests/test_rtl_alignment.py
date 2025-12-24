@@ -25,6 +25,8 @@ from .test_utils import find_labels_recursive, collect_widget_ids
 class TestAutoAlignmentRespectsDirection:
     """Property tests for auto alignment respecting direction (Property 11)."""
     
+    @pytest.mark.unit
+    @pytest.mark.needs_window
     @pytest.mark.parametrize('base_direction', ['rtl', 'weak_rtl'])
     def test_auto_alignment_rtl_directions_use_right(self, base_direction):
         """Auto alignment uses 'right' for RTL base directions.
@@ -46,6 +48,8 @@ class TestAutoAlignmentRespectsDirection:
             assert lbl.halign == 'right', \
                 f"Expected halign='right' for base_direction={base_direction}, got {lbl.halign}"
     
+    @pytest.mark.unit
+    @pytest.mark.needs_window
     @pytest.mark.parametrize('base_direction', ['ltr', 'weak_ltr', None])
     def test_auto_alignment_ltr_directions_use_left(self, base_direction):
         """Auto alignment uses 'left' for LTR base directions and None.
@@ -67,6 +71,8 @@ class TestAutoAlignmentRespectsDirection:
             assert lbl.halign == 'left', \
                 f"Expected halign='left' for base_direction={base_direction}, got {lbl.halign}"
     
+    @pytest.mark.property
+    @pytest.mark.needs_window
     @given(
         st.sampled_from(['rtl', 'weak_rtl']),
         st.integers(min_value=1, max_value=6)
@@ -94,6 +100,8 @@ class TestAutoAlignmentRespectsDirection:
             assert lbl.halign == 'right', \
                 f"Expected halign='right' for heading with base_direction={base_direction}, got {lbl.halign}"
     
+    @pytest.mark.property
+    @pytest.mark.needs_window
     @given(
         st.sampled_from(['ltr', 'weak_ltr', None]),
         st.integers(min_value=1, max_value=6)
@@ -121,6 +129,8 @@ class TestAutoAlignmentRespectsDirection:
             assert lbl.halign == 'left', \
                 f"Expected halign='left' for heading with base_direction={base_direction}, got {lbl.halign}"
     
+    @pytest.mark.unit
+    @pytest.mark.needs_window
     @pytest.mark.parametrize('base_direction', ['rtl', 'weak_rtl'])
     def test_auto_alignment_rtl_applies_to_mixed_content(self, base_direction):
         """Auto alignment with RTL direction applies to mixed content types.
@@ -146,6 +156,8 @@ class TestAutoAlignmentRespectsDirection:
             assert lbl.halign == 'right', \
                 f"Expected halign='right' for mixed content with base_direction={base_direction}, got {lbl.halign}"
     
+    @pytest.mark.unit
+    @pytest.mark.needs_window
     @pytest.mark.parametrize('base_direction', ['ltr', 'weak_ltr', None])
     def test_auto_alignment_ltr_applies_to_mixed_content(self, base_direction):
         """Auto alignment with LTR direction applies to mixed content types.
@@ -182,6 +194,8 @@ class TestDirectionChangeUpdatesAlignment:
     """Property tests for direction change updating alignment (Property 12)."""
     
     
+    @pytest.mark.property
+    @pytest.mark.needs_window
     @given(
         st.sampled_from(['ltr', 'weak_ltr', None]),
         st.sampled_from(['rtl', 'weak_rtl'])
@@ -217,6 +231,8 @@ class TestDirectionChangeUpdatesAlignment:
             assert lbl.halign == 'right', \
                 f"Expected halign='right' after changing to base_direction={new_direction}, got {lbl.halign}"
     
+    @pytest.mark.property
+    @pytest.mark.needs_window
     @given(
         st.sampled_from(['rtl', 'weak_rtl']),
         st.sampled_from(['ltr', 'weak_ltr', None])
@@ -252,6 +268,8 @@ class TestDirectionChangeUpdatesAlignment:
             assert lbl.halign == 'left', \
                 f"Expected halign='left' after changing to base_direction={new_direction}, got {lbl.halign}"
     
+    @pytest.mark.property
+    @pytest.mark.needs_window
     @given(
         st.integers(min_value=1, max_value=6),
         st.sampled_from(['ltr', 'weak_ltr', None]),
@@ -289,6 +307,8 @@ class TestDirectionChangeUpdatesAlignment:
             assert lbl.halign == 'right', \
                 f"Expected halign='right' for heading after changing to base_direction={new_direction}, got {lbl.halign}"
     
+    @pytest.mark.property
+    @pytest.mark.needs_window
     @given(
         st.sampled_from(['ltr', 'weak_ltr', None]),
         st.sampled_from(['rtl', 'weak_rtl'])
@@ -320,6 +340,8 @@ class TestDirectionChangeUpdatesAlignment:
         assert ids_before == ids_after, \
             f"Widget identities changed during direction change: {len(ids_before)} before, {len(ids_after)} after"
     
+    @pytest.mark.property
+    @pytest.mark.needs_window
     @given(
         st.sampled_from(['ltr', 'weak_ltr', None]),
         st.sampled_from(['rtl', 'weak_rtl'])
@@ -371,6 +393,8 @@ class TestExplicitAlignmentOverridesAuto:
     """Property tests for explicit alignment overriding auto (Property 13)."""
     
     
+    @pytest.mark.property
+    @pytest.mark.needs_window
     @given(
         st.sampled_from(['left', 'center', 'right', 'justify']),
         st.sampled_from(['rtl', 'weak_rtl', 'ltr', 'weak_ltr', None])
@@ -397,6 +421,8 @@ class TestExplicitAlignmentOverridesAuto:
             assert lbl.halign == explicit_halign, \
                 f"Expected halign={explicit_halign} (explicit) with base_direction={base_direction}, got {lbl.halign}"
     
+    @pytest.mark.property
+    @pytest.mark.needs_window
     @given(
         st.sampled_from(['left', 'center', 'right', 'justify']),
         st.sampled_from(['rtl', 'weak_rtl']),
@@ -425,6 +451,8 @@ class TestExplicitAlignmentOverridesAuto:
             assert lbl.halign == explicit_halign, \
                 f"Expected halign={explicit_halign} (explicit) for heading with RTL base_direction={base_direction}, got {lbl.halign}"
     
+    @pytest.mark.property
+    @pytest.mark.needs_window
     @given(
         st.sampled_from(['left', 'center', 'right', 'justify']),
         st.sampled_from(['rtl', 'weak_rtl', 'ltr', 'weak_ltr', None])
@@ -455,6 +483,8 @@ class TestExplicitAlignmentOverridesAuto:
             assert lbl.halign == explicit_halign, \
                 f"Expected halign={explicit_halign} (explicit) for mixed content with base_direction={base_direction}, got {lbl.halign}"
     
+    @pytest.mark.property
+    @pytest.mark.needs_window
     @given(
         st.sampled_from(['left', 'center', 'right', 'justify']),
         st.sampled_from(['rtl', 'weak_rtl']),
@@ -491,6 +521,8 @@ class TestExplicitAlignmentOverridesAuto:
             assert lbl.halign == explicit_halign, \
                 f"Expected halign={explicit_halign} (explicit) after direction change, got {lbl.halign}"
     
+    @pytest.mark.property
+    @pytest.mark.needs_window
     @given(
         st.sampled_from(['left', 'center', 'right', 'justify']),
         st.sampled_from(['rtl', 'weak_rtl', 'ltr', 'weak_ltr', None])

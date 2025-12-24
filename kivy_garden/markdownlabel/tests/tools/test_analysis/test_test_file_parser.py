@@ -84,6 +84,7 @@ class TestRebuildBehavior:
     return test_code, test_name, has_rebuild_assertion
 
 
+@pytest.mark.test_tests
 class TestTestNameConsistency:
     """Property tests for test name consistency (Property 1)."""
     

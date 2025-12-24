@@ -7,6 +7,7 @@ This module focuses on verifying that MarkdownLabel:
 """
 
 
+import pytest
 from hypothesis import given, strategies as st, settings, assume
 
 from kivy_garden.markdownlabel import MarkdownLabel
@@ -31,6 +32,7 @@ class TestContentClippingWhenHeightConstrained:
                 return True
         return False
 
+    @pytest.mark.property
     @given(
         st.text(
             min_size=1,
@@ -55,6 +57,7 @@ class TestContentClippingWhenHeightConstrained:
             f"Expected clipping container when text_size[1]={height}"
         )
 
+    @pytest.mark.property
     @given(
         st.text(
             min_size=1,
@@ -84,6 +87,7 @@ class TestContentClippingWhenHeightConstrained:
             f"Expected clipping container when strict_label_mode=True and height={height}"
         )
 
+    @pytest.mark.property
     @given(st.floats(min_value=10.0, max_value=500.0, allow_nan=False, allow_infinity=False))
     # Complex strategy: 50 examples (adequate coverage)
     @settings(max_examples=50, deadline=None)
@@ -109,6 +113,7 @@ class TestContentClippingWhenHeightConstrained:
             f"Expected container height={height}, got {clipping_container.height}"
         )
 
+    @pytest.mark.property
     @given(
         st.integers(min_value=1, max_value=6),
         st.floats(min_value=50.0, max_value=200.0, allow_nan=False, allow_infinity=False),
@@ -165,6 +170,7 @@ class TestNoClippingWhenUnconstrained:
                 return True
         return False
 
+    @pytest.mark.property
     @given(
         st.text(
             min_size=1,
@@ -188,6 +194,7 @@ class TestNoClippingWhenUnconstrained:
             "Expected no clipping container when text_size[1] is None"
         )
 
+    @pytest.mark.property
     @given(
         st.text(
             min_size=1,
@@ -211,6 +218,7 @@ class TestNoClippingWhenUnconstrained:
             "Expected no clipping container when strict_label_mode=False"
         )
 
+    @pytest.mark.property
     @given(
         st.text(
             min_size=1,
@@ -238,6 +246,7 @@ class TestNoClippingWhenUnconstrained:
                 "Content should be added directly, not wrapped in StencilView"
             )
 
+    @pytest.mark.property
     @given(st.integers(min_value=1, max_value=6))
     # Small finite strategy: 6 examples (input space size: 6)
     @settings(max_examples=6, deadline=None)
@@ -261,6 +270,7 @@ class TestNoClippingWhenUnconstrained:
             "Default settings should not enable clipping"
         )
 
+    @pytest.mark.property
     @given(st.floats(min_value=100.0, max_value=500.0, allow_nan=False, allow_infinity=False))
     # Complex strategy: 50 examples (adequate coverage)
     @settings(max_examples=50, deadline=None)

@@ -13,6 +13,7 @@ import pytest
 from kivy_garden.markdownlabel import MarkdownLabel
 
 
+@pytest.mark.property
 class TestBatchedRebuilds:
     """Property tests for batched rebuilds (Property 6).
 
@@ -133,6 +134,7 @@ class TestBatchedRebuilds:
         )
 
 
+@pytest.mark.property
 class TestDeferredRebuildScheduling:
     """Property tests for deferred rebuild scheduling (Property 7).
 
