@@ -74,8 +74,7 @@ class TestAutoSizingBehavior:
     @settings(max_examples=5, deadline=None)
     def test_more_content_means_more_height_potential(self, num_paragraphs):
         """More content should result in more minimum height."""
-        # Create markdown with varying number of paragraphs
-        text = '\n\n'.join([f'Paragraph number {i} with some text content.' 
+        text = '\n\n'.join([f'Paragraph number {i} with some text content.'
                            for i in range(num_paragraphs)])
         
         label = MarkdownLabel(text=text, auto_size_height=True)

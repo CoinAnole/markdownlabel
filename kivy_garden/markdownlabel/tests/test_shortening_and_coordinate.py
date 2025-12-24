@@ -20,11 +20,7 @@ from kivy.uix.widget import Widget
 from kivy.uix.gridlayout import GridLayout
 
 from kivy_garden.markdownlabel import MarkdownLabel
-from .test_utils import (
-    markdown_heading, markdown_paragraph, markdown_bold, markdown_italic,
-    markdown_link, simple_markdown_document, color_strategy, text_padding_strategy,
-    find_labels_recursive, colors_equal, padding_equal, floats_equal, KIVY_FONTS
-)
+from .test_utils import find_labels_recursive
 
 
 # **Feature: label-compatibility, Property 4: Text Shortening Property Forwarding**

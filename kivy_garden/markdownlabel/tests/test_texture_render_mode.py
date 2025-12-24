@@ -260,25 +260,6 @@ class TestDeterministicTextureHitTesting:
         assert result is True, \
             f"Expected on_touch_down to return True, got {result}"
     
-    # Property test strategies for hit-testing
-    @staticmethod
-    def _zone_strategy():
-        """Strategy for generating valid ref zones."""
-        return st.tuples(
-            st.floats(min_value=0, max_value=300, allow_nan=False),
-            st.floats(min_value=0, max_value=200, allow_nan=False),
-            st.floats(min_value=10, max_value=100, allow_nan=False),
-            st.floats(min_value=10, max_value=50, allow_nan=False)
-        )
-    
-    @staticmethod
-    def _ref_name_strategy():
-        """Strategy for generating valid ref names (URLs)."""
-        return st.from_regex(
-            r'https?://[a-z]{3,10}\.[a-z]{2,5}/[a-z]{1,10}',
-            fullmatch=True
-        )
-    
     @given(
         zone=st.tuples(
             st.floats(min_value=0, max_value=300, allow_nan=False),

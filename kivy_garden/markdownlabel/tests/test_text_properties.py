@@ -69,11 +69,8 @@ class TestTextSizeForwarding:
         assert label.text_size[0] == width2, \
             f"After change, expected text_size[0]={width2}, got {label.text_size[0]}"
     
-    @pytest.mark.property
-    @given(st.data())
-    # Complex strategy: 100 examples (adequate coverage)
-    @settings(max_examples=100, deadline=None)
-    def test_default_text_size_is_none_none(self, data):
+    @pytest.mark.unit
+    def test_default_text_size_is_none_none(self):
         """Default text_size is [None, None]."""
         label = MarkdownLabel(text='Hello World')
 
@@ -442,15 +439,13 @@ class TestUnicodeErrorsForwarding:
             assert lbl.unicode_errors == unicode_errors, \
                 f"Expected unicode_errors={unicode_errors}, got {lbl.unicode_errors}"
     
-    @pytest.mark.unit
-    @pytest.mark.parametrize('errors1,errors2', [
-        ('strict', 'replace'), ('strict', 'ignore'),
-        ('replace', 'strict'), ('replace', 'ignore'),
-        ('ignore', 'strict'), ('ignore', 'replace')
-    ])
+    @pytest.mark.property
+    @given(unicode_errors_strategy, unicode_errors_strategy)
+    # Combination strategy: 50 examples (combination coverage)
+    @settings(max_examples=50, deadline=None)
     def test_unicode_errors_change_updates_value(self, errors1, errors2):
         """Changing unicode_errors triggers widget rebuild with new value."""
-
+        assume(errors1 != errors2)
         
         label = MarkdownLabel(text='Hello World', unicode_errors=errors1)
         
@@ -469,11 +464,8 @@ class TestUnicodeErrorsForwarding:
             assert lbl.unicode_errors == errors2, \
                 f"After change, expected unicode_errors={errors2}, got {lbl.unicode_errors}"
     
-    @pytest.mark.property
-    @given(st.data())
-    # Complex strategy: 100 examples (adequate coverage)
-    @settings(max_examples=100, deadline=None)
-    def test_default_unicode_errors_is_replace(self, data):
+    @pytest.mark.unit
+    def test_default_unicode_errors_is_replace(self):
         """Default unicode_errors is 'replace'."""
         label = MarkdownLabel(text='Hello World')
         
@@ -608,11 +600,8 @@ class TestStripForwarding:
             assert lbl.strip == strip2, \
                 f"After change, expected strip={strip2}, got {lbl.strip}"
     
-    @pytest.mark.property
-    @given(st.data())
-    # Complex strategy: 100 examples (adequate coverage)
-    @settings(max_examples=100, deadline=None)
-    def test_default_strip_is_false(self, data):
+    @pytest.mark.unit
+    def test_default_strip_is_false(self):
         """Default strip is False."""
         label = MarkdownLabel(text='Hello World')
         
