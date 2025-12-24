@@ -190,8 +190,8 @@ class TestCodeDuplicationMinimization:
             os.rmdir(temp_dir)
     
     @given(st.integers(min_value=2, max_value=6))
-    # Simple strategy: 10 examples (basic coverage)
-    @settings(max_examples=10, deadline=None)
+    # Small finite strategy: 5 examples (input space size: 5)
+    @settings(max_examples=5, deadline=None)
     def test_consolidation_reduces_duplication(self, num_duplicates):
         """Consolidating duplicates should reduce overall duplication metrics."""
         temp_dir = tempfile.mkdtemp()
@@ -391,7 +391,7 @@ class TestPerformance:
             os.rmdir(temp_dir)
     
     @given(st.floats(min_value=0.1, max_value=1.0))
-    # Simple strategy: 8 examples (basic coverage for threshold testing)
+    # Complex strategy: 8 examples (adequate coverage)
     @settings(max_examples=8, deadline=None)
     def test_similarity_threshold_affects_detection(self, threshold):
         """Different similarity thresholds should affect duplicate detection."""

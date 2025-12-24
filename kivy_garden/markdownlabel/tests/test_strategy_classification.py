@@ -55,7 +55,7 @@ class TestStrategyClassification:
         assert len(analysis.components) == 1
     
     @given(st.lists(st.text(min_size=1, max_size=3, alphabet='abc'), min_size=1, max_size=10))
-    # Complex strategy: 10 examples (adequate coverage)
+    # Medium finite strategy: 10 examples (adequate finite coverage)
     @settings(max_examples=10, deadline=None)
     def test_small_sampled_from_classification(self, items):
         """Small sampled_from lists are classified as SMALL_FINITE with correct size."""
@@ -81,7 +81,7 @@ class TestStrategyClassification:
         assert analysis.input_space_size == range_size
     
     @given(st.sampled_from(['st.text()', 'st.floats()', 'st.integers()']))
-    # Small finite strategy: 3 examples (input space size: 3)
+    # Small finite strategy: 3 examples (testing complex strategy classification)
     @settings(max_examples=3, deadline=None)
     def test_complex_strategy_classification(self, strategy_code):
         """Complex/infinite strategies are classified as COMPLEX."""

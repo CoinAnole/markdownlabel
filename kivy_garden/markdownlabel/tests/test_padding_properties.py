@@ -59,8 +59,8 @@ class TestPaddingApplication:
                 f"Padding[{i}]: expected {exp}, got {actual}"
     
     @given(padding_two)
-    # Small finite strategy: 2 examples (input space size: 2)
-    @settings(max_examples=2, deadline=None)
+    # Complex strategy: 20 examples (adequate coverage)
+    @settings(max_examples=20, deadline=None)
     def test_two_element_padding_applied_to_axes(self, padding_values):
         """Two-element padding [horizontal, vertical] is applied to appropriate axes."""
         label = MarkdownLabel(text='Hello World', padding=padding_values)
@@ -78,8 +78,8 @@ class TestPaddingApplication:
      # Complex strategy: 20 examples (adequate coverage)
     
     @given(padding_four)
-    # Small finite strategy: 4 examples (input space size: 4)
-    @settings(max_examples=4, deadline=None)
+    # Complex strategy: 20 examples (adequate coverage)
+    @settings(max_examples=20, deadline=None)
     def test_four_element_padding_applied_directly(self, padding_values):
         """Four-element padding [left, top, right, bottom] is applied directly."""
         label = MarkdownLabel(text='Hello World', padding=padding_values)
@@ -92,8 +92,8 @@ class TestPaddingApplication:
                 f"Padding[{i}]: expected {exp}, got {actual}"
     
     @given(padding_four)
-    # Small finite strategy: 4 examples (input space size: 4)
-    @settings(max_examples=4, deadline=None)
+    # Complex strategy: 20 examples (adequate coverage)
+    @settings(max_examples=20, deadline=None)
     def test_padding_property_stored_correctly(self, padding_values):
         """padding property value is stored correctly on MarkdownLabel."""
         label = MarkdownLabel(text='Hello', padding=padding_values)
@@ -106,8 +106,8 @@ class TestPaddingApplication:
                 f"Padding[{i}]: expected {exp}, got {actual}"
     
     @given(padding_four, padding_four)
-    # Combination strategy: 16 examples (combination coverage)
-    @settings(max_examples=16, deadline=None)
+    # Complex strategy: 20 examples (adequate coverage)
+    @settings(max_examples=20, deadline=None)
     def test_padding_change_updates_container(self, padding1, padding2):
         """Changing padding updates the container padding."""
         assume(padding1 != padding2)
@@ -151,8 +151,8 @@ class TestPaddingForwarding:
     """Property tests for padding forwarding (Property 4)."""
     
     @given(text_padding_strategy)
-    # Small finite strategy: 4 examples (input space size: 4)
-    @settings(max_examples=4, deadline=None)
+    # Complex strategy: 20 examples (adequate coverage)
+    @settings(max_examples=20, deadline=None)
     def test_padding_applied_to_paragraph(self, padding):
         """padding is applied to paragraph Labels."""
         label = MarkdownLabel(text='Hello World', text_padding=padding)
@@ -166,8 +166,8 @@ class TestPaddingForwarding:
                 f"Expected padding={padding}, got {list(lbl.padding)}"
     
     @given(text_padding_strategy)
-    # Small finite strategy: 4 examples (input space size: 4)
-    @settings(max_examples=4, deadline=None)
+    # Complex strategy: 20 examples (adequate coverage)
+    @settings(max_examples=20, deadline=None)
     def test_padding_applied_to_heading(self, padding):
         """padding is applied to heading Labels."""
         label = MarkdownLabel(text='# Heading', text_padding=padding)
@@ -181,8 +181,8 @@ class TestPaddingForwarding:
                 f"Expected padding={padding}, got {list(lbl.padding)}"
     
     @given(text_padding_strategy)
-    # Small finite strategy: 4 examples (input space size: 4)
-    @settings(max_examples=4, deadline=None)
+    # Complex strategy: 20 examples (adequate coverage)
+    @settings(max_examples=20, deadline=None)
     def test_padding_applied_to_list_items(self, padding):
         """padding is applied to list item Labels."""
         markdown = '- Item 1\n- Item 2'
@@ -197,8 +197,8 @@ class TestPaddingForwarding:
                 f"Expected padding={padding}, got {list(lbl.padding)}"
     
     @given(text_padding_strategy)
-    # Small finite strategy: 4 examples (input space size: 4)
-    @settings(max_examples=4, deadline=None)
+    # Complex strategy: 20 examples (adequate coverage)
+    @settings(max_examples=20, deadline=None)
     def test_padding_applied_to_table_cells(self, padding):
         """padding is applied to table cell Labels."""
         markdown = '| A | B |\n| --- | --- |\n| 1 | 2 |'
@@ -213,8 +213,8 @@ class TestPaddingForwarding:
                 f"Expected padding={padding}, got {list(lbl.padding)}"
     
     @given(text_padding_strategy)
-    # Small finite strategy: 4 examples (input space size: 4)
-    @settings(max_examples=4, deadline=None)
+    # Complex strategy: 20 examples (adequate coverage)
+    @settings(max_examples=20, deadline=None)
     def test_padding_applied_to_nested_structures(self, padding):
         """padding is applied to Labels in nested structures (lists, tables, block quotes)."""
         markdown = '''
@@ -243,8 +243,8 @@ Regular paragraph
                 f"Expected padding={padding}, got {list(lbl.padding)}"
     
     @given(text_padding_strategy, text_padding_strategy)
-    # Combination strategy: 16 examples (combination coverage)
-    @settings(max_examples=16, deadline=None)
+    # Complex strategy: 20 examples (adequate coverage)
+    @settings(max_examples=20, deadline=None)
     def test_padding_change_updates_value(self, padding1, padding2):
         """Changing text_padding triggers widget rebuild with new padding."""
         assume(not padding_equal(padding1, padding2))
@@ -288,8 +288,8 @@ class TestPaddingDynamicUpdates:
     """Property tests for text_padding dynamic updates (Property 5)."""
     
     @given(text_padding_strategy, text_padding_strategy)
-    # Combination strategy: 16 examples (combination coverage)
-    @settings(max_examples=16, deadline=None)
+    # Complex strategy: 20 examples (adequate coverage)
+    @settings(max_examples=20, deadline=None)
     def test_padding_update_paragraph(self, initial_padding, new_padding):
         """Updating text_padding on paragraph updates all child Labels."""
         assume(not padding_equal(initial_padding, new_padding))
@@ -313,8 +313,8 @@ class TestPaddingDynamicUpdates:
                 f"After update, expected padding={new_padding}, got {list(lbl.padding)}"
     
     @given(text_padding_strategy, text_padding_strategy)
-    # Combination strategy: 16 examples (combination coverage)
-    @settings(max_examples=16, deadline=None)
+    # Complex strategy: 20 examples (adequate coverage)
+    @settings(max_examples=20, deadline=None)
     def test_padding_update_complex_content(self, initial_padding, new_padding):
         """Updating text_padding on complex content updates all child Labels."""
         assume(not padding_equal(initial_padding, new_padding))
@@ -378,8 +378,8 @@ class TestPaddingWithNestedStructures:
     """Property tests for padding with nested structures (Property 6)."""
     
     @given(text_padding_strategy)
-    # Small finite strategy: 4 examples (input space size: 4)
-    @settings(max_examples=4, deadline=None)
+    # Complex strategy: 20 examples (adequate coverage)
+    @settings(max_examples=20, deadline=None)
     def test_padding_in_nested_lists(self, padding):
         """padding is applied to Labels in nested lists without breaking structure."""
         markdown = '''
@@ -405,8 +405,8 @@ class TestPaddingWithNestedStructures:
                 f"Expected padding={padding}, got {list(lbl.padding)}"
     
     @given(text_padding_strategy)
-    # Small finite strategy: 4 examples (input space size: 4)
-    @settings(max_examples=4, deadline=None)
+    # Complex strategy: 20 examples (adequate coverage)
+    @settings(max_examples=20, deadline=None)
     def test_padding_in_nested_quotes(self, padding):
         """padding is applied to Labels in nested block quotes without breaking structure."""
         markdown = '''
@@ -432,8 +432,8 @@ class TestPaddingWithNestedStructures:
                 f"Expected padding={padding}, got {list(lbl.padding)}"
     
     @given(text_padding_strategy)
-    # Small finite strategy: 4 examples (input space size: 4)
-    @settings(max_examples=4, deadline=None)
+    # Complex strategy: 20 examples (adequate coverage)
+    @settings(max_examples=20, deadline=None)
     def test_padding_in_complex_table(self, padding):
         """padding is applied to Labels in complex tables without breaking structure."""
         markdown = '''
@@ -458,8 +458,8 @@ class TestPaddingWithNestedStructures:
                 f"Expected padding={padding}, got {list(lbl.padding)}"
     
     @given(text_padding_strategy)
-    # Small finite strategy: 4 examples (input space size: 4)
-    @settings(max_examples=4, deadline=None)
+    # Complex strategy: 20 examples (adequate coverage)
+    @settings(max_examples=20, deadline=None)
     def test_padding_in_mixed_nested_structures(self, padding):
         """padding is applied to Labels in mixed nested structures without breaking layout."""
         markdown = '''
@@ -500,8 +500,8 @@ Final paragraph.
                 f"Expected padding={padding}, got {list(lbl.padding)}"
     
     @given(text_padding_strategy)
-    # Small finite strategy: 4 examples (input space size: 4)
-    @settings(max_examples=4, deadline=None)
+    # Complex strategy: 20 examples (adequate coverage)
+    @settings(max_examples=20, deadline=None)
     def test_padding_preserves_widget_hierarchy(self, padding):
         """padding application preserves the widget hierarchy structure."""
         markdown = '''
@@ -535,8 +535,8 @@ class TestTextPaddingAppliesToChildLabels:
     """Property tests for text_padding applies to child Labels (Property 8)."""
     
     @given(text_padding_strategy)
-    # Small finite strategy: 4 examples (input space size: 4)
-    @settings(max_examples=4, deadline=None)
+    # Complex strategy: 20 examples (adequate coverage)
+    @settings(max_examples=20, deadline=None)
     def test_text_padding_applied_to_paragraph_labels(self, padding):
         """text_padding is applied to paragraph Labels."""
         label = MarkdownLabel(text='Hello World', text_padding=padding)
@@ -550,8 +550,8 @@ class TestTextPaddingAppliesToChildLabels:
                 f"Expected padding={padding}, got {list(lbl.padding)}"
     
     @given(text_padding_strategy)
-    # Small finite strategy: 4 examples (input space size: 4)
-    @settings(max_examples=4, deadline=None)
+    # Complex strategy: 20 examples (adequate coverage)
+    @settings(max_examples=20, deadline=None)
     def test_text_padding_applied_to_heading_labels(self, padding):
         """text_padding is applied to heading Labels."""
         label = MarkdownLabel(text='# Heading', text_padding=padding)
@@ -565,8 +565,8 @@ class TestTextPaddingAppliesToChildLabels:
                 f"Expected padding={padding}, got {list(lbl.padding)}"
     
     @given(text_padding_strategy)
-    # Small finite strategy: 4 examples (input space size: 4)
-    @settings(max_examples=4, deadline=None)
+    # Complex strategy: 20 examples (adequate coverage)
+    @settings(max_examples=20, deadline=None)
     def test_text_padding_applied_to_list_labels(self, padding):
         """text_padding is applied to list item Labels."""
         markdown = '- Item 1\n- Item 2'
@@ -581,8 +581,8 @@ class TestTextPaddingAppliesToChildLabels:
                 f"Expected padding={padding}, got {list(lbl.padding)}"
     
     @given(text_padding_strategy)
-    # Small finite strategy: 4 examples (input space size: 4)
-    @settings(max_examples=4, deadline=None)
+    # Complex strategy: 20 examples (adequate coverage)
+    @settings(max_examples=20, deadline=None)
     def test_text_padding_applied_to_table_labels(self, padding):
         """text_padding is applied to table cell Labels."""
         markdown = '| A | B |\n| --- | --- |\n| 1 | 2 |'
@@ -606,8 +606,8 @@ class TestPaddingAppliesToContainer:
     """Property tests for padding applies to container (Property 9)."""
 
     @given(text_padding_strategy)
-    # Small finite strategy: 4 examples (input space size: 4)
-    @settings(max_examples=4, deadline=None)
+    # Complex strategy: 20 examples (adequate coverage)
+    @settings(max_examples=20, deadline=None)
     def test_padding_applied_to_container_only(self, padding):
         """padding is applied to the MarkdownLabel container, not child Labels."""
         label = MarkdownLabel(text='Hello World', padding=padding)
@@ -626,8 +626,8 @@ class TestPaddingAppliesToContainer:
                 f"Expected child Label padding=[0, 0, 0, 0], got {list(lbl.padding)}"
     
     @given(text_padding_strategy, text_padding_strategy)
-    # Combination strategy: 16 examples (combination coverage)
-    @settings(max_examples=16, deadline=None)
+    # Complex strategy: 20 examples (adequate coverage)
+    @settings(max_examples=20, deadline=None)
     def test_padding_and_text_padding_independent(self, container_padding, text_padding):
         """padding and text_padding work independently."""
         assume(not padding_equal(container_padding, text_padding))
@@ -651,8 +651,8 @@ class TestPaddingAppliesToContainer:
                 f"Expected child Label padding={text_padding}, got {list(lbl.padding)}"
     
     @given(text_padding_strategy)
-    # Small finite strategy: 4 examples (input space size: 4)
-    @settings(max_examples=4, deadline=None)
+    # Complex strategy: 20 examples (adequate coverage)
+    @settings(max_examples=20, deadline=None)
     def test_padding_change_affects_container_only(self, new_padding):
         """Changing padding affects only the container, not child Labels."""
         label = MarkdownLabel(text='Hello World', padding=[0, 0, 0, 0])
@@ -684,8 +684,8 @@ class TestLabelPaddingAliasSynchronization:
     """Property tests for label_padding alias synchronization (Property 10)."""
     
     @given(text_padding_strategy)
-    # Small finite strategy: 4 examples (input space size: 4)
-    @settings(max_examples=4, deadline=None)
+    # Complex strategy: 20 examples (adequate coverage)
+    @settings(max_examples=20, deadline=None)
     def test_label_padding_setter_updates_text_padding(self, padding):
         """Setting label_padding updates text_padding."""
         label = MarkdownLabel(text='Hello World')
@@ -698,8 +698,8 @@ class TestLabelPaddingAliasSynchronization:
             f"Expected text_padding={padding}, got {list(label.text_padding)}"
     
     @given(text_padding_strategy)
-    # Small finite strategy: 4 examples (input space size: 4)
-    @settings(max_examples=4, deadline=None)
+    # Complex strategy: 20 examples (adequate coverage)
+    @settings(max_examples=20, deadline=None)
     def test_label_padding_getter_returns_text_padding(self, padding):
         """Getting label_padding returns text_padding value."""
         label = MarkdownLabel(text='Hello World', text_padding=padding)
@@ -709,8 +709,8 @@ class TestLabelPaddingAliasSynchronization:
             f"Expected label_padding={padding}, got {list(label.label_padding)}"
     
     @given(text_padding_strategy)
-    # Small finite strategy: 4 examples (input space size: 4)
-    @settings(max_examples=4, deadline=None)
+    # Complex strategy: 20 examples (adequate coverage)
+    @settings(max_examples=20, deadline=None)
     def test_text_padding_setter_updates_label_padding(self, padding):
         """Setting text_padding updates label_padding."""
         label = MarkdownLabel(text='Hello World')
@@ -723,8 +723,8 @@ class TestLabelPaddingAliasSynchronization:
             f"Expected label_padding={padding}, got {list(label.label_padding)}"
     
     @given(text_padding_strategy, text_padding_strategy)
-    # Combination strategy: 16 examples (combination coverage)
-    @settings(max_examples=16, deadline=None)
+    # Complex strategy: 20 examples (adequate coverage)
+    @settings(max_examples=20, deadline=None)
     def test_bidirectional_synchronization(self, padding1, padding2):
         """label_padding and text_padding stay synchronized in both directions."""
         assume(not padding_equal(padding1, padding2))

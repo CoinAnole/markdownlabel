@@ -151,8 +151,8 @@ class TestHelperFunctionConsolidation:
             os.rmdir(temp_dir)
     
     @given(st.integers(min_value=1, max_value=5))
-    # Simple strategy: 10 examples (basic coverage)
-    @settings(max_examples=10, deadline=None)
+    # Small finite strategy: 5 examples (input space size: 5)
+    @settings(max_examples=5, deadline=None)
     def test_detector_handles_no_duplicates(self, num_files):
         """Detector should handle files with no duplicate functions correctly."""
         temp_files = []

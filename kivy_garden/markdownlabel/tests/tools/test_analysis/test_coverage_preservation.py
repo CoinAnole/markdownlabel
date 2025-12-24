@@ -314,8 +314,8 @@ def helper_function(value):
         return final_coverage
     
     @given(st.integers(min_value=1, max_value=10))
-    # Simple strategy: 8 examples (basic coverage)
-    @settings(max_examples=8, deadline=None)
+    # Small finite strategy: 10 examples (input space size: 10)
+    @settings(max_examples=10, deadline=None)
     def test_test_count_preservation(self, num_tests):
         """Refactoring should preserve or increase the number of tests."""
         temp_dir = tempfile.mkdtemp()
@@ -492,7 +492,7 @@ class TestCalculator:
             os.rmdir(temp_dir)
     
     @given(st.floats(min_value=50.0, max_value=95.0))
-    # Simple strategy: 6 examples (basic coverage for different coverage levels)
+    # Complex strategy: 6 examples (adequate coverage)
     @settings(max_examples=6, deadline=None)
     def test_coverage_tolerance_reasonable(self, initial_coverage):
         """Coverage tolerance should be reasonable for measurement variance."""

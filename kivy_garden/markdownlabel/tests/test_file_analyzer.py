@@ -475,7 +475,7 @@ class TestToolIntegrationCompatibility:
         max_examples=st.integers(min_value=1, max_value=100),
         has_comment=st.booleans()
     )
-    # Combination strategy: 20 examples (combination coverage)
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_tool_integration_compatibility(self, strategy_type, max_examples, has_comment):
         """**Feature: test-comment-standardization, Property 9: Tool Integration Compatibility**

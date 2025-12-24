@@ -121,7 +121,7 @@ class TestDocumentationCompliance:
         return "unknown_test"
     
     @given(st.integers(min_value=11, max_value=200))
-    # Complex strategy: 20 examples (adequate coverage)
+    # Medium finite strategy: 20 examples (adequate finite coverage)
     @settings(max_examples=20, deadline=None)
     def test_custom_value_detection_property(self, custom_value):
         """Property test for custom value detection logic."""

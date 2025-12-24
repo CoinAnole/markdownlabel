@@ -129,7 +129,7 @@ class TestTestNameConsistency:
             os.unlink(temp_file)
     
     @given(st.text(min_size=1, max_size=10, alphabet=st.characters(min_codepoint=ord('a'), max_codepoint=ord('z'))))
-    # Simple strategy: 10 examples (basic coverage)
+    # Complex strategy: 10 examples (adequate coverage)
     @settings(max_examples=10, deadline=None)
     def test_parser_handles_valid_python_files(self, content_suffix):
         """Parser should handle any valid Python test file."""
