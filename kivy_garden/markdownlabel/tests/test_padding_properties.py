@@ -150,13 +150,6 @@ class TestPaddingApplication:
 class TestPaddingForwarding:
     """Property tests for padding forwarding (Property 4)."""
     
-    
-    def _padding_equal(self, p1, p2, tolerance=0.001):
-        """Compare two padding values with tolerance for floating point differences."""
-        if len(p1) != len(p2):
-            return False
-        return all(abs(a - b) < tolerance for a, b in zip(p1, p2))
-    
     @given(text_padding_strategy)
     # Small finite strategy: 4 examples (input space size: 4)
     @settings(max_examples=4, deadline=None)
@@ -169,7 +162,7 @@ class TestPaddingForwarding:
 
         # All labels should have the specified padding
         for lbl in labels:
-            assert self._padding_equal(list(lbl.padding), padding), \
+            assert padding_equal(list(lbl.padding), padding), \
                 f"Expected padding={padding}, got {list(lbl.padding)}"
     
     @given(text_padding_strategy)
@@ -184,7 +177,7 @@ class TestPaddingForwarding:
 
         # All labels should have the specified padding
         for lbl in labels:
-            assert self._padding_equal(list(lbl.padding), padding), \
+            assert padding_equal(list(lbl.padding), padding), \
                 f"Expected padding={padding}, got {list(lbl.padding)}"
     
     @given(text_padding_strategy)
@@ -200,7 +193,7 @@ class TestPaddingForwarding:
         
         # All labels should have the specified padding
         for lbl in labels:
-            assert self._padding_equal(list(lbl.padding), padding), \
+            assert padding_equal(list(lbl.padding), padding), \
                 f"Expected padding={padding}, got {list(lbl.padding)}"
     
     @given(text_padding_strategy)
@@ -216,7 +209,7 @@ class TestPaddingForwarding:
         
         # All labels should have the specified padding
         for lbl in labels:
-            assert self._padding_equal(list(lbl.padding), padding), \
+            assert padding_equal(list(lbl.padding), padding), \
                 f"Expected padding={padding}, got {list(lbl.padding)}"
     
     @given(text_padding_strategy)
@@ -246,7 +239,7 @@ Regular paragraph
         
         # All labels should have the specified padding
         for lbl in labels:
-            assert self._padding_equal(list(lbl.padding), padding), \
+            assert padding_equal(list(lbl.padding), padding), \
                 f"Expected padding={padding}, got {list(lbl.padding)}"
     
     @given(text_padding_strategy, text_padding_strategy)
@@ -254,14 +247,14 @@ Regular paragraph
     @settings(max_examples=16, deadline=None)
     def test_padding_change_updates_value(self, padding1, padding2):
         """Changing text_padding triggers widget rebuild with new padding."""
-        assume(not self._padding_equal(padding1, padding2))
+        assume(not padding_equal(padding1, padding2))
         
         label = MarkdownLabel(text='Hello World', text_padding=padding1)
         
         # Verify initial padding
         labels = find_labels_recursive(label)
         for lbl in labels:
-            assert self._padding_equal(list(lbl.padding), padding1)
+            assert padding_equal(list(lbl.padding), padding1)
         
         # Change padding
         label.text_padding = padding2
@@ -270,7 +263,7 @@ Regular paragraph
         # Verify new padding
         labels = find_labels_recursive(label)
         for lbl in labels:
-            assert self._padding_equal(list(lbl.padding), padding2), \
+            assert padding_equal(list(lbl.padding), padding2), \
                 f"After change, expected padding={padding2}, got {list(lbl.padding)}"
     
     def test_default_padding_is_zero_for_all_labels(self):
@@ -282,7 +275,7 @@ Regular paragraph
         
         # All labels should have default padding of [0, 0, 0, 0]
         for lbl in labels:
-            assert self._padding_equal(list(lbl.padding), [0, 0, 0, 0]), \
+            assert padding_equal(list(lbl.padding), [0, 0, 0, 0]), \
                 f"Expected default padding=[0, 0, 0, 0], got {list(lbl.padding)}"
 
 
@@ -294,19 +287,12 @@ Regular paragraph
 class TestPaddingDynamicUpdates:
     """Property tests for text_padding dynamic updates (Property 5)."""
     
-    
-    def _padding_equal(self, p1, p2, tolerance=0.001):
-        """Compare two padding values with tolerance for floating point differences."""
-        if len(p1) != len(p2):
-            return False
-        return all(abs(a - b) < tolerance for a, b in zip(p1, p2))
-    
     @given(text_padding_strategy, text_padding_strategy)
     # Combination strategy: 16 examples (combination coverage)
     @settings(max_examples=16, deadline=None)
     def test_padding_update_paragraph(self, initial_padding, new_padding):
         """Updating text_padding on paragraph updates all child Labels."""
-        assume(not self._padding_equal(initial_padding, new_padding))
+        assume(not padding_equal(initial_padding, new_padding))
         
         label = MarkdownLabel(text='Hello World', text_padding=initial_padding)
         
@@ -314,7 +300,7 @@ class TestPaddingDynamicUpdates:
         labels = find_labels_recursive(label)
         assert len(labels) >= 1, "Expected at least one Label"
         for lbl in labels:
-            assert self._padding_equal(list(lbl.padding), initial_padding)
+            assert padding_equal(list(lbl.padding), initial_padding)
         
         # Update padding
         label.text_padding = new_padding
@@ -323,7 +309,7 @@ class TestPaddingDynamicUpdates:
         # Verify all labels have new padding
         labels = find_labels_recursive(label)
         for lbl in labels:
-            assert self._padding_equal(list(lbl.padding), new_padding), \
+            assert padding_equal(list(lbl.padding), new_padding), \
                 f"After update, expected padding={new_padding}, got {list(lbl.padding)}"
     
     @given(text_padding_strategy, text_padding_strategy)
@@ -331,7 +317,7 @@ class TestPaddingDynamicUpdates:
     @settings(max_examples=16, deadline=None)
     def test_padding_update_complex_content(self, initial_padding, new_padding):
         """Updating text_padding on complex content updates all child Labels."""
-        assume(not self._padding_equal(initial_padding, new_padding))
+        assume(not padding_equal(initial_padding, new_padding))
         
         markdown = '''
 # Title
@@ -352,7 +338,7 @@ Paragraph with text.
         labels = find_labels_recursive(label)
         assert len(labels) >= 5, "Expected at least 5 Labels"
         for lbl in labels:
-            assert self._padding_equal(list(lbl.padding), initial_padding)
+            assert padding_equal(list(lbl.padding), initial_padding)
         
         # Update padding
         label.text_padding = new_padding
@@ -361,7 +347,7 @@ Paragraph with text.
         # Verify all labels have new padding
         labels = find_labels_recursive(label)
         for lbl in labels:
-            assert self._padding_equal(list(lbl.padding), new_padding), \
+            assert padding_equal(list(lbl.padding), new_padding), \
                 f"After update, expected padding={new_padding}, got {list(lbl.padding)}"
     
     @given(st.integers(min_value=1, max_value=5))
@@ -379,7 +365,7 @@ Paragraph with text.
             # Verify all labels have the current padding
             labels = find_labels_recursive(label)
             for lbl in labels:
-                assert self._padding_equal(list(lbl.padding), new_padding), \
+                assert padding_equal(list(lbl.padding), new_padding), \
                     f"Update {i}: expected padding={new_padding}, got {list(lbl.padding)}"
 
 
@@ -390,13 +376,6 @@ Paragraph with text.
 
 class TestPaddingWithNestedStructures:
     """Property tests for padding with nested structures (Property 6)."""
-    
-    
-    def _padding_equal(self, p1, p2, tolerance=0.001):
-        """Compare two padding values with tolerance for floating point differences."""
-        if len(p1) != len(p2):
-            return False
-        return all(abs(a - b) < tolerance for a, b in zip(p1, p2))
     
     @given(text_padding_strategy)
     # Small finite strategy: 4 examples (input space size: 4)
@@ -422,7 +401,7 @@ class TestPaddingWithNestedStructures:
         assert len(labels) >= 5, "Expected at least 5 Labels for nested list items"
         
         for lbl in labels:
-            assert self._padding_equal(list(lbl.padding), padding), \
+            assert padding_equal(list(lbl.padding), padding), \
                 f"Expected padding={padding}, got {list(lbl.padding)}"
     
     @given(text_padding_strategy)
@@ -449,7 +428,7 @@ class TestPaddingWithNestedStructures:
         assert len(labels) >= 1, "Expected at least 1 Label for quote content"
         
         for lbl in labels:
-            assert self._padding_equal(list(lbl.padding), padding), \
+            assert padding_equal(list(lbl.padding), padding), \
                 f"Expected padding={padding}, got {list(lbl.padding)}"
     
     @given(text_padding_strategy)
@@ -475,7 +454,7 @@ class TestPaddingWithNestedStructures:
         assert len(labels) >= 9, "Expected at least 9 Labels for table cells"
         
         for lbl in labels:
-            assert self._padding_equal(list(lbl.padding), padding), \
+            assert padding_equal(list(lbl.padding), padding), \
                 f"Expected padding={padding}, got {list(lbl.padding)}"
     
     @given(text_padding_strategy)
@@ -517,7 +496,7 @@ Final paragraph.
         assert len(labels) >= 8, "Expected at least 8 Labels for mixed content"
         
         for lbl in labels:
-            assert self._padding_equal(list(lbl.padding), padding), \
+            assert padding_equal(list(lbl.padding), padding), \
                 f"Expected padding={padding}, got {list(lbl.padding)}"
     
     @given(text_padding_strategy)
@@ -541,7 +520,7 @@ Final paragraph.
         assert len(labels) >= 3, "Expected at least 3 Labels (2 items + 1 nested)"
         
         for lbl in labels:
-            assert self._padding_equal(list(lbl.padding), padding), \
+            assert padding_equal(list(lbl.padding), padding), \
                 f"Expected padding={padding}, got {list(lbl.padding)}"
             # Verify the label is still properly embedded in the widget tree
             assert lbl.parent is not None, "Label should have a parent widget"
@@ -555,13 +534,6 @@ Final paragraph.
 class TestTextPaddingAppliesToChildLabels:
     """Property tests for text_padding applies to child Labels (Property 8)."""
     
-    
-    def _padding_equal(self, p1, p2, tolerance=0.001):
-        """Compare two padding values with tolerance for floating point differences."""
-        if len(p1) != len(p2):
-            return False
-        return all(abs(a - b) < tolerance for a, b in zip(p1, p2))
-    
     @given(text_padding_strategy)
     # Small finite strategy: 4 examples (input space size: 4)
     @settings(max_examples=4, deadline=None)
@@ -574,7 +546,7 @@ class TestTextPaddingAppliesToChildLabels:
 
         # All labels should have the specified text_padding
         for lbl in labels:
-            assert self._padding_equal(list(lbl.padding), padding), \
+            assert padding_equal(list(lbl.padding), padding), \
                 f"Expected padding={padding}, got {list(lbl.padding)}"
     
     @given(text_padding_strategy)
@@ -589,7 +561,7 @@ class TestTextPaddingAppliesToChildLabels:
 
         # All labels should have the specified text_padding
         for lbl in labels:
-            assert self._padding_equal(list(lbl.padding), padding), \
+            assert padding_equal(list(lbl.padding), padding), \
                 f"Expected padding={padding}, got {list(lbl.padding)}"
     
     @given(text_padding_strategy)
@@ -605,7 +577,7 @@ class TestTextPaddingAppliesToChildLabels:
         
         # All labels should have the specified text_padding
         for lbl in labels:
-            assert self._padding_equal(list(lbl.padding), padding), \
+            assert padding_equal(list(lbl.padding), padding), \
                 f"Expected padding={padding}, got {list(lbl.padding)}"
     
     @given(text_padding_strategy)
@@ -621,7 +593,7 @@ class TestTextPaddingAppliesToChildLabels:
         
         # All labels should have the specified text_padding
         for lbl in labels:
-            assert self._padding_equal(list(lbl.padding), padding), \
+            assert padding_equal(list(lbl.padding), padding), \
                 f"Expected padding={padding}, got {list(lbl.padding)}"
 
 
@@ -633,13 +605,6 @@ class TestTextPaddingAppliesToChildLabels:
 class TestPaddingAppliesToContainer:
     """Property tests for padding applies to container (Property 9)."""
 
-    
-    def _padding_equal(self, p1, p2, tolerance=0.001):
-        """Compare two padding values with tolerance for floating point differences."""
-        if len(p1) != len(p2):
-            return False
-        return all(abs(a - b) < tolerance for a, b in zip(p1, p2))
-
     @given(text_padding_strategy)
     # Small finite strategy: 4 examples (input space size: 4)
     @settings(max_examples=4, deadline=None)
@@ -648,7 +613,7 @@ class TestPaddingAppliesToContainer:
         label = MarkdownLabel(text='Hello World', padding=padding)
         
         # Container should have the specified padding
-        assert self._padding_equal(list(label.padding), padding), \
+        assert padding_equal(list(label.padding), padding), \
             f"Expected container padding={padding}, got {list(label.padding)}"
         
         # Child Labels should have default padding (not affected by container padding)
@@ -657,7 +622,7 @@ class TestPaddingAppliesToContainer:
         
         for lbl in labels:
             # Child Labels should have default padding [0, 0, 0, 0], not container padding
-            assert self._padding_equal(list(lbl.padding), [0, 0, 0, 0]), \
+            assert padding_equal(list(lbl.padding), [0, 0, 0, 0]), \
                 f"Expected child Label padding=[0, 0, 0, 0], got {list(lbl.padding)}"
     
     @given(text_padding_strategy, text_padding_strategy)
@@ -665,7 +630,7 @@ class TestPaddingAppliesToContainer:
     @settings(max_examples=16, deadline=None)
     def test_padding_and_text_padding_independent(self, container_padding, text_padding):
         """padding and text_padding work independently."""
-        assume(not self._padding_equal(container_padding, text_padding))
+        assume(not padding_equal(container_padding, text_padding))
         
         label = MarkdownLabel(
             text='Hello World', 
@@ -674,7 +639,7 @@ class TestPaddingAppliesToContainer:
         )
         
         # Container should have container_padding
-        assert self._padding_equal(list(label.padding), container_padding), \
+        assert padding_equal(list(label.padding), container_padding), \
             f"Expected container padding={container_padding}, got {list(label.padding)}"
         
         # Child Labels should have text_padding
@@ -682,7 +647,7 @@ class TestPaddingAppliesToContainer:
         assert len(labels) >= 1, "Expected at least one Label"
         
         for lbl in labels:
-            assert self._padding_equal(list(lbl.padding), text_padding), \
+            assert padding_equal(list(lbl.padding), text_padding), \
                 f"Expected child Label padding={text_padding}, got {list(lbl.padding)}"
     
     @given(text_padding_strategy)
@@ -701,13 +666,13 @@ class TestPaddingAppliesToContainer:
         label.padding = new_padding
 
         # Container should have new padding
-        assert self._padding_equal(list(label.padding), new_padding), \
+        assert padding_equal(list(label.padding), new_padding), \
             f"Expected container padding={new_padding}, got {list(label.padding)}"
         
         # Child Labels should still have the same padding as before
         labels = find_labels_recursive(label)
         for lbl in labels:
-            assert self._padding_equal(list(lbl.padding), initial_child_padding), \
+            assert padding_equal(list(lbl.padding), initial_child_padding), \
                 f"Expected child Label padding unchanged={initial_child_padding}, got {list(lbl.padding)}"
 
 
@@ -718,12 +683,6 @@ class TestPaddingAppliesToContainer:
 class TestLabelPaddingAliasSynchronization:
     """Property tests for label_padding alias synchronization (Property 10)."""
     
-    def _padding_equal(self, p1, p2, tolerance=0.001):
-        """Compare two padding values with tolerance for floating point differences."""
-        if len(p1) != len(p2):
-            return False
-        return all(abs(a - b) < tolerance for a, b in zip(p1, p2))
-
     @given(text_padding_strategy)
     # Small finite strategy: 4 examples (input space size: 4)
     @settings(max_examples=4, deadline=None)
@@ -735,7 +694,7 @@ class TestLabelPaddingAliasSynchronization:
         label.label_padding = padding
         
         # text_padding should be updated
-        assert self._padding_equal(list(label.text_padding), padding), \
+        assert padding_equal(list(label.text_padding), padding), \
             f"Expected text_padding={padding}, got {list(label.text_padding)}"
     
     @given(text_padding_strategy)
@@ -746,7 +705,7 @@ class TestLabelPaddingAliasSynchronization:
         label = MarkdownLabel(text='Hello World', text_padding=padding)
         
         # label_padding should return text_padding value
-        assert self._padding_equal(list(label.label_padding), padding), \
+        assert padding_equal(list(label.label_padding), padding), \
             f"Expected label_padding={padding}, got {list(label.label_padding)}"
     
     @given(text_padding_strategy)
@@ -760,7 +719,7 @@ class TestLabelPaddingAliasSynchronization:
         label.text_padding = padding
         
         # label_padding should be updated
-        assert self._padding_equal(list(label.label_padding), padding), \
+        assert padding_equal(list(label.label_padding), padding), \
             f"Expected label_padding={padding}, got {list(label.label_padding)}"
     
     @given(text_padding_strategy, text_padding_strategy)
@@ -768,22 +727,22 @@ class TestLabelPaddingAliasSynchronization:
     @settings(max_examples=16, deadline=None)
     def test_bidirectional_synchronization(self, padding1, padding2):
         """label_padding and text_padding stay synchronized in both directions."""
-        assume(not self._padding_equal(padding1, padding2))
+        assume(not padding_equal(padding1, padding2))
         
         label = MarkdownLabel(text='Hello World')
         
         # Set via label_padding
         label.label_padding = padding1
-        assert self._padding_equal(list(label.text_padding), padding1), \
+        assert padding_equal(list(label.text_padding), padding1), \
             f"Expected text_padding={padding1} after setting label_padding"
-        assert self._padding_equal(list(label.label_padding), padding1), \
+        assert padding_equal(list(label.label_padding), padding1), \
             f"Expected label_padding={padding1} after setting label_padding"
         
         # Set via text_padding
         label.text_padding = padding2
-        assert self._padding_equal(list(label.label_padding), padding2), \
+        assert padding_equal(list(label.label_padding), padding2), \
             f"Expected label_padding={padding2} after setting text_padding"
-        assert self._padding_equal(list(label.text_padding), padding2), \
+        assert padding_equal(list(label.text_padding), padding2), \
             f"Expected text_padding={padding2} after setting text_padding"
     
     def test_default_values_synchronized(self):
@@ -791,11 +750,11 @@ class TestLabelPaddingAliasSynchronization:
         label = MarkdownLabel(text='Hello World')
         
         # Both should have the same default value
-        assert self._padding_equal(list(label.label_padding), list(label.text_padding)), \
+        assert padding_equal(list(label.label_padding), list(label.text_padding)), \
             f"Expected label_padding={list(label.text_padding)}, got {list(label.label_padding)}"
         
         # Both should be [0, 0, 0, 0] by default
-        assert self._padding_equal(list(label.label_padding), [0, 0, 0, 0]), \
+        assert padding_equal(list(label.label_padding), [0, 0, 0, 0]), \
             f"Expected default label_padding=[0, 0, 0, 0], got {list(label.label_padding)}"
-        assert self._padding_equal(list(label.text_padding), [0, 0, 0, 0]), \
+        assert padding_equal(list(label.text_padding), [0, 0, 0, 0]), \
             f"Expected default text_padding=[0, 0, 0, 0], got {list(label.text_padding)}"

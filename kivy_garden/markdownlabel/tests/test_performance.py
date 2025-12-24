@@ -18,7 +18,8 @@ from kivy_garden.markdownlabel import MarkdownLabel
 from .test_utils import (
     markdown_heading, markdown_paragraph, markdown_bold, markdown_italic,
     markdown_link, simple_markdown_document, color_strategy, text_padding_strategy,
-    find_labels_recursive, colors_equal, padding_equal, floats_equal, KIVY_FONTS
+    find_labels_recursive, colors_equal, padding_equal, floats_equal, KIVY_FONTS,
+    collect_widget_ids
 )
 
 @pytest.mark.slow
@@ -29,21 +30,6 @@ class TestStyleOnlyPropertyUpdates:
     in place without rebuilding the widget tree, while structure property
     changes trigger a full rebuild.
     """
-
-    def _collect_widget_ids(self, widget):
-        """Collect Python object ids of all widgets in the tree.
-        
-        Args:
-            widget: Root widget to collect from
-        
-        Returns:
-            Set of widget object ids
-        """
-        ids = {id(widget)}
-        if hasattr(widget, 'children'):
-            for child in widget.children:
-                ids.update(self._collect_widget_ids(child))
-        return ids
 
     @given(st.floats(min_value=10, max_value=50, allow_nan=False, allow_infinity=False),
            st.floats(min_value=10, max_value=50, allow_nan=False, allow_infinity=False))
@@ -62,13 +48,13 @@ class TestStyleOnlyPropertyUpdates:
         label = MarkdownLabel(text=markdown, font_size=initial_size)
         
         # Collect widget ids before change
-        ids_before = self._collect_widget_ids(label)
+        ids_before = collect_widget_ids(label)
         
         # Change font_size (style-only property)
         label.font_size = new_size
         
         # Collect widget ids after change
-        ids_after = self._collect_widget_ids(label)
+        ids_after = collect_widget_ids(label)
         
         # Widget tree structure should be preserved (same widget objects)
         assert ids_before == ids_after, \
@@ -93,13 +79,13 @@ class TestStyleOnlyPropertyUpdates:
         label = MarkdownLabel(text=markdown, color=[1, 1, 1, 1])
         
         # Collect widget ids before change
-        ids_before = self._collect_widget_ids(label)
+        ids_before = collect_widget_ids(label)
         
         # Change color (style-only property)
         label.color = list(new_color)
         
         # Collect widget ids after change
-        ids_after = self._collect_widget_ids(label)
+        ids_after = collect_widget_ids(label)
         
         # Widget tree structure should be preserved
         assert ids_before == ids_after, \
@@ -147,13 +133,13 @@ class TestStyleOnlyPropertyUpdates:
         label = MarkdownLabel(text=markdown, halign='left')
         
         # Collect widget ids before change
-        ids_before = self._collect_widget_ids(label)
+        ids_before = collect_widget_ids(label)
         
         # Change halign (style-only property)
         label.halign = new_halign
         
         # Collect widget ids after change
-        ids_after = self._collect_widget_ids(label)
+        ids_after = collect_widget_ids(label)
         
         # Widget tree structure should be preserved
         assert ids_before == ids_after, \
@@ -193,13 +179,13 @@ class TestStyleOnlyPropertyUpdates:
         label = MarkdownLabel(text=markdown, valign='top')
         
         # Collect widget ids before change
-        ids_before = self._collect_widget_ids(label)
+        ids_before = collect_widget_ids(label)
         
         # Change valign (style-only property)
         label.valign = new_valign
         
         # Collect widget ids after change
-        ids_after = self._collect_widget_ids(label)
+        ids_after = collect_widget_ids(label)
         
         # Widget tree structure should be preserved
         assert ids_before == ids_after, \
@@ -241,13 +227,13 @@ class TestStyleOnlyPropertyUpdates:
         label = MarkdownLabel(text=markdown, line_height=1.0)
         
         # Collect widget ids before change
-        ids_before = self._collect_widget_ids(label)
+        ids_before = collect_widget_ids(label)
         
         # Change line_height (style-only property)
         label.line_height = new_line_height
         
         # Collect widget ids after change
-        ids_after = self._collect_widget_ids(label)
+        ids_after = collect_widget_ids(label)
         
         # Widget tree structure should be preserved
         assert ids_before == ids_after, \
@@ -291,13 +277,13 @@ class TestStyleOnlyPropertyUpdates:
         label = MarkdownLabel(text=markdown, disabled=False)
         
         # Collect widget ids before change
-        ids_before = self._collect_widget_ids(label)
+        ids_before = collect_widget_ids(label)
         
         # Change disabled (style-only property)
         label.disabled = new_disabled
         
         # Collect widget ids after change
-        ids_after = self._collect_widget_ids(label)
+        ids_after = collect_widget_ids(label)
         
         # Widget tree structure should be preserved
         assert ids_before == ids_after, \
@@ -314,7 +300,7 @@ class TestStyleOnlyPropertyUpdates:
         label = MarkdownLabel(text=markdown1)
         
         # Collect widget ids before change
-        ids_before = self._collect_widget_ids(label)
+        ids_before = collect_widget_ids(label, exclude_root=True)
         
         # Change text (structure property) - use force_rebuild() for immediate
         # update since text changes now use deferred rebuilds
@@ -322,14 +308,10 @@ class TestStyleOnlyPropertyUpdates:
         label.force_rebuild()
         
         # Collect widget ids after change
-        ids_after = self._collect_widget_ids(label)
+        ids_after = collect_widget_ids(label, exclude_root=True)
         
         # Widget tree should be rebuilt (different widget objects)
-        # The MarkdownLabel itself stays the same, but children change
-        children_before = ids_before - {id(label)}
-        children_after = ids_after - {id(label)}
-        
-        assert children_before != children_after, \
+        assert ids_before != ids_after, \
             "Widget tree should be rebuilt after text change"
 
     def test_font_name_structure_property_rebuilds_tree(self):
@@ -343,20 +325,17 @@ class TestStyleOnlyPropertyUpdates:
         label = MarkdownLabel(text=markdown, font_name='Roboto')
         
         # Collect widget ids before change
-        ids_before = self._collect_widget_ids(label)
+        ids_before = collect_widget_ids(label, exclude_root=True)
         
         # Change font_name (structure property)
         label.font_name = 'RobotoMono-Regular'
         label.force_rebuild()  # Force immediate rebuild for test
         
         # Collect widget ids after change
-        ids_after = self._collect_widget_ids(label)
+        ids_after = collect_widget_ids(label, exclude_root=True)
         
         # Widget tree should be rebuilt (different widget objects)
-        children_before = ids_before - {id(label)}
-        children_after = ids_after - {id(label)}
-        
-        assert children_before != children_after, \
+        assert ids_before != ids_after, \
             "Widget tree should be rebuilt after font_name change"
 
     @given(
@@ -385,7 +364,7 @@ class TestStyleOnlyPropertyUpdates:
         label = MarkdownLabel(text=markdown)
         
         # Collect widget ids before changes
-        ids_before = self._collect_widget_ids(label)
+        ids_before = collect_widget_ids(label)
         
         # Apply multiple style changes
         label.font_size = font_size
@@ -395,7 +374,7 @@ class TestStyleOnlyPropertyUpdates:
         label.line_height = line_height
         
         # Collect widget ids after changes
-        ids_after = self._collect_widget_ids(label)
+        ids_after = collect_widget_ids(label)
         
         # Widget tree structure should be preserved through all changes
         assert ids_before == ids_after, \

@@ -36,28 +36,6 @@ from .test_utils import (
 class TestComprehensiveTextureSizeCalculation:
     """Property tests for comprehensive texture_size calculation (Property 3)."""
     
-    def _find_all_widgets_recursive(self, widget, widgets=None):
-        """Recursively find all widgets in a widget tree.
-
-        Args:
-            widget: Root widget to search
-            widgets: List to accumulate widgets (created if None)
-            
-        Returns:
-            List of all widgets found
-        """
-        if widgets is None:
-            widgets = []
-        
-        widgets.append(widget)
-        
-        if hasattr(widget, 'children'):
-            for child in widget.children:
-                # Complex strategy: 20 examples (adequate coverage)
-                self._find_all_widgets_recursive(child, widgets)
-        
-        return widgets
-    
     @given(simple_markdown_document())
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
