@@ -225,7 +225,6 @@ class TestParagraphMarkupEnabled:
         widget = renderer.paragraph(token, None)
         
         assert isinstance(widget, Label), f"Expected Label, got {type(widget)}"
-        # Complex strategy: 20 examples (adequate coverage)
         assert widget.markup is True, "Paragraph should have markup=True"
 
     @given(paragraph_token())
@@ -456,8 +455,6 @@ class TestCodeBlockLanguageMetadata:
         
         assert widget.language_info == language, \
             f"Expected language '{language}', got '{widget.language_info}'"
-
- # Complex strategy: 20 examples (adequate coverage)
 
 
 # **Feature: markdown-label, Property 14: Block Quote Structure**
