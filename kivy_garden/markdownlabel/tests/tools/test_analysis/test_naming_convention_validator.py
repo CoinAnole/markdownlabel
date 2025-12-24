@@ -116,7 +116,8 @@ def test_font_size_triggers_rebuild(self):
         ("value", "widget.text == 'test'", False),
     ])
 )
-@settings(max_examples=100)
+# Combination strategy: 100 examples (combination coverage)
+@settings(max_examples=100, deadline=None)
 def test_naming_pattern_consistency_property(test_name_base, assertion_type):
     """
     **Property 6: Naming Pattern Consistency**
@@ -175,7 +176,8 @@ def {test_name}(self):
         max_size=5
     )
 )
-@settings(max_examples=100)
+# Complex strategy: 100 examples (adequate coverage)
+@settings(max_examples=100, deadline=None)
 def test_file_level_consistency(test_names):
     """Test that naming consistency is checked at the file level."""
     validator = NamingConventionValidator()

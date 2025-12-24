@@ -46,7 +46,6 @@ class TestAutoSizingBehavior:
         assert label.size_hint_y == 1, \
             f"Expected default size_hint_y=1, got {label.size_hint_y}"
     
-    # Complex strategy: 20 examples (adequate coverage)
     @pytest.mark.property
     @given(markdown_heading())
     # Complex strategy: 20 examples (adequate coverage)
@@ -94,7 +93,6 @@ class TestAutoSizingBehavior:
 
 class TestAutoSizeHeightTrueBehavior:
     """Property tests for auto_size_height True behavior (Property 7)."""
-     # Complex strategy: 20 examples (adequate coverage)
     
     @pytest.mark.property
     @given(simple_markdown_document())
@@ -512,7 +510,6 @@ class TestStrictLabelModeSizingBehavior:
     @pytest.mark.property
     @given(simple_markdown_document())
     # Complex strategy: 20 examples (adequate coverage)
-    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_strict_mode_ignores_auto_size_height_changes(self, markdown_text):
         """When strict_label_mode=True, auto_size_height changes are ignored."""
@@ -531,7 +528,6 @@ class TestStrictLabelModeSizingBehavior:
     @pytest.mark.property
     @given(simple_markdown_document())
     # Complex strategy: 20 examples (adequate coverage)
-    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_strict_mode_updates_value(self, markdown_text):
         """Changing strict_label_mode triggers widget rebuild."""
@@ -548,7 +544,6 @@ class TestStrictLabelModeSizingBehavior:
         assert len(label.children) >= 1, \
             "Expected at least 1 child after strict_label_mode toggle"
     
-    @pytest.mark.property
     @pytest.mark.property
     @given(simple_markdown_document())
     # Complex strategy: 20 examples (adequate coverage)

@@ -308,7 +308,7 @@ class TestStylePropertyIdentityPreservationPBT:
         line_height=st.floats(min_value=0.5, max_value=3.0, allow_nan=False,
                                allow_infinity=False)
     )
-    # Complex strategy with many parameters: 100 examples for comprehensive coverage
+    # Combination strategy: 100 examples (combination coverage)
     @settings(max_examples=100, deadline=None)
     def test_style_property_changes_preserve_widget_identities(
         self, markdown_text, base_font_size, color, halign, valign,
@@ -517,7 +517,7 @@ class TestStylePropertyPropagationPBT:
                                allow_infinity=False),
         base_direction=st.sampled_from([None, 'ltr', 'rtl', 'weak_ltr', 'weak_rtl'])
     )
-    # Complex strategy with many parameters: 100 examples for comprehensive coverage
+    # Combination strategy: 100 examples (combination coverage)
     @settings(max_examples=100, deadline=None)
     def test_style_property_values_propagate_to_descendants(
         self, markdown_text, color, halign, valign, line_height, base_direction
@@ -772,7 +772,7 @@ class TestStructurePropertyRebuildPBT:
         initial_text=simple_markdown_document(),
         new_text=simple_markdown_document()
     )
-    # Complex strategy: 100 examples for comprehensive coverage
+    # Complex strategy: 100 examples (adequate coverage)
     @settings(max_examples=100, deadline=None)
     def test_text_change_rebuilds_widget_tree_pbt(self, initial_text, new_text):
         """Property 7: Structure Property Changes Rebuild Widget Tree (text).
@@ -819,7 +819,7 @@ class TestStructurePropertyRebuildPBT:
         markdown_text=simple_markdown_document(),
         font_name=st.sampled_from(['Roboto', 'RobotoMono-Regular', 'Roboto-Bold'])
     )
-    # Complex strategy: 100 examples for comprehensive coverage
+    # Complex strategy: 100 examples (adequate coverage)
     @settings(max_examples=100, deadline=None)
     def test_font_name_change_rebuilds_widget_tree_pbt(self, markdown_text, font_name):
         """Property 7: Structure Property Changes Rebuild Widget Tree (font_name).
@@ -866,7 +866,7 @@ class TestStructurePropertyRebuildPBT:
         markdown_text=simple_markdown_document(),
         link_style=st.sampled_from(['unstyled', 'styled'])
     )
-    # Complex strategy: 100 examples for comprehensive coverage
+    # Complex strategy: 100 examples (adequate coverage)
     @settings(max_examples=100, deadline=None)
     def test_link_style_change_rebuilds_widget_tree_pbt(self, markdown_text, link_style):
         """Property 7: Structure Property Changes Rebuild Widget Tree (link_style).
@@ -941,7 +941,7 @@ class TestRootIDPreservationPBT:
                                allow_infinity=False),
         disabled=st.booleans()
     )
-    # Complex strategy with many parameters: 100 examples for comprehensive coverage
+    # Combination strategy: 100 examples (combination coverage)
     @settings(max_examples=100, deadline=None)
     def test_root_id_preserved_across_style_property_changes(
         self, markdown_text, base_font_size, color, halign, valign,
@@ -987,7 +987,7 @@ class TestRootIDPreservationPBT:
         strict_label_mode=st.booleans(),
         render_mode=st.sampled_from(['widgets', 'auto'])
     )
-    # Complex strategy with many parameters: 100 examples for comprehensive coverage
+    # Combination strategy: 100 examples (combination coverage)
     @settings(max_examples=100, deadline=None)
     def test_root_id_preserved_across_structure_property_changes(
         self, initial_text, new_text, font_name, link_style,
@@ -1044,7 +1044,7 @@ class TestRootIDPreservationPBT:
         font_name=st.sampled_from(['Roboto', 'RobotoMono-Regular', 'Roboto-Bold']),
         link_style=st.sampled_from(['unstyled', 'styled'])
     )
-    # Complex strategy with many parameters: 100 examples for comprehensive coverage
+    # Combination strategy: 100 examples (combination coverage)
     @settings(max_examples=100, deadline=None)
     def test_root_id_preserved_across_mixed_property_changes(
         self, markdown_text, base_font_size, color, font_name, link_style

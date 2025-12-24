@@ -30,6 +30,7 @@ from .test_utils import (
 class TestHelperFunctionAvailability:
     """Property tests for helper function availability (Property 7)."""
 
+    # Complex strategy: 10 examples (adequate coverage)
     @given(st.text(min_size=1, max_size=50))
     @settings(max_examples=10, deadline=None)
     def test_widget_traversal_helpers_available(self, markdown_text):
@@ -55,6 +56,7 @@ class TestHelperFunctionAvailability:
         widget_ids_no_root = collect_widget_ids(label, exclude_root=True)
         assert isinstance(widget_ids_no_root, dict)
 
+    # Combination strategy: 10 examples (combination coverage)
     @given(color_strategy, color_strategy)
     @settings(max_examples=10, deadline=None)
     def test_comparison_helpers_available(self, color1, color2):
@@ -70,6 +72,7 @@ class TestHelperFunctionAvailability:
         # Test colors_equal with identical colors
         assert colors_equal(color1, color1) is True
 
+    # Combination strategy: 10 examples (combination coverage)
     @given(text_padding_strategy, text_padding_strategy)
     @settings(max_examples=10, deadline=None)
     def test_padding_comparison_helpers_available(self, padding1, padding2):
@@ -85,6 +88,7 @@ class TestHelperFunctionAvailability:
         # Test padding_equal with identical padding
         assert padding_equal(padding1, padding1) is True
 
+    # Combination strategy: 10 examples (combination coverage)
     @given(st.floats(min_value=-1000, max_value=1000, allow_nan=False, allow_infinity=False),
            st.floats(min_value=-1000, max_value=1000, allow_nan=False, allow_infinity=False))
     @settings(max_examples=10, deadline=None)
@@ -101,6 +105,7 @@ class TestHelperFunctionAvailability:
         # Test floats_equal with identical floats
         assert floats_equal(float1, float1) is True
 
+    # Complex strategy: 5 examples (adequate coverage)
     @given(simple_markdown_document())
     @settings(max_examples=5, deadline=None)
     def test_rebuild_detection_helpers_available(self, markdown_text):
@@ -145,6 +150,7 @@ class TestHelperFunctionAvailability:
         **Validates: Requirements 2.4, 4.3**
         """
         # Test color_strategy is available and can generate examples
+        # Complex strategy: 1 example (adequate coverage)
         @given(color_strategy)
         @settings(max_examples=1, deadline=None)
         def test_color_strategy(color):
@@ -155,6 +161,7 @@ class TestHelperFunctionAvailability:
         test_color_strategy()
         
         # Test text_padding_strategy is available and can generate examples
+        # Complex strategy: 1 example (adequate coverage)
         @given(text_padding_strategy)
         @settings(max_examples=1, deadline=None)
         def test_padding_strategy(padding):
@@ -165,6 +172,7 @@ class TestHelperFunctionAvailability:
         test_padding_strategy()
         
         # Test simple_markdown_document is available and can generate examples
+        # Complex strategy: 1 example (adequate coverage)
         @given(simple_markdown_document())
         @settings(max_examples=1, deadline=None)
         def test_markdown_strategy(doc):

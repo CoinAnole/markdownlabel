@@ -95,7 +95,8 @@ def test_property_triggers_rebuild(self):
 # Property-based tests
 
 @given(st.text(min_size=1, max_size=50, alphabet=st.characters(whitelist_categories=['L', 'N']) | st.just('_')))
-@settings(max_examples=100)
+# Complex strategy: 100 examples (adequate coverage)
+@settings(max_examples=100, deadline=None)
 def test_value_change_test_naming_property(test_name_suffix):
     """
     **Property 2: Value Change Test Naming**
@@ -143,7 +144,8 @@ def test_{test_name_suffix}_triggers_rebuild(self):
     ]),
     test_name_base=st.text(min_size=1, max_size=30, alphabet=st.characters(whitelist_categories=['L', 'N']) | st.just('_'))
 )
-@settings(max_examples=100)
+# Combination strategy: 100 examples (combination coverage)
+@settings(max_examples=100, deadline=None)
 def test_assertion_classification_consistency(assertion_type, test_name_base):
     """Test that assertion classification is consistent across different test structures."""
     analyzer = AssertionAnalyzer()

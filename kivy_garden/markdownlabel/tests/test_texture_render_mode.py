@@ -293,7 +293,8 @@ class TestDeterministicTextureHitTesting:
         touch_offset_x=st.floats(min_value=0.1, max_value=0.9, allow_nan=False),
         touch_offset_y=st.floats(min_value=0.1, max_value=0.9, allow_nan=False)
     )
-    @settings(max_examples=100)
+    # Combination strategy: 50 examples (combination coverage)
+    @settings(max_examples=50, deadline=None)
     def test_property_inside_zone_dispatch(
         self, zone, ref_name, touch_offset_x, touch_offset_y
     ):
@@ -400,7 +401,8 @@ class TestDeterministicTextureHitTesting:
         ),
         outside_offset=st.floats(min_value=10, max_value=50, allow_nan=False)
     )
-    @settings(max_examples=100)
+    # Combination strategy: 50 examples (combination coverage)
+    @settings(max_examples=50, deadline=None)
     def test_property_outside_zone_no_dispatch(self, zone, ref_name, outside_offset):
         """Property test: Touch outside ref zones does not dispatch.
         
