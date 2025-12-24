@@ -203,7 +203,6 @@ class TestSpecialCharacterEscaping:
         assert output_br == input_brackets_close, \
             f"Expected {input_brackets_close} &br; escapes, got {output_br}"
         
-        # Complex strategy: 30 examples (adequate coverage)
         # Each & should become &amp;
         assert output_amp == input_ampersands, \
             f"Expected {input_ampersands} &amp; escapes, got {output_amp}"
