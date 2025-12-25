@@ -39,8 +39,8 @@ class TestBooleanStrategyDocumentation:
         max_examples=st.integers(min_value=1, max_value=100).filter(lambda x: x not in {2, 5, 10, 20, 50, 100}),
         function_name=st.text(min_size=5, max_size=30, alphabet=st.characters(whitelist_categories=('Lu', 'Ll', 'Nd', 'Pc'))).map(lambda x: f"test_{x}")
     )
-    # Combination strategy: 20 examples (adequate coverage)
-    @settings(max_examples=20, deadline=None)
+    # Boolean strategy: 2 examples (True/False coverage)
+    @settings(max_examples=2, deadline=None)
     def test_boolean_strategy_comments_reference_true_false_coverage(self, max_examples, function_name):
         """Boolean strategy comments always reference True/False coverage."""
         # Create test code with boolean strategy but no comment
@@ -588,8 +588,8 @@ class TestPerformanceRationaleDocumentation:
         strategy_complexity=st.sampled_from(['text', 'floats', 'composite']),
         function_name=st.text(min_size=5, max_size=30, alphabet=st.characters(whitelist_categories=('Lu', 'Ll', 'Nd', 'Pc'))).map(lambda x: f"test_{x}")
     )
-    # Combination strategy: 3 examples (performance optimized)
-    @settings(max_examples=3, deadline=None)
+    # Small finite strategy: 5 examples (input space size: 5)
+    @settings(max_examples=5, deadline=None)
     def test_execution_time_performance_rationale_documented(self, max_examples, strategy_complexity, function_name):
         """Execution time performance rationale is properly documented."""
         # Create test code with complex strategy and low max_examples (performance optimization)

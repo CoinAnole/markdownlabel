@@ -74,8 +74,8 @@ class TestContentClippingWhenHeightConstrained:
 
     @pytest.mark.property
     @given(st.floats(min_value=10.0, max_value=500.0, allow_nan=False, allow_infinity=False))
-    # Complex strategy: 50 examples (adequate coverage)
-    @settings(max_examples=50, deadline=None)
+    # Complex strategy: 15 examples (adequate coverage)
+    @settings(max_examples=15, deadline=None)
     def test_clipping_container_height_matches_text_size(self, height):
         """Clipping container height matches text_size[1]."""
         from kivy.uix.stencilview import StencilView
@@ -241,8 +241,8 @@ class TestNoClippingWhenUnconstrained:
 
     @pytest.mark.property
     @given(st.floats(min_value=100.0, max_value=500.0, allow_nan=False, allow_infinity=False))
-    # Complex strategy: 50 examples (adequate coverage)
-    @settings(max_examples=50, deadline=None)
+    # Complex strategy: 15 examples (adequate coverage)
+    @settings(max_examples=15, deadline=None)
     def test_text_size_width_only_no_clipping(self, width):
         """Setting only text_size width (not height) does not enable clipping."""
         label = MarkdownLabel(

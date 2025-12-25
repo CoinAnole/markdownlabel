@@ -135,8 +135,8 @@ class TestNoOpPropertiesAcceptance:
         assert label.markup == value
     
     @given(st.booleans(), st.booleans(), st.booleans(), st.booleans(), st.booleans())
-    # Combination strategy: 2 examples (combination coverage)
-    @settings(max_examples=2, deadline=None)
+    # Small finite strategy: 32 examples (input space size: 32)
+    @settings(max_examples=32, deadline=None)
     def test_all_noop_properties_together(self, bold, italic, underline, strikethrough, markup):
         """Setting all no-op properties together does not raise an exception."""
         label = MarkdownLabel(
@@ -155,8 +155,8 @@ class TestNoOpPropertiesAcceptance:
     
     @given(st.booleans(), st.booleans(), st.booleans(), st.booleans(), st.booleans(),
            simple_markdown_document())
-    # Combination strategy: 2 examples (combination coverage)
-    @settings(max_examples=2, deadline=None)
+    # Combination strategy: 50 examples (combination coverage)
+    @settings(max_examples=50, deadline=None)
     def test_noop_properties_do_not_affect_rendering(self, bold, italic, underline,
                                                       strikethrough, markup, markdown_text):
         """No-op properties do not affect the rendered output."""

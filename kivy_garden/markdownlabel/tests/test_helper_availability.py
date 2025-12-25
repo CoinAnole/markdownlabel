@@ -56,7 +56,7 @@ class TestHelperFunctionAvailability:
         widget_ids_no_root = collect_widget_ids(label, exclude_root=True)
         assert isinstance(widget_ids_no_root, dict)
 
-    # Combination strategy: 10 examples (combination coverage)
+    # Complex strategy: 10 examples (adequate coverage)
     @given(color_strategy, color_strategy)
     @settings(max_examples=10, deadline=None)
     def test_comparison_helpers_available(self, color1, color2):
@@ -72,7 +72,7 @@ class TestHelperFunctionAvailability:
         # Test colors_equal with identical colors
         assert colors_equal(color1, color1) is True
 
-    # Combination strategy: 10 examples (combination coverage)
+    # Complex strategy: 10 examples (adequate coverage)
     @given(text_padding_strategy, text_padding_strategy)
     @settings(max_examples=10, deadline=None)
     def test_padding_comparison_helpers_available(self, padding1, padding2):
@@ -88,7 +88,7 @@ class TestHelperFunctionAvailability:
         # Test padding_equal with identical padding
         assert padding_equal(padding1, padding1) is True
 
-    # Combination strategy: 10 examples (combination coverage)
+    # Complex strategy: 10 examples (adequate coverage)
     @given(st.floats(min_value=-1000, max_value=1000, allow_nan=False, allow_infinity=False),
            st.floats(min_value=-1000, max_value=1000, allow_nan=False, allow_infinity=False))
     @settings(max_examples=10, deadline=None)
@@ -143,7 +143,7 @@ class TestHelperFunctionAvailability:
         assert touch.y == 200
         assert touch.pos == (100, 200)
 
-    # Complex strategy: 1 example (adequate coverage)
+    # Complex strategy: 1 example (strategy availability verification only)
     @given(color_strategy)
     @settings(max_examples=1, deadline=None)
     def test_color_strategy_available(self, color):
@@ -156,7 +156,7 @@ class TestHelperFunctionAvailability:
         assert len(color) == 4
         assert all(isinstance(c, float) for c in color)
     
-    # Complex strategy: 1 example (adequate coverage)
+    # Complex strategy: 1 example (strategy availability verification only)
     @given(text_padding_strategy)
     @settings(max_examples=1, deadline=None)
     def test_text_padding_strategy_available(self, padding):
@@ -169,7 +169,7 @@ class TestHelperFunctionAvailability:
         assert len(padding) == 4
         assert all(isinstance(p, float) for p in padding)
     
-    # Complex strategy: 1 example (adequate coverage)
+    # Complex strategy: 1 example (strategy availability verification only)
     @given(simple_markdown_document())
     @settings(max_examples=1, deadline=None)
     def test_simple_markdown_document_strategy_available(self, doc):

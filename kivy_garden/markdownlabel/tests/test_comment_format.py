@@ -535,7 +535,7 @@ class TestMachineReadableFormat:
         max_examples=st.integers(min_value=1, max_value=1000),
         rationale_base=st.sampled_from(['adequate coverage', 'True/False coverage', 'input space size', 'combination coverage', 'performance optimized'])
     )
-    # Complex strategy: 30 examples (adequate coverage)
+    # Combination strategy: 30 examples (performance optimized)
     @settings(max_examples=30, deadline=None)
     def test_standardized_comments_are_machine_parseable(self, strategy_type, max_examples, rationale_base):
         """Standardized comments can be parsed by automated tools to extract information."""

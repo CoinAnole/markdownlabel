@@ -132,7 +132,7 @@ class TestShorteningPropertyForwarding:
                 f"Expected shorten_from={shorten_from_value}, got {lbl.shorten_from}"
 
     @given(st.text(min_size=0, max_size=5, alphabet='abc '))
-    # Combination strategy: 30 examples (adequate coverage)
+    # Complex strategy: 30 examples (adequate coverage)
     @settings(max_examples=30, deadline=None)
     def test_split_str_forwarded_to_paragraph(self, split_str_value):
         """split_str property is forwarded to paragraph Labels."""
@@ -146,7 +146,7 @@ class TestShorteningPropertyForwarding:
                 f"Expected split_str={split_str_value!r}, got {lbl.split_str!r}"
 
     @given(st.text(min_size=0, max_size=5, alphabet='abc '))
-    # Combination strategy: 30 examples (adequate coverage)
+    # Complex strategy: 30 examples (adequate coverage)
     @settings(max_examples=30, deadline=None)
     def test_split_str_forwarded_to_heading(self, split_str_value):
         """split_str property is forwarded to heading Labels."""
@@ -323,7 +323,7 @@ Paragraph text
                 f"Expected max_lines={max_lines_val}, got {lbl.max_lines}"
     
     @given(st.booleans(), st.booleans())
-    # Combination strategy: 2 examples (combination coverage)
+    # Boolean strategy: 2 examples (True/False coverage)
     @settings(max_examples=2, deadline=None)
     def test_shorten_change_updates_value(self, shorten1, shorten2):
         """Changing shorten triggers widget rebuild with new value."""
@@ -403,7 +403,7 @@ class TestCoordinateTranslation:
         )),
         min_size=2, max_size=4
     ))
-    # Combination strategy: 20 examples (adequate coverage)
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_multiple_links_produce_ref_markup(self, link_texts):
         """Multiple links in different paragraphs produce ref markup.
@@ -574,7 +574,7 @@ class TestCoordinateTranslation:
         whitelist_categories=['L', 'N'],
         blacklist_characters='[]()&\n\r'
     )))
-    # Combination strategy: 20 examples (adequate coverage)
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_ref_markup_updates_when_text_changes(self, link_text1, link_text2):
         """ref markup updates correctly when text property changes."""
@@ -612,7 +612,7 @@ class TestCoordinateTranslation:
            st.floats(min_value=0, max_value=100),
            st.floats(min_value=0, max_value=100),
            st.floats(min_value=0, max_value=100))
-    # Combination strategy: 20 examples (adequate coverage)
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_coordinate_translation_math(self, x1, y1, x2, y2):
         """Test that coordinate translation math is correct.
@@ -642,7 +642,7 @@ class TestCoordinateTranslation:
     
     @given(st.floats(min_value=0, max_value=100),
            st.floats(min_value=0, max_value=100))
-    # Combination strategy: 20 examples (adequate coverage)
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_anchor_translation_math(self, x, y):
         """Test that anchor coordinate translation math is correct.
@@ -954,8 +954,7 @@ class TestDeterministicRefsTranslation:
         st.floats(min_value=31, max_value=100, allow_nan=False, allow_infinity=False),
         st.floats(min_value=11, max_value=50, allow_nan=False, allow_infinity=False),
     )
-    # **Feature: headless-ci-testing, Property 3: Refs Coordinate Translation Math**
-    # Complex strategy with 12 float parameters: 100 examples for adequate coverage
+    # Complex strategy: 100 examples (adequate coverage for 12-parameter float strategy)
     @settings(max_examples=100, deadline=None)
     def test_property_refs_coordinate_translation_math(
         self, container_x, container_y, label_x, label_y,

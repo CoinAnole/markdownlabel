@@ -86,7 +86,7 @@ class TestHeadingFontHierarchy:
         assert widget.markup is True, "Heading should have markup=True"
     
     @given(st.integers(min_value=1, max_value=6), st.floats(min_value=10, max_value=30))
-    # Complex strategy: 10 examples (adequate coverage)
+    # Combination strategy: 10 examples (performance optimized)
     @settings(max_examples=10, deadline=None)
     def test_heading_font_size_scales_with_base(self, level, base_size):
         """Heading font size scales proportionally with base_font_size."""

@@ -213,7 +213,7 @@ class TestStyleOnlyPropertyUpdates:
                 f"Expected valign {new_valign}, got {child_label.valign}"
 
     @given(st.floats(min_value=0.5, max_value=3.0, allow_nan=False, allow_infinity=False))
-    # Combination strategy: 20 examples (adequate coverage)
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_line_height_change_preserves_widget_tree(self, new_line_height):
         """Changing line_height preserves widget tree structure (widget identities).
@@ -239,7 +239,7 @@ class TestStyleOnlyPropertyUpdates:
             "Widget tree changed after line_height update"
 
     @given(st.floats(min_value=0.5, max_value=3.0, allow_nan=False, allow_infinity=False))
-    # Combination strategy: 20 examples (adequate coverage)
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_line_height_change_updates_descendant_labels(self, new_line_height):
         """Changing line_height updates all descendant Label widgets.
@@ -393,7 +393,7 @@ class TestStyleOnlyPropertyUpdates:
             st.floats(min_value=0, max_value=1, allow_nan=False, allow_infinity=False)
         )
     )
-    # Combination strategy: 20 examples (adequate coverage)
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_disabled_color_switching(self, normal_color, disabled_color):
         """Disabled state correctly switches between color and disabled_color.

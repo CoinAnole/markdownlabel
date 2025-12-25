@@ -22,8 +22,8 @@ class TestStrategyClassification:
     
     # **Feature: test-performance-optimization, Property 1: Boolean tests use exactly 2 examples**
     @given(st.just('st.booleans()'))
-    # Small finite strategy: 1 examples (input space size: 1)
-    @settings(max_examples=1, deadline=None)
+    # Boolean strategy: 2 examples (True/False coverage)
+    @settings(max_examples=2, deadline=None)
     def test_boolean_strategy_classification(self, strategy_code):
         """Boolean strategies are correctly classified with input space size 2.
         
@@ -51,7 +51,7 @@ class TestStrategyClassification:
         assert len(analysis.components) == 1
     
     @given(st.lists(st.text(min_size=1, max_size=3, alphabet='abc'), min_size=1, max_size=10))
-    # Medium finite strategy: 10 examples (adequate finite coverage)
+    # Complex strategy: 10 examples (adequate coverage)
     @settings(max_examples=10, deadline=None)
     def test_small_sampled_from_classification(self, items):
         """Small sampled_from lists are classified as SMALL_FINITE with correct size."""

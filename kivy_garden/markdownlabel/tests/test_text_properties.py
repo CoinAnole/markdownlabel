@@ -159,7 +159,7 @@ class TestTextSizeHeightForwarding:
     @pytest.mark.property
     @given(st.floats(min_value=50, max_value=500, allow_nan=False, allow_infinity=False),
            st.sampled_from(['top', 'middle', 'bottom']))
-    # Small finite strategy: 3 examples (input space size: 3)
+    # Combination strategy: 3 examples (combination coverage)
     @settings(max_examples=3, deadline=None)
     def test_valign_forwarded_with_height(self, height, valign):
         """valign is forwarded to Labels when text_size height is set."""

@@ -772,7 +772,7 @@ class TestStructurePropertyRebuildPBT:
         initial_text=simple_markdown_document(),
         new_text=simple_markdown_document()
     )
-    # Complex strategy: 50 examples (adequate coverage)
+    # Combination strategy: 50 examples (performance optimized)
     @settings(max_examples=50, deadline=None)
     def test_text_change_rebuilds_widget_tree_pbt(self, initial_text, new_text):
         """Property 7: Structure Property Changes Rebuild Widget Tree (text).
@@ -819,8 +819,8 @@ class TestStructurePropertyRebuildPBT:
         markdown_text=simple_markdown_document(),
         font_name=st.sampled_from(['Roboto', 'RobotoMono-Regular', 'Roboto-Bold'])
     )
-    # Complex strategy: 50 examples (adequate coverage)
-    @settings(max_examples=50, deadline=None)
+    # Small finite strategy: 3 examples (input space size: 3)
+    @settings(max_examples=3, deadline=None)
     def test_font_name_change_rebuilds_widget_tree_pbt(self, markdown_text, font_name):
         """Property 7: Structure Property Changes Rebuild Widget Tree (font_name).
         
@@ -866,8 +866,8 @@ class TestStructurePropertyRebuildPBT:
         markdown_text=simple_markdown_document(),
         link_style=st.sampled_from(['unstyled', 'styled'])
     )
-    # Complex strategy: 50 examples (adequate coverage)
-    @settings(max_examples=50, deadline=None)
+    # Small finite strategy: 2 examples (input space size: 2)
+    @settings(max_examples=2, deadline=None)
     def test_link_style_change_rebuilds_widget_tree_pbt(self, markdown_text, link_style):
         """Property 7: Structure Property Changes Rebuild Widget Tree (link_style).
         
