@@ -11,7 +11,6 @@ from hypothesis import given, strategies as st, settings, assume
 
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label import Label
-from kivy.uix.widget import Widget
 from kivy.uix.gridlayout import GridLayout
 
 from kivy_garden.markdownlabel import MarkdownLabel
@@ -317,7 +316,7 @@ class TestStyleOnlyPropertyUpdates:
     def test_font_name_structure_property_rebuilds_tree(self):
         """Changing font_name (structure property) rebuilds the widget tree.
         
-        **Feature: label-compatibility-phase2, Property 7: Efficient Style Updates**
+        **Feature: label-compatibility-phase2, Property 7: Structure Property Rebuilds**
         **Validates: Requirements 7.3**
         """
         # Create label with some content

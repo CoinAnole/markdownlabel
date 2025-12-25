@@ -102,7 +102,6 @@ class TestTextSizeForwarding:
 # **Validates: Requirements 1.1, 1.2**
 
 class TestTextSizeHeightForwarding:
-    # Complex strategy: 50 examples (adequate coverage)
     """Property tests for text_size height forwarding (Property 1)."""
     
     @pytest.mark.property

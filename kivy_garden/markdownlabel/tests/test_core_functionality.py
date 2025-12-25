@@ -100,7 +100,6 @@ class TestMarkdownToWidgetTreeGeneration:
 # **Validates: Requirements 1.2**
 
 class TestMarkdownTextPropertyUpdates:
-    # Complex strategy: 20 examples (adequate coverage)
     """Property tests for reactive text updates (Property 2)."""
     
     @given(markdown_heading(), markdown_paragraph())
@@ -239,7 +238,6 @@ class TestMarkdownLinkRendering:
                 if f'[ref={url}]' in child.text:
                     assert '[/ref]' in child.text, \
                         f"Missing closing [/ref] tag in: {child.text}"
-                    # Complex strategy: 20 examples (adequate coverage)
                     return
         
         pytest.fail(f"Expected to find [ref={url}] in markup for: {markdown!r}")

@@ -10,7 +10,6 @@ from hypothesis import given, strategies as st, settings, assume
 
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label import Label
-from kivy.uix.widget import Widget
 from kivy.uix.gridlayout import GridLayout
 
 from kivy_garden.markdownlabel import MarkdownLabel

@@ -146,7 +146,6 @@ class TestSharedStrategyAvailability:
         # Verify fonts can be used with MarkdownLabel
         label = MarkdownLabel(text="Test", font_name=KIVY_FONTS[0])
         labels = find_labels_recursive(label)
-        # Complex strategy: 30 examples (adequate coverage)
         if labels:
             assert labels[0].font_name == KIVY_FONTS[0], "Font should be applied to labels"
 

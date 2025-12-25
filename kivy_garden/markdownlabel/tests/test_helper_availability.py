@@ -143,43 +143,43 @@ class TestHelperFunctionAvailability:
         assert touch.y == 200
         assert touch.pos == (100, 200)
 
-    def test_hypothesis_strategies_available(self):
-        """Hypothesis strategies should be available and functional.
+    # Complex strategy: 1 example (adequate coverage)
+    @given(color_strategy)
+    @settings(max_examples=1, deadline=None)
+    def test_color_strategy_available(self, color):
+        """color_strategy is available and generates valid colors.
         
         **Feature: test-suite-refactoring, Property 7: Helper Function Availability**
         **Validates: Requirements 2.4, 4.3**
         """
-        # Test color_strategy is available and can generate examples
-        # Complex strategy: 1 example (adequate coverage)
-        @given(color_strategy)
-        @settings(max_examples=1, deadline=None)
-        def test_color_strategy(color):
-            assert isinstance(color, list)
-            assert len(color) == 4
-            assert all(isinstance(c, float) for c in color)
+        assert isinstance(color, list)
+        assert len(color) == 4
+        assert all(isinstance(c, float) for c in color)
+    
+    # Complex strategy: 1 example (adequate coverage)
+    @given(text_padding_strategy)
+    @settings(max_examples=1, deadline=None)
+    def test_text_padding_strategy_available(self, padding):
+        """text_padding_strategy is available and generates valid padding.
         
-        test_color_strategy()
+        **Feature: test-suite-refactoring, Property 7: Helper Function Availability**
+        **Validates: Requirements 2.4, 4.3**
+        """
+        assert isinstance(padding, list)
+        assert len(padding) == 4
+        assert all(isinstance(p, float) for p in padding)
+    
+    # Complex strategy: 1 example (adequate coverage)
+    @given(simple_markdown_document())
+    @settings(max_examples=1, deadline=None)
+    def test_simple_markdown_document_strategy_available(self, doc):
+        """simple_markdown_document strategy is available and generates valid documents.
         
-        # Test text_padding_strategy is available and can generate examples
-        # Complex strategy: 1 example (adequate coverage)
-        @given(text_padding_strategy)
-        @settings(max_examples=1, deadline=None)
-        def test_padding_strategy(padding):
-            assert isinstance(padding, list)
-            assert len(padding) == 4
-            assert all(isinstance(p, float) for p in padding)
-        
-        test_padding_strategy()
-        
-        # Test simple_markdown_document is available and can generate examples
-        # Complex strategy: 1 example (adequate coverage)
-        @given(simple_markdown_document())
-        @settings(max_examples=1, deadline=None)
-        def test_markdown_strategy(doc):
-            assert isinstance(doc, str)
-            assert len(doc) > 0
-        
-        test_markdown_strategy()
+        **Feature: test-suite-refactoring, Property 7: Helper Function Availability**
+        **Validates: Requirements 2.4, 4.3**
+        """
+        assert isinstance(doc, str)
+        assert len(doc) > 0
 
 
 @pytest.mark.test_tests
