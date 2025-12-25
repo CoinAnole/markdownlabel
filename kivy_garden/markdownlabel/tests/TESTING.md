@@ -289,16 +289,12 @@ Use property-based tests for:
 from hypothesis import given, strategies as st, settings
 
 class TestPropertyName:
-    """Property tests for [specific behavior] (Property N)."""
+    """Property tests for [specific behavior]."""
     
     @given(st.text(min_size=1, max_size=100))
     @settings(max_examples=20, deadline=None)  # Adjust based on complexity
     def test_property_description(self, input_value):
-        """Test that [property] holds for all valid inputs.
-        
-        **Feature: feature-name, Property N: Property Description**
-        **Validates: Requirements X.Y**
-        """
+        """Test that [property] holds for all valid inputs."""
         # Test implementation
         assert property_holds(input_value)
 ```
@@ -478,12 +474,8 @@ from .test_utils import (
 )
 
 
-# **Feature: feature-name, Property N: Property Description**
-# *For any* [universal quantification], the system SHALL [behavior].
-# **Validates: Requirements X.Y**
-
 class TestDescriptiveClassName:
-    """Property tests for [specific behavior] (Property N)."""
+    """Property tests for [specific behavior]."""
     
     def test_specific_example(self):
         """Test [specific behavior] with concrete example."""
@@ -493,11 +485,7 @@ class TestDescriptiveClassName:
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_property_holds_universally(self, input_text):
-        """Test that [property] holds for all valid inputs.
-        
-        **Feature: feature-name, Property N: Property Description**
-        **Validates: Requirements X.Y**
-        """
+        """Test that [property] holds for all valid inputs."""
         # Property test implementation
 ```
 
@@ -670,7 +658,7 @@ jobs:
 
 ```python
 class TestFontSizeImmediateUpdates:
-    """Property tests for font size immediate updates (Property 3)."""
+    """Property tests for font size immediate updates."""
     
     def test_font_size_updates_single_label(self):
         """Test font_size updates immediately for single label."""
@@ -690,11 +678,7 @@ class TestFontSizeImmediateUpdates:
     # Combination strategy: 50 examples (combination coverage)
     @settings(max_examples=50, deadline=None)
     def test_font_size_updates_preserve_scale_factors(self, initial_size, new_size):
-        """Test that font size updates preserve heading scale factors.
-        
-        **Feature: label-compatibility, Property 3: Font size immediate update**
-        **Validates: Requirements 2.1**
-        """
+        """Test that font size updates preserve heading scale factors."""
         assume(abs(initial_size - new_size) > 1.0)
         
         label = MarkdownLabel(text="# Heading", base_font_size=initial_size)
