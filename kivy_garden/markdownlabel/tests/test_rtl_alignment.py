@@ -5,8 +5,6 @@ Tests verify that the MarkdownLabel correctly handles RTL text direction
 and auto alignment behavior.
 """
 
-import os
-
 import pytest
 from hypothesis import given, strategies as st, settings, assume
 

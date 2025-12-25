@@ -6,8 +6,6 @@ are correctly forwarded to child Label widgets and that font scaling
 behavior works correctly for headings.
 """
 
-import os
-
 import pytest
 from hypothesis import given, strategies as st, settings, assume
 

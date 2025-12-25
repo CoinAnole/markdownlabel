@@ -8,9 +8,6 @@ and strict label mode sizing.
 import pytest
 from hypothesis import given, strategies as st, settings, assume
 
-from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.label import Label
-
 from kivy_garden.markdownlabel import MarkdownLabel
 from .test_utils import (
     simple_markdown_document, markdown_heading, markdown_paragraph,
