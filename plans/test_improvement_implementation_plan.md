@@ -1,611 +1,421 @@
 # Test Suite Improvement Implementation Plan
 
-## Executive Summary
-
-This plan orchestrates the implementation of 150+ deviations identified in `test_file_deviations.md` across 29 test files. The deviations are organized into 9 major categories with varying priority levels.
-
-## Revised Approach: Small Batch Processing
-
-Instead of tackling all files at once, the work is organized into **small batches of 3-5 files per phase**. This approach provides:
-- ✅ More manageable work units
-- ✅ Faster feedback cycles
-- ✅ Easier testing and validation
-- ✅ Reduced risk of large-scale failures
-- ✅ Better progress tracking
-
-## Issue Categories Overview
-
-| Category | Count | Priority | Impact |
-|----------|-------|----------|--------|
-| Strategy Classification Errors | 45+ | HIGH | Test performance & correctness |
-| Test Naming Inconsistencies | 15+ | HIGH | Test clarity & maintainability |
-| Helper Function Duplication | 20+ | MEDIUM | Code maintainability |
-| sys.path Modifications | 10+ | MEDIUM | Code quality |
-| Import Placement Issues | 5+ | MEDIUM | Code organization |
-| Missing Docstrings | 10+ | LOW | Documentation |
-| Stray Comments | 5+ | LOW | Code cleanliness |
-| Unused Imports | 3+ | LOW | Code cleanliness |
-| Documentation Inconsistencies | 10+ | MEDIUM | Test accuracy |
-
-## Implementation Strategy: Batch Processing
-
-### Overview
-
-The work is organized into **12 small batches** of 3-5 files each. Each batch focuses on a specific category of fixes and can be completed independently with minimal risk.
-
-### Batch Structure
-
-Each batch follows this pattern:
-1. **Pre-batch validation**: Run tests for affected files
-2. **Apply fixes**: Make changes to 3-5 files
-3. **Post-batch validation**: Re-run tests to verify no regressions
-4. **Commit**: Commit batch if tests pass
-
-### Batch Schedule
-
-#### Batch 1: Helper Consolidation - Core Test Files
-**Files**: test_clipping_behavior.py, test_font_properties.py, test_texture_render_mode.py
-**Issues**: 8 helper functions to consolidate
-**Priority**: HIGH (prerequisite for other work)
-**Estimated Time**: Small batch
-
-**Tasks**:
-- [ ] test_clipping_behavior.py: Move _has_clipping_container to test_utils.py (2 duplicates)
-- [ ] test_font_properties.py: Move _is_code_label and _collect_widget_ids to test_utils.py
-- [ ] test_texture_render_mode.py: Move find_images to test_utils.py
-
-#### Batch 2: Helper Consolidation - Advanced Test Files
-**Files**: test_shortening_and_coordinate.py, tools/test_analysis/test_coverage_preservation.py
-**Issues**: 4 helper functions to consolidate
-**Priority**: HIGH (prerequisite for other work)
-**Estimated Time**: Small batch
-
-**Tasks**:
-- [ ] test_shortening_and_coordinate.py: Move _find_labels_with_refs, _find_labels_with_ref_markup, _get_widget_offset to test_utils.py
-- [ ] tools/test_analysis/test_coverage_preservation.py: Move _simulate_coverage_measurement to test_utils.py
-
-#### Batch 3: Strategy Consolidation - Renderer Tests
-**Files**: test_kivy_renderer.py, test_padding_properties.py, test_text_properties.py
-**Issues**: 14 custom strategies to consolidate
-**Priority**: HIGH (prerequisite for other work)
-**Estimated Time**: Medium batch
-
-**Tasks**:
-- [ ] test_kivy_renderer.py: Move heading_token, paragraph_token, list_item_token, list_token, code_block_token, block_quote_token, image_token, table_cell_token, table_row_token, table_token to test_utils.py
-- [ ] test_padding_properties.py: Move padding_single, padding_two, padding_four to test_utils.py
-- [ ] test_text_properties.py: Move unicode_errors_strategy to test_utils.py
-
-#### Batch 4: Strategy Consolidation - Analysis Tools
-**Files**: tools/test_analysis/test_duplicate_detector.py, tools/test_analysis/test_test_file_parser.py
-**Issues**: 2 custom strategies to consolidate
-**Priority**: HIGH (prerequisite for other work)
-**Estimated Time**: Small batch
-
-**Tasks**:
-- [ ] tools/test_analysis/test_duplicate_detector.py: Move duplicate_helper_functions to test_utils.py
-- [ ] tools/test_analysis/test_test_file_parser.py: Move rebuild_test_file_strategy to test_utils.py
-
-#### Batch 5: Strategy Classification Fixes - Core Tests
-**Files**: test_comment_standardizer.py, test_documentation_compliance.py, test_file_analyzer.py
-**Issues**: 8 strategy classification errors
-**Priority**: HIGH (test correctness & performance)
-**Estimated Time**: Medium batch
-
-**Tasks**:
-- [ ] test_comment_standardizer.py: Fix strategy comments (lines 40, 304, 372, 595, 660) - Complex → Combination
-- [ ] test_documentation_compliance.py: Fix strategy classification (line 123) - Medium finite → Complex
-- [ ] test_file_analyzer.py: Fix strategy type casing and classifications (lines 298, 473, 474, 501)
-
-#### Batch 6: Strategy Classification Fixes - Performance Tests
-**Files**: test_performance.py, test_serialization.py, test_shortening_and_coordinate.py
-**Issues**: 9 strategy classification errors
-**Priority**: HIGH (test correctness & performance)
-**Estimated Time**: Medium batch
-
-**Tasks**:
-- [ ] test_performance.py: Fix strategy classifications (lines 63, 94, 341, 383) - Complex → Combination
-- [ ] test_serialization.py: Fix strategy classification (line 504) - Complex → Combination
-- [ ] test_shortening_and_coordinate.py: Fix strategy classifications and max_examples (lines 615, 656, 688, 983, 1324)
-
-#### Batch 7: Strategy Classification Fixes - Rebuild & Analysis
-**Files**: test_rebuild_semantics.py, tools/test_analysis/test_assertion_analyzer.py, tools/test_analysis/test_naming_convention_validator.py
-**Issues**: 10 strategy classification errors
-**Priority**: HIGH (test correctness & performance)
-**Estimated Time**: Medium batch
-
-**Tasks**:
-- [ ] test_rebuild_semantics.py: Fix max_examples values (lines 311, 520, 775, 822, 869, 944, 990, 1047) - 100 → 50
-- [ ] tools/test_analysis/test_assertion_analyzer.py: Fix max_examples values (lines 97, 137) - 100 → 20-50
-- [ ] tools/test_analysis/test_naming_convention_validator.py: Fix max_examples values (lines 119, 179) - 100 → 20-50
-
-#### Batch 8: Test Naming & Documentation - Advanced Compatibility
-**Files**: test_advanced_compatibility.py, test_color_properties.py
-**Issues**: 11 naming and documentation issues
-**Priority**: HIGH (test clarity & maintainability)
-**Estimated Time**: Medium batch
-
-**Tasks**:
-- [ ] test_advanced_compatibility.py: Rename tests and fix docstrings (lines 183, 207, 390, 719, 751, 782, 812, 842, 911, 941)
-- [ ] test_color_properties.py: Fix docstring (line 83)
-
-#### Batch 9: Test Naming & Documentation - Font & Text Properties
-**Files**: test_font_properties.py, test_text_properties.py
-**Issues**: 5 naming and documentation issues
-**Priority**: HIGH (test clarity & maintainability)
-**Estimated Time**: Small batch
-
-**Tasks**:
-- [ ] test_font_properties.py: Rename tests (lines 124, 232) and add verification (line 927)
-- [ ] test_text_properties.py: Rename tests and fix docstrings (lines 56, 446, 582)
-
-#### Batch 10: sys.path Removal - Comment & Standardizer Tests
-**Files**: test_comment_format.py, test_comment_standardizer.py
-**Issues**: 8 sys.path modifications to remove
-**Priority**: MEDIUM (code quality)
-**Estimated Time**: Medium batch
-
-**Tasks**:
-- [ ] test_comment_format.py: Remove sys.path modifications (lines 13, 212, 369, 532) and fix import (line 730)
-- [ ] test_comment_standardizer.py: Remove sys.path modifications (lines 15, 857) and fix import (line 861)
-
-#### Batch 11: sys.path Removal - Analysis Tools
-**Files**: test_file_analyzer.py, test_strategy_classification.py, tools/test_analysis/test_assertion_analyzer.py, tools/test_analysis/test_code_duplication_minimization.py, tools/test_analysis/test_coverage_preservation.py, tools/test_analysis/test_duplicate_detector.py, tools/test_analysis/test_naming_convention_validator.py, tools/test_analysis/test_test_file_parser.py
-**Issues**: 10 sys.path modifications to remove
-**Priority**: MEDIUM (code quality)
-**Estimated Time**: Medium batch
-
-**Tasks**:
-- [ ] test_file_analyzer.py: Remove sys.path modification (line 16) and fix import (line 303)
-- [ ] test_strategy_classification.py: Remove sys.path modification (lines 10-12)
-- [ ] tools/test_analysis/test_assertion_analyzer.py: Remove sys.path modification (lines 18-21)
-- [ ] tools/test_analysis/test_code_duplication_minimization.py: Remove sys.path modification (lines 16-19)
-- [ ] tools/test_analysis/test_coverage_preservation.py: Remove sys.path modification (lines 19-21)
-- [ ] tools/test_analysis/test_duplicate_detector.py: Remove sys.path modification (lines 15-18)
-- [ ] tools/test_analysis/test_naming_convention_validator.py: Remove sys.path modification (lines 17-20)
-- [ ] tools/test_analysis/test_test_file_parser.py: Remove sys.path modification (lines 15-18)
-
-#### Batch 12: Code Cleanup - Low Priority Fixes
-**Files**: test_core_functionality.py, test_helper_availability.py, test_performance.py, test_shared_infrastructure.py, test_sizing_behavior.py, test_texture_sizing.py, test_text_properties.py
-**Issues**: 15+ low-priority issues
-**Priority**: LOW (code cleanliness)
-**Estimated Time**: Medium batch
-
-**Tasks**:
-- [ ] test_core_functionality.py: Remove stray comments (lines 103, 242)
-- [ ] test_helper_availability.py: Refactor nested property tests (lines 146-182)
-- [ ] test_performance.py: Remove unused imports (lines 12-15) and fix docstring (line 317)
-- [ ] test_shared_infrastructure.py: Remove stray comment (line 149)
-- [ ] test_sizing_behavior.py: Remove unused imports (lines 11-14)
-- [ ] test_texture_sizing.py: Remove unused imports (lines 11-14)
-- [ ] test_text_properties.py: Remove stray comment (line 108)
-
-#### Batch 13: Docstrings - Missing Documentation
-**Files**: test_comment_standardizer.py
-**Issues**: 12 missing docstrings
-**Priority**: LOW (documentation)
-**Estimated Time**: Small batch
-
-**Tasks**:
-- [ ] test_comment_standardizer.py: Add docstrings (lines 91, 109, 170, 198, 238, 418, 469, 504, 536, 708, 773, 802)
-- [ ] test_comment_standardizer.py: Remove or properly implement test (line 987)
-- [ ] test_padding_properties.py: Remove stray comment (line 78)
-
-## Detailed Task Breakdown by File
-
-### test_advanced_compatibility.py
-- [ ] Rename test_font_kerning_change_updates_value → test_font_kerning_change_triggers_rebuild (line 183)
-- [ ] Rename test_font_blended_change_updates_value → test_font_blended_change_triggers_rebuild (line 207)
-- [ ] Rename test_disabled_change_updates_value → test_disabled_change_triggers_rebuild (line 390)
-- [ ] Fix docstring for test_halign_updates_value (line 719)
-- [ ] Fix docstring for test_valign_updates_value (line 751)
-- [ ] Fix docstring for test_unicode_errors_updates_value (line 782)
-- [ ] Fix docstring for test_strip_updates_value (line 812)
-- [ ] Fix docstring for test_disabled_color_updates_value (line 842)
-- [ ] Fix docstring for test_font_kerning_updates_value (line 911)
-- [ ] Fix docstring for test_font_blended_updates_value (line 941)
-
-### test_clipping_behavior.py
-- [ ] Move _has_clipping_container to test_utils.py (lines 19-33, 157-171)
-
-### test_color_properties.py
-- [ ] Fix docstring for test_color_change_updates_value (line 83)
-
-### test_comment_format.py
-- [ ] Remove sys.path modification (line 13)
-- [ ] Remove redundant sys.path modification in TestCustomValueDocumentation.setup_method (line 212)
-- [ ] Remove redundant sys.path modification in TestStrategyTypeConsistency.setup_method (line 369)
-- [ ] Remove redundant sys.path modification in TestMachineReadableFormat.setup_method (line 532)
-- [ ] Move import from test method to module level (line 730)
-
-### test_comment_standardizer.py
-- [ ] Remove sys.path modification (line 15)
-- [ ] Fix strategy comment: Complex → Combination (line 40)
-- [ ] Add docstring for test_boolean_strategy_comment_generation_consistency (line 91)
-- [ ] Add docstring for test_boolean_strategy_detection_accuracy (line 109)
-- [ ] Add docstring for test_boolean_strategy_rationale_templates (line 170)
-- [ ] Add docstring for test_boolean_strategy_edge_cases (line 198)
-- [ ] Add docstring for test_boolean_strategy_integration_with_analysis (line 238)
-- [ ] Fix strategy comment: Complex → Combination (line 304)
-- [ ] Fix strategy comment: Complex → Combination (line 372)
-- [ ] Add docstring for test_finite_strategy_size_classification (line 418)
-- [ ] Add docstring for test_finite_strategy_rationale_consistency (line 469)
-- [ ] Add docstring for test_safety_checks_and_validation (line 504)
-- [ ] Add docstring for test_error_handling_in_backup_operations (line 536)
-- [ ] Fix strategy comment: Complex → Combination (line 595)
-- [ ] Fix strategy comment: Complex → Combination (line 660)
-- [ ] Add docstring for test_performance_rationale_integration_with_standardizer (line 708)
-- [ ] Add docstring for test_performance_rationale_enhancement_of_existing_comments (line 773)
-- [ ] Add docstring for test_performance_pattern_analysis_across_files (line 802)
-- [ ] Remove redundant sys.path modification (line 857)
-- [ ] Move import from setup_method to module level (line 861)
-- [ ] Remove or properly implement test_backup_and_rollback_functionality (line 987)
-
-### test_core_functionality.py
-- [ ] Remove stray comment (line 103)
-- [ ] Remove stray comment (line 242)
-
-### test_documentation_compliance.py
-- [ ] Fix strategy classification: Medium finite → Complex (line 123)
-
-### test_file_analyzer.py
-- [ ] Remove sys.path modification (line 16)
-- [ ] Fix strategy type casing: Small finite → small_finite (line 298)
-- [ ] Fix strategy classification: Complex → Small finite (line 473)
-- [ ] Fix strategy type casing in sampled_from values (line 474)
-- [ ] Fix strategy classification: Medium finite → small_finite (line 501)
-- [ ] Fix strategy classification: Combination → Small finite (line 501)
-- [ ] Move import from test method to module level (line 303)
-
-### test_font_properties.py
-- [ ] Move _is_code_label to test_utils.py (lines 38-48)
-- [ ] Rename test_font_name_change_updates_value → test_font_name_change_triggers_rebuild (line 124)
-- [ ] Rename test_line_height_change_updates_value → test_line_height_change_triggers_rebuild (line 232)
-- [ ] Remove duplicate _collect_widget_ids (lines 815-821)
-- [ ] Add verification for font_size update in test_rebuild_counter_not_incremented_on_font_size_change (line 927)
-
-### test_helper_availability.py
-- [ ] Refactor nested property tests to standalone methods (lines 146-182)
-
-### test_kivy_renderer.py
-- [ ] Move heading_token strategy to test_utils.py (lines 24-37)
-- [ ] Move paragraph_token strategy to test_utils.py (lines 40-50)
-- [ ] Move list_item_token strategy to test_utils.py (lines 53-66)
-- [ ] Move list_token strategy to test_utils.py (lines 69-85)
-- [ ] Move code_block_token strategy to test_utils.py (lines 88-100)
-- [ ] Move block_quote_token strategy to test_utils.py (lines 103-116)
-- [ ] Move image_token strategy to test_utils.py (lines 119-132)
-- [ ] Move table_cell_token, table_row_token, table_token strategies to test_utils.py (lines 586-651)
-- [ ] Fix strategy classification: Complex → Combination (line 189)
-
-### test_padding_properties.py
-- [ ] Move padding_single, padding_two, padding_four strategies to test_utils.py (lines 24-33)
-- [ ] Remove stray comment (line 78)
-
-### test_performance.py
-- [ ] Remove unused imports (lines 12-15)
-- [ ] Fix strategy classification: Complex → Combination (line 63)
-- [ ] Fix strategy classification: Complex → Combination (line 94)
-- [ ] Fix docstring for test_font_name_structure_property_rebuilds_tree (line 317)
-- [ ] Fix strategy classification: Complex → Combination (line 341)
-- [ ] Fix strategy classification: Complex → Combination (line 383)
-
-### test_rebuild_semantics.py
-- [ ] Fix max_examples: 100 → 50 (line 311)
-- [ ] Fix max_examples: 100 → 50 (line 520)
-- [ ] Fix strategy classification: Complex → Combination, max_examples: 100 → 50 (line 775)
-- [ ] Fix strategy classification: Complex → Combination, max_examples: 100 → 50 (line 822)
-- [ ] Fix strategy classification: Complex → Combination, max_examples: 100 → 50 (line 869)
-- [ ] Fix max_examples: 100 → 50 (line 944)
-- [ ] Fix max_examples: 100 → 50 (line 990)
-- [ ] Fix max_examples: 100 → 50 (line 1047)
-
-### test_serialization.py
-- [ ] Fix strategy classification: Complex → Combination (line 504)
-
-### test_shared_infrastructure.py
-- [ ] Remove stray comment (line 149)
-
-### test_shortening_and_coordinate.py
-- [ ] Rename test_shorten_change_updates_value → test_shorten_change_triggers_rebuild (line 323)
-- [ ] Move _find_labels_with_refs, _find_labels_with_ref_markup, _get_widget_offset to test_utils.py (lines 360-408)
-- [ ] Fix strategy classification: Complex → Combination (line 615)
-- [ ] Fix strategy classification: Complex → Combination (line 656)
-- [ ] Fix strategy classification: Complex → Combination (line 688)
-- [ ] Fix strategy classification: Complex → Combination, max_examples: 100 → 50 (line 983)
-- [ ] Fix strategy classification: Complex → Combination, max_examples: 100 → 50 (line 1324)
-
-### test_sizing_behavior.py
-- [ ] Remove unused imports (lines 11-14)
-
-### test_strategy_classification.py
-- [ ] Remove sys.path modification (lines 10-12)
-- [ ] Clarify comment rationale for test_boolean_strategy_classification (line 28)
-
-### test_text_properties.py
-- [ ] Move unicode_errors_strategy to test_utils.py (line 21)
-- [ ] Fix docstring for test_text_size_change_updates_value (line 56)
-- [ ] Remove stray comment (line 108)
-- [ ] Rename test_unicode_errors_change_updates_value → test_unicode_errors_change_triggers_rebuild (line 446)
-- [ ] Rename test_strip_change_updates_value → test_strip_change_triggers_rebuild (line 582)
-
-### test_texture_render_mode.py
-- [ ] Move find_images helper to test_utils.py (lines 23-31)
-
-### test_texture_sizing.py
-- [ ] Remove unused imports (lines 11-14)
-
-### tools/test_analysis/test_assertion_analyzer.py
-- [ ] Remove sys.path modification (lines 18-21)
-- [ ] Fix max_examples: 100 → 20-50 (line 97)
-- [ ] Fix max_examples: 100 → 50 (line 137)
-
-### tools/test_analysis/test_code_duplication_minimization.py
-- [ ] Remove sys.path modification (lines 16-19)
-
-### tools/test_analysis/test_coverage_preservation.py
-- [ ] Remove sys.path modification (lines 19-21)
-- [ ] Move _simulate_coverage_measurement to test_utils.py (lines 288-314)
-
-### tools/test_analysis/test_duplicate_detector.py
-- [ ] Remove sys.path modification (lines 15-18)
-- [ ] Move duplicate_helper_functions strategy to test_utils.py (lines 30-94)
-
-### tools/test_analysis/test_naming_convention_validator.py
-- [ ] Remove sys.path modification (lines 17-20)
-- [ ] Fix max_examples: 100 → 50 (line 119)
-- [ ] Fix max_examples: 100 → 20-50 (line 179)
-
-### tools/test_analysis/test_test_file_parser.py
-- [ ] Remove sys.path modification (lines 15-18)
-- [ ] Move rebuild_test_file_strategy to test_utils.py (lines 30-84)
-
-## File Summary
-
-| File | Batch | Issues | Type |
-|------|-------|--------|------|
-| test_advanced_compatibility.py | 8 | 11 | Naming & Documentation |
-| test_clipping_behavior.py | 1 | 2 | Helper Consolidation |
-| test_color_properties.py | 8 | 1 | Documentation |
-| test_comment_format.py | 10 | 5 | sys.path & Imports |
-| test_comment_standardizer.py | 5, 10, 13 | 20 | Strategy, sys.path, Docstrings |
-| test_core_functionality.py | 12 | 2 | Stray Comments |
-| test_documentation_compliance.py | 5 | 1 | Strategy Classification |
-| test_file_analyzer.py | 5, 11 | 6 | Strategy, sys.path, Imports |
-| test_font_properties.py | 1, 9 | 5 | Helpers, Naming, Verification |
-| test_helper_availability.py | 12 | 1 | Nested Tests |
-| test_kivy_renderer.py | 3 | 11 | Strategy Consolidation |
-| test_padding_properties.py | 3, 13 | 5 | Strategy, Stray Comments |
-| test_performance.py | 6, 12 | 7 | Strategy, Imports, Documentation |
-| test_rebuild_semantics.py | 7 | 8 | Strategy Classification |
-| test_serialization.py | 6 | 1 | Strategy Classification |
-| test_shared_infrastructure.py | 12 | 1 | Stray Comments |
-| test_shortening_and_coordinate.py | 2, 6, 9 | 8 | Helpers, Strategy, Naming |
-| test_sizing_behavior.py | 12 | 1 | Unused Imports |
-| test_strategy_classification.py | 11 | 2 | sys.path |
-| test_text_properties.py | 3, 9, 12 | 6 | Strategy, Naming, Stray Comments |
-| test_texture_render_mode.py | 1 | 1 | Helper Consolidation |
-| test_texture_sizing.py | 12 | 1 | Unused Imports |
-| tools/test_analysis/test_assertion_analyzer.py | 7, 11 | 3 | Strategy, sys.path |
-| tools/test_analysis/test_code_duplication_minimization.py | 11 | 1 | sys.path |
-| tools/test_analysis/test_coverage_preservation.py | 2, 11 | 2 | Helpers, sys.path |
-| tools/test_analysis/test_duplicate_detector.py | 4, 11 | 2 | Strategy, sys.path |
-| tools/test_analysis/test_naming_convention_validator.py | 7, 11 | 3 | Strategy, sys.path |
-| tools/test_analysis/test_test_file_parser.py | 4, 11 | 2 | Strategy, sys.path |
-
-**Total**: 29 files, 150+ issues across 13 batches
-
-## Implementation Workflow
-
-```mermaid
-graph TD
-    A[Start] --> B[Batch 1: Helper Consolidation - Core]
-    B --> C[Validate Batch 1 Tests]
-    C -->|Pass| D[Commit Batch 1]
-    C -->|Fail| E[Debug Batch 1]
-    E --> B
-    D --> F[Batch 2: Helper Consolidation - Advanced]
-    F --> G[Validate Batch 2 Tests]
-    G -->|Pass| H[Commit Batch 2]
-    G -->|Fail| I[Debug Batch 2]
-    I --> F
-    H --> J[Batch 3: Strategy Consolidation - Renderer]
-    J --> K[Validate Batch 3 Tests]
-    K -->|Pass| L[Commit Batch 3]
-    K -->|Fail| M[Debug Batch 3]
-    M --> J
-    L --> N[Batch 4: Strategy Consolidation - Analysis]
-    N --> O[Validate Batch 4 Tests]
-    O -->|Pass| P[Commit Batch 4]
-    O -->|Fail| Q[Debug Batch 4]
-    Q --> N
-    P --> R[Batch 5: Strategy Fixes - Core Tests]
-    R --> S[Validate Batch 5 Tests]
-    S -->|Pass| T[Commit Batch 5]
-    S -->|Fail| U[Debug Batch 5]
-    U --> R
-    T --> V[Batch 6: Strategy Fixes - Performance]
-    V --> W[Validate Batch 6 Tests]
-    W -->|Pass| X[Commit Batch 6]
-    W -->|Fail| Y[Debug Batch 6]
-    Y --> V
-    X --> Z[Batch 7: Strategy Fixes - Rebuild & Analysis]
-    Z --> AA[Validate Batch 7 Tests]
-    AA -->|Pass| AB[Commit Batch 7]
-    AA -->|Fail| AC[Debug Batch 7]
-    AC --> Z
-    AB --> AD[Batch 8: Naming & Documentation - Advanced]
-    AD --> AE[Validate Batch 8 Tests]
-    AE -->|Pass| AF[Commit Batch 8]
-    AE -->|Fail| AG[Debug Batch 8]
-    AG --> AD
-    AF --> AH[Batch 9: Naming & Documentation - Font & Text]
-    AH --> AI[Validate Batch 9 Tests]
-    AI -->|Pass| AJ[Commit Batch 9]
-    AI -->|Fail| AK[Debug Batch 9]
-    AK --> AH
-    AJ --> AL[Batch 10: sys.path Removal - Comment Tests]
-    AL --> AM[Validate Batch 10 Tests]
-    AM -->|Pass| AN[Commit Batch 10]
-    AM -->|Fail| AO[Debug Batch 10]
-    AO --> AL
-    AN --> AP[Batch 11: sys.path Removal - Analysis Tools]
-    AP --> AQ[Validate Batch 11 Tests]
-    AQ -->|Pass| AR[Commit Batch 11]
-    AQ -->|Fail| AS[Debug Batch 11]
-    AS --> AP
-    AR --> AT[Batch 12: Code Cleanup - Low Priority]
-    AT --> AU[Validate Batch 12 Tests]
-    AU -->|Pass| AV[Commit Batch 12]
-    AU -->|Fail| AW[Debug Batch 12]
-    AW --> AT
-    AV --> AX[Batch 13: Docstrings - Missing Documentation]
-    AX --> AY[Validate Batch 13 Tests]
-    AY -->|Pass| AZ[Commit Batch 13]
-    AY -->|Fail| BA[Debug Batch 13]
-    BA --> AX
-    AZ --> BB[Run Full Test Suite]
-    BB --> BC[All Tests Pass?]
-    BC -->|Yes| BD[Complete]
-    BC -->|No| BE[Debug and Fix]
-    BE --> BB
-```
-
-### Batch Execution Pattern
-
-Each batch follows this consistent pattern:
-
-```mermaid
-graph LR
-    A[Start Batch] --> B[Run Tests for Affected Files]
-    B --> C[Apply Fixes]
-    C --> D[Run Tests Again]
-    D -->|Pass| E[Commit Batch]
-    D -->|Fail| F[Debug Issues]
-    F --> C
-    E --> G[Next Batch]
-```
-
-### Benefits of Batch Approach
-
-1. **Fast Feedback**: Test 3-5 files at a time, not 29
-2. **Easy Rollback**: Revert a single batch if needed
-3. **Progress Tracking**: Clear milestones (13 batches)
-4. **Reduced Risk**: Small changes, isolated failures
-5. **Parallelizable**: Some batches could be done independently
-
-## Risk Assessment
-
-### High Risk Changes
-- **Test Renaming**: May break external references or CI configurations
-- **Helper Function Consolidation**: May affect imports and require careful testing
-- **Strategy Classification Fixes**: May affect test coverage if max_examples reduced
-
-### Medium Risk Changes
-- **sys.path Removal**: May break imports if package structure not properly set up
-- **Import Placement**: May affect test execution order or dependencies
-
-### Low Risk Changes
-- **Docstring Updates**: Pure documentation changes
-- **Comment Removals**: Cosmetic changes
-- **Unused Import Removal**: Should not affect functionality
-
-## Testing Strategy
-
-### Before Implementation
-1. Run full test suite to establish baseline
-2. Document any pre-existing failures
-3. Create backup of test files
-
-### During Implementation
-1. Implement changes in phases
-2. Run affected tests after each phase
-3. Verify no regressions introduced
-
-### After Implementation
-1. Run full test suite
-2. Verify all tests pass
-3. Run comment validation tools
-4. Check for any remaining deviations
-
-## Rollback Plan
-
-If issues arise during implementation:
-1. Use git to revert specific files
-2. Restore from backup if needed
-3. Revert by phase if necessary
-4. Document issues for future reference
-
-## Success Criteria
-
-- [ ] All 150+ deviations addressed
-- [ ] Test suite passes with no regressions
-- [ ] No sys.path modifications remain
-- [ ] All helper functions consolidated in test_utils.py
-- [ ] All custom strategies consolidated in test_utils.py
-- [ ] All strategy classifications correct
-- [ ] All test names match behavior
-- [ ] All docstrings accurate
-- [ ] No unused imports
-- [ ] No stray comments
-- [ ] All imports at module level
-- [ ] All nested tests refactored
-
-## Timeline Considerations
-
-### Batch Execution Order
-
-The 13 batches are ordered by dependency and priority:
-
-**Foundation Batches (1-4)** - Must complete first
-- Batches 1-2: Helper consolidation (prerequisite for other work)
-- Batches 3-4: Strategy consolidation (prerequisite for other work)
-
-**High-Priority Batches (5-7)** - Most impactful changes
-- Batches 5-7: Strategy classification fixes (test correctness & performance)
-
-**Medium-Priority Batches (8-11)** - Code quality improvements
-- Batches 8-9: Test naming and documentation fixes
-- Batches 10-11: sys.path removal and import fixes
-
-**Low-Priority Batches (12-13)** - Polishing and cleanup
-- Batches 12-13: Code cleanup and docstrings
-
-### Parallel Execution Opportunities
-
-Some batches can be executed in parallel if desired:
-- **Batches 1 & 2**: Independent helper consolidation
-- **Batches 3 & 4**: Independent strategy consolidation
-- **Batches 5, 6, & 7**: Independent strategy fixes
-- **Batches 8 & 9**: Independent naming fixes
-- **Batches 10 & 11**: Independent sys.path removal
-- **Batches 12 & 13**: Independent cleanup
-
-### Recommended Execution
-
-**Sequential Approach** (Recommended)
-- Execute batches 1-13 in order
-- Test and commit each batch before proceeding
-- Minimal risk, easy to debug
-
-**Parallel Approach** (Advanced)
-- Execute independent batches in parallel
-- Merge branches after validation
-- Faster completion but requires coordination
-
-### Estimated Batch Sizes
-
-| Batch | Files | Issues | Priority | Complexity |
-|-------|-------|--------|----------|------------|
-| 1 | 3 | 8 helpers | HIGH | Small |
-| 2 | 2 | 4 helpers | HIGH | Small |
-| 3 | 3 | 14 strategies | HIGH | Medium |
-| 4 | 2 | 2 strategies | HIGH | Small |
-| 5 | 3 | 8 strategy fixes | HIGH | Medium |
-| 6 | 3 | 9 strategy fixes | HIGH | Medium |
-| 7 | 3 | 10 strategy fixes | HIGH | Medium |
-| 8 | 2 | 11 naming/docs | HIGH | Medium |
-| 9 | 2 | 5 naming/docs | HIGH | Small |
-| 10 | 2 | 8 sys.path | MEDIUM | Medium |
-| 11 | 8 | 10 sys.path | MEDIUM | Medium |
-| 12 | 7 | 15+ cleanup | LOW | Medium |
-| 13 | 1 | 12 docstrings | LOW | Small |
+This document outlines the implementation plan to address all deviations documented in `kivy_garden/markdownlabel/tests/DEVIATIONS.md` based on the testing guidelines in `TESTING.md`.
+
+## Overview
+
+The plan is organized into 12 phases covering 74 individual tasks across 24 test files. Each phase focuses on a specific category of improvements to ensure systematic and manageable implementation.
+
+## Phase 1a: Comment Fixes - test_comment_standardizer.py
+
+### Tasks
+
+1. **Fix line 42-43**: Change boolean strategy comment from "Combination strategy: 20 examples (adequate coverage)" to "Boolean strategy: 2 examples (True/False coverage)" and update max_examples from 20 to 2
+   - **Issue**: Boolean strategy incorrectly classified as combination strategy with excessive examples
+   - **Guideline**: TESTING.md lines 321-333 - Boolean strategies should use exactly 2 examples with format "Boolean strategy: 2 examples (True/False coverage)"
+
+2. **Fix line 591-592**: Change comment from "Combination strategy: 3 examples (performance optimized)" to correct strategy type for integers (small finite or complex based on range)
+   - **Issue**: First @given parameter is `st.integers(min_value=1, max_value=5)`, not booleans. Copy-paste error from boolean strategy template
+   - **Guideline**: TESTING.md lines 335-347 - Small integer ranges should use input space size (5 values)
+
+## Phase 1b: Comment Fixes - test_comment_format.py
+
+### Tasks
+
+1. **Fix line 538**: Change "Complex strategy: 30 examples (adequate coverage)" to "Combination strategy: 30 examples (performance optimized)" for multiple sampled_from strategies
+   - **Issue**: Test uses `st.sampled_from()` to sample from 3 independent domains (strategy_type, max_examples, rationale_base), creating a combination
+   - **Guideline**: TESTING.md lines 363-377 - Multiple strategies combined should be classified as "Combination strategy"
+
+## Phase 1c: Comment Fixes - test_text_properties.py
+
+### Tasks
+
+1. **Fix line 162-164**: Change "Small finite strategy: 3 examples (input space size: 3)" to "Combination strategy" for floats + sampled_from combination
+   - **Issue**: Test `test_valign_forwarded_with_height` uses combination of `st.floats()` and `st.sampled_from()` strategies
+   - **Guideline**: TESTING.md lines 363-377 - Combination strategies are for multiple strategies combined
+
+## Phase 1d: Comment Fixes - test_helper_availability.py
+
+### Tasks
+
+1. **Fix line 59**: Change "Combination strategy: 10 examples (combination coverage)" to "Complex strategy: 10 examples (adequate coverage)" for color_strategy
+   - **Issue**: `color_strategy` is a complex/infinite strategy, not a finite combination strategy
+   - **Guideline**: TESTING.md lines 379-391 - Complex strategies use 10-50 examples
+
+2. **Fix line 75**: Change "Combination strategy: 10 examples (combination coverage)" to "Complex strategy: 10 examples (adequate coverage)" for text_padding_strategy
+   - **Issue**: `text_padding_strategy` is a complex/infinite strategy
+   - **Guideline**: TESTING.md lines 379-391
+
+3. **Fix line 91**: Change "Combination strategy: 10 examples (combination coverage)" to "Complex strategy: 10 examples (adequate coverage)" for floats strategy
+   - **Issue**: `st.floats(min_value=-1000, max_value=1000, allow_nan=False, allow_infinity=False)` is complex (2000+ possible values)
+   - **Guideline**: TESTING.md lines 379-391
+
+4. **Fix line 146**: Update rationale from "adequate coverage" to more specific justification for max_examples=1
+   - **Issue**: Using `max_examples=1` for a complex strategy with vague rationale
+   - **Guideline**: TESTING.md lines 379-391 - Complex strategies should use 10-50 examples
+
+5. **Fix line 159**: Update rationale from "adequate coverage" to more specific justification for max_examples=1
+   - **Issue**: Same as line 146
+   - **Guideline**: TESTING.md lines 379-391
+
+6. **Fix line 172**: Update rationale from "adequate coverage" to more specific justification for max_examples=1
+   - **Issue**: Same as line 146
+   - **Guideline**: TESTING.md lines 379-391
+
+## Phase 1e: Comment Fixes - test_clipping_behavior.py
+
+### Tasks
+
+1. **Fix line 77-78**: Reduce max_examples from 50 to 10-20 for single floats strategy
+   - **Issue**: `test_clipping_container_height_matches_text_size` uses `max_examples=50` for single `st.floats()` strategy
+   - **Guideline**: TESTING.md lines 379-391 - Complex strategies like `st.floats()` should typically use 10-20 examples
+
+2. **Fix line 244-245**: Reduce max_examples from 50 to 10-20 for single floats strategy
+   - **Issue**: `test_text_size_width_only_no_clipping` uses `max_examples=50` for single `st.floats()` strategy
+   - **Guideline**: TESTING.md lines 379-391
+
+## Phase 1f: Comment Fixes - test_strategy_classification.py
+
+### Tasks
+
+1. **Fix line 24-26**: Change from "Small finite strategy: 1 examples (input space size: 1)" to "Boolean strategy: 2 examples (True/False coverage)" and update max_examples to 2
+   - **Issue**: Test uses `st.just('st.booleans()')` which generates only 1 example, but comment format is incorrect
+   - **Guideline**: TESTING.md lines 321-333 - Boolean strategies should use exactly 2 examples
+
+2. **Fix line 53-55**: Change "Medium finite strategy: 10 examples (adequate finite coverage)" to "Complex strategy: 10 examples (adequate coverage)" for lists with text
+   - **Issue**: Test uses `st.lists(st.text(min_size=1, max_size=3, alphabet='abc'), min_size=1, max_size=10)` which generates potentially infinite combinations
+   - **Guideline**: TESTING.md lines 379-391 - `st.lists()` with `st.text()` is a complex/infinite strategy
+
+## Phase 1g: Comment Fixes - test_kivy_renderer.py
+
+### Tasks
+
+1. **Fix line 88**: Update max_examples from 5 to 6 for integers 1-6 (input space size)
+   - **Issue**: Test uses `st.integers(min_value=1, max_value=6)` with `max_examples=5`, but input space is 6 values
+   - **Guideline**: TESTING.md lines 335-347 - Small finite strategies should use input space size
+
+2. **Fix line 89-90**: Change "Complex strategy: 10 examples (adequate coverage)" to "Combination strategy: 10 examples (performance optimized)"
+   - **Issue**: Strategy is combination of `st.integers(min_value=1, max_value=6)` (6 values) and `st.floats(min_value=10, max_value=30)` (21 values), total input space 126
+   - **Guideline**: TESTING.md lines 363-377 - Combination strategies with performance optimization
+
+## Phase 1h: Comment Fixes - test_inline_renderer.py
+
+### Tasks
+
+1. **Fix lines 61-74**: Change "Complex strategy: 20 examples (adequate coverage)" to "Combination strategy: 20 examples (combination coverage)" for sampled_from + text
+   - **Issue**: `link_token()` strategy uses `st.sampled_from()` with 69 URL-safe characters combined with `st.text()` for URL generation
+   - **Guideline**: TESTING.md lines 363-377 - Multiple strategies combined should be "Combination strategy"
+
+2. **Fix lines 408-420**: Change "Complex strategy: 20 examples (adequate coverage)" to "Combination strategy: 20 examples (combination coverage)" for one_of with 5 strategies
+   - **Issue**: Test `test_urls_with_brackets_are_safe` uses `st.one_of()` with 5 different mapped text strategies
+   - **Guideline**: TESTING.md lines 363-377
+
+3. **Fix lines 658-677**: Change "Complex strategy: 20 examples (adequate coverage)" to "Combination strategy: 20 examples (combination coverage)" for one_of with 8 strategies
+   - **Issue**: Test `test_html_content_is_escaped` uses `st.one_of()` with 8 different mapped text strategies
+   - **Guideline**: TESTING.md lines 363-377
+
+## Phase 1i: Comment Fixes - test_performance.py
+
+### Tasks
+
+1. **Fix line 216**: Change "Combination strategy: 20 examples (adequate coverage)" to "Complex strategy: 20 examples (adequate coverage)" for single floats
+   - **Issue**: Test uses a single `st.floats()` strategy
+   - **Guideline**: TESTING.md lines 379-391 - Single `st.floats()` is a complex/infinite strategy
+
+2. **Fix line 241**: Change "Combination strategy: 20 examples (adequate coverage)" to "Complex strategy: 20 examples (adequate coverage)" for single floats
+   - **Issue**: Same as line 216
+   - **Guideline**: TESTING.md lines 379-391
+
+3. **Fix line 396**: Change "Combination strategy: 20 examples (adequate coverage)" to "Complex strategy: 20 examples (adequate coverage)" for tuples with floats
+   - **Issue**: Test uses two `st.tuples()` arguments, each containing 4 floats with range [0, 1] (effectively infinite strategies)
+   - **Guideline**: TESTING.md lines 379-391
+
+## Phase 1j: Comment Fixes - test_texture_sizing.py
+
+### Tasks
+
+1. **Fix line 276-278**: Increase max_examples from 20 to 50 (capped) for combination of two complex strategies
+   - **Issue**: Test uses two `simple_markdown_document()` parameters (combination strategy) with only `max_examples=20`
+   - **Guideline**: TESTING.md lines 363-377 - Combination strategies should use product of individual strategy sizes, capped at 50
+
+## Phase 1k: Comment Fixes - test_rebuild_semantics.py
+
+### Tasks
+
+1. **Fix line 775**: Change "Complex strategy: 50 examples (adequate coverage)" to "Combination strategy: 50 examples (performance optimized)"
+   - **Issue**: Test uses two `simple_markdown_document()` parameters which is a combination of two complex strategies
+   - **Guideline**: TESTING.md lines 363-377
+
+2. **Fix line 822**: Change "Complex strategy: 50 examples (adequate coverage)" to "Small finite strategy: 3 examples (input space size: 3)" and update max_examples to 3
+   - **Issue**: Test uses `st.sampled_from(['Roboto', 'RobotoMono-Regular', 'Roboto-Bold'])` which is a small finite strategy (3 values)
+   - **Guideline**: TESTING.md lines 335-347
+
+3. **Fix line 869**: Change "Complex strategy: 50 examples (adequate coverage)" to "Small finite strategy: 2 examples (input space size: 2)" and update max_examples to 2
+   - **Issue**: Test uses `st.sampled_from(['unstyled', 'styled'])` which is a small finite strategy (2 values)
+   - **Guideline**: TESTING.md lines 335-347
+
+## Phase 1l: Comment Fixes - test_shortening_and_coordinate.py
+
+### Tasks
+
+1. **Fix line 134-136**: Change "Combination strategy: 30 examples (adequate coverage)" to "Complex strategy: 30 examples (adequate coverage)" for single text
+   - **Issue**: Test uses `st.text(min_size=0, max_size=5, alphabet='abc ')` which is a single text strategy
+   - **Guideline**: TESTING.md lines 379-391
+
+2. **Fix line 148-150**: Change "Combination strategy: 30 examples (adequate coverage)" to "Complex strategy: 30 examples (adequate coverage)" for single text
+   - **Issue**: Same as line 134-136
+   - **Guideline**: TESTING.md lines 379-391
+
+3. **Fix line 325-327**: Change "Combination strategy: 2 examples (combination coverage)" to "Boolean strategy: 2 examples (True/False coverage)" for two booleans
+   - **Issue**: Test uses `st.booleans(), st.booleans()` which are two boolean strategies
+   - **Guideline**: TESTING.md lines 321-333
+
+4. **Fix line 406-407**: Change "Combination strategy: 20 examples (adequate coverage)" to "Complex strategy: 20 examples (adequate coverage)" for lists with text
+   - **Issue**: Test uses `st.lists(st.text(...), min_size=2, max_size=4)` which is a complex/infinite strategy
+   - **Guideline**: TESTING.md lines 379-391
+
+5. **Fix line 577-578**: Change "Combination strategy: 20 examples (adequate coverage)" to "Complex strategy: 20 examples (adequate coverage)" for two text parameters
+   - **Issue**: Test uses two `st.text()` parameters creating a complex strategy with multiple text inputs
+   - **Guideline**: TESTING.md lines 379-391
+
+6. **Fix line 615-616**: Change "Combination strategy: 20 examples (adequate coverage)" to "Complex strategy: 20 examples (adequate coverage)" for four floats
+   - **Issue**: Test uses four `st.floats()` parameters
+   - **Guideline**: TESTING.md lines 379-391
+
+7. **Fix line 645-646**: Change "Combination strategy: 20 examples (adequate coverage)" to "Complex strategy: 20 examples (adequate coverage)" for two floats
+   - **Issue**: Test uses two `st.floats()` parameters
+   - **Guideline**: TESTING.md lines 379-391
+
+8. **Fix line 957-959**: Standardize comment format from "Complex strategy with 12 float parameters: 100 examples for adequate coverage" to "Complex strategy: 100 examples (adequate coverage for 12-parameter float strategy)"
+   - **Issue**: Comment does not follow standardized format
+   - **Guideline**: TESTING.md lines 308-317 - Comments must follow format: `# [Strategy Type] strategy: [N] examples ([Rationale])`
+
+## Phase 1m: Comment Fixes - test_label_compatibility.py
+
+### Tasks
+
+1. **Fix lines 137-139**: Change "Combination strategy: 2 examples (combination coverage)" to "Small finite strategy: 32 examples (input space size: 32)" and update max_examples to 32
+   - **Issue**: Test uses 5 booleans with `max_examples=2`, creating a finite input space of 32 combinations (2^5)
+   - **Guideline**: TESTING.md lines 335-347
+
+2. **Fix lines 156-159**: Increase max_examples from 2 to 50 (capped) for 5 booleans + markdown document combination
+   - **Issue**: Test uses 5 booleans + simple_markdown_document with `max_examples=2`, but 5 booleans alone create 32 combinations
+   - **Guideline**: TESTING.md lines 363-377 - Combination strategies should use product of individual strategy sizes, capped at 50
+
+## Phase 2: Test Naming Convention Fixes
+
+### Tasks
+
+1. **Fix line 877** (test_advanced_compatibility.py): Rename `test_disabled_color_updates_value` to `test_disabled_change_triggers_rebuild` to match rebuild behavior
+   - **Issue**: Method name suggests value update test, but implementation verifies rebuild behavior (calls `force_rebuild()`)
+   - **Guideline**: TESTING.md lines 102-107 - Tests verifying rebuilds should use naming convention `test_*_triggers_rebuild_*`
+
+2. **Fix line 238** (test_padding_properties.py): Rename `test_padding_change_updates_value` to `test_padding_change_triggers_rebuild` and add rebuild verification
+   - **Issue**: Method name suggests value update test, but implementation calls `label.force_rebuild()` indicating rebuild behavior
+   - **Guideline**: TESTING.md lines 102-107
+
+3. **Fix line 283** (test_padding_properties.py): Rename `test_padding_update_paragraph` to `test_padding_update_triggers_rebuild` and add rebuild verification
+   - **Issue**: Method name suggests value update test, but implementation calls `label.force_rebuild()` without verifying rebuild behavior
+   - **Guideline**: TESTING.md lines 102-107
+
+4. **Fix line 308** (test_padding_properties.py): Rename `test_padding_update_complex_content` to `test_padding_update_triggers_rebuild` and add rebuild verification
+   - **Issue**: Same as line 283
+   - **Guideline**: TESTING.md lines 102-107
+
+5. **Rename all "preserves_widget_ids" tests** (test_rebuild_semantics.py, lines 91-267) to "preserves_widget_tree" pattern
+   - **Issue**: Tests use "preserves_widget_ids" naming pattern instead of guideline pattern `test_*_preserves_widget_tree_*`
+   - **Guideline**: TESTING.md lines 102-107 - Tests verifying NO rebuild occurred should use `test_*_preserves_widget_tree_*`
+
+6. **Rename property test** "test_style_property_changes_preserve_widget_identities" (test_rebuild_semantics.py, lines 313-358) to "preserves_widget_tree" pattern
+   - **Issue**: Uses "preserve_widget_identities" naming instead of `test_*_preserves_widget_tree_*`
+   - **Guideline**: TESTING.md lines 102-107
+
+7. **Rename all "rebuilds_widget_tree" tests** (test_rebuild_semantics.py, lines 601-758) to "triggers_rebuild" pattern
+   - **Issue**: Tests use "rebuilds_widget_tree" naming pattern instead of guideline pattern `test_*_triggers_rebuild_*`
+   - **Guideline**: TESTING.md lines 102-107 - Tests verifying a rebuild occurred should use `test_*_triggers_rebuild_*`
+
+8. **Rename property test** "test_text_change_rebuilds_widget_tree_pbt" (test_rebuild_semantics.py, lines 777-816) to "triggers_rebuild" pattern
+   - **Issue**: Uses "rebuilds_widget_tree_pbt" naming instead of `test_*_triggers_rebuild_*`
+   - **Guideline**: TESTING.md lines 102-107
+
+## Phase 3: Docstring Improvements
+
+### Tasks
+
+1. **Fix line 123-137** (test_documentation_compliance.py): Improve docstring for `test_custom_value_detection_property` to describe specific property and expected behavior
+   - **Issue**: Docstring "Property test for custom value detection logic." is generic and does not describe what specific property is being tested
+   - **Guideline**: TESTING.md lines 45-74 - Test docstrings should clearly describe what is being tested, including what property or behavior is being verified
+
+2. **Fix line 138-164** (test_documentation_compliance.py): Improve docstring for `test_comment_detection_property` to describe specific property and expected behavior
+   - **Issue**: Docstring "Property test for explanatory comment detection." is generic
+   - **Guideline**: TESTING.md lines 45-74
+
+3. **Fix line 22** (test_assertion_analyzer.py): Update class docstring from "Unit tests for AssertionAnalyzer." to "Tests for assertion pattern detection and naming mismatch analysis."
+   - **Issue**: Generic class docstring
+   - **Guideline**: TESTING.md lines 45-74 - Class docstrings should clearly indicate what is being tested
+
+4. **Fix line 37-41** (test_shared_infrastructure.py): Simplify docstring for `test_markdown_heading_strategy_generates_valid_headings` to remove markdown formatting
+   - **Issue**: Overly verbose docstring with markdown formatting (Feature/Property/Rationale sections)
+   - **Guideline**: TESTING.md lines 286-300, 456-490 - Test docstrings should be concise and descriptive
+
+5. **Fix line 160-165** (test_shared_infrastructure.py): Simplify docstring for `test_find_labels_recursive_function_available` to remove markdown formatting
+   - **Issue**: Same as line 37-41
+   - **Guideline**: TESTING.md lines 286-300, 456-490
+
+6. **Fix line 116-122** (test_naming_convention_validator.py): Simplify docstring for `test_naming_pattern_consistency_property` to remove markdown formatting
+   - **Issue**: Docstring uses markdown formatting with "**Property 6: Naming Pattern Consistency**" and "**Validates: Requirements 1.4, 5.2**" headers
+   - **Guideline**: TESTING.md lines 286-300, 456-490
+
+## Phase 4: Unused Import Removal
+
+### Tasks
+
+1. **Remove unused imports** (test_padding_properties.py, lines 11-14): BoxLayout, Label, Widget, GridLayout from kivy.uix modules
+   - **Issue**: Imports declared but never used in the test file
+   - **Guideline**: TESTING.md line 628 - Unused imports should be removed to keep code clean
+
+2. **Remove unused import** (test_rtl_alignment.py, line 8): `import os`
+   - **Issue**: Import declared but never used
+   - **Guideline**: TESTING.md line 628
+
+3. **Remove unused import** (test_font_properties.py, line 9): `import os`
+   - **Issue**: Import declared but never used
+   - **Guideline**: TESTING.md line 628
+
+4. **Remove unused imports** (test_sizing_behavior.py, lines 11-12): BoxLayout and Label from kivy.uix
+   - **Issue**: Imports declared but never used
+   - **Guideline**: TESTING.md line 628
+
+## Phase 5: Test Organization Fixes
+
+### Tasks
+
+1. **Move property test** `test_value_change_test_naming_property` (test_assertion_analyzer.py, lines 89-128) into TestAssertionAnalyzer class
+   - **Issue**: Property-based test is at module level rather than within a class
+   - **Guideline**: TESTING.md lines 43-74 - Tests should be organized into logical classes with descriptive names
+
+2. **Move property test** `test_assertion_classification_consistency` (test_assertion_analyzer.py, lines 131-174) into TestAssertionAnalyzer class
+   - **Issue**: Property-based test is at module level rather than within a class
+   - **Guideline**: TESTING.md lines 43-74
+
+3. **Move integration test** `test_file_analysis_integration()` (test_assertion_analyzer.py, lines 177-229) into a new TestAssertionAnalyzerIntegration class
+   - **Issue**: Integration test is a module-level function instead of being in a class
+   - **Guideline**: TESTING.md lines 43-74 - Tests should be organized into logical classes
+
+## Phase 6: Rebuild Testing Improvements
+
+### Tasks
+
+1. **Fix line 251** (test_padding_properties.py): Replace `label.force_rebuild()` call with rebuild detection helpers in `test_padding_change_updates_value`
+   - **Issue**: Test calls `label.force_rebuild()` after changing padding property
+   - **Guideline**: TESTING.md lines 186-258 - Tests should verify rebuild behavior using helper functions like `assert_rebuild_occurred()` or `assert_no_rebuild()` instead of manually calling `force_rebuild()`
+
+2. **Fix line 297** (test_padding_properties.py): Replace `label.force_rebuild()` call with rebuild detection helpers in `test_padding_update_paragraph`
+   - **Issue**: Same as line 251
+   - **Guideline**: TESTING.md lines 186-258
+
+3. **Fix line 335** (test_padding_properties.py): Replace `label.force_rebuild()` call with rebuild detection helpers in `test_padding_update_complex_content`
+   - **Issue**: Same as line 251
+   - **Guideline**: TESTING.md lines 186-258
+
+4. **Fix line 353** (test_padding_properties.py): Replace `label.force_rebuild()` call with rebuild detection helpers in `test_multiple_padding_updates`
+   - **Issue**: Same as line 251
+   - **Guideline**: TESTING.md lines 186-258
+
+## Phase 7: Pytest Marker Fixes
+
+### Tasks
+
+1. **Remove or document all `@pytest.mark.property` markers** (test_sizing_behavior.py, lines 29, 47, 69, 94, 105, 132, 162, 176, 195, 222, 244, 266, 301, 338, 352, 371, 398, 407, 417, 440, 463, 491, 507, 525, 544)
+   - **Issue**: Marker is NOT documented in TESTING.md. Guidelines only document `@pytest.mark.slow`, `@pytest.mark.needs_window`, and `@pytest.mark.test_tests` markers
+   - **Guideline**: TESTING.md lines 150-158 - Only documented markers should be used
+
+2. **Remove or document undocumented markers** (test_file_analyzer.py): @pytest.mark.unit (lines 83, 224, 322), @pytest.mark.property (lines 286, 459), @pytest.mark.integration (line 393)
+   - **Issue**: Undocumented pytest markers used throughout the file
+   - **Guideline**: TESTING.md lines 150-158
+
+3. **Remove or document undocumented marker** (test_import.py, lines 14, 21): @pytest.mark.unit
+   - **Issue**: Undocumented pytest marker
+   - **Guideline**: TESTING.md lines 150-158
+
+## Phase 8: Property-Based Test Usage Fixes
+
+### Tasks
+
+1. **Fix line 119-121** (test_padding_properties.py): Remove @given decorator from `test_default_padding_is_zero` and convert to regular unit test
+   - **Issue**: Test uses `@given(st.data())` but the `data` parameter is never used. Test simply verifies default padding is zero, which is a concrete assertion
+   - **Guideline**: TESTING.md lines 276-300 - Property-based tests should be used for universal properties, not for testing specific default values
+
+## Phase 9: Window Marker Fixes
+
+### Tasks
+
+1. **Add @pytest.mark.needs_window marker** (test_core_functionality.py, lines 33, 46, 63, 108, 127, 154, 171, 203, 227, 248, 279, 297, 314) to tests creating MarkdownLabel widgets
+   - **Issue**: Tests that create MarkdownLabel widgets require a Kivy window but are missing the marker
+   - **Guideline**: TESTING.md lines 150-158 - Tests requiring Kivy window should be marked with `@pytest.mark.needs_window`
+
+## Phase 10: Code Cleanup
+
+### Tasks
+
+1. **Remove redundant local `import os`** (test_refactoring_properties.py, line 89) in method `test_fast_test_discovery_baseline`
+   - **Issue**: Redundant local import when `os` is already imported at module level (line 9)
+   - **Guideline**: TESTING.md line 628 - Unused/duplicate code should be removed
+
+2. **Remove redundant local `import os`** (test_refactoring_properties.py, line 137) in method `test_individual_module_discovery_functionality`
+   - **Issue**: Same as line 89
+   - **Guideline**: TESTING.md line 628
+
+3. **Remove redundant local `import os`** (test_refactoring_properties.py, line 173) in method `test_discovery_startup_functionality`
+   - **Issue**: Same as line 89
+   - **Guideline**: TESTING.md line 628
+
+4. **Remove orphaned comment** (test_serialization.py, line 156)
+   - **Issue**: Orphaned comment `# Complex strategy: 20 examples (adequate coverage)` not associated with any `@given` decorator or test method
+   - **Guideline**: Code cleanliness
+
+## Phase 11: Import Path Fixes
+
+### Tasks
+
+1. **Fix line 15** (test_code_duplication_minimization.py): Change import from `from test_analysis.duplicate_detector import...` to `from tools.test_analysis.duplicate_detector import...`
+   - **Issue**: Import statement imports from wrong location. Test file is at `kivy_garden/markdownlabel/tests/tools/test_analysis/test_code_duplication_minimization.py` and uses relative import `test_analysis.duplicate_detector`, but `duplicate_detector.py` is at `tools/test_analysis/duplicate_detector.py`
+   - **Guideline**: Correct import paths for module resolution
+
+## Phase 12: Validation & Testing
+
+### Tasks
+
+1. **Run all tests** to ensure fixes don't break functionality
+   - Execute full test suite to verify no regressions
+
+2. **Run comment validation tool** to verify all comment format issues are resolved
+   - Use `tools/validate_comments.py` to validate comment compliance
+
+3. **Update DEVIATIONS.md** to mark completed items
+   - Document which deviations have been addressed
+
+## Summary
+
+- **Total Phases**: 12
+- **Total Tasks**: 74
+- **Files Affected**: 24 test files
+- **Primary Categories**:
+  - Comment format and strategy classification (36 tasks)
+  - Test naming conventions (8 tasks)
+  - Docstring improvements (6 tasks)
+  - Code cleanup and organization (24 tasks)
+
+## Implementation Notes
+
+1. Each task should be completed independently where possible
+2. After each phase, run tests to ensure no regressions
+3. Use the comment validation tool to verify comment format compliance
+4. Update the todo list as tasks are completed
+5. Document any unexpected issues or deviations from the plan
+
+## References
+
+- Testing Guidelines: `kivy_garden/markdownlabel/tests/TESTING.md`
+- Deviations Document: `kivy_garden/markdownlabel/tests/DEVIATIONS.md`
+- Comment Validation Tool: `tools/validate_comments.py`
