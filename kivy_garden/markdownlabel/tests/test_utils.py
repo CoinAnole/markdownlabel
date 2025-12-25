@@ -582,32 +582,6 @@ def is_code_label(label: Label, code_font_name: str = 'RobotoMono-Regular') -> b
     return label.font_name == code_font_name
 
 
-def collect_widget_ids(widget: Widget, ids: Optional[Set[int]] = None) -> Set[int]:
-    """Recursively collect all widget object IDs in the tree.
-    
-    This helper function traverses the widget tree and collects a set of
-    Python object IDs for all widgets. Used for comparing widget identities
-    before and after changes to detect rebuilds.
-    
-    Args:
-        widget: Root widget to collect from
-        ids: Optional set to accumulate results (used for recursion)
-        
-    Returns:
-        Set of all widget object IDs in the tree
-    """
-    if ids is None:
-        ids = set()
-    
-    ids.add(id(widget))
-    
-    if hasattr(widget, 'children'):
-        for child in widget.children:
-            collect_widget_ids(child, ids)
-    
-    return ids
-
-
 # Widget Search Helpers for Refs and Anchors
 
 def find_labels_with_refs(widget: Widget, labels: Optional[List[Label]] = None) -> List[Label]:
