@@ -13,12 +13,9 @@ from kivy.uix.label import Label
 from kivy_garden.markdownlabel import MarkdownLabel
 from .test_utils import (
     find_labels_recursive,
-    simple_markdown_document
+    simple_markdown_document,
+    unicode_errors_strategy
 )
-
-
-# Strategy for generating valid unicode_errors values
-unicode_errors_strategy = st.sampled_from(['strict', 'replace', 'ignore'])
 
 
 class TestTextSizeForwarding:

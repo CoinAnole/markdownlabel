@@ -131,6 +131,261 @@ text_padding_strategy = st.lists(
 )
 
 
+# Strategies for padding application tests
+padding_single = st.floats(min_value=0, max_value=100, allow_nan=False, allow_infinity=False)
+padding_two = st.lists(
+    st.floats(min_value=0, max_value=100, allow_nan=False, allow_infinity=False),
+    min_size=2, max_size=2
+)
+padding_four = st.lists(
+    st.floats(min_value=0, max_value=100, allow_nan=False, allow_infinity=False),
+    min_size=4, max_size=4
+)
+
+
+# Strategy for unicode_errors values
+unicode_errors_strategy = st.sampled_from(['strict', 'replace', 'ignore'])
+
+
+# Strategies for KivyRenderer token generation
+@st.composite
+def heading_token(draw, level=None):
+    """Generate a heading token with specified or random level.
+    
+    Args:
+        level: Optional heading level (1-6). If None, a random level is generated.
+        
+    Returns:
+        Dictionary representing a heading token with type 'heading'.
+    """
+    if level is None:
+        level = draw(st.integers(min_value=1, max_value=6))
+    text = draw(st.text(min_size=1, max_size=50, alphabet=st.characters(
+        whitelist_categories=['L', 'N', 'P', 'S'],
+        blacklist_characters='[]&'
+    )))
+    return {
+        'type': 'heading',
+        'children': [{'type': 'text', 'raw': text}],
+        'attrs': {'level': level}
+    }
+
+
+@st.composite
+def paragraph_token(draw):
+    """Generate a paragraph token with text content.
+    
+    Returns:
+        Dictionary representing a paragraph token with type 'paragraph'.
+    """
+    text = draw(st.text(min_size=1, max_size=100, alphabet=st.characters(
+        whitelist_categories=['L', 'N', 'P', 'S'],
+        blacklist_characters='[]&'
+    )))
+    return {
+        'type': 'paragraph',
+        'children': [{'type': 'text', 'raw': text}]
+    }
+
+
+@st.composite
+def list_item_token(draw):
+    """Generate a list item token.
+    
+    Returns:
+        Dictionary representing a list item token with type 'list_item'.
+    """
+    text = draw(st.text(min_size=1, max_size=50, alphabet=st.characters(
+        whitelist_categories=['L', 'N', 'P', 'S'],
+        blacklist_characters='[]&'
+    )))
+    return {
+        'type': 'list_item',
+        'children': [{
+            'type': 'paragraph',
+            'children': [{'type': 'text', 'raw': text}]
+        }]
+    }
+
+
+@st.composite
+def list_token(draw, ordered=None):
+    """Generate a list token (ordered or unordered).
+    
+    Args:
+        ordered: Optional boolean specifying if list is ordered. If None, random.
+        
+    Returns:
+        Dictionary representing a list token with type 'list'.
+    """
+    if ordered is None:
+        ordered = draw(st.booleans())
+    
+    num_items = draw(st.integers(min_value=1, max_value=5))
+    items = [draw(list_item_token()) for _ in range(num_items)]
+    
+    return {
+        'type': 'list',
+        'children': items,
+        'attrs': {
+            'ordered': ordered,
+            'start': 1
+        }
+    }
+
+
+@st.composite
+def code_block_token(draw):
+    """Generate a code block token.
+    
+    Returns:
+        Dictionary representing a code block token with type 'block_code'.
+    """
+    code = draw(st.text(min_size=1, max_size=200, alphabet=st.characters(
+        whitelist_categories=['L', 'N', 'P', 'S', 'Z'],
+        blacklist_characters='[]&'
+    )))
+    language = draw(st.sampled_from(['', 'python', 'javascript', 'rust', 'go', 'java']))
+    return {
+        'type': 'block_code',
+        'raw': code,
+        'attrs': {'info': language}
+    }
+
+
+@st.composite
+def block_quote_token(draw):
+    """Generate a block quote token.
+    
+    Returns:
+        Dictionary representing a block quote token with type 'block_quote'.
+    """
+    text = draw(st.text(min_size=1, max_size=100, alphabet=st.characters(
+        whitelist_categories=['L', 'N', 'P', 'S'],
+        blacklist_characters='[]&'
+    )))
+    return {
+        'type': 'block_quote',
+        'children': [{
+            'type': 'paragraph',
+            'children': [{'type': 'text', 'raw': text}]
+        }]
+    }
+
+
+@st.composite
+def image_token(draw):
+    """Generate an image token.
+    
+    Returns:
+        Dictionary representing an image token with type 'image'.
+    """
+    alt = draw(st.text(min_size=0, max_size=50, alphabet=st.characters(
+        whitelist_categories=['L', 'N', 'P', 'S'],
+        blacklist_characters='[]&'
+    )))
+    # Generate a simple URL-like string
+    url = draw(st.from_regex(r'https?://[a-z]+\.[a-z]+/[a-z]+\.(png|jpg|gif)', fullmatch=True))
+    return {
+        'type': 'image',
+        'children': [{'type': 'text', 'raw': alt}] if alt else [],
+        'attrs': {'url': url}
+    }
+
+
+@st.composite
+def table_cell_token(draw, align=None, is_head=False):
+    """Generate a table cell token.
+    
+    Args:
+        align: Optional alignment value ('left', 'center', 'right', or None).
+        is_head: Boolean indicating if this is a header cell.
+        
+    Returns:
+        Dictionary representing a table cell token with type 'table_cell'.
+    """
+    text = draw(st.text(min_size=0, max_size=30, alphabet=st.characters(
+        whitelist_categories=['L', 'N', 'P', 'S'],
+        blacklist_characters='[]&'
+    )))
+    if align is None:
+        align = draw(st.sampled_from([None, 'left', 'center', 'right']))
+    
+    return {
+        'type': 'table_cell',
+        'children': [{'type': 'text', 'raw': text}] if text else [],
+        'attrs': {'align': align, 'head': is_head}
+    }
+
+
+@st.composite
+def table_row_token(draw, num_cols, alignments=None, is_head=False):
+    """Generate a table row token with specified number of columns.
+    
+    Args:
+        num_cols: Number of columns in the row.
+        alignments: Optional list of alignment values for each column.
+        is_head: Boolean indicating if this is a header row.
+        
+    Returns:
+        Dictionary representing a table row token with type 'table_row'.
+    """
+    cells = []
+    for i in range(num_cols):
+        align = alignments[i] if alignments else None
+        cell = draw(table_cell_token(align=align, is_head=is_head))
+        cells.append(cell)
+    
+    return {
+        'type': 'table_row',
+        'children': cells
+    }
+
+
+@st.composite
+def table_token(draw, num_rows=None, num_cols=None):
+    """Generate a table token with specified dimensions.
+    
+    Args:
+        num_rows: Optional number of rows (including header). If None, random (1-5).
+        num_cols: Optional number of columns. If None, random (1-5).
+        
+    Returns:
+        Dictionary representing a table token with type 'table'.
+    """
+    if num_rows is None:
+        num_rows = draw(st.integers(min_value=1, max_value=5))
+    if num_cols is None:
+        num_cols = draw(st.integers(min_value=1, max_value=5))
+    
+    # Generate alignments for columns
+    alignments = [draw(st.sampled_from([None, 'left', 'center', 'right']))
+                  for _ in range(num_cols)]
+    
+    # Generate header row
+    head_row = draw(table_row_token(num_cols, alignments, is_head=True))
+    
+    # Generate body rows
+    body_rows = []
+    for _ in range(num_rows - 1):  # -1 because header is one row
+        body_row = draw(table_row_token(num_cols, alignments, is_head=False))
+        body_rows.append(body_row)
+    
+    return {
+        'type': 'table',
+        'children': [
+            {
+                'type': 'table_head',
+                'children': [head_row]
+            },
+            {
+                'type': 'table_body',
+                'children': body_rows
+            }
+        ]
+    }
+
+
 # Helper Functions
 
 def find_labels_recursive(widget: Widget, labels: Optional[List[Label]] = None) -> List[Label]:

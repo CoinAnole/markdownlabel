@@ -17,19 +17,10 @@ from kivy_garden.markdownlabel import MarkdownLabel
 from .test_utils import (
     text_padding_strategy,
     find_labels_recursive,
-    padding_equal
-)
-
-
-# Additional padding strategies for TestPaddingApplication
-padding_single = st.floats(min_value=0, max_value=100, allow_nan=False, allow_infinity=False)
-padding_two = st.lists(
-    st.floats(min_value=0, max_value=100, allow_nan=False, allow_infinity=False),
-    min_size=2, max_size=2
-)
-padding_four = st.lists(
-    st.floats(min_value=0, max_value=100, allow_nan=False, allow_infinity=False),
-    min_size=4, max_size=4
+    padding_equal,
+    padding_single,
+    padding_two,
+    padding_four
 )
 
 
