@@ -1,0 +1,2 @@
+## test_advanced_compatibility.py
+- Line 877: Test method name `test_disabled_color_updates_value` suggests a value update test, but the implementation verifies rebuild behavior (calls `force_rebuild()`). According to testing guidelines, value update tests should not verify rebuilds and rebuild tests should use naming convention `test_*_triggers_rebuild_*` or `test_*_rebuilds_*`. The test should be renamed to `test_disabled_change_triggers_rebuild` to match its actual behavior.
