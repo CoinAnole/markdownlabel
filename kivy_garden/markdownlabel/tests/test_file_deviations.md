@@ -136,19 +136,7 @@ No deviations found.
 
 - Line 232: Test name `test_line_height_change_updates_value` uses "updates_value" naming but docstring says "triggers widget rebuild with new value". According to guidelines section "Test Naming Conventions", tests that verify rebuild behavior should use `test_*_triggers_rebuild_*` naming. The test name should be `test_line_height_change_triggers_rebuild` or similar.
 
-- Line 348: Property test `test_font_family_excluded_from_code_blocks` has the required docstring format with feature and property information, which is correct.
-
-- Line 372: Property test `test_font_family_forwarded_to_non_code_labels` has the required docstring format, which is correct.
-
-- Line 397: Property test `test_font_context_forwarded_to_all_labels_including_code` has the required docstring format, which is correct.
-
-- Line 422: Property test `test_font_features_forwarded_to_all_labels_including_code` has the required docstring format, which is correct.
-
 - Line 442: Test `test_font_hinting_forwarded_to_all_labels_including_code` is not a property test (uses @pytest.mark.parametrize), so it doesn't need the property test docstring format. This is correct.
-
-- Line 465: Property test `test_font_kerning_forwarded_to_all_labels_including_code` has the required docstring format, which is correct.
-
-- Line 496: Property test `test_combined_font_properties_with_code_block` has the required docstring format, which is correct.
 
 - Line 815-821: Helper method `_collect_widget_ids` is defined in the test class. According to guidelines section "Helper Functions", helper functions should be added to `test_utils.py` and imported, not duplicated in test files. This helper should be moved to test_utils.py. Note that test_utils.py already has a `collect_widget_ids` function that could be used instead.
 
@@ -470,7 +458,6 @@ No deviations found.
 
 - Line 30-84: Custom strategy `rebuild_test_file_strategy` is defined in the test file. According to guidelines section "Helper Functions", custom Hypothesis strategies should be added to test_utils.py and imported, not duplicated in test files. This strategy is used in multiple tests and should be consolidated in test_utils.py.
 
-- Line 87: The test class is marked with `@pytest.mark.test_tests` which is correct for meta-tests according to guidelines section "Test Types and Markers".
 
 - Line 91-93: Property test `test_rebuild_test_names_match_assertions` has a standardized comment `# Complex strategy: 20 examples (adequate coverage)` for the custom strategy `rebuild_test_file_strategy()`. The strategy is complex (generates test code with multiple variables), so the comment is appropriate according to guidelines section "Property-Based Testing Optimization".
 
