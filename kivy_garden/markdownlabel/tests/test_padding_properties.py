@@ -66,7 +66,6 @@ class TestPaddingApplication:
         for i, (actual, exp) in enumerate(zip(label.padding, expected)):
             assert abs(actual - exp) < 0.001, \
                 f"Padding[{i}]: expected {exp}, got {actual}"
-     # Complex strategy: 20 examples (adequate coverage)
     
     @given(padding_four)
     # Complex strategy: 20 examples (adequate coverage)
