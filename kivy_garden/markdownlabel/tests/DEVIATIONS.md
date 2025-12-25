@@ -20,3 +20,6 @@
 - Line 335: Test `test_padding_update_complex_content` calls `label.force_rebuild()` after changing the padding property. Same issue as line 251 - the test should use rebuild detection helpers to verify rebuild behavior instead of forcing a rebuild.
 - Line 353: Test `test_multiple_padding_updates` calls `label.force_rebuild()` in a loop after each padding change. Same issue as line 251 - the test should use rebuild detection helpers to verify rebuild behavior instead of forcing a rebuild.
 - Line 9: The `assume` function is imported from hypothesis but is only used in one test (line 103, 240, 285, 310, 623, 720). While this is not a violation, it's worth noting that `assume()` is being used correctly to filter invalid inputs in property tests as per guidelines (line 644).
+
+## test_rtl_alignment.py
+- Line 8: Unused import `os` - The `import os` statement is declared but never used anywhere in the file. According to best practices (TESTING.md line 628), unused imports should be removed to keep the code clean.
