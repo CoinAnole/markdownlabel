@@ -153,7 +153,6 @@ class TestMarkdownRoundTripSerialization:
         
         assert ast1 == ast2, \
             f"AST mismatch after round-trip:\nOriginal: {ast1}\nAfter: {ast2}"
-     # Complex strategy: 20 examples (adequate coverage)
     
     @given(markdown_bold())
     # Complex strategy: 20 examples (adequate coverage)

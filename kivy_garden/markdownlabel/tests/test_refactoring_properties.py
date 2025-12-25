@@ -86,7 +86,6 @@ class TestDiscoveryPerformance:
         **Validates: Requirements 6.4, 6.5**
         """
         import subprocess
-        import os
         
         # Get the test directory path
         test_dir = os.path.dirname(__file__)
@@ -135,7 +134,6 @@ class TestDiscoveryPerformance:
         **Validates: Requirements 6.4, 6.5**
         """
         import subprocess
-        import os
         
         # Get the test directory path
         test_dir = os.path.dirname(__file__)
@@ -171,7 +169,6 @@ class TestDiscoveryPerformance:
         **Validates: Requirements 6.4, 6.5**
         """
         import subprocess
-        import os
         
         # Get the test directory path
         test_dir = os.path.dirname(__file__)
