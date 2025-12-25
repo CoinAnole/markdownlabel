@@ -124,7 +124,7 @@ class TestDocumentationCompliance:
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_custom_value_detection_property(self, custom_value):
-        """Property test for custom value detection logic."""
+        """Test that _is_custom_value correctly identifies custom max_examples values outside the standard set."""
         # Test that our detection logic correctly identifies custom values
         is_custom = self._is_custom_value(custom_value)
         
@@ -139,7 +139,7 @@ class TestDocumentationCompliance:
     # Complex strategy: 15 examples (adequate coverage)
     @settings(max_examples=15, deadline=None)
     def test_comment_detection_property(self, comment_text):
-        """Property test for explanatory comment detection."""
+        """Test that _has_explanatory_comment correctly identifies comments containing explanation keywords."""
         # Create mock lines with comment
         lines = [
             "    @given(st.booleans())",

@@ -113,13 +113,7 @@ def test_font_size_triggers_rebuild(self):
 # Combination strategy: 50 examples (combination coverage)
 @settings(max_examples=50, deadline=None)
 def test_naming_pattern_consistency_property(test_name_base, assertion_type):
-    """
-    **Property 6: Naming Pattern Consistency**
-    **Validates: Requirements 1.4, 5.2**
-    
-    For any test file in the test suite, all test methods SHALL follow consistent naming patterns
-    where the method name accurately reflects what the test asserts.
-    """
+    """Test that test methods with consistent naming patterns (matching their assertion types) do not generate rebuild or value naming violations."""
     validator = NamingConventionValidator()
     assertion_analyzer = AssertionAnalyzer()
     

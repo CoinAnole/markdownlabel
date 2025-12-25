@@ -19,7 +19,7 @@ from test_analysis.assertion_analyzer import AssertionAnalyzer, AssertionType, A
 
 @pytest.mark.test_tests
 class TestAssertionAnalyzer:
-    """Unit tests for AssertionAnalyzer."""
+    """Tests for assertion pattern detection and naming mismatch analysis."""
     
     def setup_method(self):
         """Set up test fixtures."""

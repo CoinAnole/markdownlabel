@@ -34,11 +34,7 @@ class TestSharedStrategyAvailability:
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_markdown_heading_strategy_generates_valid_headings(self, heading):
-        """**Feature: test-refactoring, Property 6: Shared Strategy Availability**
-        *For any* Hypothesis strategy used in multiple modules, that strategy should be 
-        importable from the shared utilities module and generate valid test data.
-        **Validates: Requirements 3.2**
-        """
+        """Test that the shared markdown_heading strategy generates valid heading text that can be used with MarkdownLabel."""
         # Verify heading format
         assert heading.startswith('#'), f"Heading should start with #: {heading}"
         assert ' ' in heading, f"Heading should have space after #: {heading}"
@@ -158,11 +154,7 @@ class TestSharedInfrastructureHelpers:
     # Complex strategy: 50 examples (adequate coverage)
     @settings(max_examples=50, deadline=None)
     def test_find_labels_recursive_function_available(self, text):
-        """**Feature: test-refactoring, Property 7: Helper Function Consolidation**
-        *For any* helper function, it should appear in exactly one location 
-        (either in a specific module or in shared utilities) and be functional.
-        **Validates: Requirements 3.3**
-        """
+        """Test that the shared find_labels_recursive helper function is available and correctly finds all Label widgets in the widget tree."""
         label = MarkdownLabel(text=text)
         
         # Test that find_labels_recursive is available and works
