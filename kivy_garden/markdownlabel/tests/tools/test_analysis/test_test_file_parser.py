@@ -18,6 +18,8 @@ if str(tools_dir) not in sys.path:
     sys.path.insert(0, str(tools_dir))
 
 from test_analysis.file_parser import FileParser, FileMetadata
+# Import strategies from test_utils using absolute import
+from kivy_garden.markdownlabel.tests.test_utils import rebuild_test_file_strategy
 
 
 # **Feature: test-suite-refactoring, Property 1: Test Name Consistency**
@@ -25,63 +27,6 @@ from test_analysis.file_parser import FileParser, FileMetadata
 # implementation SHALL contain assertions that verify a rebuild actually
 # occurred (such as widget identity checks or explicit rebuild verification).
 # **Validates: Requirements 1.1**
-
-
-@st.composite
-def rebuild_test_file_strategy(draw):
-    """Generate a Python test file with a rebuild test."""
-    test_name = draw(st.sampled_from([
-        "test_color_change_triggers_rebuild",
-        "test_font_size_triggers_rebuild",
-        "test_text_triggers_rebuild",
-        "test_padding_triggers_rebuild"
-    ]))
-    
-    has_rebuild_assertion = draw(st.booleans())
-    
-    if has_rebuild_assertion:
-        # Include rebuild-related assertions
-        assertion_code = draw(st.sampled_from([
-            "    widget_id_before = id(label.children[0])\n"
-            "    label.text = 'new text'\n"
-            "    widget_id_after = id(label.children[0])\n"
-            "    assert widget_id_before != widget_id_after",
-            
-            "    ids_before = collect_widget_ids(label)\n"
-            "    label.color = [1, 0, 0, 1]\n"
-            "    ids_after = collect_widget_ids(label)\n"
-            "    assert ids_before != ids_after",
-            
-            "    assert_rebuild_occurred(label, lambda: setattr(label, 'font_size', 20))",
-            
-            "    assert_no_rebuild(label, lambda: setattr(label, 'color', [1, 0, 0, 1]))"
-        ]))
-    else:
-        # Only value assertions, no rebuild checks
-        assertion_code = draw(st.sampled_from([
-            "    label.text = 'new text'\n"
-            "    assert label.text == 'new text'",
-            
-            "    label.color = [1, 0, 0, 1]\n"
-            "    assert label.color == [1, 0, 0, 1]",
-            
-            "    label.font_size = 20\n"
-            "    assert label.font_size == 20"
-        ]))
-    
-    test_code = f'''"""Test module."""
-import pytest
-
-class TestRebuildBehavior:
-    """Test class for rebuild behavior."""
-    
-    def {test_name}(self):
-        """Test that property change triggers rebuild."""
-        label = create_label()
-{assertion_code}
-'''
-    
-    return test_code, test_name, has_rebuild_assertion
 
 
 @pytest.mark.test_tests

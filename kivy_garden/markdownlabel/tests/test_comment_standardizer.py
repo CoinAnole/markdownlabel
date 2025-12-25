@@ -37,7 +37,7 @@ class TestBooleanStrategyDocumentation:
         max_examples=st.integers(min_value=1, max_value=100).filter(lambda x: x not in {2, 5, 10, 20, 50, 100}),
         function_name=st.text(min_size=5, max_size=30, alphabet=st.characters(whitelist_categories=('Lu', 'Ll', 'Nd', 'Pc'))).map(lambda x: f"test_{x}")
     )
-    # Complex strategy: 20 examples (adequate coverage)
+    # Combination strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_boolean_strategy_comments_reference_true_false_coverage(self, max_examples, function_name):
         """Boolean strategy comments always reference True/False coverage."""
@@ -301,7 +301,7 @@ class TestFiniteStrategyDocumentation:
         max_value=st.integers(min_value=11, max_value=50),
         max_examples=st.integers(min_value=1, max_value=100).filter(lambda x: x not in {2, 5, 10, 20, 50, 100})
     )
-    # Complex strategy: 25 examples (adequate coverage)
+    # Combination strategy: 25 examples (adequate coverage)
     @settings(max_examples=25, deadline=None)
     def test_finite_strategy_comments_reference_input_space_size(self, min_value, max_value, max_examples):
         """Finite strategy comments reference input space size in rationale."""
@@ -368,7 +368,7 @@ def test_finite_strategy(num):
         items=st.lists(st.text(min_size=1, max_size=10), min_size=1, max_size=20),
         max_examples=st.integers(min_value=1, max_value=50).filter(lambda x: x not in {2, 5, 10, 20, 50, 100})
     )
-    # Complex strategy: 30 examples (adequate coverage)
+    # Combination strategy: 30 examples (adequate coverage)
     @settings(max_examples=30, deadline=None)
     def test_sampled_from_finite_strategy_documentation(self, items, max_examples):
         """Sampled_from finite strategies are properly documented."""
@@ -592,7 +592,7 @@ class TestPerformanceRationaleDocumentation:
         strategy_complexity=st.sampled_from(['text', 'floats', 'composite']),
         function_name=st.text(min_size=5, max_size=30, alphabet=st.characters(whitelist_categories=('Lu', 'Ll', 'Nd', 'Pc'))).map(lambda x: f"test_{x}")
     )
-    # Complex strategy: 3 examples (performance optimized)
+    # Combination strategy: 3 examples (performance optimized)
     @settings(max_examples=3, deadline=None)
     def test_execution_time_performance_rationale_documented(self, max_examples, strategy_complexity, function_name):
         """Execution time performance rationale is properly documented."""
@@ -657,7 +657,7 @@ def {function_name}(data):
         max_examples=st.integers(min_value=1, max_value=20),
         function_name=st.text(min_size=5, max_size=30, alphabet=st.characters(whitelist_categories=('Lu', 'Ll', 'Nd', 'Pc'))).map(lambda x: f"test_{x}")
     )
-    # Complex strategy: 4 examples (performance optimized)
+    # Combination strategy: 4 examples (performance optimized)
     @settings(max_examples=4, deadline=None)
     def test_explicit_performance_comments_detected(self, performance_keywords, max_examples, function_name):
         """Explicit performance comments are properly detected and preserved."""

@@ -18,6 +18,8 @@ if str(tools_dir) not in sys.path:
     sys.path.insert(0, str(tools_dir))
 
 from test_analysis.duplicate_detector import DuplicateDetector, DuplicateGroup, ConsolidationReport
+# Import strategies from test_utils using absolute import
+from kivy_garden.markdownlabel.tests.test_utils import duplicate_helper_functions
 
 
 # **Feature: test-suite-refactoring, Property 3: Helper Function Consolidation**
@@ -25,73 +27,6 @@ from test_analysis.duplicate_detector import DuplicateDetector, DuplicateGroup, 
 # or similar implementations, the function SHALL be defined once in `test_utils.py`
 # and imported by other files.
 # **Validates: Requirements 2.1, 2.2, 2.3**
-
-
-@st.composite
-def duplicate_helper_functions(draw):
-    """Generate test files with duplicate helper functions."""
-    function_name = draw(st.sampled_from([
-        "find_labels_recursive",
-        "_find_labels_recursive", 
-        "collect_widget_ids",
-        "_collect_widget_ids",
-        "assert_colors_equal",
-        "setup_test_widget"
-    ]))
-    
-    # Generate function body variations
-    body_templates = [
-        """    if labels is None:
-        labels = []
-    for child in widget.children:
-        if isinstance(child, Label):
-            labels.append(child)
-        labels = {func_name}(child, labels)
-    return labels""",
-        
-        """    result = []
-    if hasattr(widget, 'children'):
-        for child in widget.children:
-            if hasattr(child, 'text'):
-                result.append(child)
-            result.extend({func_name}(child))
-    return result""",
-        
-        """    ids = set()
-    ids.add(id(widget))
-    for child in getattr(widget, 'children', []):
-        ids.update({func_name}(child))
-    return ids"""
-    ]
-    
-    # Choose whether to make them identical or similar
-    make_identical = draw(st.booleans())
-    num_files = draw(st.integers(min_value=2, max_value=4))
-    
-    files = []
-    for i in range(num_files):
-        if make_identical:
-            body = body_templates[0].format(func_name=function_name)
-        else:
-            body = draw(st.sampled_from(body_templates)).format(func_name=function_name)
-        
-        file_content = f'''"""Test module {i}."""
-import pytest
-
-class TestExample{i}:
-    """Test class {i}."""
-    
-    def {function_name}(self, widget, labels=None):
-        """Helper function for finding labels."""
-{body}
-    
-    def test_example_{i}(self):
-        """Example test."""
-        assert True
-'''
-        files.append(file_content)
-    
-    return function_name, files, make_identical
 
 
 @pytest.mark.test_tests

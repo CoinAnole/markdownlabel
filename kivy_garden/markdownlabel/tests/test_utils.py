@@ -719,3 +719,151 @@ def simulate_coverage_measurement(temp_dir: str, test_paths: List[str],
     
     final_coverage = max(0, min(100, base_coverage + coverage_adjustment + variance))
     return final_coverage
+
+
+# Test Analysis Strategies
+
+@st.composite
+def duplicate_helper_functions(draw):
+    """Generate test files with duplicate helper functions.
+    
+    This strategy generates test files containing helper functions that appear
+    in multiple files, either identically or with similar implementations. Used
+    for testing duplicate detection and consolidation logic.
+    
+    Returns:
+        Tuple containing:
+            - function_name: Name of the duplicated helper function
+            - files: List of test file contents as strings
+            - make_identical: Boolean indicating if functions are identical
+    """
+    function_name = draw(st.sampled_from([
+        "find_labels_recursive",
+        "_find_labels_recursive",
+        "collect_widget_ids",
+        "_collect_widget_ids",
+        "assert_colors_equal",
+        "setup_test_widget"
+    ]))
+    
+    # Generate function body variations
+    body_templates = [
+        """    if labels is None:
+        labels = []
+    for child in widget.children:
+        if isinstance(child, Label):
+            labels.append(child)
+        labels = {func_name}(child, labels)
+    return labels""",
+        
+        """    result = []
+    if hasattr(widget, 'children'):
+        for child in widget.children:
+            if hasattr(child, 'text'):
+                result.append(child)
+            result.extend({func_name}(child))
+    return result""",
+        
+        """    ids = set()
+    ids.add(id(widget))
+    for child in getattr(widget, 'children', []):
+        ids.update({func_name}(child))
+    return ids"""
+    ]
+    
+    # Choose whether to make them identical or similar
+    make_identical = draw(st.booleans())
+    num_files = draw(st.integers(min_value=2, max_value=4))
+    
+    files = []
+    for i in range(num_files):
+        if make_identical:
+            body = body_templates[0].format(func_name=function_name)
+        else:
+            body = draw(st.sampled_from(body_templates)).format(func_name=function_name)
+        
+        file_content = f'''"""Test module {i}."""
+import pytest
+
+class TestExample{i}:
+    """Test class {i}."""
+    
+    def {function_name}(self, widget, labels=None):
+        """Helper function for finding labels."""
+{body}
+    
+    def test_example_{i}(self):
+        """Example test."""
+        assert True
+'''
+        files.append(file_content)
+    
+    return function_name, files, make_identical
+
+
+@st.composite
+def rebuild_test_file_strategy(draw):
+    """Generate a Python test file with a rebuild test.
+    
+    This strategy generates test files containing tests with "triggers_rebuild"
+    in their names, either with or without actual rebuild-related assertions.
+    Used for testing test file parser and name consistency validation.
+    
+    Returns:
+        Tuple containing:
+            - test_code: Complete test file content as string
+            - test_name: Name of the generated test method
+            - has_rebuild_assertion: Boolean indicating if test has rebuild assertions
+    """
+    test_name = draw(st.sampled_from([
+        "test_color_change_triggers_rebuild",
+        "test_font_size_triggers_rebuild",
+        "test_text_triggers_rebuild",
+        "test_padding_triggers_rebuild"
+    ]))
+    
+    has_rebuild_assertion = draw(st.booleans())
+    
+    if has_rebuild_assertion:
+        # Include rebuild-related assertions
+        assertion_code = draw(st.sampled_from([
+            "    widget_id_before = id(label.children[0])\n"
+            "    label.text = 'new text'\n"
+            "    widget_id_after = id(label.children[0])\n"
+            "    assert widget_id_before != widget_id_after",
+            
+            "    ids_before = collect_widget_ids(label)\n"
+            "    label.color = [1, 0, 0, 1]\n"
+            "    ids_after = collect_widget_ids(label)\n"
+            "    assert ids_before != ids_after",
+            
+            "    assert_rebuild_occurred(label, lambda: setattr(label, 'font_size', 20))",
+            
+            "    assert_no_rebuild(label, lambda: setattr(label, 'color', [1, 0, 0, 1]))"
+        ]))
+    else:
+        # Only value assertions, no rebuild checks
+        assertion_code = draw(st.sampled_from([
+            "    label.text = 'new text'\n"
+            "    assert label.text == 'new text'",
+            
+            "    label.color = [1, 0, 0, 1]\n"
+            "    assert label.color == [1, 0, 0, 1]",
+            
+            "    label.font_size = 20\n"
+            "    assert label.font_size == 20"
+        ]))
+    
+    test_code = f'''"""Test module."""
+import pytest
+
+class TestRebuildBehavior:
+    """Test class for rebuild behavior."""
+    
+    def {test_name}(self):
+        """Test that property change triggers rebuild."""
+        label = create_label()
+{assertion_code}
+'''
+    
+    return test_code, test_name, has_rebuild_assertion
