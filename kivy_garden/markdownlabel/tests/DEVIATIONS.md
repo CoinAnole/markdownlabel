@@ -57,3 +57,7 @@
 
 ## test_font_properties.py
 - Line 9: Unused import `os` - The `import os` statement is declared but never used anywhere in the file. According to best practices (TESTING.md line 628), unused imports should be removed to keep the code clean.
+
+## test_sizing_behavior.py
+- Line 11-12: Unused imports `BoxLayout` and `Label` from `kivy.uix` are declared but never used anywhere in the file. According to best practices (TESTING.md line 628), unused imports should be removed to keep the code clean.
+- Lines 29, 47, 69, 94, 105, 132, 162, 176, 195, 222, 244, 266, 301, 338, 352, 371, 398, 407, 417, 440, 463, 491, 507, 525, 544: The file uses `@pytest.mark.property` marker extensively, but this marker is NOT documented in TESTING.md. The guidelines only document `@pytest.mark.slow`, `@pytest.mark.needs_window`, and `@pytest.mark.test_tests` markers. Using an undocumented marker violates the principle that test practices should follow documented guidelines.
