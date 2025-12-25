@@ -99,6 +99,15 @@
 ## test_core_functionality.py
 - Lines 33, 46, 63, 108, 127, 154, 171, 203, 227, 248, 279, 297, 314: Tests that create `MarkdownLabel` widgets require a Kivy window but are missing the `@pytest.mark.needs_window` marker. According to TESTING.md guidelines (lines 150-158), tests requiring Kivy window should be marked with `@pytest.mark.needs_window` to properly categorize them and ensure they are skipped in environments without a display.
 
+## test_rebuild_semantics.py
+- Lines 91-267: Test methods use "preserves_widget_ids" naming pattern (e.g., `test_base_font_size_preserves_widget_ids`, `test_color_preserves_widget_ids`) instead of the guideline pattern `test_*_preserves_widget_tree_*`. According to TESTING.md guidelines (lines 102-107), tests that verify NO rebuild occurred should use the pattern `test_*_preserves_widget_tree_*`.
+- Lines 313-358: Property-based test `test_style_property_changes_preserve_widget_identities` uses "preserve_widget_identities" naming instead of `test_*_preserves_widget_tree_*`. The naming should follow the rebuild testing conventions specified in the guidelines.
+- Lines 601-758: Test methods use "rebuilds_widget_tree" naming pattern (e.g., `test_text_change_rebuilds_widget_tree`, `test_font_name_change_rebuilds_widget_tree`) instead of the guideline pattern `test_*_triggers_rebuild_*`. According to TESTING.md guidelines (lines 102-107), tests that verify a rebuild occurred should use the pattern `test_*_triggers_rebuild_*`.
+- Lines 777-816: Property-based test `test_text_change_rebuilds_widget_tree_pbt` uses "rebuilds_widget_tree_pbt" naming instead of `test_*_triggers_rebuild_*`. The naming should follow the rebuild testing conventions.
+- Line 775: Comment says "Complex strategy: 50 examples (adequate coverage)" but the test uses two `simple_markdown_document()` parameters which is a combination of two complex strategies. According to TESTING.md guidelines (lines 363-377), this should be classified as a "Combination strategy", not a "Complex strategy".
+- Line 822: Comment says "Complex strategy: 50 examples (adequate coverage)" but the test uses `st.sampled_from(['Roboto', 'RobotoMono-Regular', 'Roboto-Bold'])` which is a small finite strategy (3 values). According to TESTING.md guidelines (lines 335-347), this should be classified as a "Small finite strategy: 3 examples (input space size: 3)" with `max_examples=3`.
+- Line 869: Comment says "Complex strategy: 50 examples (adequate coverage)" but the test uses `st.sampled_from(['unstyled', 'styled'])` which is a small finite strategy (2 values). According to TESTING.md guidelines (lines 335-347), this should be classified as a "Small finite strategy: 2 examples (input space size: 2)" with `max_examples=2`.
+
 ## test_serialization.py
 - Line 156: Orphaned comment `# Complex strategy: 20 examples (adequate coverage)` that is not associated with any `@given` decorator or test method. This appears to be a copy-paste error from `test_paragraph_round_trip`. The comment is positioned between test methods with no corresponding property-based test.
 
