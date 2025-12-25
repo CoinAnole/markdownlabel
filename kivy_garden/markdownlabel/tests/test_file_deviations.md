@@ -373,3 +373,153 @@ No deviations found.
 - Line 680: Property test `test_html_content_is_escaped` is missing the required docstring format. Should include feature and property information.
 
 - Line 743: Property test `test_arbitrary_html_content_safety` is missing the required docstring format. Should include feature and property information.
+
+### test_kivy_renderer.py
+
+- Line 24-37: Custom strategy `heading_token` is defined in the test file. According to guidelines section "Helper Functions", custom Hypothesis strategies should be added to test_utils.py and imported, not duplicated in test files. This strategy is used in multiple tests and should be consolidated.
+
+- Line 40-50: Custom strategy `paragraph_token` is defined in the test file. According to guidelines section "Helper Functions", this strategy should be moved to test_utils.py and imported.
+
+- Line 53-66: Custom strategy `list_item_token` is defined in the test file. According to guidelines section "Helper Functions", this strategy should be moved to test_utils.py and imported.
+
+- Line 69-85: Custom strategy `list_token` is defined in the test file. According to guidelines section "Helper Functions", this strategy should be moved to test_utils.py and imported.
+
+- Line 88-100: Custom strategy `code_block_token` is defined in the test file. According to guidelines section "Helper Functions", this strategy should be moved to test_utils.py and imported.
+
+- Line 103-116: Custom strategy `block_quote_token` is defined in the test file. According to guidelines section "Helper Functions", this strategy should be moved to test_utils.py and imported.
+
+- Line 119-132: Custom strategy `image_token` is defined in the test file. According to guidelines section "Helper Functions", this strategy should be moved to test_utils.py and imported.
+
+- Line 586-651: Custom strategies `table_cell_token`, `table_row_token`, and `table_token` are defined in the test file. According to guidelines section "Helper Functions", these strategies should be moved to test_utils.py and imported.
+
+- Line 189-191: Property test `test_heading_font_size_scales_with_base` uses `st.integers(min_value=1, max_value=6), st.floats(min_value=10, max_value=30)` which is a combination strategy with 6 * 21 = 126 possible combinations, but the comment says `# Complex strategy: 10 examples (adequate coverage)`. According to guidelines section "Property-Based Testing Optimization", this should be classified as a "Combination strategy" with the comment `# Combination strategy: 10 examples (combination coverage)` or the max_examples should be increased to cover more combinations (capped at 50).
+
+- Line 189-208: Property test `test_heading_font_size_scales_with_base` is missing the required docstring format. According to guidelines section "Property-Based Testing", property tests should include `**Feature: feature-name, Property N: Property Description**` and `**Validates: Requirements X.Y**` in their docstrings. The current docstring only says "Heading font size scales proportionally with base_font_size." without the required feature and property information.
+
+- Line 219-228: Property test `test_paragraph_has_markup_enabled` is missing the required docstring format. Should include feature and property information following the format `**Feature: feature-name, Property N: Property Description**` and `**Validates: Requirements X.Y**`.
+
+- Line 230-238: Property test `test_paragraph_returns_label` is missing the required docstring format. Should include feature and property information.
+
+- Line 251-259: Property test `test_list_returns_boxlayout` is missing the required docstring format. Should include feature and property information.
+
+- Line 261-273: Property test `test_list_has_correct_item_count` is missing the required docstring format. Should include feature and property information.
+
+- Line 275-290: Property test `test_unordered_list_has_bullet_markers` is missing the required docstring format. Should include feature and property information.
+
+- Line 292-313: Property test `test_ordered_list_has_number_markers` is missing the required docstring format. Should include feature and property information.
+
+- Line 324-366: Property test `test_nested_list_increases_indentation` is missing the required docstring format. Should include feature and property information.
+
+- Line 378-386: Property test `test_code_block_returns_widget` is missing the required docstring format. Should include feature and property information.
+
+- Line 388-408: Property test `test_code_block_has_monospace_font` is missing the required docstring format. Should include feature and property information.
+
+- Line 410-421: Property test `test_code_block_has_dark_background` is missing the required docstring format. Should include feature and property information.
+
+- Line 430-442: Property test `test_code_block_stores_language_info` is missing the required docstring format. Should include feature and property information.
+
+- Line 468-476: Property test `test_block_quote_returns_boxlayout` is missing the required docstring format. Should include feature and property information.
+
+- Line 478-488: Property test `test_block_quote_has_left_padding` is missing the required docstring format. Should include feature and property information.
+
+- Line 490-499: Property test `test_block_quote_has_left_border` is missing the required docstring format. Should include feature and property information.
+
+- Line 510-518: Property test `test_thematic_break_returns_widget` is missing the required docstring format. Should include feature and property information.
+
+- Line 520-529: Property test `test_thematic_break_has_fixed_height` is missing the required docstring format. Should include feature and property information.
+
+- Line 531-540: Property test `test_thematic_break_has_horizontal_line` is missing the required docstring format. Should include feature and property information.
+
+- Line 551-559: Property test `test_image_returns_asyncimage` is missing the required docstring format. Should include feature and property information.
+
+- Line 561-571: Property test `test_image_has_correct_source` is missing the required docstring format. Should include feature and property information.
+
+- Line 573-582: Property test `test_image_stores_alt_text` is missing the required docstring format. Should include feature and property information.
+
+- Line 662-703: Property test `test_table_has_correct_column_count` is missing the required docstring format. Should include feature and property information.
+
+- Line 705-745: Property test `test_table_has_correct_cell_count` is missing the required docstring format. Should include feature and property information.
+
+- Line 747-755: Property test `test_table_returns_gridlayout` is missing the required docstring format. Should include feature and property information.
+
+- Line 757-766: Property test `test_table_cells_are_labels` is missing the required docstring format. Should include feature and property information.
+
+- Line 777-792: Test `test_cell_alignment_applied` uses @pytest.mark.parametrize, so it's not a property test and doesn't need the property test docstring format. This is correct.
+
+- Line 794-845: Property test `test_table_preserves_column_alignments` is missing the required docstring format. Should include feature and property information.
+
+- Line 847-861: Test `test_invalid_alignment_defaults_to_left` uses @pytest.mark.parametrize, so it's not a property test and doesn't need the property test docstring format. This is correct.
+
+- Line 863-874: Property test `test_cell_stores_alignment_metadata` is missing the required docstring format. Should include feature and property information.
+
+- Line 882-972: Tests in `TestDeepNestingTruncation` class are not property tests (they don't use @given decorators), so they don't need the property test docstring format. This is correct.
+
+### test_label_compatibility.py
+
+- Line 29: Property test `test_font_size_sets_base_font_size` is missing the required docstring format. According to guidelines section "Property-Based Testing", property tests should include `**Feature: feature-name, Property N: Property Description**` and `**Validates: Requirements X.Y**` in their docstrings. The current docstring only says "Setting font_size updates base_font_size to the same value." without the required feature and property information.
+
+- Line 39: Property test `test_base_font_size_returns_via_font_size` is missing the required docstring format. Should include feature and property information following the format `**Feature: feature-name, Property N: Property Description**` and `**Validates: Requirements X.Y**`.
+
+- Line 50: Property test `test_font_size_change_updates_base_font_size` is missing the required docstring format. Should include feature and property information.
+
+- Line 62: Property test `test_base_font_size_change_updates_font_size` is missing the required docstring format. Should include feature and property information.
+
+- Line 73: Property test `test_bidirectional_equivalence` is missing the required docstring format. Should include feature and property information.
+
+- Line 99: Property test `test_bold_property_accepted` is missing the required docstring format. Should include feature and property information following the format `**Feature: feature-name, Property N: Property Description**` and `**Validates: Requirements X.Y**`.
+
+- Line 108: Property test `test_italic_property_accepted` is missing the required docstring format. Should include feature and property information.
+
+- Line 116: Property test `test_underline_property_accepted` is missing the required docstring format. Should include feature and property information.
+
+- Line 124: Property test `test_strikethrough_property_accepted` is missing the required docstring format. Should include feature and property information.
+
+- Line 132: Property test `test_markup_property_accepted` is missing the required docstring format. Should include feature and property information.
+
+- Line 140: Property test `test_all_noop_properties_together` is missing the required docstring format. Should include feature and property information.
+
+- Line 160: Property test `test_noop_properties_do_not_affect_rendering` is missing the required docstring format. Should include feature and property information.
+
+- Line 187: Property test `test_bold_property_change_after_creation` is missing the required docstring format. Should include feature and property information.
+
+- Line 196: Property test `test_italic_property_change_after_creation` is missing the required docstring format. Should include feature and property information.
+
+- Line 205: Property test `test_underline_property_change_after_creation` is missing the required docstring format. Should include feature and property information.
+
+- Line 214: Property test `test_strikethrough_property_change_after_creation` is missing the required docstring format. Should include feature and property information.
+
+- Line 223: Property test `test_markup_property_change_after_creation` is missing the required docstring format. Should include feature and property information.
+
+- Line 243: Property test `test_mipmap_property_accepted_and_stored` is missing the required docstring format. Should include feature and property information following the format `**Feature: feature-name, Property N: Property Description**` and `**Validates: Requirements X.Y**`.
+
+- Line 251: Property test `test_outline_width_property_accepted_and_stored` is missing the required docstring format. Should include feature and property information.
+
+- Line 262: Property test `test_outline_color_property_accepted_and_stored` is missing the required docstring format. Should include feature and property information.
+
+- Line 274: Property test `test_text_language_property_accepted_and_stored` is missing the required docstring format. Should include feature and property information.
+
+- Line 280: Test `test_base_direction_property_accepted_and_stored` uses @pytest.mark.parametrize, so it's not a property test and doesn't need the property test docstring format. This is correct.
+
+- Line 293: Property test `test_ellipsis_options_property_accepted_and_stored` is missing the required docstring format. Should include feature and property information.
+
+- Line 305: Property test `test_all_noop_properties_together_accepted_and_stored` is missing the required docstring format. Should include feature and property information.
+
+- Line 329: Property test `test_mipmap_property_change_after_creation` is missing the required docstring format. Should include feature and property information.
+
+- Line 338: Property test `test_outline_width_property_change_after_creation` is missing the required docstring format. Should include feature and property information.
+
+- Line 350: Property test `test_outline_color_property_change_after_creation` is missing the required docstring format. Should include feature and property information.
+
+- Line 362: Property test `test_text_language_property_change_after_creation` is missing the required docstring format. Should include feature and property information.
+
+- Line 369: Test `test_base_direction_property_change_after_creation` uses @pytest.mark.parametrize, so it's not a property test and doesn't need the property test docstring format. This is correct.
+
+- Line 383: Property test `test_ellipsis_options_property_change_after_creation` is missing the required docstring format. Should include feature and property information.
+
+- Line 397: Property test `test_advanced_noop_properties_do_not_affect_rendering` is missing the required docstring format. Should include feature and property information.
+
+- Line 433: Test `test_label_compatibility_imports_resolve` is in a class marked with `@pytest.mark.test_tests`, which is correct for meta-tests. However, this is not a property test (doesn't use @given), so it doesn't need the property test docstring format. This is correct.
+
+- Line 461: Test `test_shared_utilities_imports_resolve` is also in the meta-test class and is not a property test, so it doesn't need the property test docstring format. This is correct.
+
+- Line 497: Test `test_cross_module_imports_work` is also in the meta-test class and is not a property test, so it doesn't need the property test docstring format. This is correct.
