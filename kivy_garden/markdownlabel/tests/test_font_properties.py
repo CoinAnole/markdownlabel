@@ -111,7 +111,7 @@ class TestFontNamePropertyForwarding:
         ('Roboto-Bold', 'Roboto'), ('Roboto-Bold', 'Roboto-Italic'),
         ('Roboto-Italic', 'Roboto'), ('Roboto-Italic', 'Roboto-Bold')
     ])
-    def test_font_name_change_updates_value(self, font1, font2):
+    def test_font_name_change_triggers_rebuild(self, font1, font2):
         """Changing font_name triggers widget rebuild with new font."""
 
         
@@ -219,7 +219,7 @@ class TestLineHeightPropertyForwarding:
     @given(line_height_strategy, line_height_strategy)
     # Combination strategy: 20 examples (combination coverage)
     @settings(max_examples=20, deadline=None)
-    def test_line_height_change_updates_value(self, lh1, lh2):
+    def test_line_height_change_triggers_rebuild(self, lh1, lh2):
         """Changing line_height triggers widget rebuild with new value."""
         assume(not floats_equal(lh1, lh2))
         
@@ -934,6 +934,8 @@ class TestNoRebuildOnFontSizeChange:
             if isinstance(child, Label):
                 found_label = True
                 # Font size should reflect the change
+                assert abs(child.font_size - new_size) < 0.1, \
+                    f"Expected font_size={new_size}, got {child.font_size}"
                 break
         
         assert found_label, "Should have found at least one Label widget"

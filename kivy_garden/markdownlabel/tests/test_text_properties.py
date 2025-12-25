@@ -51,7 +51,7 @@ class TestTextSizeForwarding:
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_text_size_change_updates_value(self, width1, width2):
-        """Changing text_size triggers widget rebuild."""
+        """Changing text_size updates the stored value on MarkdownLabel."""
         assume(abs(width1 - width2) > 1)  # Ensure they're different
         
         label = MarkdownLabel(text='Hello World', text_size=[width1, None])
@@ -440,7 +440,7 @@ class TestUnicodeErrorsForwarding:
     @given(unicode_errors_strategy, unicode_errors_strategy)
     # Combination strategy: 50 examples (combination coverage)
     @settings(max_examples=50, deadline=None)
-    def test_unicode_errors_change_updates_value(self, errors1, errors2):
+    def test_unicode_errors_change_triggers_rebuild(self, errors1, errors2):
         """Changing unicode_errors triggers widget rebuild with new value."""
         assume(errors1 != errors2)
         
@@ -576,7 +576,7 @@ class TestStripForwarding:
     @given(st.booleans(), st.booleans())
     # Combination strategy: 2 examples (combination coverage)
     @settings(max_examples=2, deadline=None)
-    def test_strip_change_updates_value(self, strip1, strip2):
+    def test_strip_change_triggers_rebuild(self, strip1, strip2):
         """Changing strip triggers widget rebuild with new value."""
         assume(strip1 != strip2)
         
