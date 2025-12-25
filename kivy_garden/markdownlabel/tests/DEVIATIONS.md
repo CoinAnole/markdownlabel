@@ -1,3 +1,7 @@
+## test_documentation_compliance.py
+- Line 123-137: Test method `test_custom_value_detection_property` has a docstring "Property test for custom value detection logic." which is generic and does not describe what specific property is being tested or what behavior is expected. According to TESTING.md guidelines (lines 45-74), test docstrings should clearly describe what is being tested, including what property or behavior is being verified and what the expected outcome is.
+- Line 138-164: Test method `test_comment_detection_property` has a docstring "Property test for explanatory comment detection." which is generic and does not describe what specific property is being tested or what behavior is expected. According to TESTING.md guidelines, test docstrings should provide specific details about the test's purpose and expected outcomes.
+
 ## test_advanced_compatibility.py
 - Line 877: Test method name `test_disabled_color_updates_value` suggests a value update test, but the implementation verifies rebuild behavior (calls `force_rebuild()`). According to testing guidelines, value update tests should not verify rebuilds and rebuild tests should use naming convention `test_*_triggers_rebuild_*` or `test_*_rebuilds_*`. The test should be renamed to `test_disabled_change_triggers_rebuild` to match its actual behavior.
 
