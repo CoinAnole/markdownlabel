@@ -14,7 +14,8 @@ from kivy_garden.markdownlabel import MarkdownLabel
 from .test_utils import (
     find_labels_recursive,
     simple_markdown_document,
-    unicode_errors_strategy
+    unicode_errors_strategy,
+    collect_widget_ids
 )
 
 
@@ -440,10 +441,17 @@ class TestUnicodeErrorsForwarding:
     # Combination strategy: 50 examples (combination coverage)
     @settings(max_examples=50, deadline=None)
     def test_unicode_errors_change_triggers_rebuild(self, errors1, errors2):
-        """Changing unicode_errors triggers widget rebuild with new value."""
+        """Changing unicode_errors triggers widget rebuild with new value.
+        
+        **Feature: label-compatibility, Property 10: unicode_errors Forwarding**
+        **Validates: Requirements 10.1, 10.2**
+        """
         assume(errors1 != errors2)
         
         label = MarkdownLabel(text='Hello World', unicode_errors=errors1)
+        
+        # Collect widget IDs before change
+        ids_before = collect_widget_ids(label)
         
         # Verify initial unicode_errors
         labels = find_labels_recursive(label)
@@ -453,6 +461,10 @@ class TestUnicodeErrorsForwarding:
         # Change unicode_errors
         label.unicode_errors = errors2
         label.force_rebuild()  # Force immediate rebuild for test
+        
+        # Verify rebuild occurred
+        ids_after = collect_widget_ids(label)
+        assert ids_before != ids_after, "Widget tree should rebuild for unicode_errors changes"
         
         # Verify new unicode_errors
         labels = find_labels_recursive(label)
@@ -576,10 +588,17 @@ class TestStripForwarding:
     # Combination strategy: 2 examples (combination coverage)
     @settings(max_examples=2, deadline=None)
     def test_strip_change_triggers_rebuild(self, strip1, strip2):
-        """Changing strip triggers widget rebuild with new value."""
+        """Changing strip triggers widget rebuild with new value.
+        
+        **Feature: label-compatibility, Property 13: strip Forwarding**
+        **Validates: Requirements 14.1**
+        """
         assume(strip1 != strip2)
         
         label = MarkdownLabel(text='Hello World', strip=strip1)
+        
+        # Collect widget IDs before change
+        ids_before = collect_widget_ids(label)
         
         # Verify initial strip
         labels = find_labels_recursive(label)
@@ -589,6 +608,10 @@ class TestStripForwarding:
         # Change strip
         label.strip = strip2
         label.force_rebuild()  # Force immediate rebuild for test
+        
+        # Verify rebuild occurred
+        ids_after = collect_widget_ids(label)
+        assert ids_before != ids_after, "Widget tree should rebuild for strip changes"
         
         # Verify new strip
         labels = find_labels_recursive(label)

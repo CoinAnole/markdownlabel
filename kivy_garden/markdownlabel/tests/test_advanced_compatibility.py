@@ -181,10 +181,17 @@ class TestAdvancedFontPropertiesForwarding:
     # Combination strategy: 4 examples (combination coverage)
     @settings(max_examples=4, deadline=None)
     def test_font_kerning_change_triggers_rebuild(self, kerning1, kerning2):
-        """Changing font_kerning triggers widget rebuild with new value."""
+        """Changing font_kerning triggers widget rebuild with new value.
+        
+        **Feature: label-compatibility, Property 11: Advanced Font Properties Forwarding**
+        **Validates: Requirements 11.5**
+        """
         assume(kerning1 != kerning2)
         
         label = MarkdownLabel(text='Hello World', font_kerning=kerning1)
+        
+        # Collect widget IDs before change
+        ids_before = collect_widget_ids(label, exclude_root=True)
         
         # Verify initial value
         labels = find_labels_recursive(label)
@@ -194,6 +201,10 @@ class TestAdvancedFontPropertiesForwarding:
         # Change value
         label.font_kerning = kerning2
         label.force_rebuild()  # Force immediate rebuild for test
+        
+        # Verify rebuild occurred
+        ids_after = collect_widget_ids(label, exclude_root=True)
+        assert ids_before != ids_after, "Widget tree should rebuild for font_kerning changes"
         
         # Verify new value
         labels = find_labels_recursive(label)
@@ -205,10 +216,17 @@ class TestAdvancedFontPropertiesForwarding:
     # Combination strategy: 4 examples (combination coverage)
     @settings(max_examples=4, deadline=None)
     def test_font_blended_change_triggers_rebuild(self, blended1, blended2):
-        """Changing font_blended triggers widget rebuild with new value."""
+        """Changing font_blended triggers widget rebuild with new value.
+        
+        **Feature: label-compatibility, Property 11: Advanced Font Properties Forwarding**
+        **Validates: Requirements 11.6**
+        """
         assume(blended1 != blended2)
         
         label = MarkdownLabel(text='Hello World', font_blended=blended1)
+        
+        # Collect widget IDs before change
+        ids_before = collect_widget_ids(label, exclude_root=True)
         
         # Verify initial value
         labels = find_labels_recursive(label)
@@ -218,6 +236,10 @@ class TestAdvancedFontPropertiesForwarding:
         # Change value
         label.font_blended = blended2
         label.force_rebuild()  # Force immediate rebuild for test
+        
+        # Verify rebuild occurred
+        ids_after = collect_widget_ids(label, exclude_root=True)
+        assert ids_before != ids_after, "Widget tree should rebuild for font_blended changes"
         
         # Verify new value
         labels = find_labels_recursive(label)
@@ -388,7 +410,11 @@ class TestDisabledColorApplication:
                 f"Expected color={expected_color}, got {list(lbl.color)}"
     
     def test_disabled_change_triggers_rebuild(self):
-        """Changing disabled property triggers widget rebuild."""
+        """Changing disabled property triggers widget rebuild.
+        
+        **Feature: label-compatibility, Property 12: disabled_color Application**
+        **Validates: Requirements 12.1, 12.2**
+        """
         regular_color = [1, 0, 0, 1]  # Red
         disabled_color = [0.5, 0.5, 0.5, 0.3]  # Gray semi-transparent
         
@@ -398,6 +424,9 @@ class TestDisabledColorApplication:
             disabled_color=disabled_color,
             disabled=False
         )
+        
+        # Collect widget IDs before change
+        ids_before = collect_widget_ids(label, exclude_root=True)
         
         # Verify initial state uses regular color
         labels = find_labels_recursive(label)
@@ -409,6 +438,11 @@ class TestDisabledColorApplication:
         
         # Change to disabled
         label.disabled = True
+        label.force_rebuild()  # Force immediate rebuild for test
+        
+        # Verify rebuild occurred
+        ids_after = collect_widget_ids(label, exclude_root=True)
+        assert ids_before != ids_after, "Widget tree should rebuild for disabled changes"
         
         # Verify disabled state uses disabled_color
         labels = find_labels_recursive(label)
@@ -420,6 +454,7 @@ class TestDisabledColorApplication:
         
         # Change back to enabled
         label.disabled = False
+        label.force_rebuild()  # Force immediate rebuild for test
         
         # Verify enabled state uses regular color again
         labels = find_labels_recursive(label)

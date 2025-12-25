@@ -112,10 +112,15 @@ class TestFontNamePropertyForwarding:
         ('Roboto-Italic', 'Roboto'), ('Roboto-Italic', 'Roboto-Bold')
     ])
     def test_font_name_change_triggers_rebuild(self, font1, font2):
-        """Changing font_name triggers widget rebuild with new font."""
-
+        """Changing font_name triggers widget rebuild with new font.
         
+        **Feature: label-compatibility, Property 2: font_name Forwarding**
+        **Validates: Requirements 2.1**
+        """
         label = MarkdownLabel(text='Hello World', font_name=font1)
+        
+        # Collect widget IDs before change
+        ids_before = collect_widget_ids(label)
         
         # Verify initial font
         labels = find_labels_recursive(label)
@@ -125,6 +130,10 @@ class TestFontNamePropertyForwarding:
         # Change font_name
         label.font_name = font2
         label.force_rebuild()  # Force immediate rebuild for test
+        
+        # Verify rebuild occurred
+        ids_after = collect_widget_ids(label)
+        assert ids_before != ids_after, "Widget tree should rebuild for font_name changes"
         
         # Verify new font
         labels = find_labels_recursive(label)
@@ -220,10 +229,17 @@ class TestLineHeightPropertyForwarding:
     # Combination strategy: 20 examples (combination coverage)
     @settings(max_examples=20, deadline=None)
     def test_line_height_change_triggers_rebuild(self, lh1, lh2):
-        """Changing line_height triggers widget rebuild with new value."""
+        """Changing line_height triggers widget rebuild with new value.
+        
+        **Feature: label-compatibility, Property 4: line_height Forwarding**
+        **Validates: Requirements 4.1**
+        """
         assume(not floats_equal(lh1, lh2))
         
         label = MarkdownLabel(text='Hello World', line_height=lh1)
+        
+        # Collect widget IDs before change
+        ids_before = collect_widget_ids(label)
         
         # Verify initial line_height
         labels = find_labels_recursive(label)
@@ -232,6 +248,11 @@ class TestLineHeightPropertyForwarding:
         
         # Change line_height
         label.line_height = lh2
+        label.force_rebuild()  # Force immediate rebuild for test
+        
+        # Verify rebuild occurred
+        ids_after = collect_widget_ids(label)
+        assert ids_before != ids_after, "Widget tree should rebuild for line_height changes"
         
         # Verify new line_height
         labels = find_labels_recursive(label)
