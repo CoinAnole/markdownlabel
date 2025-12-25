@@ -267,3 +267,109 @@ No deviations found.
 - Line 474: The sampled_from values use title case ('Boolean', 'Small finite', 'Medium finite', 'Complex', 'Combination') but the guidelines specify lowercase strategy type names ('boolean', 'small_finite', 'medium_finite', 'complex', 'combination'). This inconsistency could cause issues when tools try to match strategy types.
 
 - Line 303: The test imports `StrategyAnalysis` and `StrategyType` inside the test method. According to guidelines section "Helper Functions", imports should be at the module level, not inside test methods. This import should be moved to the top of the file with the other imports.
+
+### test_font_properties.py
+
+- Line 38-48: Helper method `_is_code_label` is defined in the test class. According to guidelines section "Helper Functions", helper functions should be added to `test_utils.py` and imported, not duplicated in test files. This helper should be moved to test_utils.py.
+
+- Line 124: Test name `test_font_name_change_updates_value` uses "updates_value" naming but docstring says "triggers widget rebuild with new font". According to guidelines section "Test Naming Conventions", tests that verify rebuild behavior should use `test_*_triggers_rebuild_*` naming. The test calls `label.force_rebuild()` which suggests it's testing rebuild behavior, so the name should be `test_font_name_change_triggers_rebuild` or similar.
+
+- Line 232: Test name `test_line_height_change_updates_value` uses "updates_value" naming but docstring says "triggers widget rebuild with new value". According to guidelines section "Test Naming Conventions", tests that verify rebuild behavior should use `test_*_triggers_rebuild_*` naming. The test name should be `test_line_height_change_triggers_rebuild` or similar.
+
+- Line 287: Property test `test_line_height_applied_to_all_content_types` is missing the required docstring format. According to guidelines section "Property-Based Testing", property tests should include `**Feature: feature-name, Property N: Property Description**` and `**Validates: Requirements X.Y**` in their docstrings. The current docstring only says "line_height is applied to all content types including code." without the required feature and property information.
+
+- Line 348: Property test `test_font_family_excluded_from_code_blocks` has the required docstring format with feature and property information, which is correct.
+
+- Line 372: Property test `test_font_family_forwarded_to_non_code_labels` has the required docstring format, which is correct.
+
+- Line 397: Property test `test_font_context_forwarded_to_all_labels_including_code` has the required docstring format, which is correct.
+
+- Line 422: Property test `test_font_features_forwarded_to_all_labels_including_code` has the required docstring format, which is correct.
+
+- Line 442: Test `test_font_hinting_forwarded_to_all_labels_including_code` is not a property test (uses @pytest.mark.parametrize), so it doesn't need the property test docstring format. This is correct.
+
+- Line 465: Property test `test_font_kerning_forwarded_to_all_labels_including_code` has the required docstring format, which is correct.
+
+- Line 496: Property test `test_combined_font_properties_with_code_block` has the required docstring format, which is correct.
+
+- Line 558: Property test `test_base_font_size_updates_all_labels_immediately` is missing the required docstring format. According to guidelines section "Property-Based Testing", property tests should include `**Feature: feature-name, Property N: Property Description**` and `**Validates: Requirements X.Y**` in their docstrings. The current docstring only says "Changing base_font_size immediately updates all child Label font_size properties." without the required feature and property information.
+
+- Line 606: Property test `test_heading_font_size_updates_with_scale` is missing the required docstring format. Should include feature and property information following the format `**Feature: feature-name, Property N: Property Description**` and `**Validates: Requirements X.Y**`.
+
+- Line 645: Property test `test_paragraph_font_size_updates_immediately` is missing the required docstring format. Should include feature and property information.
+
+- Line 682: Property test `test_heading_scale_factors_preserved` is missing the required docstring format. Should include feature and property information.
+
+- Line 723: Property test `test_multiple_headings_preserve_relative_scales` is missing the required docstring format. Should include feature and property information.
+
+- Line 769: Property test `test_heading_scale_preserved_after_base_font_size_change` is missing the required docstring format. Should include feature and property information.
+
+- Line 830: Property test `test_widget_identities_preserved_on_font_size_change` is missing the required docstring format. Should include feature and property information.
+
+- Line 859: Property test `test_heading_widget_identity_preserved` is missing the required docstring format. Should include feature and property information.
+
+- Line 901: Property test `test_multiple_font_size_changes_preserve_identities` is missing the required docstring format. Should include feature and property information.
+
+- Line 927: Property test `test_rebuild_counter_not_incremented_on_font_size_change` is missing the required docstring format. Should include feature and property information.
+
+- Line 815-821: Helper method `_collect_widget_ids` is defined in the test class. According to guidelines section "Helper Functions", helper functions should be added to `test_utils.py` and imported, not duplicated in test files. This helper should be moved to test_utils.py. Note that test_utils.py already has a `collect_widget_ids` function that could be used instead.
+
+- Line 815-821: The `_collect_widget_ids` helper method is a duplicate of functionality that should be available in test_utils.py. According to guidelines section "Helper Functions", the file already imports from test_utils.py, so the `collect_widget_ids` function should be used instead of defining a duplicate method.
+
+- Line 927-957: Test `test_rebuild_counter_not_incremented_on_font_size_change` verifies that rebuilds are not triggered by font size changes, which is correct behavior. However, the test only checks that rebuild_count[0] == 0 but doesn't verify that the font size was actually updated. The test finds a label but doesn't check its font_size value. According to guidelines section "Best Practices", tests should verify both the expected behavior (no rebuild) AND that the change was applied correctly.
+
+### test_helper_availability.py
+
+- Line 36: Property test `test_widget_traversal_helpers_available` is missing the required docstring format. According to guidelines section "Property-Based Testing", property tests should include `**Feature: feature-name, Property N: Property Description**` and `**Validates: Requirements X.Y**` in their docstrings. The current docstring only says "For any markdown content, widget traversal helpers should be available and functional." without the required feature and property information format.
+
+- Line 62: Property test `test_comparison_helpers_available` is missing the required docstring format. Should include feature and property information following the format `**Feature: feature-name, Property N: Property Description**` and `**Validates: Requirements X.Y**`.
+
+- Line 78: Property test `test_padding_comparison_helpers_available` is missing the required docstring format. Should include feature and property information.
+
+- Line 95: Property test `test_float_comparison_helpers_available` is missing the required docstring format. Should include feature and property information.
+
+- Line 111: Property test `test_rebuild_detection_helpers_available` is missing the required docstring format. Should include feature and property information.
+
+- Line 146-182: Method `test_hypothesis_strategies_available` defines nested functions with @given decorators to test strategies. This is an unusual pattern - typically property tests should be standalone methods, not nested functions defined inside other test methods. According to guidelines section "Property-Based Testing", property tests should be defined as regular test methods with @given decorators, not nested inside other test methods.
+
+- Line 154-159: Nested function `test_color_strategy` is defined with @given decorator inside the test method. This deviates from standard testing patterns where property tests should be standalone methods. The test should be refactored to be a proper test method rather than a nested function.
+
+- Line 165-170: Nested function `test_padding_strategy` is defined with @given decorator inside the test method. Same issue as line 154-159.
+
+- Line 176-180: Nested function `test_markdown_strategy` is defined with @given decorator inside the test method. Same issue as line 154-159.
+
+- Line 189: Property test `test_no_duplicate_find_labels_recursive_implementations` is missing the required docstring format. According to guidelines section "Property-Based Testing", property tests should include `**Feature: feature-name, Property N: Property Description**` and `**Validates: Requirements X.Y**` in their docstrings. The current docstring only says "For any test file, there should be no duplicate _find_labels_recursive implementations." without the required feature and property information format.
+
+- Line 223: Property test `test_no_duplicate_collect_widget_ids_implementations` is missing the required docstring format. Should include feature and property information.
+
+- Line 257: Property test `test_all_test_files_import_from_test_utils` is missing the required docstring format. Should include feature and property information.
+
+### test_import.py
+
+No deviations found.
+
+### test_inline_renderer.py
+
+- Line 89: Property test `test_strong_produces_bold_tags` is missing the required docstring format. According to guidelines section "Property-Based Testing", property tests should include `**Feature: feature-name, Property N: Property Description**` and `**Validates: Requirements X.Y**` in their docstrings. The current docstring only says "Strong tokens produce [b]...[/b] markup." without the required feature and property information.
+
+- Line 100: Property test `test_emphasis_produces_italic_tags` is missing the required docstring format. Should include feature and property information following the format `**Feature: feature-name, Property N: Property Description**` and `**Validates: Requirements X.Y**`.
+
+- Line 111: Property test `test_codespan_produces_font_tags` is missing the required docstring format. Should include feature and property information.
+
+- Line 122: Property test `test_strikethrough_produces_s_tags` is missing the required docstring format. Should include feature and property information.
+
+- Line 133: Property test `test_link_produces_ref_tags_unstyled` is missing the required docstring format. Should include feature and property information.
+
+- Line 151: Property test `test_link_produces_ref_tags_styled` is missing the required docstring format. Should include feature and property information.
+
+- Line 179: Property test `test_text_escapes_special_characters` is missing the required docstring format. Should include feature and property information.
+
+- Line 213: Property test `test_only_special_chars_fully_escaped` is missing the required docstring format. Should include feature and property information.
+
+- Line 235: Property test `test_escape_is_reversible` is missing the required docstring format. Should include feature and property information.
+
+- Line 421: Property test `test_urls_with_brackets_are_safe` is missing the required docstring format. Should include feature and property information.
+
+- Line 680: Property test `test_html_content_is_escaped` is missing the required docstring format. Should include feature and property information.
+
+- Line 743: Property test `test_arbitrary_html_content_safety` is missing the required docstring format. Should include feature and property information.
