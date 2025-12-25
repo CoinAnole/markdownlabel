@@ -24,6 +24,10 @@
 ## test_rtl_alignment.py
 - Line 8: Unused import `os` - The `import os` statement is declared but never used anywhere in the file. According to best practices (TESTING.md line 628), unused imports should be removed to keep the code clean.
 
+## test_clipping_behavior.py
+- Line 77-78: `test_clipping_container_height_matches_text_size` uses `max_examples=50` for a single `st.floats()` strategy. According to TESTING.md guidelines (lines 379-391), complex strategies like `st.floats()` should typically use 10-20 examples. Using 50 examples is at the upper limit and may be excessive for this simple test case.
+- Line 244-245: `test_text_size_width_only_no_clipping` uses `max_examples=50` for a single `st.floats()` strategy. Same issue as line 77-78 - complex strategies should use 10-20 examples for adequate coverage, and 50 examples may be excessive.
+
 ## test_strategy_classification.py
 - Line 24-26: Test `test_boolean_strategy_classification` uses `st.just('st.booleans()')` which generates only 1 example, but the comment says "Small finite strategy: 1 examples (input space size: 1)". According to TESTING.md guidelines, boolean strategies should use exactly 2 examples (True/False coverage). The comment format should be "Boolean strategy: 2 examples (True/False coverage)" for boolean strategies, and the max_examples should be 2, not 1.
 - Line 53-55: Test `test_small_sampled_from_classification` uses `st.lists(st.text(min_size=1, max_size=3, alphabet='abc'), min_size=1, max_size=10)` which generates lists with potentially infinite combinations (any combination of strings). The comment says "Medium finite strategy: 10 examples (adequate finite coverage)". According to TESTING.md guidelines (lines 379-391), `st.lists()` with `st.text()` is a complex/infinite strategy, not a finite strategy. The comment should say "Complex strategy: 10 examples (adequate coverage)".
