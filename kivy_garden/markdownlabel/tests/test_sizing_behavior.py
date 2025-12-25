@@ -23,7 +23,6 @@ from .test_utils import (
 class TestAutoSizingBehavior:
     """Property tests for auto-sizing behavior (Property 16)."""
     
-    @pytest.mark.property
     @given(simple_markdown_document())
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -41,7 +40,6 @@ class TestAutoSizingBehavior:
         assert label.size_hint_y == 1, \
             f"Expected default size_hint_y=1, got {label.size_hint_y}"
     
-    @pytest.mark.property
     @given(markdown_heading())
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -63,7 +61,6 @@ class TestAutoSizingBehavior:
         # Empty label should have no children
         assert len(label.children) == 0
     
-    @pytest.mark.property
     @given(st.integers(min_value=1, max_value=5))
     # Small finite strategy: 5 examples (input space size: 5)
     @settings(max_examples=5, deadline=None)
@@ -88,7 +85,6 @@ class TestAutoSizingBehavior:
 class TestAutoSizeHeightTrueBehavior:
     """Property tests for auto_size_height True behavior (Property 7)."""
     
-    @pytest.mark.property
     @given(simple_markdown_document())
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -99,7 +95,6 @@ class TestAutoSizeHeightTrueBehavior:
         assert label.size_hint_y is None, \
             f"Expected size_hint_y=None when auto_size_height=True, got {label.size_hint_y}"
     
-    @pytest.mark.property
     @given(simple_markdown_document())
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -126,7 +121,6 @@ class TestAutoSizeHeightTrueBehavior:
         assert label.size_hint_y == 1, \
             f"Expected size_hint_y=1 by default, got {label.size_hint_y}"
     
-    @pytest.mark.property
     @given(st.floats(min_value=0.1, max_value=2.0, allow_nan=False, allow_infinity=False))
     # Complex strategy: 50 examples (adequate coverage)
     @settings(max_examples=50, deadline=None)
@@ -156,7 +150,6 @@ class TestAutoSizeHeightTrueBehavior:
 class TestAutoSizeHeightFalseBehavior:
     """Property tests for auto_size_height False behavior (Property 8)."""
     
-    @pytest.mark.property
     @given(simple_markdown_document())
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -170,7 +163,6 @@ class TestAutoSizeHeightFalseBehavior:
         assert label.auto_size_height is False, \
             f"Expected auto_size_height=False, got {label.auto_size_height}"
     
-    @pytest.mark.property
     @given(simple_markdown_document(),
            st.floats(min_value=0.1, max_value=2.0, allow_nan=False, allow_infinity=False))
     # Complex strategy: 50 examples (adequate coverage)
@@ -189,7 +181,6 @@ class TestAutoSizeHeightFalseBehavior:
         assert label.auto_size_height is False, \
             f"Expected auto_size_height=False, got {label.auto_size_height}"
     
-    @pytest.mark.property
     @given(simple_markdown_document())
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -216,7 +207,6 @@ class TestAutoSizeHeightFalseBehavior:
 class TestAutoSizeHeightDynamicToggling:
     """Property tests for auto_size_height dynamic toggling (Property 9)."""
     
-    @pytest.mark.property
     @given(simple_markdown_document())
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -238,7 +228,6 @@ class TestAutoSizeHeightDynamicToggling:
         assert label.auto_size_height is False, \
             f"Expected auto_size_height=False after toggle, got {label.auto_size_height}"
     
-    @pytest.mark.property
     @given(simple_markdown_document())
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -260,7 +249,6 @@ class TestAutoSizeHeightDynamicToggling:
         assert label.auto_size_height is True, \
             f"Expected auto_size_height=True after toggle, got {label.auto_size_height}"
     
-    @pytest.mark.property
     @given(simple_markdown_document(),
            st.floats(min_value=0.1, max_value=2.0, allow_nan=False, allow_infinity=False))
     # Complex strategy: 50 examples (adequate coverage)
@@ -295,7 +283,6 @@ class TestAutoSizeHeightDynamicToggling:
         assert label.size_hint_y == user_size_hint_y, \
             f"Expected size_hint_y={user_size_hint_y} after second toggle to False, got {label.size_hint_y}"
     
-    @pytest.mark.property
     @given(simple_markdown_document())
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -332,7 +319,6 @@ class TestAutoSizeHeightDynamicToggling:
 class TestStrictLabelModeSizingBehavior:
     """Property tests for strict label mode sizing behavior (Property 2)."""
     
-    @pytest.mark.property
     @given(simple_markdown_document())
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -346,7 +332,6 @@ class TestStrictLabelModeSizingBehavior:
         assert label.strict_label_mode is True, \
             f"Expected strict_label_mode=True, got {label.strict_label_mode}"
     
-    @pytest.mark.property
     @given(simple_markdown_document(),
            st.floats(min_value=0.1, max_value=2.0, allow_nan=False, allow_infinity=False))
     # Complex strategy: 50 examples (adequate coverage)
@@ -365,7 +350,6 @@ class TestStrictLabelModeSizingBehavior:
         assert label.strict_label_mode is True, \
             f"Expected strict_label_mode=True, got {label.strict_label_mode}"
     
-    @pytest.mark.property
     @given(simple_markdown_document())
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -392,7 +376,6 @@ class TestStrictLabelModeSizingBehavior:
         assert label.size_hint_y == 1, \
             f"Expected size_hint_y=1 by default, got {label.size_hint_y}"
     
-    @pytest.mark.property
     @given(st.booleans())
     # Boolean strategy: 2 examples (True/False coverage)
     @settings(max_examples=2, deadline=None)
@@ -401,7 +384,6 @@ class TestStrictLabelModeSizingBehavior:
         label = MarkdownLabel(text='# Hello World', strict_label_mode=value)
         assert label.strict_label_mode == value
     
-    @pytest.mark.property
     @given(st.booleans())
     # Boolean strategy: 2 examples (True/False coverage)
     @settings(max_examples=2, deadline=None)
@@ -411,7 +393,6 @@ class TestStrictLabelModeSizingBehavior:
         label.strict_label_mode = value
         assert label.strict_label_mode == value
     
-    @pytest.mark.property
     @given(simple_markdown_document())
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -434,7 +415,6 @@ class TestStrictLabelModeSizingBehavior:
         assert label.size_hint_y == 1, \
             f"Expected size_hint_y=1 after toggling to strict_label_mode=True, got {label.size_hint_y}"
     
-    @pytest.mark.property
     @given(simple_markdown_document())
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -457,7 +437,6 @@ class TestStrictLabelModeSizingBehavior:
         assert label.size_hint_y is None, \
             f"Expected size_hint_y=None after toggling to strict_label_mode=False, got {label.size_hint_y}"
     
-    @pytest.mark.property
     @given(simple_markdown_document(),
            st.floats(min_value=0.1, max_value=2.0, allow_nan=False, allow_infinity=False))
     # Complex strategy: 50 examples (adequate coverage)
@@ -485,7 +464,6 @@ class TestStrictLabelModeSizingBehavior:
         assert label.size_hint_y == user_size_hint_y, \
             f"Expected size_hint_y={user_size_hint_y} after toggle back to True, got {label.size_hint_y}"
     
-    @pytest.mark.property
     @given(simple_markdown_document())
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -501,7 +479,6 @@ class TestStrictLabelModeSizingBehavior:
         assert label.size_hint_y == 1, \
             f"Expected size_hint_y=1 when strict_label_mode=True (overrides auto_size_height), got {label.size_hint_y}"
     
-    @pytest.mark.property
     @given(simple_markdown_document())
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -519,7 +496,6 @@ class TestStrictLabelModeSizingBehavior:
         assert label.size_hint_y == 1, \
             f"Expected size_hint_y=1 (strict mode ignores auto_size_height), got {label.size_hint_y}"
     
-    @pytest.mark.property
     @given(simple_markdown_document())
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -538,7 +514,6 @@ class TestStrictLabelModeSizingBehavior:
         assert len(label.children) >= 1, \
             "Expected at least 1 child after strict_label_mode toggle"
     
-    @pytest.mark.property
     @given(simple_markdown_document())
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)

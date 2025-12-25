@@ -247,7 +247,6 @@ Regular paragraph
         
         # Change padding
         label.text_padding = padding2
-        label.force_rebuild()  # Force immediate rebuild for test
         
         # Verify rebuild occurred
         ids_after = collect_widget_ids(label, exclude_root=True)
@@ -300,7 +299,6 @@ class TestPaddingDynamicUpdates:
         
         # Update padding
         label.text_padding = new_padding
-        label.force_rebuild()  # Force immediate rebuild for test
         
         # Verify rebuild occurred
         ids_after = collect_widget_ids(label, exclude_root=True)
@@ -345,7 +343,6 @@ Paragraph with text.
         
         # Update padding
         label.text_padding = new_padding
-        label.force_rebuild()  # Force immediate rebuild for test
         
         # Verify rebuild occurred
         ids_after = collect_widget_ids(label, exclude_root=True)
@@ -367,7 +364,6 @@ Paragraph with text.
         for i in range(num_updates):
             new_padding = [i * 5.0, i * 5.0, i * 5.0, i * 5.0]
             label.text_padding = new_padding
-            label.force_rebuild()  # Force immediate rebuild for test
             
             # Verify all labels have the current padding
             labels = find_labels_recursive(label)

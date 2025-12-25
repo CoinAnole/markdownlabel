@@ -80,7 +80,6 @@ class TestRegularClass:
             os.unlink(temp_file)
 
 
-@pytest.mark.unit
 class TestPropertyTestExtraction:
     """Tests for extracting property tests from file content."""
     
@@ -221,7 +220,6 @@ def test_multiline_given(self, value):
             os.unlink(temp_file)
 
 
-@pytest.mark.unit
 class TestValidationReport:
     """Tests for test suite validation reporting."""
     
@@ -283,7 +281,6 @@ def test_boolean_good(self, value):
             assert report.estimated_time_reduction_seconds > 0
 
 
-@pytest.mark.property
 class TestRationaleGeneration:
     """Tests for optimization rationale generation."""
     
@@ -319,7 +316,6 @@ class TestRationaleGeneration:
             assert 'complex' in rationale or 'complexity' in rationale
 
 
-@pytest.mark.unit
 class TestErrorHandling:
     """Tests for error handling in file analysis."""
     
@@ -390,7 +386,6 @@ def test_incomplete2(self):
             os.unlink(temp_file)
 
 
-@pytest.mark.integration
 class TestIntegrationWithOptimizationTools:
     """Integration tests with StrategyClassifier and MaxExamplesCalculator."""
     
@@ -456,7 +451,6 @@ def test_two_booleans(self, values):
             os.unlink(temp_file)
 
 
-@pytest.mark.property
 class TestToolIntegrationCompatibility:
     """Property-based tests for tool integration compatibility."""
     
