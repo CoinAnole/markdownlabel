@@ -80,7 +80,7 @@ class TestColorPropertyForwarding:
     # Combination strategy: 50 examples (combination coverage)
     @settings(max_examples=50, deadline=None)
     def test_color_change_updates_value(self, color1, color2):
-        """Changing color triggers widget rebuild with new color."""
+        """Changing color updates color on existing widgets without rebuild."""
         assume(not colors_equal(color1, color2))
         
         label = MarkdownLabel(text='Hello World', color=color1)
