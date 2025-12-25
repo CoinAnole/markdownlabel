@@ -85,98 +85,95 @@ def test_property_triggers_rebuild(self):
             suggested = self.analyzer._suggest_name_pattern(current_name, primary_type, has_rebuild)
             assert suggested == expected
 
-
-# Property-based tests
-
-@given(st.text(min_size=1, max_size=50, alphabet=st.characters(whitelist_categories=['L', 'N']) | st.just('_')))
-# Complex strategy: 30 examples (adequate coverage)
-@settings(max_examples=30, deadline=None)
-def test_value_change_test_naming_property(test_name_suffix):
-    """
-    **Property 2: Value Change Test Naming**
-    **Validates: Requirements 1.2**
-    
-    For any test method that only asserts value changes without verifying rebuild behavior,
-    the test name SHALL use patterns like "updates_value" or "changes_property" instead of "triggers_rebuild".
-    """
-    analyzer = AssertionAnalyzer()
-    
-    # Create a test method that only has value assertions (no rebuild)
-    test_code = f'''
+    @given(st.text(min_size=1, max_size=50, alphabet=st.characters(whitelist_categories=['L', 'N']) | st.just('_')))
+    # Complex strategy: 30 examples (adequate coverage)
+    @settings(max_examples=30, deadline=None)
+    def test_value_change_test_naming_property(self, test_name_suffix):
+        """
+        **Property 2: Value Change Test Naming**
+        **Validates: Requirements 1.2**
+        
+        For any test method that only asserts value changes without verifying rebuild behavior,
+        the test name SHALL use patterns like "updates_value" or "changes_property" instead of "triggers_rebuild".
+        """
+        # Create a test method that only has value assertions (no rebuild)
+        test_code = f'''
 def test_{test_name_suffix}_triggers_rebuild(self):
     widget.text = "new text"
     assert widget.text == "new text"
     assert widget.color == [1, 1, 1, 1]
 '''
-    
-    try:
-        tree = ast.parse(test_code)
-        test_method = tree.body[0]
         
-        analysis = analyzer.analyze_test_method(test_method, "test_file.py")
+        try:
+            tree = ast.parse(test_code)
+            test_method = tree.body[0]
+            
+            analysis = self.analyzer.analyze_test_method(test_method, "test_file.py")
+            
+            # If the test only has value assertions but name suggests rebuild,
+            # it should be detected as a naming mismatch
+            if analysis.has_value_assertions and not analysis.has_rebuild_assertions:
+                if "triggers_rebuild" in test_method.name:
+                    assert analysis.naming_mismatch_detected, f"Test {test_method.name} should be flagged for naming mismatch"
+                    assert analysis.suggested_name_pattern is not None
+                    assert "updates_value" in analysis.suggested_name_pattern or "changes_property" in analysis.suggested_name_pattern
         
-        # If the test only has value assertions but name suggests rebuild,
-        # it should be detected as a naming mismatch
-        if analysis.has_value_assertions and not analysis.has_rebuild_assertions:
-            if "triggers_rebuild" in test_method.name:
-                assert analysis.naming_mismatch_detected, f"Test {test_method.name} should be flagged for naming mismatch"
-                assert analysis.suggested_name_pattern is not None
-                assert "updates_value" in analysis.suggested_name_pattern or "changes_property" in analysis.suggested_name_pattern
-    
-    except SyntaxError:
-        # Skip invalid test names that don't parse
-        pass
+        except SyntaxError:
+            # Skip invalid test names that don't parse
+            pass
 
-
-@given(
-    assertion_type=st.sampled_from([
-        ("rebuild", "widget.id != old_id"),
-        ("value", "widget.text == 'test'"),
-        ("existence", "assert widget is not None"),
-        ("equality", "assert a == b"),
-        ("boolean", "assert True")
-    ]),
-    test_name_base=st.text(min_size=1, max_size=30, alphabet=st.characters(whitelist_categories=['L', 'N']) | st.just('_'))
-)
-# Combination strategy: 30 examples (combination coverage)
-@settings(max_examples=30, deadline=None)
-def test_assertion_classification_consistency(assertion_type, test_name_base):
-    """Test that assertion classification is consistent across different test structures."""
-    analyzer = AssertionAnalyzer()
-    assertion_name, assertion_code = assertion_type
-    
-    # Create a test method with the given assertion
-    test_code = f'''
+    @given(
+        assertion_type=st.sampled_from([
+            ("rebuild", "widget.id != old_id"),
+            ("value", "widget.text == 'test'"),
+            ("existence", "assert widget is not None"),
+            ("equality", "assert a == b"),
+            ("boolean", "assert True")
+        ]),
+        test_name_base=st.text(min_size=1, max_size=30, alphabet=st.characters(whitelist_categories=['L', 'N']) | st.just('_'))
+    )
+    # Combination strategy: 30 examples (combination coverage)
+    @settings(max_examples=30, deadline=None)
+    def test_assertion_classification_consistency(self, assertion_type, test_name_base):
+        """Test that assertion classification is consistent across different test structures."""
+        assertion_name, assertion_code = assertion_type
+        
+        # Create a test method with the given assertion
+        test_code = f'''
 def test_{test_name_base}(self):
     assert {assertion_code}
 '''
-    
-    try:
-        tree = ast.parse(test_code)
-        test_method = tree.body[0]
         
-        analysis = analyzer.analyze_test_method(test_method, "test_file.py")
+        try:
+            tree = ast.parse(test_code)
+            test_method = tree.body[0]
+            
+            analysis = self.analyzer.analyze_test_method(test_method, "test_file.py")
+            
+            # Verify that the assertion was classified
+            assert len(analysis.assertions) > 0, "Should detect at least one assertion"
+            
+            # Verify that the primary assertion type is reasonable
+            assert analysis.primary_assertion_type != AssertionType.UNKNOWN or len(analysis.assertions) == 0
+            
+            # Verify that rebuild assertions are properly detected
+            if assertion_name == "rebuild":
+                assert analysis.has_rebuild_assertions, "Should detect rebuild assertions"
+            elif assertion_name == "value":
+                assert analysis.has_value_assertions, "Should detect value assertions"
         
-        # Verify that the assertion was classified
-        assert len(analysis.assertions) > 0, "Should detect at least one assertion"
-        
-        # Verify that the primary assertion type is reasonable
-        assert analysis.primary_assertion_type != AssertionType.UNKNOWN or len(analysis.assertions) == 0
-        
-        # Verify that rebuild assertions are properly detected
-        if assertion_name == "rebuild":
-            assert analysis.has_rebuild_assertions, "Should detect rebuild assertions"
-        elif assertion_name == "value":
-            assert analysis.has_value_assertions, "Should detect value assertions"
-    
-    except SyntaxError:
-        # Skip invalid test code that doesn't parse
-        pass
+        except SyntaxError:
+            # Skip invalid test code that doesn't parse
+            pass
 
 
-def test_file_analysis_integration():
-    """Integration test for analyzing a complete test file."""
-    analyzer = AssertionAnalyzer()
+@pytest.mark.test_tests
+class TestAssertionAnalyzerIntegration:
+    """Integration tests for the assertion analyzer."""
+    
+    def test_file_analysis_integration(self):
+        """Integration test for analyzing a complete test file."""
+        analyzer = AssertionAnalyzer()
     
     # Create a temporary test file
     test_content = '''
