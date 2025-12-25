@@ -7,10 +7,6 @@ Hypothesis strategies for max_examples optimization.
 import pytest
 from hypothesis import given, strategies as st, settings
 
-import sys
-import os
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', '..', 'tools'))
-
 from test_optimization.strategy_classifier import (
     StrategyClassifier, StrategyType, StrategyAnalysis
 )

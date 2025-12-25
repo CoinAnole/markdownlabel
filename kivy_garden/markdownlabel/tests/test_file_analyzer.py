@@ -6,20 +6,16 @@ and generate optimization recommendations for max_examples values.
 """
 
 import os
-import sys
 import tempfile
 from pathlib import Path
 import pytest
 from hypothesis import given, strategies as st, settings
 
-# Add tools directory to path for imports
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', '..', 'tools'))
-
 from test_optimization.file_analyzer import (
-    FileAnalyzer, PropertyTest, OptimizationRecommendation, 
+    FileAnalyzer, PropertyTest, OptimizationRecommendation,
     FileAnalysis, ValidationReport
 )
-from test_optimization.strategy_classifier import StrategyType
+from test_optimization.strategy_classifier import StrategyType, StrategyAnalysis
 
 
 @pytest.mark.test_tests
@@ -300,8 +296,6 @@ class TestRationaleGeneration:
     @settings(max_examples=5, deadline=None)
     def test_rationale_generation_for_strategy_types(self, strategy_type):
         """Generates appropriate rationales for different strategy types."""
-        from test_optimization.strategy_classifier import StrategyAnalysis, StrategyType
-        
         # Create mock analysis
         analysis = StrategyAnalysis(
             strategy_type=StrategyType(strategy_type),

@@ -9,14 +9,8 @@ import pytest
 from hypothesis import given, strategies as st, settings, assume
 import tempfile
 import os
-import sys
 from pathlib import Path
 from typing import List, Dict
-
-# Add tools directory to path for imports
-tools_dir = Path(__file__).parents[5] / "tools"
-if str(tools_dir) not in sys.path:
-    sys.path.insert(0, str(tools_dir))
 
 from test_analysis.duplicate_detector import DuplicateDetector, ConsolidationReport
 

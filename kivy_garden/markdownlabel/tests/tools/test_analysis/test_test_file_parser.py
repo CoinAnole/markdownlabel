@@ -9,13 +9,7 @@ import pytest
 from hypothesis import given, strategies as st, settings, assume
 import tempfile
 import os
-import sys
 from pathlib import Path
-
-# Add tools directory to path for imports
-tools_dir = Path(__file__).parent.parent.parent.parent.parent / "tools"
-if str(tools_dir) not in sys.path:
-    sys.path.insert(0, str(tools_dir))
 
 from test_analysis.file_parser import FileParser, FileMetadata
 # Import strategies from test_utils using absolute import

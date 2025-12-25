@@ -11,17 +11,11 @@ import tempfile
 import os
 import subprocess
 import json
-import sys
 from pathlib import Path
 from typing import List, Dict, Optional
 
 # Import test_utils for helper functions
 from kivy_garden.markdownlabel.tests.test_utils import simulate_coverage_measurement
-
-# Add tools directory to path for imports
-tools_dir = Path(__file__).parents[5] / "tools"
-if str(tools_dir) not in sys.path:
-    sys.path.insert(0, str(tools_dir))
 
 # **Feature: test-suite-refactoring, Property 10: Coverage Preservation**
 # *For any* refactoring operation on the test suite, the overall test coverage
