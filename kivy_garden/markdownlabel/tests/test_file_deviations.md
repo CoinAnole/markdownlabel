@@ -659,3 +659,19 @@ No deviations found.
 ### test_rtl_alignment.py
 
 No deviations found.
+
+### test_serialization.py
+
+- Line 115-117: Property test `test_heading_round_trip` is missing the required docstring format. According to guidelines section "Property-Based Testing", property tests should include `**Feature: feature-name, Property N: Property Description**` and `**Validates: Requirements X.Y**` in their docstrings. The current docstring only says "Heading round-trips through parse-serialize-parse." without the required feature and property information.
+
+- Line 134-136: Property test `test_paragraph_round_trip` is missing the required docstring format. Should include feature and property information following the format `**Feature: feature-name, Property N: Property Description**` and `**Validates: Requirements X.Y**`.
+
+- Line 158-160: Property test `test_bold_round_trip` is missing the required docstring format. Should include feature and property information.
+
+- Line 174-176: Property test `test_italic_round_trip` is missing the required docstring format. Should include feature and property information.
+
+- Line 190-192: Property test `test_link_round_trip` is missing the required docstring format. Should include feature and property information.
+
+- Line 206-208: Property test `test_document_round_trip` is missing the required docstring format. Should include feature and property information.
+
+- Line 504-506: Property test `test_code_serialization_round_trip_property` has an incorrect strategy classification. The test uses two separate text strategies (`st.text(min_size=0, max_size=200)` for code_content and `st.text(alphabet=st.characters(whitelist_categories=('L', 'N')), min_size=0, max_size=20)` for language), which is a combination strategy (multiple @given arguments), but the comment says `# Complex strategy: 20 examples (adequate coverage)`. According to guidelines section "Property-Based Testing Optimization", combination strategies should use the format `# Combination strategy: [N] examples (combination coverage)`.
