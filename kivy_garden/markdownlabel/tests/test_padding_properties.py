@@ -112,10 +112,7 @@ class TestPaddingApplication:
             assert abs(actual - exp) < 0.001, \
                 f"After change, padding[{i}]: expected {exp}, got {actual}"
     
-    @given(st.data())
-    # Complex strategy: 20 examples (adequate coverage)
-    @settings(max_examples=20, deadline=None)
-    def test_default_padding_is_zero(self, data):
+    def test_default_padding_is_zero(self):
         """Default padding is [0, 0, 0, 0]."""
         label = MarkdownLabel(text='Hello World')
         
