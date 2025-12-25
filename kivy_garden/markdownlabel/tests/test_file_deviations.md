@@ -1079,3 +1079,27 @@ No deviations found.
 - Line 179: Property test `test_file_level_consistency` has a standardized comment `# Complex strategy: 100 examples (adequate coverage)` but the strategy uses `test_names=st.lists(...)` which is a complex strategy. According to guidelines section "Property-Based Testing Optimization", complex strategies should use 10-50 examples based on complexity. 100 examples is excessive for this strategy and should be reduced to a more reasonable number like 20-50.
 
 - Line 181-228: Property test `test_file_level_consistency` is missing the required docstring format. According to guidelines section "Property-Based Testing", property tests should include `**Feature: feature-name, Property N: Property Description**` and `**Validates: Requirements X.Y**` in their docstrings. The current docstring only says "Test that naming consistency is checked at the file level." without the required feature and property information.
+
+### tools/test_analysis/test_test_file_parser.py
+
+- Line 15-18: The file modifies `sys.path` to add the tools directory for imports. According to guidelines section "Test File Structure", test files should use standard import patterns. The recommended approach would be to ensure the tools directory is properly structured as a package or to use a different import strategy rather than modifying sys.path at runtime.
+
+- Line 30-84: Custom strategy `rebuild_test_file_strategy` is defined in the test file. According to guidelines section "Helper Functions", custom Hypothesis strategies should be added to test_utils.py and imported, not duplicated in test files. This strategy is used in multiple tests and should be consolidated in test_utils.py.
+
+- Line 87: The test class is marked with `@pytest.mark.test_tests` which is correct for meta-tests according to guidelines section "Test Types and Markers".
+
+- Line 91-93: Property test `test_rebuild_test_names_match_assertions` has a standardized comment `# Complex strategy: 20 examples (adequate coverage)` for the custom strategy `rebuild_test_file_strategy()`. The strategy is complex (generates test code with multiple variables), so the comment is appropriate according to guidelines section "Property-Based Testing Optimization".
+
+- Line 94: Property test `test_rebuild_test_names_match_assertions` is missing the required docstring format. According to guidelines section "Property-Based Testing", property tests should include `**Feature: feature-name, Property N: Property Description**` and `**Validates: Requirements X.Y**` in their docstrings. The current docstring only says "Tests with 'triggers_rebuild' in name should have rebuild assertions." without the required feature and property information.
+
+- Line 131-133: Property test `test_parser_handles_valid_python_files` has a standardized comment `# Complex strategy: 10 examples (adequate coverage)` for `st.text(min_size=1, max_size=10, alphabet=st.characters(...))`. This is appropriate for a complex text strategy according to guidelines section "Property-Based Testing Optimization".
+
+- Line 134: Property test `test_parser_handles_valid_python_files` is missing the required docstring format. Should include feature and property information following the format `**Feature: feature-name, Property N: Property Description**` and `**Validates: Requirements X.Y**`.
+
+- Line 163-201: Test `test_parser_extracts_test_classes` is a standard unit test (not a property test), so it doesn't need the property test docstring format. The current docstring is appropriate for a unit test.
+
+- Line 203-242: Test `test_parser_extracts_helper_functions` is a standard unit test (not a property test), so it doesn't need the property test docstring format. The current docstring is appropriate for a unit test.
+
+- Line 244-286: Test `test_parser_detects_rebuild_assertions` is a standard unit test (not a property test), so it doesn't need the property test docstring format. The current docstring is appropriate for a unit test.
+
+- Line 289-290: The `if __name__ == "__main__":` block at the end of the file is a standard Python idiom for allowing the test file to be run directly. This is acceptable and not a deviation from the guidelines.
