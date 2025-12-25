@@ -989,3 +989,27 @@ No deviations found.
 - Line 410: Property test `test_module_focuses_on_texture_sizing` is missing the required docstring format. Should include feature and property information.
 
 - Line 11-14: Unused imports `BoxLayout`, `Label`, `Widget`, and `GridLayout` from kivy.uix are imported but never used in the test file. According to guidelines section "Best Practices", unused imports should be removed to keep the code clean and maintainable.
+
+### test_utils.py
+
+No deviations found.
+
+### conftest.py
+
+No deviations found.
+
+### __init__.py
+
+No deviations found.
+
+### tools/test_analysis/test_assertion_analyzer.py
+
+- Line 18-21: The file modifies `sys.path` to add the tools directory for imports. According to guidelines section "Test File Structure", test files should use standard import patterns. The recommended approach would be to ensure the tools directory is properly structured as a package or to use a different import strategy rather than modifying sys.path at runtime.
+
+- Line 97-99: Property test `test_value_change_test_naming_property` has a standardized comment `# Complex strategy: 100 examples (adequate coverage)` but the strategy uses `st.text(min_size=1, max_size=50, alphabet=st.characters(whitelist_categories=['L', 'N']) | st.just('_'))` which is a complex strategy. According to guidelines section "Property-Based Testing Optimization", complex strategies should use 10-50 examples based on complexity. 100 examples is excessive for this text strategy and should be reduced to a more reasonable number like 20-50.
+
+- Line 100-107: Property test `test_value_change_test_naming_property` is missing the required docstring format. According to guidelines section "Property-Based Testing", property tests should include `**Feature: feature-name, Property N: Property Description**` and `**Validates: Requirements X.Y**` in their docstrings. The current docstring includes property information but is missing the feature and validation requirements sections.
+
+- Line 137-148: Property test `test_assertion_classification_consistency` has a standardized comment `# Combination strategy: 100 examples (combination coverage)` but the strategy uses `st.sampled_from([...])` and `st.text(...)` which is a combination strategy. According to guidelines section "Property-Based Testing Optimization", combination strategies should have their max_examples capped at 50, not 100. The comment should be `# Combination strategy: 50 examples (combination coverage)` or the max_examples should be reduced to 50.
+
+- Line 149-150: Property test `test_assertion_classification_consistency` is missing the required docstring format. According to guidelines section "Property-Based Testing", property tests should include `**Feature: feature-name, Property N: Property Description**` and `**Validates: Requirements X.Y**` in their docstrings. The current docstring only says "Test that assertion classification is consistent across different test structures." without the required feature and validation requirements sections.
