@@ -809,3 +809,59 @@ No deviations found.
 - Line 546-549: Property test `test_multiple_strict_mode_toggles_maintain_consistency` is missing the required docstring format. Should include feature and property information.
 
 - Line 11-14: Unused imports `BoxLayout`, `Label`, `Widget`, and `GridLayout` from kivy.uix are imported but never used in the test file. According to guidelines section "Best Practices", unused imports should be removed to keep the code clean and maintainable.
+
+### test_strategy_classification.py
+
+- Line 10-12: The file modifies `sys.path` to add the tools directory for imports. According to guidelines section "Test File Structure", test files should use standard import patterns. The recommended approach would be to ensure the tools directory is properly structured as a package or to use a different import strategy rather than modifying sys.path at runtime.
+
+- Line 28-30: Property test `test_boolean_strategy_classification` uses `st.just('st.booleans()')` which is a small finite strategy with 1 value, but the comment says `# Small finite strategy: 1 examples (input space size: 1)`. While the comment format is correct, the rationale "input space size: 1" is misleading because the test is actually testing the classification of boolean strategies, which should have an input space size of 2. The comment should clarify that this is testing the classification logic, not the actual boolean strategy itself.
+
+- Line 31-35: Property test `test_boolean_strategy_classification` is missing the required docstring format. According to guidelines section "Property-Based Testing", property tests should include `**Feature: feature-name, Property N: Property Description**` and `**Validates: Requirements X.Y**` in their docstrings. The current docstring includes property information but is missing the `**Validates: Requirements X.Y**` section.
+
+- Line 42-44: Property test `test_small_integer_range_classification` has a correct comment format `# Combination strategy: 50 examples (combination coverage)` for the combination strategy used. This is correct.
+
+- Line 45-55: Property test `test_small_integer_range_classification` is missing the required docstring format. Should include feature and property information following the format `**Feature: feature-name, Property N: Property Description**` and `**Validates: Requirements X.Y**`.
+
+- Line 57-59: Property test `test_small_sampled_from_classification` has a correct comment format for the strategy used. This is correct.
+
+- Line 60-69: Property test `test_small_sampled_from_classification` is missing the required docstring format. Should include feature and property information.
+
+- Line 71-73: Property test `test_medium_finite_classification` has a correct comment format `# Medium finite strategy: 40 examples (adequate finite coverage)` for the strategy used. This is correct.
+
+- Line 74-81: Property test `test_medium_finite_classification` is missing the required docstring format. Should include feature and property information.
+
+- Line 83-85: Property test `test_complex_strategy_classification` has a correct comment format `# Small finite strategy: 3 examples (testing complex strategy classification)` for the strategy used. This is correct.
+
+- Line 86-92: Property test `test_complex_strategy_classification` is missing the required docstring format. Should include feature and property information.
+
+- Line 116-118: Property test `test_small_finite_uses_input_space_size` has a correct comment format. This is correct.
+
+- Line 119-128: Property test `test_small_finite_uses_input_space_size` is missing the required docstring format. Should include feature and property information.
+
+- Line 130-132: Property test `test_sampled_from_uses_list_length` has a correct comment format. This is correct.
+
+- Line 133-141: Property test `test_sampled_from_uses_list_length` is missing the required docstring format. Should include feature and property information.
+
+- Line 150-152: Property test `test_medium_finite_capped_appropriately` has a correct comment format. This is correct.
+
+- Line 153-160: Property test `test_medium_finite_capped_appropriately` is missing the required docstring format. Should include feature and property information.
+
+- Line 163-165: Property test `test_complex_strategy_uses_complexity_based_examples` has a correct comment format. This is correct.
+
+- Line 166-185: Property test `test_complex_strategy_uses_complexity_based_examples` is missing the required docstring format. Should include feature and property information.
+
+- Line 197-199: Property test `test_combination_uses_product_formula` has a correct comment format. This is correct.
+
+- Line 200-216: Property test `test_combination_uses_product_formula` is missing the required docstring format. Should include feature and property information.
+
+- Line 236-238: Property test `test_large_combination_capped_at_fifty` has a correct comment format. This is correct.
+
+- Line 239-251: Property test `test_large_combination_capped_at_fifty` is missing the required docstring format. Should include feature and property information.
+
+- Line 297-299: Property test `test_boolean_over_testing_detected` has a correct comment format. This is correct.
+
+- Line 300-313: Property test `test_boolean_over_testing_detected` is missing the required docstring format. Should include feature and property information.
+
+- Line 315-317: Property test `test_small_finite_over_testing_detected` has a correct comment format. This is correct.
+
+- Line 318-326: Property test `test_small_finite_over_testing_detected` is missing the required docstring format. Should include feature and property information.
