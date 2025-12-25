@@ -15,6 +15,9 @@ import sys
 from pathlib import Path
 from typing import List, Dict, Optional
 
+# Import test_utils for helper functions
+from kivy_garden.markdownlabel.tests.test_utils import simulate_coverage_measurement
+
 # Add tools directory to path for imports
 tools_dir = Path(__file__).parents[5] / "tools"
 if str(tools_dir) not in sys.path:
@@ -219,7 +222,7 @@ class TestCoveragePreservation:
                 before_test_paths.append(test_path)
             
             # Measure "before" coverage (simulate)
-            before_coverage = self._simulate_coverage_measurement(
+            before_coverage = simulate_coverage_measurement(
                 temp_dir, before_test_paths, source_paths, coverage_level
             )
             
@@ -263,7 +266,7 @@ def helper_function(value):
             after_test_paths.append(utils_path)
             
             # Measure "after" coverage
-            after_coverage = self._simulate_coverage_measurement(
+            after_coverage = simulate_coverage_measurement(
                 temp_dir, after_test_paths, source_paths, coverage_level
             )
             
@@ -284,34 +287,6 @@ def helper_function(value):
             if os.path.exists(utils_path):
                 os.unlink(utils_path)
             os.rmdir(temp_dir)
-    
-    def _simulate_coverage_measurement(self, temp_dir: str, test_paths: List[str], 
-                                     source_paths: List[str], coverage_level: str) -> float:
-        """Simulate coverage measurement for testing purposes."""
-        # In a real implementation, this would run actual coverage measurement
-        # For testing, we simulate based on coverage level and number of tests
-        
-        num_tests = len(test_paths)
-        num_sources = len(source_paths)
-        
-        # Base coverage based on level
-        if coverage_level == 'low':
-            base_coverage = 30.0
-        elif coverage_level == 'medium':
-            base_coverage = 60.0
-        else:  # high
-            base_coverage = 85.0
-        
-        # Adjust based on test/source ratio
-        test_ratio = num_tests / max(num_sources, 1)
-        coverage_adjustment = min(test_ratio * 10, 15)  # Max 15% boost
-        
-        # Add some variance
-        import random
-        variance = random.uniform(-5, 5)
-        
-        final_coverage = max(0, min(100, base_coverage + coverage_adjustment + variance))
-        return final_coverage
     
     @given(st.integers(min_value=1, max_value=10))
     # Small finite strategy: 10 examples (input space size: 10)
@@ -476,7 +451,7 @@ class TestCalculator:
                 f.write(test_content)
             
             # This realistic test suite should have good coverage
-            coverage = self._simulate_coverage_measurement(
+            coverage = simulate_coverage_measurement(
                 temp_dir, [test_path], [source_path], "high"
             )
             

@@ -20,7 +20,12 @@ from kivy.uix.widget import Widget
 from kivy.uix.gridlayout import GridLayout
 
 from kivy_garden.markdownlabel import MarkdownLabel
-from .test_utils import find_labels_recursive
+from .test_utils import (
+    find_labels_recursive,
+    find_labels_with_refs,
+    find_labels_with_ref_markup,
+    get_widget_offset
+)
 
 
 # **Feature: label-compatibility, Property 4: Text Shortening Property Forwarding**
@@ -357,56 +362,6 @@ Paragraph text
 class TestCoordinateTranslation:
     """Property tests for coordinate translation of refs and anchors (Property 5)."""
     
-    def _find_labels_with_refs(self, widget, labels=None):
-        """Recursively find all Label widgets that have refs."""
-        if labels is None:
-            labels = []
-        
-        if isinstance(widget, Label) and hasattr(widget, 'refs') and widget.refs:
-            labels.append(widget)
-        
-        if hasattr(widget, 'children'):
-            for child in widget.children:
-                self._find_labels_with_refs(child, labels)
-        
-        return labels
-    
-    def _find_labels_with_ref_markup(self, widget, labels=None):
-        """Recursively find all Label widgets that have ref markup in their text."""
-        if labels is None:
-            labels = []
-        
-        if isinstance(widget, Label) and hasattr(widget, 'text'):
-            if '[ref=' in widget.text and '[/ref]' in widget.text:
-                labels.append(widget)
-        
-        if hasattr(widget, 'children'):
-            for child in widget.children:
-                self._find_labels_with_ref_markup(child, labels)
-        
-        return labels
-    
-    def _get_widget_offset(self, widget, root):
-        """Calculate widget's position relative to root widget.
-        
-        Args:
-            widget: Widget to calculate offset for
-            root: Root widget to calculate offset relative to
-            
-        Returns:
-            Tuple (offset_x, offset_y) relative to root
-        """
-        offset_x = 0
-        offset_y = 0
-        current = widget
-        
-        while current is not None and current is not root:
-            offset_x += current.x
-            offset_y += current.y
-            current = current.parent
-        
-        return offset_x, offset_y
-    
     @given(st.text(min_size=1, max_size=20, alphabet=st.characters(
         whitelist_categories=['L', 'N'],
         blacklist_characters='[]()&\n\r'
@@ -426,7 +381,7 @@ class TestCoordinateTranslation:
         label = MarkdownLabel(text=markdown)
         
         # Find Labels with ref markup
-        labels_with_markup = self._find_labels_with_ref_markup(label)
+        labels_with_markup = find_labels_with_ref_markup(label)
         
         assert len(labels_with_markup) >= 1, \
             f"Expected at least one Label with ref markup for: {markdown}"
@@ -468,7 +423,7 @@ class TestCoordinateTranslation:
         label = MarkdownLabel(text=markdown)
         
         # Find Labels with ref markup
-        labels_with_markup = self._find_labels_with_ref_markup(label)
+        labels_with_markup = find_labels_with_ref_markup(label)
         
         # Should have at least as many Labels with markup as we have links
         assert len(labels_with_markup) >= len(link_texts), \
@@ -532,12 +487,12 @@ class TestCoordinateTranslation:
         aggregated_refs = label.refs
         
         # Find child Labels with refs (if any - depends on rendering)
-        labels_with_refs = self._find_labels_with_refs(label)
+        labels_with_refs = find_labels_with_refs(label)
         
         # If we have child Labels with refs, verify translation
         for child_label in labels_with_refs:
             child_refs = child_label.refs
-            offset_x, offset_y = self._get_widget_offset(child_label, label)
+            offset_x, offset_y = get_widget_offset(child_label, label)
             
             for url, child_boxes in child_refs.items():
                 assert url in aggregated_refs, \
@@ -562,7 +517,7 @@ class TestCoordinateTranslation:
         label = MarkdownLabel(text=markdown)
         
         # Find Labels with ref markup
-        labels_with_markup = self._find_labels_with_ref_markup(label)
+        labels_with_markup = find_labels_with_ref_markup(label)
         
         # Should have Labels with ref markup for the links
         assert len(labels_with_markup) >= 1, \
@@ -583,7 +538,7 @@ class TestCoordinateTranslation:
         label = MarkdownLabel(text=markdown)
         
         # Find Labels with ref markup
-        labels_with_markup = self._find_labels_with_ref_markup(label)
+        labels_with_markup = find_labels_with_ref_markup(label)
         
         # Should have at least one Label with ref markup
         assert len(labels_with_markup) >= 1, \
@@ -601,7 +556,7 @@ class TestCoordinateTranslation:
         label = MarkdownLabel(text=markdown)
         
         # Find Labels with ref markup
-        labels_with_markup = self._find_labels_with_ref_markup(label)
+        labels_with_markup = find_labels_with_ref_markup(label)
         
         # Should have at least one Label with ref markup
         assert len(labels_with_markup) >= 1, \
@@ -632,7 +587,7 @@ class TestCoordinateTranslation:
         label = MarkdownLabel(text=markdown1)
         
         # Initial markup should have url1
-        labels1 = self._find_labels_with_ref_markup(label)
+        labels1 = find_labels_with_ref_markup(label)
         assert len(labels1) >= 1, "Expected Label with ref markup initially"
         found_url1 = any(f'[ref={url1}]' in lbl.text for lbl in labels1)
         assert found_url1, f"Expected [ref={url1}] in initial markup"
@@ -643,7 +598,7 @@ class TestCoordinateTranslation:
         label.force_rebuild()
         
         # Updated markup should have url2
-        labels2 = self._find_labels_with_ref_markup(label)
+        labels2 = find_labels_with_ref_markup(label)
         assert len(labels2) >= 1, "Expected Label with ref markup after update"
         found_url2 = any(f'[ref={url2}]' in lbl.text for lbl in labels2)
         assert found_url2, f"Expected [ref={url2}] in updated markup"

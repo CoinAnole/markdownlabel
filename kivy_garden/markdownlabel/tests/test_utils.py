@@ -351,3 +351,116 @@ def collect_widget_ids(widget: Widget, ids: Optional[Set[int]] = None) -> Set[in
             collect_widget_ids(child, ids)
     
     return ids
+
+
+# Widget Search Helpers for Refs and Anchors
+
+def find_labels_with_refs(widget: Widget, labels: Optional[List[Label]] = None) -> List[Label]:
+    """Recursively find all Label widgets that have refs.
+    
+    Args:
+        widget: The root widget to search from
+        labels: Optional list to accumulate results (used for recursion)
+        
+    Returns:
+        List of all Label widgets that have refs in the widget tree
+    """
+    if labels is None:
+        labels = []
+    
+    if isinstance(widget, Label) and hasattr(widget, 'refs') and widget.refs:
+        labels.append(widget)
+    
+    if hasattr(widget, 'children'):
+        for child in widget.children:
+            find_labels_with_refs(child, labels)
+    
+    return labels
+
+
+def find_labels_with_ref_markup(widget: Widget, labels: Optional[List[Label]] = None) -> List[Label]:
+    """Recursively find all Label widgets that have ref markup in their text.
+    
+    Args:
+        widget: The root widget to search from
+        labels: Optional list to accumulate results (used for recursion)
+        
+    Returns:
+        List of all Label widgets with ref markup in the widget tree
+    """
+    if labels is None:
+        labels = []
+    
+    if isinstance(widget, Label) and hasattr(widget, 'text'):
+        if '[ref=' in widget.text and '[/ref]' in widget.text:
+            labels.append(widget)
+    
+    if hasattr(widget, 'children'):
+        for child in widget.children:
+            find_labels_with_ref_markup(child, labels)
+    
+    return labels
+
+
+def get_widget_offset(widget: Widget, root: Widget) -> tuple:
+    """Calculate widget's position relative to root widget.
+    
+    Args:
+        widget: Widget to calculate offset for
+        root: Root widget to calculate offset relative to
+        
+    Returns:
+        Tuple (offset_x, offset_y) relative to root
+    """
+    offset_x = 0
+    offset_y = 0
+    current = widget
+    
+    while current is not None and current is not root:
+        offset_x += current.x
+        offset_y += current.y
+        current = current.parent
+    
+    return offset_x, offset_y
+
+
+# Coverage Measurement Helper
+
+def simulate_coverage_measurement(temp_dir: str, test_paths: List[str],
+                                  source_paths: List[str], coverage_level: str) -> float:
+    """Simulate coverage measurement for testing purposes.
+    
+    In a real implementation, this would run actual coverage measurement.
+    For testing, we simulate based on coverage level and number of tests.
+    
+    Args:
+        temp_dir: Temporary directory path
+        test_paths: List of test file paths
+        source_paths: List of source file paths
+        coverage_level: Coverage level ('low', 'medium', 'high')
+        
+    Returns:
+        Simulated coverage percentage (0.0 to 100.0)
+    """
+    import random
+    
+    num_tests = len(test_paths)
+    num_sources = len(source_paths)
+    
+    # Base coverage based on level
+    if coverage_level == 'low':
+        base_coverage = 30.0
+    elif coverage_level == 'medium':
+        base_coverage = 60.0
+    else:  # high
+        base_coverage = 85.0
+    
+    # Adjust based on test/source ratio
+    test_ratio = num_tests / max(num_sources, 1)
+    coverage_adjustment = min(test_ratio * 10, 15)  # Max 15% boost
+    
+    # Add some variance
+    variance = random.uniform(-5, 5)
+    
+    final_coverage = max(0, min(100, base_coverage + coverage_adjustment + variance))
+    return final_coverage
