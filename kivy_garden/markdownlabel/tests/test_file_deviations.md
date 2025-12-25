@@ -759,3 +759,53 @@ No deviations found.
 - Line 983-1004: Property test `test_property_refs_coordinate_translation_math` uses 12 float parameters which is a combination strategy. The comment says `# Complex strategy with 12 float parameters: 100 examples for adequate coverage` but according to guidelines section "Property-Based Testing Optimization", combination strategies should use the format `# Combination strategy: [N] examples (combination coverage)` and should be capped at 50 examples, not 100.
 
 - Line 1324-1343: Property test `test_property_anchors_coordinate_translation_math` uses 10 float parameters which is a combination strategy. The comment says `# Complex strategy with 10 float parameters: 100 examples for adequate coverage` but according to guidelines section "Property-Based Testing Optimization", combination strategies should use the format `# Combination strategy: [N] examples (combination coverage)` and should be capped at 50 examples, not 100.
+
+### test_sizing_behavior.py
+
+- Line 31-34: Property test `test_auto_size_hint_enabled_sets_none` is missing the required docstring format. According to guidelines section "Property-Based Testing", property tests should include `**Feature: feature-name, Property N: Property Description**` and `**Validates: Requirements X.Y**` in their docstrings. The current docstring only says "With auto_size_height=True, size_hint_y is None for auto-sizing." without the required feature and property information.
+
+- Line 49-52: Property test `test_height_bound_to_minimum` is missing the required docstring format. Should include feature and property information following the format `**Feature: feature-name, Property N: Property Description**` and `**Validates: Requirements X.Y**`.
+
+- Line 71-74: Property test `test_more_content_means_more_height_potential` is missing the required docstring format. Should include feature and property information.
+
+- Line 96-99: Property test `test_auto_size_height_true_sets_size_hint_y_none` is missing the required docstring format. Should include feature and property information.
+
+- Line 107-110: Property test `test_auto_size_height_true_binds_height_to_minimum` is missing the required docstring format. Should include feature and property information.
+
+- Line 134-137: Property test `test_auto_size_height_true_ignores_user_size_hint_y` is missing the required docstring format. Should include feature and property information.
+
+- Line 164-167: Property test `test_auto_size_height_false_preserves_default_size_hint_y` is missing the required docstring format. Should include feature and property information.
+
+- Line 178-182: Property test `test_auto_size_height_false_preserves_user_size_hint_y` is missing the required docstring format. Should include feature and property information.
+
+- Line 197-200: Property test `test_auto_size_height_false_no_height_binding` is missing the required docstring format. Should include feature and property information.
+
+- Line 224-227: Property test `test_toggle_true_to_false_restores_size_hint_y` is missing the required docstring format. Should include feature and property information.
+
+- Line 246-249: Property test `test_toggle_false_to_true_sets_size_hint_y_none` is missing the required docstring format. Should include feature and property information.
+
+- Line 268-272: Property test `test_toggle_preserves_user_size_hint_y` is missing the required docstring format. Should include feature and property information.
+
+- Line 303-306: Property test `test_multiple_toggles_maintain_consistency` is missing the required docstring format. Should include feature and property information.
+
+- Line 340-343: Property test `test_strict_mode_preserves_default_size_hint_y` is missing the required docstring format. Should include feature and property information.
+
+- Line 354-358: Property test `test_strict_mode_preserves_user_size_hint_y` is missing the required docstring format. Should include feature and property information.
+
+- Line 373-376: Property test `test_strict_mode_height_not_bound_to_minimum` is missing the required docstring format. Should include feature and property information.
+
+- Line 420-423: Property test `test_strict_mode_toggle_from_false_to_true` is missing the required docstring format. Should include feature and property information.
+
+- Line 442-445: Property test `test_strict_mode_toggle_from_true_to_false` is missing the required docstring format. Should include feature and property information.
+
+- Line 465-469: Property test `test_strict_mode_toggle_preserves_user_size_hint_y` is missing the required docstring format. Should include feature and property information.
+
+- Line 493-496: Property test `test_strict_mode_overrides_auto_size_height` is missing the required docstring format. Should include feature and property information.
+
+- Line 509-512: Property test `test_strict_mode_ignores_auto_size_height_changes` is missing the required docstring format. Should include feature and property information.
+
+- Line 527-530: Property test `test_strict_mode_updates_value` is missing the required docstring format. Should include feature and property information.
+
+- Line 546-549: Property test `test_multiple_strict_mode_toggles_maintain_consistency` is missing the required docstring format. Should include feature and property information.
+
+- Line 11-14: Unused imports `BoxLayout`, `Label`, `Widget`, and `GridLayout` from kivy.uix are imported but never used in the test file. According to guidelines section "Best Practices", unused imports should be removed to keep the code clean and maintainable.
