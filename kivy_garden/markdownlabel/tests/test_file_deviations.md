@@ -1013,3 +1013,35 @@ No deviations found.
 - Line 137-148: Property test `test_assertion_classification_consistency` has a standardized comment `# Combination strategy: 100 examples (combination coverage)` but the strategy uses `st.sampled_from([...])` and `st.text(...)` which is a combination strategy. According to guidelines section "Property-Based Testing Optimization", combination strategies should have their max_examples capped at 50, not 100. The comment should be `# Combination strategy: 50 examples (combination coverage)` or the max_examples should be reduced to 50.
 
 - Line 149-150: Property test `test_assertion_classification_consistency` is missing the required docstring format. According to guidelines section "Property-Based Testing", property tests should include `**Feature: feature-name, Property N: Property Description**` and `**Validates: Requirements X.Y**` in their docstrings. The current docstring only says "Test that assertion classification is consistent across different test structures." without the required feature and validation requirements sections.
+
+### tools/test_analysis/test_code_duplication_minimization.py
+
+- Line 16-19: The file modifies `sys.path` to add the tools directory for imports. According to guidelines section "Test File Structure", test files should use standard import patterns. The recommended approach would be to ensure the tools directory is properly structured as a package or to use a different import strategy rather than modifying sys.path at runtime.
+
+- Line 137-140: Property test `test_duplication_below_threshold` is missing the required docstring format. According to guidelines section "Property-Based Testing", property tests should include `**Feature: feature-name, Property N: Property Description**` and `**Validates: Requirements X.Y**` in their docstrings. The current docstring only says "Test suite should have code duplication below acceptable threshold." without the required feature and property information.
+
+- Line 192-195: Property test `test_consolidation_reduces_duplication` is missing the required docstring format. According to guidelines section "Property-Based Testing", property tests should include `**Feature: feature-name, Property N: Property Description**` and `**Validates: Requirements X.Y**` in their docstrings. The current docstring only says "Consolidating duplicates should reduce overall duplication metrics." without the required feature and property information.
+
+- Line 393-396: Property test `test_similarity_threshold_affects_detection` is missing the required docstring format. According to guidelines section "Property-Based Testing", property tests should include `**Feature: feature-name, Property N: Property Description**` and `**Validates: Requirements X.Y**` in their docstrings. The current docstring only says "Different similarity thresholds should affect duplicate detection." without the required feature and property information.
+
+### tools/test_analysis/test_coverage_preservation.py
+
+- Line 19-21: The file modifies `sys.path` to add the tools directory for imports. According to guidelines section "Test File Structure", test files should use standard import patterns. The recommended approach would be to ensure the tools directory is properly structured as a package or to use a different import strategy rather than modifying sys.path at runtime.
+
+- Line 191-193: Property test `test_refactoring_preserves_coverage` is missing the required docstring format. According to guidelines section "Property-Based Testing", property tests should include `**Feature: feature-name, Property N: Property Description**` and `**Validates: Requirements X.Y**` in their docstrings. The current docstring only says "Refactoring operations should preserve or improve test coverage." without the required feature and property information.
+
+- Line 191-193: Property test `test_refactoring_preserves_coverage` uses a custom strategy `_test_suite_with_coverage()` which is a complex strategy that generates test suites with different coverage levels. The comment `# Complex strategy: 10 examples (adequate coverage for different scenarios)` is appropriate for this type of strategy.
+
+- Line 316-318: Property test `test_test_count_preservation` is missing the required docstring format. According to guidelines section "Property-Based Testing", property tests should include `**Feature: feature-name, Property N: Property Description**` and `**Validates: Requirements X.Y**` in their docstrings. The current docstring only says "Refactoring should preserve or increase the number of tests." without the required feature and property information.
+
+- Line 316-318: Property test `test_test_count_preservation` uses `st.integers(min_value=1, max_value=10)` which is a small finite strategy with 10 values. The comment `# Small finite strategy: 10 examples (input space size: 10)` is correct according to guidelines section "Property-Based Testing Optimization".
+
+- Line 400: Property test `test_coverage_measurement_realistic` is missing the required docstring format. According to guidelines section "Property-Based Testing", property tests should include `**Feature: feature-name, Property N: Property Description**` and `**Validates: Requirements X.Y**` in their docstrings. The current docstring only says "Coverage measurement should work with realistic test suites." without the required feature and property information.
+
+- Line 400: Test `test_coverage_measurement_realistic` is not a property test (doesn't use @given decorator), so it doesn't need the property test docstring format. However, the docstring should still be clear about what it validates.
+
+- Line 494-496: Property test `test_coverage_tolerance_reasonable` is missing the required docstring format. According to guidelines section "Property-Based Testing", property tests should include `**Feature: feature-name, Property N: Property Description**` and `**Validates: Requirements X.Y**` in their docstrings. The current docstring only says "Coverage tolerance should be reasonable for measurement variance." without the required feature and property information.
+
+- Line 494-496: Property test `test_coverage_tolerance_reasonable` uses `st.floats(min_value=50.0, max_value=95.0)` which is a complex strategy (infinite float range). The comment `# Complex strategy: 6 examples (adequate coverage)` is appropriate according to guidelines section "Property-Based Testing Optimization".
+
+- Line 288-314: Helper method `_simulate_coverage_measurement` is defined in the test class. According to guidelines section "Helper Functions", helper functions should be added to `test_utils.py` and imported, not duplicated in test files. This helper is used in multiple tests and should be consolidated in test_utils.py.
