@@ -1,3 +1,7 @@
+## test_comment_standardizer.py
+- Line 42-43: Comment says "Combination strategy: 20 examples (adequate coverage)" but the test uses boolean strategy (`st.booleans()`) with `max_examples=20`. According to TESTING.md guidelines (lines 321-333), boolean strategies should use exactly 2 examples with the comment format "Boolean strategy: 2 examples (True/False coverage)". The comment incorrectly identifies this as a combination strategy and uses an excessive max_examples value.
+- Line 591-592: Comment says "Combination strategy: 3 examples (performance optimized)" but the first @given parameter is `st.integers(min_value=1, max_value=5)`, not booleans. This appears to be a copy-paste error from a boolean strategy template. Additionally, using 3 examples for a finite integer strategy (5 values) deviates from the guideline that finite strategies should use input space size.
+
 ## test_comment_format.py
 - Line 538: Comment says "Complex strategy: 30 examples (adequate coverage)" but the test uses `st.sampled_from()` to sample from 3 independent domains: strategy_type (5 values), max_examples (1000 values), and rationale_base (5 values). This creates a combination of multiple sampled strategies. According to TESTING.md guidelines (lines 363-377), when multiple strategies are combined (even with a single @given), this should be classified as a "Combination strategy" not a "Complex strategy". The comment should say "Combination strategy: 30 examples (performance optimized)" or similar to accurately reflect the strategy type.
 
