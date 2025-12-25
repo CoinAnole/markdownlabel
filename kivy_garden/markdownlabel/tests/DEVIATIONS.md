@@ -1,3 +1,6 @@
+## test_comment_format.py
+- Line 538: Comment says "Complex strategy: 30 examples (adequate coverage)" but the test uses `st.sampled_from()` to sample from 3 independent domains: strategy_type (5 values), max_examples (1000 values), and rationale_base (5 values). This creates a combination of multiple sampled strategies. According to TESTING.md guidelines (lines 363-377), when multiple strategies are combined (even with a single @given), this should be classified as a "Combination strategy" not a "Complex strategy". The comment should say "Combination strategy: 30 examples (performance optimized)" or similar to accurately reflect the strategy type.
+
 ## test_text_properties.py
 - Line 162-164: Test `test_valign_forwarded_with_height` uses a combination of `st.floats()` and `st.sampled_from()` strategies, but the comment says "Small finite strategy: 3 examples (input space size: 3)". According to TESTING.md guidelines (lines 363-377), combination strategies are for multiple strategies combined (tuples, multiple @given arguments). This is a combination strategy, not a small finite strategy. The comment should say "Combination strategy" instead of "Small finite strategy".
 
