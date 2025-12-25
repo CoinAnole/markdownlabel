@@ -651,3 +651,11 @@ No deviations found.
 - Line 1047-1048: Property test `test_root_id_preserved_across_mixed_property_changes` has a standardized comment `# Combination strategy: 100 examples (combination coverage)` but the strategy uses 5 different parameters (markdown_text, base_font_size, color, font_name, link_style). According to guidelines section "Property-Based Testing Optimization", combination strategies should have their max_examples capped at 50, not 100. The comment should be `# Combination strategy: 50 examples (combination coverage)` or the max_examples should be reduced to 50.
 
 - Line 1047-1048: Property test `test_root_id_preserved_across_mixed_property_changes` is missing the required docstring format. According to guidelines section "Property-Based Testing", property tests should include `**Feature: feature-name, Property N: Property Description**` and `**Validates: Requirements X.Y**` in their docstrings. The current docstring includes feature and property information but is missing the `**Validates: Requirements X.Y**` section.
+
+### test_refactoring_properties.py
+
+No deviations found.
+
+### test_rtl_alignment.py
+
+No deviations found.
