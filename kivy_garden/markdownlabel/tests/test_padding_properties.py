@@ -20,7 +20,8 @@ from .test_utils import (
     padding_equal,
     padding_single,
     padding_two,
-    padding_four
+    padding_four,
+    collect_widget_ids
 )
 
 
@@ -235,11 +236,14 @@ Regular paragraph
     @given(text_padding_strategy, text_padding_strategy)
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
-    def test_padding_change_updates_value(self, padding1, padding2):
+    def test_padding_change_triggers_rebuild(self, padding1, padding2):
         """Changing text_padding triggers widget rebuild with new padding."""
         assume(not padding_equal(padding1, padding2))
         
         label = MarkdownLabel(text='Hello World', text_padding=padding1)
+        
+        # Collect widget IDs before change
+        ids_before = collect_widget_ids(label, exclude_root=True)
         
         # Verify initial padding
         labels = find_labels_recursive(label)
@@ -249,6 +253,10 @@ Regular paragraph
         # Change padding
         label.text_padding = padding2
         label.force_rebuild()  # Force immediate rebuild for test
+        
+        # Verify rebuild occurred
+        ids_after = collect_widget_ids(label, exclude_root=True)
+        assert ids_before != ids_after, "Widget tree should rebuild for text_padding changes"
         
         # Verify new padding
         labels = find_labels_recursive(label)
@@ -280,11 +288,14 @@ class TestPaddingDynamicUpdates:
     @given(text_padding_strategy, text_padding_strategy)
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
-    def test_padding_update_paragraph(self, initial_padding, new_padding):
-        """Updating text_padding on paragraph updates all child Labels."""
+    def test_padding_update_triggers_rebuild(self, initial_padding, new_padding):
+        """Updating text_padding on paragraph triggers widget rebuild with new padding."""
         assume(not padding_equal(initial_padding, new_padding))
         
         label = MarkdownLabel(text='Hello World', text_padding=initial_padding)
+        
+        # Collect widget IDs before change
+        ids_before = collect_widget_ids(label, exclude_root=True)
         
         # Verify initial padding
         labels = find_labels_recursive(label)
@@ -296,6 +307,10 @@ class TestPaddingDynamicUpdates:
         label.text_padding = new_padding
         label.force_rebuild()  # Force immediate rebuild for test
         
+        # Verify rebuild occurred
+        ids_after = collect_widget_ids(label, exclude_root=True)
+        assert ids_before != ids_after, "Widget tree should rebuild for text_padding changes"
+        
         # Verify all labels have new padding
         labels = find_labels_recursive(label)
         for lbl in labels:
@@ -305,8 +320,8 @@ class TestPaddingDynamicUpdates:
     @given(text_padding_strategy, text_padding_strategy)
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
-    def test_padding_update_complex_content(self, initial_padding, new_padding):
-        """Updating text_padding on complex content updates all child Labels."""
+    def test_padding_update_triggers_rebuild_complex_content(self, initial_padding, new_padding):
+        """Updating text_padding on complex content triggers widget rebuild with new padding."""
         assume(not padding_equal(initial_padding, new_padding))
         
         markdown = '''
@@ -324,6 +339,9 @@ Paragraph with text.
         
         label = MarkdownLabel(text=markdown, text_padding=initial_padding)
         
+        # Collect widget IDs before change
+        ids_before = collect_widget_ids(label, exclude_root=True)
+        
         # Verify initial padding
         labels = find_labels_recursive(label)
         assert len(labels) >= 5, "Expected at least 5 Labels"
@@ -333,6 +351,10 @@ Paragraph with text.
         # Update padding
         label.text_padding = new_padding
         label.force_rebuild()  # Force immediate rebuild for test
+        
+        # Verify rebuild occurred
+        ids_after = collect_widget_ids(label, exclude_root=True)
+        assert ids_before != ids_after, "Widget tree should rebuild for text_padding changes"
         
         # Verify all labels have new padding
         labels = find_labels_recursive(label)

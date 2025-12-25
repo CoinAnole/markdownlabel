@@ -88,8 +88,8 @@ class TestStylePropertyIdentityPreservation:
     **Validates: Requirements 4.1**
     """
     
-    def test_base_font_size_preserves_widget_ids(self):
-        """Changing base_font_size preserves widget identities.
+    def test_base_font_size_preserves_widget_tree(self):
+        """Changing base_font_size preserves widget tree.
         
         **Validates: Requirements 4.1**
         """
@@ -106,8 +106,8 @@ class TestStylePropertyIdentityPreservation:
         assert ids_before == ids_after, \
             "Widget IDs changed after base_font_size update"
     
-    def test_color_preserves_widget_ids(self):
-        """Changing color preserves widget identities.
+    def test_color_preserves_widget_tree(self):
+        """Changing color preserves widget tree.
         
         **Validates: Requirements 4.1**
         """
@@ -124,8 +124,8 @@ class TestStylePropertyIdentityPreservation:
         assert ids_before == ids_after, \
             "Widget IDs changed after color update"
     
-    def test_halign_preserves_widget_ids(self):
-        """Changing halign preserves widget identities.
+    def test_halign_preserves_widget_tree(self):
+        """Changing halign preserves widget tree.
         
         **Validates: Requirements 4.1**
         """
@@ -142,8 +142,8 @@ class TestStylePropertyIdentityPreservation:
         assert ids_before == ids_after, \
             "Widget IDs changed after halign update"
     
-    def test_valign_preserves_widget_ids(self):
-        """Changing valign preserves widget identities.
+    def test_valign_preserves_widget_tree(self):
+        """Changing valign preserves widget tree.
         
         **Validates: Requirements 4.1**
         """
@@ -160,8 +160,8 @@ class TestStylePropertyIdentityPreservation:
         assert ids_before == ids_after, \
             "Widget IDs changed after valign update"
     
-    def test_disabled_preserves_widget_ids(self):
-        """Changing disabled preserves widget identities.
+    def test_disabled_preserves_widget_tree(self):
+        """Changing disabled preserves widget tree.
         
         **Validates: Requirements 4.1**
         """
@@ -178,8 +178,8 @@ class TestStylePropertyIdentityPreservation:
         assert ids_before == ids_after, \
             "Widget IDs changed after disabled update"
     
-    def test_disabled_color_preserves_widget_ids(self):
-        """Changing disabled_color preserves widget identities.
+    def test_disabled_color_preserves_widget_tree(self):
+        """Changing disabled_color preserves widget tree.
         
         **Validates: Requirements 4.1**
         """
@@ -199,8 +199,8 @@ class TestStylePropertyIdentityPreservation:
         assert ids_before == ids_after, \
             "Widget IDs changed after disabled_color update"
     
-    def test_base_direction_preserves_widget_ids(self):
-        """Changing base_direction preserves widget identities.
+    def test_base_direction_preserves_widget_tree(self):
+        """Changing base_direction preserves widget tree.
         
         **Validates: Requirements 4.1**
         """
@@ -217,8 +217,8 @@ class TestStylePropertyIdentityPreservation:
         assert ids_before == ids_after, \
             "Widget IDs changed after base_direction update"
     
-    def test_line_height_preserves_widget_ids(self):
-        """Changing line_height preserves widget identities.
+    def test_line_height_preserves_widget_tree(self):
+        """Changing line_height preserves widget tree.
         
         **Validates: Requirements 4.1**
         """
@@ -235,8 +235,8 @@ class TestStylePropertyIdentityPreservation:
         assert ids_before == ids_after, \
             "Widget IDs changed after line_height update"
     
-    def test_multiple_style_properties_preserve_widget_ids(self):
-        """Changing multiple style properties preserves widget identities.
+    def test_multiple_style_properties_preserve_widget_tree(self):
+        """Changing multiple style properties preserves widget tree.
         
         **Validates: Requirements 4.1**
         """
@@ -310,11 +310,11 @@ class TestStylePropertyIdentityPreservationPBT:
     )
     # Combination strategy: 50 examples (combination coverage)
     @settings(max_examples=50, deadline=None)
-    def test_style_property_changes_preserve_widget_identities(
+    def test_style_property_changes_preserve_widget_tree(
         self, markdown_text, base_font_size, color, halign, valign,
         disabled, disabled_color, base_direction, line_height
     ):
-        """Property 5: Style Property Changes Preserve Widget Identities.
+        """Property 5: Style Property Changes Preserve Widget Tree.
         
         *For any* MarkdownLabel with non-empty content, and *for any* style-only
         property (base_font_size, color, halign, valign, disabled, disabled_color,
@@ -323,7 +323,7 @@ class TestStylePropertyIdentityPreservationPBT:
         of IDs after).
         
         **Feature: headless-ci-testing, Property 5: Style Property Changes
-        Preserve Widget Identities**
+        Preserve Widget Tree**
         **Validates: Requirements 4.1**
         """
         # Ensure we have non-empty content
@@ -598,8 +598,8 @@ class TestStructurePropertyRebuild:
     **Validates: Requirements 5.1, 5.4**
     """
     
-    def test_text_change_rebuilds_widget_tree(self):
-        """Changing text rebuilds the widget tree with new widget instances.
+    def test_text_change_triggers_rebuild(self):
+        """Changing text triggers widget rebuild with new widget instances.
         
         **Validates: Requirements 5.1, 5.4**
         """
@@ -624,8 +624,8 @@ class TestStructurePropertyRebuild:
         assert id(label) == root_id_before, \
             "Root MarkdownLabel ID should remain unchanged"
     
-    def test_font_name_change_rebuilds_widget_tree(self):
-        """Changing font_name rebuilds the widget tree with new widget instances.
+    def test_font_name_change_triggers_rebuild(self):
+        """Changing font_name triggers widget rebuild with new widget instances.
         
         **Validates: Requirements 5.1, 5.4**
         """
@@ -650,8 +650,8 @@ class TestStructurePropertyRebuild:
         assert id(label) == root_id_before, \
             "Root MarkdownLabel ID should remain unchanged"
     
-    def test_text_size_change_rebuilds_widget_tree(self):
-        """Changing text_size rebuilds the widget tree with new widget instances.
+    def test_text_size_change_triggers_rebuild(self):
+        """Changing text_size triggers widget rebuild with new widget instances.
         
         **Validates: Requirements 5.1, 5.4**
         """
@@ -676,8 +676,8 @@ class TestStructurePropertyRebuild:
         assert id(label) == root_id_before, \
             "Root MarkdownLabel ID should remain unchanged"
     
-    def test_link_style_change_rebuilds_widget_tree(self):
-        """Changing link_style rebuilds the widget tree with new widget instances.
+    def test_link_style_change_triggers_rebuild(self):
+        """Changing link_style triggers widget rebuild with new widget instances.
         
         **Validates: Requirements 5.1, 5.4**
         """
@@ -705,8 +705,8 @@ class TestStructurePropertyRebuild:
         assert id(label) == root_id_before, \
             "Root MarkdownLabel ID should remain unchanged"
     
-    def test_strict_label_mode_change_rebuilds_widget_tree(self):
-        """Changing strict_label_mode rebuilds the widget tree.
+    def test_strict_label_mode_change_triggers_rebuild(self):
+        """Changing strict_label_mode triggers widget rebuild.
         
         **Validates: Requirements 5.1, 5.4**
         """
@@ -731,8 +731,8 @@ class TestStructurePropertyRebuild:
         assert id(label) == root_id_before, \
             "Root MarkdownLabel ID should remain unchanged"
     
-    def test_render_mode_change_rebuilds_widget_tree(self):
-        """Changing render_mode rebuilds the widget tree.
+    def test_render_mode_change_triggers_rebuild(self):
+        """Changing render_mode triggers widget rebuild.
         
         **Validates: Requirements 5.1, 5.4**
         """
@@ -774,8 +774,8 @@ class TestStructurePropertyRebuildPBT:
     )
     # Combination strategy: 50 examples (performance optimized)
     @settings(max_examples=50, deadline=None)
-    def test_text_change_rebuilds_widget_tree_pbt(self, initial_text, new_text):
-        """Property 7: Structure Property Changes Rebuild Widget Tree (text).
+    def test_text_change_triggers_rebuild_pbt(self, initial_text, new_text):
+        """Property 7: Structure Property Changes Trigger Rebuild (text).
         
         *For any* MarkdownLabel with non-empty content, and *for any* structure
         property (text), changing that property and calling force_rebuild()
@@ -783,7 +783,7 @@ class TestStructurePropertyRebuildPBT:
         the root MarkdownLabel).
         
         **Feature: headless-ci-testing, Property 7: Structure Property Changes
-        Rebuild Widget Tree**
+        Trigger Rebuild**
         **Validates: Requirements 5.1**
         """
         # Ensure we have different non-empty content
@@ -821,15 +821,15 @@ class TestStructurePropertyRebuildPBT:
     )
     # Small finite strategy: 3 examples (input space size: 3)
     @settings(max_examples=3, deadline=None)
-    def test_font_name_change_rebuilds_widget_tree_pbt(self, markdown_text, font_name):
-        """Property 7: Structure Property Changes Rebuild Widget Tree (font_name).
+    def test_font_name_change_triggers_rebuild_pbt(self, markdown_text, font_name):
+        """Property 7: Structure Property Changes Trigger Rebuild (font_name).
         
         *For any* MarkdownLabel with non-empty content, and *for any* structure
         property (font_name), changing that property and calling force_rebuild()
         SHALL result in different widget object IDs for children.
         
         **Feature: headless-ci-testing, Property 7: Structure Property Changes
-        Rebuild Widget Tree**
+        Trigger Rebuild**
         **Validates: Requirements 5.1**
         """
         # Ensure we have non-empty content
@@ -868,15 +868,15 @@ class TestStructurePropertyRebuildPBT:
     )
     # Small finite strategy: 2 examples (input space size: 2)
     @settings(max_examples=2, deadline=None)
-    def test_link_style_change_rebuilds_widget_tree_pbt(self, markdown_text, link_style):
-        """Property 7: Structure Property Changes Rebuild Widget Tree (link_style).
+    def test_link_style_change_triggers_rebuild_pbt(self, markdown_text, link_style):
+        """Property 7: Structure Property Changes Trigger Rebuild (link_style).
         
         *For any* MarkdownLabel with non-empty content, and *for any* structure
         property (link_style), changing that property and calling force_rebuild()
         SHALL result in different widget object IDs for children.
         
         **Feature: headless-ci-testing, Property 7: Structure Property Changes
-        Rebuild Widget Tree**
+        Trigger Rebuild**
         **Validates: Requirements 5.1**
         """
         # Ensure we have non-empty content

@@ -874,8 +874,8 @@ class TestReactiveRebuildOnPropertyChange:
     @given(st.booleans(), st.booleans())
     # Combination strategy: 4 examples (combination coverage)
     @settings(max_examples=4, deadline=None)
-    def test_disabled_color_updates_value(self, disabled1, disabled2):
-        """Changing disabled after initial rendering updates color on existing widgets.
+    def test_disabled_change_triggers_rebuild(self, disabled1, disabled2):
+        """Changing disabled after initial rendering triggers widget rebuild.
         
         **Feature: label-compatibility, Property 14: Reactive Rebuild on Property Change**
         **Validates: Requirements 12.1, 12.2**
