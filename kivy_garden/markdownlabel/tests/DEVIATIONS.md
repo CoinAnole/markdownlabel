@@ -74,3 +74,8 @@
   - Appropriate max_examples values based on strategy type
   - Descriptive test docstrings
   - Proper cleanup in try/finally blocks
+
+## test_inline_renderer.py
+- Lines 61-74: The `link_token()` strategy uses `st.sampled_from()` with 69 URL-safe characters combined with `st.text()` for URL generation. This creates a combination of strategies (sampled_from + text). According to TESTING.md guidelines (lines 363-377), when multiple strategies are combined, this should be classified as a "Combination strategy" not a "Complex strategy". The comment should say "Combination strategy: 20 examples (combination coverage)" instead of "Complex strategy: 20 examples (adequate coverage)".
+- Lines 408-420: The `test_urls_with_brackets_are_safe` test uses `st.one_of()` with 5 different mapped text strategies. According to TESTING.md guidelines (lines 363-377), this is a combination strategy (multiple alternative strategies combined with one_of). The comment should say "Combination strategy: 20 examples (combination coverage)" instead of "Complex strategy: 20 examples (adequate coverage)".
+- Lines 658-677: The `test_html_content_is_escaped` test uses `st.one_of()` with 8 different mapped text strategies. According to TESTING.md guidelines (lines 363-377), this is a combination strategy (multiple alternative strategies combined with one_of). The comment should say "Combination strategy: 20 examples (combination coverage)" instead of "Complex strategy: 20 examples (adequate coverage)".
