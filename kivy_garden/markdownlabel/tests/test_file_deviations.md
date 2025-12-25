@@ -1045,3 +1045,37 @@ No deviations found.
 - Line 494-496: Property test `test_coverage_tolerance_reasonable` uses `st.floats(min_value=50.0, max_value=95.0)` which is a complex strategy (infinite float range). The comment `# Complex strategy: 6 examples (adequate coverage)` is appropriate according to guidelines section "Property-Based Testing Optimization".
 
 - Line 288-314: Helper method `_simulate_coverage_measurement` is defined in the test class. According to guidelines section "Helper Functions", helper functions should be added to `test_utils.py` and imported, not duplicated in test files. This helper is used in multiple tests and should be consolidated in test_utils.py.
+
+### tools/test_analysis/test_duplicate_detector.py
+
+- Line 15-18: The file modifies `sys.path` to add the tools directory for imports. According to guidelines section "Test File Structure", test files should use standard import patterns. The recommended approach would be to ensure the tools directory is properly structured as a package or to use a different import strategy rather than modifying sys.path at runtime.
+
+- Line 30-94: Custom strategy `duplicate_helper_functions` is defined in the test file. According to guidelines section "Helper Functions", custom Hypothesis strategies should be added to test_utils.py and imported, not duplicated in test files. This strategy is used in multiple tests and should be consolidated.
+
+- Line 101-151: Property test `test_duplicate_detection_finds_duplicates` is missing the required docstring format. According to guidelines section "Property-Based Testing", property tests should include `**Feature: feature-name, Property N: Property Description**` and `**Validates: Requirements X.Y**` in their docstrings. The current docstring only says "Duplicate detector should find helper functions that appear in multiple files." without the required feature and property information.
+
+- Line 101-151: Property test `test_duplicate_detection_finds_duplicates` uses a custom strategy `duplicate_helper_functions()` which is a complex strategy that generates various combinations. The standardized comment `# Complex strategy: 20 examples (adequate coverage)` is appropriate for this type of strategy according to guidelines section "Property-Based Testing Optimization".
+
+- Line 153-197: Property test `test_detector_handles_no_duplicates` is missing the required docstring format. According to guidelines section "Property-Based Testing", property tests should include `**Feature: feature-name, Property N: Property Description**` and `**Validates: Requirements X.Y**` in their docstrings. The current docstring only says "Detector should handle files with no duplicate functions correctly." without the required feature and property information.
+
+- Line 153-197: Property test `test_detector_handles_no_duplicates` uses `st.integers(min_value=1, max_value=5)` which is a small finite strategy with 5 values. The standardized comment `# Small finite strategy: 5 examples (input space size: 5)` is correct according to guidelines section "Property-Based Testing Optimization".
+
+- Line 199-268: Method `test_detector_calculates_priority_correctly` has a docstring but is not a property test (doesn't use @given decorator), so it doesn't need the property test docstring format. This is correct.
+
+- Line 270-322: Method `test_detector_generates_consolidation_suggestions` has a docstring but is not a property test, so it doesn't need the property test docstring format. This is correct.
+
+- Line 324-373: Method `test_detector_finds_specific_duplicates` has a docstring but is not a property test, so it doesn't need the property test docstring format. This is correct.
+
+- Line 376-377: The `if __name__ == "__main__":` block at the end of the file is a standard Python idiom for allowing the test file to be run directly. This is acceptable and not a deviation from the guidelines.
+
+### tools/test_analysis/test_naming_convention_validator.py
+
+- Line 17-20: The file modifies `sys.path` to add the tools directory for imports. According to guidelines section "Test File Structure", test files should use standard import patterns. The recommended approach would be to ensure the tools directory is properly structured as a package or to use a different import strategy rather than modifying sys.path at runtime.
+
+- Line 119: Property test `test_naming_pattern_consistency_property` has a standardized comment `# Combination strategy: 100 examples (combination coverage)` but the strategy uses `test_name_base=st.text(...)` and `assertion_type=st.sampled_from([...])` which is a combination strategy. According to guidelines section "Property-Based Testing Optimization", combination strategies should have their max_examples capped at 50, not 100. The comment should be `# Combination strategy: 50 examples (combination coverage)` or the max_examples should be reduced to 50.
+
+- Line 121-167: Property test `test_naming_pattern_consistency_property` has a docstring that includes property information (`**Property 6: Naming Pattern Consistency**`) and validation requirements (`**Validates: Requirements 1.4, 5.2**`), which is correct. However, it's missing the feature information that should follow the format `**Feature: feature-name, Property N: Property Description**`. The docstring should be updated to include the feature information.
+
+- Line 179: Property test `test_file_level_consistency` has a standardized comment `# Complex strategy: 100 examples (adequate coverage)` but the strategy uses `test_names=st.lists(...)` which is a complex strategy. According to guidelines section "Property-Based Testing Optimization", complex strategies should use 10-50 examples based on complexity. 100 examples is excessive for this strategy and should be reduced to a more reasonable number like 20-50.
+
+- Line 181-228: Property test `test_file_level_consistency` is missing the required docstring format. According to guidelines section "Property-Based Testing", property tests should include `**Feature: feature-name, Property N: Property Description**` and `**Validates: Requirements X.Y**` in their docstrings. The current docstring only says "Test that naming consistency is checked at the file level." without the required feature and property information.
