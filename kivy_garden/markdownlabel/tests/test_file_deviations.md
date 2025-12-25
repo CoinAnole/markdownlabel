@@ -699,3 +699,63 @@ No deviations found.
 - Line 195: Property test `test_padding_equal_function_available` is missing the required docstring format. Should include feature and property information.
 
 - Line 209: Property test `test_floats_equal_function_available` is missing the required docstring format. Should include feature and property information.
+
+### test_shortening_and_coordinate.py
+
+- Line 37: Property test `test_shorten_forwarded_to_paragraph` is missing the required docstring format. According to guidelines section "Property-Based Testing", property tests should include `**Feature: feature-name, Property N: Property Description**` and `**Validates: Requirements X.Y**` in their docstrings. The current docstring only says "shorten property is forwarded to paragraph Labels." without the required feature and property information.
+
+- Line 51: Property test `test_shorten_forwarded_to_heading` is missing the required docstring format. Should include feature and property information following the format `**Feature: feature-name, Property N: Property Description**` and `**Validates: Requirements X.Y**`.
+
+- Line 65: Property test `test_shorten_forwarded_to_list_items` is missing the required docstring format. Should include feature and property information.
+
+- Line 80: Property test `test_shorten_forwarded_to_table_cells` is missing the required docstring format. Should include feature and property information.
+
+- Line 132: Property test `test_split_str_forwarded_to_paragraph` is missing the required docstring format. Should include feature and property information.
+
+- Line 146: Property test `test_split_str_forwarded_to_heading` is missing the required docstring format. Should include feature and property information.
+
+- Line 160: Property test `test_max_lines_forwarded_to_paragraph` is missing the required docstring format. Should include feature and property information.
+
+- Line 176: Property test `test_max_lines_forwarded_to_heading` is missing the required docstring format. Should include feature and property information.
+
+- Line 190: Property test `test_max_lines_forwarded_to_list_items` is missing the required docstring format. Should include feature and property information.
+
+- Line 207: Property test `test_ellipsis_options_forwarded_to_paragraph` is missing the required docstring format. Should include feature and property information.
+
+- Line 223: Property test `test_ellipsis_options_forwarded_to_heading` is missing the required docstring format. Should include feature and property information.
+
+- Line 239: Property test `test_ellipsis_options_forwarded_to_list_items` is missing the required docstring format. Should include feature and property information.
+
+- Line 256: Property test `test_ellipsis_options_forwarded_to_table_cells` is missing the required docstring format. Should include feature and property information.
+
+- Line 285: Property test `test_all_shortening_properties_forwarded_together` is missing the required docstring format. Should include feature and property information.
+
+- Line 323: Test name `test_shorten_change_updates_value` uses "updates_value" naming but docstring says "triggers widget rebuild with new value". According to guidelines section "Test Naming Conventions", tests that verify rebuild behavior should use `test_*_triggers_rebuild_*` naming, while tests that verify value changes without rebuild verification should use `test_*_updates_value_*` naming. The test calls `label.force_rebuild()` and verifies the new value, which is inconsistent with the naming convention. The name should be `test_shorten_change_triggers_rebuild` or similar.
+
+- Line 323: Property test `test_shorten_change_updates_value` is missing the required docstring format. Should include feature and property information.
+
+- Line 416: Property test `test_link_produces_ref_markup_for_translation` is missing the required docstring format. Should include feature and property information.
+
+- Line 453: Property test `test_multiple_links_produce_ref_markup` is missing the required docstring format. Should include feature and property information.
+
+- Line 624: Property test `test_ref_markup_updates_when_text_changes` is missing the required docstring format. Should include feature and property information.
+
+- Line 662: Property test `test_coordinate_translation_math` is missing the required docstring format. Should include feature and property information.
+
+- Line 692: Property test `test_anchor_translation_math` is missing the required docstring format. Should include feature and property information.
+
+- Line 1002: Property test `test_property_refs_coordinate_translation_math` has a docstring that includes feature and property information but is missing the `**Validates: Requirements X.Y**` section. According to guidelines section "Property-Based Testing", property tests should include both feature/property information and validation requirements.
+
+- Line 1342: Property test `test_property_anchors_coordinate_translation_math` has a docstring that includes feature and property information but is missing the `**Validates: Requirements X.Y**` section. Should include validation requirements.
+
+- Line 360-408: Helper methods `_find_labels_with_refs`, `_find_labels_with_ref_markup`, and `_get_widget_offset` are defined in the test class. According to guidelines section "Helper Functions", helper functions should be added to `test_utils.py` and imported, not duplicated in test files. These helpers are used in multiple tests and should be consolidated in test_utils.py.
+
+- Line 615-623: Property test `test_ref_markup_updates_when_text_changes` uses two text strategies which is a combination strategy. The comment says `# Complex strategy: 20 examples (adequate coverage)` but according to guidelines section "Property-Based Testing Optimization", this should be classified as a "Combination strategy" with the comment `# Combination strategy: 20 examples (combination coverage)`.
+
+- Line 656-661: Property test `test_coordinate_translation_math` uses four float strategies which is a combination strategy. The comment says `# Complex strategy: 20 examples (adequate coverage)` but should be `# Combination strategy: 20 examples (combination coverage)` according to guidelines.
+
+- Line 688-691: Property test `test_anchor_translation_math` uses two float strategies which is a combination strategy. The comment says `# Complex strategy: 20 examples (adequate coverage)` but should be `# Combination strategy: 20 examples (combination coverage)` according to guidelines.
+
+- Line 983-1004: Property test `test_property_refs_coordinate_translation_math` uses 12 float parameters which is a combination strategy. The comment says `# Complex strategy with 12 float parameters: 100 examples for adequate coverage` but according to guidelines section "Property-Based Testing Optimization", combination strategies should use the format `# Combination strategy: [N] examples (combination coverage)` and should be capped at 50 examples, not 100.
+
+- Line 1324-1343: Property test `test_property_anchors_coordinate_translation_math` uses 10 float parameters which is a combination strategy. The comment says `# Complex strategy with 10 float parameters: 100 examples for adequate coverage` but according to guidelines section "Property-Based Testing Optimization", combination strategies should use the format `# Combination strategy: [N] examples (combination coverage)` and should be capped at 50 examples, not 100.
