@@ -105,5 +105,9 @@
 ## test_file_analyzer.py
 - Lines 83, 224, 286, 322, 393, 459: Undocumented pytest markers are used throughout the file: `@pytest.mark.unit` (lines 83, 224, 322), `@pytest.mark.property` (lines 286, 459), and `@pytest.mark.integration` (line 393). According to TESTING.md (lines 150-158), only `@pytest.mark.slow`, `@pytest.mark.needs_window`, and `@pytest.mark.test_tests` are documented as valid pytest markers. Using undocumented markers violates the guideline that test practices should follow documented guidelines.
 
+## test_label_compatibility.py
+- Lines 137-139: Test `test_all_noop_properties_together` uses 5 booleans with `max_examples=2` and comment "Combination strategy: 2 examples (combination coverage)". According to TESTING.md guidelines (lines 335-347), 5 booleans creates a finite input space of 32 combinations (2^5). This should be classified as a "Small finite strategy" with `max_examples=32` (input space size), not a combination strategy with only 2 examples.
+- Lines 156-159: Test `test_noop_properties_do_not_affect_rendering` uses 5 booleans + simple_markdown_document with `max_examples=2` and comment "Combination strategy: 2 examples (combination coverage)". The 5 booleans alone create 32 combinations. According to TESTING.md guidelines (lines 363-377), combination strategies should use the product of individual strategy sizes, capped at 50. Using only 2 examples is insufficient for 32 boolean combinations.
+
 ## test_import.py
 - Lines 14, 21: Undocumented pytest marker `@pytest.mark.unit` is used. According to TESTING.md (lines 150-158), only `@pytest.mark.slow`, `@pytest.mark.needs_window`, and `@pytest.mark.test_tests` are documented as valid pytest markers. Using `@pytest.mark.unit` violates the guideline that test practices should follow documented guidelines.
