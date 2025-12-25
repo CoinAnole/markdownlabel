@@ -212,35 +212,19 @@ No deviations found.
 
 - Line 311-312: Property test `test_style_property_changes_preserve_widget_identities` has a standardized comment `# Combination strategy: 100 examples (combination coverage)` but the strategy uses 8 different parameters (markdown_text, base_font_size, color, halign, valign, disabled, disabled_color, base_direction, line_height). According to guidelines section "Property-Based Testing Optimization", combination strategies should have their max_examples capped at 50, not 100. The comment should be `# Combination strategy: 50 examples (combination coverage)` or the max_examples should be reduced to 50.
 
-- Line 311-312: Property test `test_style_property_changes_preserve_widget_identities` is missing the required docstring format. According to guidelines section "Property-Based Testing", property tests should include `**Feature: feature-name, Property N: Property Description**` and `**Validates: Requirements X.Y**` in their docstrings. The current docstring includes feature and property information but is missing the `**Validates: Requirements X.Y**` section.
-
 - Line 520-521: Property test `test_style_property_values_propagate_to_descendants` has a standardized comment `# Combination strategy: 100 examples (combination coverage)` but the strategy uses 5 different parameters (markdown_text, color, halign, valign, line_height, base_direction). According to guidelines section "Property-Based Testing Optimization", combination strategies should have their max_examples capped at 50, not 100. The comment should be `# Combination strategy: 50 examples (combination coverage)` or the max_examples should be reduced to 50.
-
-- Line 520-521: Property test `test_style_property_values_propagate_to_descendants` is missing the required docstring format. According to guidelines section "Property-Based Testing", property tests should include `**Feature: feature-name, Property N: Property Description**` and `**Validates: Requirements X.Y**` in their docstrings. The current docstring includes feature and property information but is missing the `**Validates: Requirements X.Y**` section.
 
 - Line 775-776: Property test `test_text_change_rebuilds_widget_tree_pbt` has a standardized comment `# Complex strategy: 100 examples (adequate coverage)` but the strategy uses `simple_markdown_document()` twice (initial_text and new_text), which is a combination strategy. According to guidelines section "Property-Based Testing Optimization", combination strategies should use the format `# Combination strategy: [N] examples (combination coverage)` and should be capped at 50 examples.
 
-- Line 775-776: Property test `test_text_change_rebuilds_widget_tree_pbt` is missing the required docstring format. According to guidelines section "Property-Based Testing", property tests should include `**Feature: feature-name, Property N: Property Description**` and `**Validates: Requirements X.Y**` in their docstrings. The current docstring includes feature and property information but is missing the `**Validates: Requirements X.Y**` section.
-
 - Line 822-823: Property test `test_font_name_change_rebuilds_widget_tree_pbt` has a standardized comment `# Complex strategy: 100 examples (adequate coverage)` but the strategy uses `simple_markdown_document()` and `st.sampled_from(...)`, which is a combination strategy. According to guidelines section "Property-Based Testing Optimization", combination strategies should use the format `# Combination strategy: [N] examples (combination coverage)` and should be capped at 50 examples.
-
-- Line 822-823: Property test `test_font_name_change_rebuilds_widget_tree_pbt` is missing the required docstring format. According to guidelines section "Property-Based Testing", property tests should include `**Feature: feature-name, Property N: Property Description**` and `**Validates: Requirements X.Y**` in their docstrings. The current docstring includes feature and property information but is missing the `**Validates: Requirements X.Y**` section.
 
 - Line 869-870: Property test `test_link_style_change_rebuilds_widget_tree_pbt` has a standardized comment `# Complex strategy: 100 examples (adequate coverage)` but the strategy uses `simple_markdown_document()` and `st.sampled_from(...)`, which is a combination strategy. According to guidelines section "Property-Based Testing Optimization", combination strategies should use the format `# Combination strategy: [N] examples (combination coverage)` and should be capped at 50 examples.
 
-- Line 869-870: Property test `test_link_style_change_rebuilds_widget_tree_pbt` is missing the required docstring format. According to guidelines section "Property-Based Testing", property tests should include `**Feature: feature-name, Property N: Property Description**` and `**Validates: Requirements X.Y**` in their docstrings. The current docstring includes feature and property information but is missing the `**Validates: Requirements X.Y**` section.
-
 - Line 944-945: Property test `test_root_id_preserved_across_style_property_changes` has a standardized comment `# Combination strategy: 100 examples (combination coverage)` but the strategy uses 6 different parameters (markdown_text, base_font_size, color, halign, valign, line_height, disabled). According to guidelines section "Property-Based Testing Optimization", combination strategies should have their max_examples capped at 50, not 100. The comment should be `# Combination strategy: 50 examples (combination coverage)` or the max_examples should be reduced to 50.
-
-- Line 944-945: Property test `test_root_id_preserved_across_style_property_changes` is missing the required docstring format. According to guidelines section "Property-Based Testing", property tests should include `**Feature: feature-name, Property N: Property Description**` and `**Validates: Requirements X.Y**` in their docstrings. The current docstring includes feature and property information but is missing the `**Validates: Requirements X.Y**` section.
 
 - Line 990-991: Property test `test_root_id_preserved_across_structure_property_changes` has a standardized comment `# Combination strategy: 100 examples (combination coverage)` but the strategy uses 5 different parameters (initial_text, new_text, font_name, link_style, strict_label_mode, render_mode). According to guidelines section "Property-Based Testing Optimization", combination strategies should have their max_examples capped at 50, not 100. The comment should be `# Combination strategy: 50 examples (combination coverage)` or the max_examples should be reduced to 50.
 
-- Line 990-991: Property test `test_root_id_preserved_across_structure_property_changes` is missing the required docstring format. According to guidelines section "Property-Based Testing", property tests should include `**Feature: feature-name, Property N: Property Description**` and `**Validates: Requirements X.Y**` in their docstrings. The current docstring includes feature and property information but is missing the `**Validates: Requirements X.Y**` section.
-
 - Line 1047-1048: Property test `test_root_id_preserved_across_mixed_property_changes` has a standardized comment `# Combination strategy: 100 examples (combination coverage)` but the strategy uses 5 different parameters (markdown_text, base_font_size, color, font_name, link_style). According to guidelines section "Property-Based Testing Optimization", combination strategies should have their max_examples capped at 50, not 100. The comment should be `# Combination strategy: 50 examples (combination coverage)` or the max_examples should be reduced to 50.
-
-- Line 1047-1048: Property test `test_root_id_preserved_across_mixed_property_changes` is missing the required docstring format. According to guidelines section "Property-Based Testing", property tests should include `**Feature: feature-name, Property N: Property Description**` and `**Validates: Requirements X.Y**` in their docstrings. The current docstring includes feature and property information but is missing the `**Validates: Requirements X.Y**` section.
 
 ### test_refactoring_properties.py
 
@@ -261,10 +245,6 @@ No deviations found.
 ### test_shortening_and_coordinate.py
 
 - Line 323: Test name `test_shorten_change_updates_value` uses "updates_value" naming but docstring says "triggers widget rebuild with new value". According to guidelines section "Test Naming Conventions", tests that verify rebuild behavior should use `test_*_triggers_rebuild_*` naming, while tests that verify value changes without rebuild verification should use `test_*_updates_value_*` naming. The test calls `label.force_rebuild()` and verifies the new value, which is inconsistent with the naming convention. The name should be `test_shorten_change_triggers_rebuild` or similar.
-
-- Line 1002: Property test `test_property_refs_coordinate_translation_math` has a docstring that includes feature and property information but is missing the `**Validates: Requirements X.Y**` section. According to guidelines section "Property-Based Testing", property tests should include both feature/property information and validation requirements.
-
-- Line 1342: Property test `test_property_anchors_coordinate_translation_math` has a docstring that includes feature and property information but is missing the `**Validates: Requirements X.Y**` section. Should include validation requirements.
 
 - Line 360-408: Helper methods `_find_labels_with_refs`, `_find_labels_with_ref_markup`, and `_get_widget_offset` are defined in the test class. According to guidelines section "Helper Functions", helper functions should be added to `test_utils.py` and imported, not duplicated in test files. These helpers are used in multiple tests and should be consolidated in test_utils.py.
 
@@ -288,8 +268,6 @@ No deviations found.
 
 - Line 28-30: Property test `test_boolean_strategy_classification` uses `st.just('st.booleans()')` which is a small finite strategy with 1 value, but the comment says `# Small finite strategy: 1 examples (input space size: 1)`. While the comment format is correct, the rationale "input space size: 1" is misleading because the test is actually testing the classification of boolean strategies, which should have an input space size of 2. The comment should clarify that this is testing the classification logic, not the actual boolean strategy itself.
 
-- Line 31-35: Property test `test_boolean_strategy_classification` is missing the required docstring format. According to guidelines section "Property-Based Testing", property tests should include `**Feature: feature-name, Property N: Property Description**` and `**Validates: Requirements X.Y**` in their docstrings. The current docstring includes property information but is missing the `**Validates: Requirements X.Y**` section.
-
 ### test_text_properties.py
 
 - Line 21: Custom strategy `unicode_errors_strategy` is defined in the test file. According to guidelines section "Helper Functions", custom Hypothesis strategies should be added to test_utils.py and imported, not duplicated in test files.
@@ -305,34 +283,6 @@ No deviations found.
 ### test_texture_render_mode.py
 
 - Line 23-31: Helper method `find_images` is defined in the test file. According to guidelines section "Helper Functions", helper functions should be added to `test_utils.py` and imported, not duplicated in test files. This helper should be moved to test_utils.py for consistency with other test files.
-
-- Line 50: Test `test_texture_mode_creates_image_widget` is not a property test (uses @pytest.mark.parametrize), so it doesn't need the property test docstring format. However, the docstring includes feature and property information but is missing the `**Validates: Requirements X.Y**` section. According to guidelines section "Property-Based Testing", while property tests need the full format, regular tests should still be clear about what they validate.
-
-- Line 68: Test `test_texture_mode_with_empty_text_no_image` is not a property test. The docstring includes feature and property information but is missing the `**Validates: Requirements X.Y**` section. Same issue as line 50.
-
-- Line 86: Test `test_widgets_mode_no_image_widget` is not a property test. The docstring includes feature and property information but is missing the `**Validates: Requirements X.Y**` section. Same issue as line 50.
-
-- Line 105: Test `test_render_mode_property_values` is not a property test. The docstring includes feature and property information but is missing the `**Validates: Requirements X.Y**` section. Same issue as line 50.
-
-- Line 115: Test `test_default_render_mode_is_widgets` is not a property test. The docstring includes feature and property information but is missing the `**Validates: Requirements X.Y**` section. Same issue as line 50.
-
-- Line 136: Test `test_aggregated_refs_populated_in_texture_mode` is not a property test. The docstring includes feature and property information but is missing the `**Validates: Requirements X.Y**` section. Same issue as line 50.
-
-- Line 156: Test `test_widgets_mode_no_aggregated_refs` is not a property test. The docstring includes feature and property information but is missing the `**Validates: Requirements X.Y**` section. Same issue as line 50.
-
-- Line 179: Test `test_multiple_links_collected` is not a property test. The docstring includes feature and property information but is missing the `**Validates: Requirements X.Y**` section. Same issue as line 50.
-
-- Line 216: Test `test_inside_zone_dispatch` is not a property test. The docstring includes feature and property information but is missing the `**Validates: Requirements X.Y**` section. Same issue as line 50.
-
-- Line 279: Property test `test_property_inside_zone_dispatch` has the required feature and property information in the docstring but is missing the `**Validates: Requirements X.Y**` section. According to guidelines section "Property-Based Testing", property tests should include both feature/property information and validation requirements.
-
-- Line 330: Test `test_outside_zone_no_dispatch` is not a property test. The docstring includes feature and property information but is missing the `**Validates: Requirements X.Y**` section. Same issue as line 50.
-
-- Line 387: Property test `test_property_outside_zone_no_dispatch` has the required feature and property information in the docstring but is missing the `**Validates: Requirements X.Y**` section. Same issue as line 279.
-
-- Line 436: Test `test_multiple_zones_first_match` is not a property test. The docstring includes feature and property information but is missing the `**Validates: Requirements X.Y**` section. Same issue as line 50.
-
-- Line 483: Test `test_multiple_zones_non_overlapping` is not a property test. The docstring includes feature and property information but is missing the `**Validates: Requirements X.Y**` section. Same issue as line 50.
 
 ### test_texture_sizing.py
 
@@ -383,8 +333,6 @@ No deviations found.
 - Line 17-20: The file modifies `sys.path` to add the tools directory for imports. According to guidelines section "Test File Structure", test files should use standard import patterns. The recommended approach would be to ensure the tools directory is properly structured as a package or to use a different import strategy rather than modifying sys.path at runtime.
 
 - Line 119: Property test `test_naming_pattern_consistency_property` has a standardized comment `# Combination strategy: 100 examples (combination coverage)` but the strategy uses `test_name_base=st.text(...)` and `assertion_type=st.sampled_from([...])` which is a combination strategy. According to guidelines section "Property-Based Testing Optimization", combination strategies should have their max_examples capped at 50, not 100. The comment should be `# Combination strategy: 50 examples (combination coverage)` or the max_examples should be reduced to 50.
-
-- Line 121-167: Property test `test_naming_pattern_consistency_property` has a docstring that includes property information (`**Property 6: Naming Pattern Consistency**`) and validation requirements (`**Validates: Requirements 1.4, 5.2**`), which is correct. However, it's missing the feature information that should follow the format `**Feature: feature-name, Property N: Property Description**`. The docstring should be updated to include the feature information.
 
 - Line 179: Property test `test_file_level_consistency` has a standardized comment `# Complex strategy: 100 examples (adequate coverage)` but the strategy uses `test_names=st.lists(...)` which is a complex strategy. According to guidelines section "Property-Based Testing Optimization", complex strategies should use 10-50 examples based on complexity. 100 examples is excessive for this strategy and should be reduced to a more reasonable number like 20-50.
 
