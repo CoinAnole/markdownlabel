@@ -4,6 +4,15 @@
 
 This plan orchestrates the implementation of 150+ deviations identified in `test_file_deviations.md` across 29 test files. The deviations are organized into 9 major categories with varying priority levels.
 
+## Revised Approach: Small Batch Processing
+
+Instead of tackling all files at once, the work is organized into **small batches of 3-5 files per phase**. This approach provides:
+- ✅ More manageable work units
+- ✅ Faster feedback cycles
+- ✅ Easier testing and validation
+- ✅ Reduced risk of large-scale failures
+- ✅ Better progress tracking
+
 ## Issue Categories Overview
 
 | Category | Count | Priority | Impact |
@@ -18,149 +27,168 @@ This plan orchestrates the implementation of 150+ deviations identified in `test
 | Unused Imports | 3+ | LOW | Code cleanliness |
 | Documentation Inconsistencies | 10+ | MEDIUM | Test accuracy |
 
-## Implementation Strategy
+## Implementation Strategy: Batch Processing
 
-### Phase 1: Foundation Work (Prerequisites)
+### Overview
 
-**Task 1.1: Consolidate Helper Functions**
-- **Goal**: Move all duplicate helper functions to `test_utils.py`
-- **Files Affected**: 
-  - `test_clipping_behavior.py` (_has_clipping_container)
-  - `test_font_properties.py` (_is_code_label, _collect_widget_ids)
-  - `test_shortening_and_coordinate.py` (_find_labels_with_refs, _find_labels_with_ref_markup, _get_widget_offset)
-  - `test_texture_render_mode.py` (find_images)
-  - `tools/test_analysis/test_coverage_preservation.py` (_simulate_coverage_measurement)
-- **Approach**: Manual consolidation to ensure proper testing of helpers
-- **Estimated Tasks**: 6 helper functions to consolidate
+The work is organized into **12 small batches** of 3-5 files each. Each batch focuses on a specific category of fixes and can be completed independently with minimal risk.
 
-**Task 1.2: Consolidate Custom Hypothesis Strategies**
-- **Goal**: Move all custom strategies to `test_utils.py`
-- **Files Affected**:
-  - `test_kivy_renderer.py` (heading_token, paragraph_token, list_item_token, list_token, code_block_token, block_quote_token, image_token, table_cell_token, table_row_token, table_token)
-  - `test_padding_properties.py` (padding_single, padding_two, padding_four)
-  - `test_text_properties.py` (unicode_errors_strategy)
-  - `tools/test_analysis/test_duplicate_detector.py` (duplicate_helper_functions)
-  - `tools/test_analysis/test_test_file_parser.py` (rebuild_test_file_strategy)
-- **Approach**: Manual consolidation with proper imports
-- **Estimated Tasks**: 15+ strategies to consolidate
+### Batch Structure
 
-### Phase 2: High-Priority Fixes (Test Correctness & Performance)
+Each batch follows this pattern:
+1. **Pre-batch validation**: Run tests for affected files
+2. **Apply fixes**: Make changes to 3-5 files
+3. **Post-batch validation**: Re-run tests to verify no regressions
+4. **Commit**: Commit batch if tests pass
 
-**Task 2.1: Fix Strategy Classifications**
-- **Goal**: Correct strategy type comments and max_examples values
-- **Pattern**: Replace incorrect "Complex" with "Combination" or correct finite classifications
-- **Files Affected**:
-  - `test_comment_standardizer.py` (lines 40, 304, 372, 595, 660)
-  - `test_documentation_compliance.py` (line 123)
-  - `test_file_analyzer.py` (lines 298, 473, 501)
-  - `test_performance.py` (lines 63, 94, 341, 383)
-  - `test_rebuild_semantics.py` (lines 311, 520, 775, 822, 869, 944, 990, 1047)
-  - `test_serialization.py` (line 504)
-  - `test_shortening_and_coordinate.py` (lines 615, 656, 688, 983, 1324)
-  - `tools/test_analysis/test_assertion_analyzer.py` (lines 97, 137)
-  - `tools/test_analysis/test_naming_convention_validator.py` (lines 119, 179)
-- **Approach**: Semi-automated with manual review
-- **Estimated Tasks**: 25+ strategy fixes
+### Batch Schedule
 
-**Task 2.2: Fix Test Naming Conventions**
-- **Goal**: Align test names with actual behavior (rebuild vs. value update)
-- **Pattern**: Rename tests to use `triggers_rebuild` or `updates_value` consistently
-- **Files Affected**:
-  - `test_advanced_compatibility.py` (lines 183, 207, 390, 719, 751, 782, 812, 842, 911, 941)
-  - `test_font_properties.py` (lines 124, 232)
-  - `test_shortening_and_coordinate.py` (line 323)
-  - `test_text_properties.py` (lines 56, 446, 582)
-- **Approach**: Manual review and renaming
-- **Estimated Tasks**: 15+ test renames
+#### Batch 1: Helper Consolidation - Core Test Files
+**Files**: test_clipping_behavior.py, test_font_properties.py, test_texture_render_mode.py
+**Issues**: 8 helper functions to consolidate
+**Priority**: HIGH (prerequisite for other work)
+**Estimated Time**: Small batch
 
-**Task 2.3: Fix Documentation Inconsistencies**
-- **Goal**: Align docstrings with actual test behavior
-- **Files Affected**:
-  - `test_advanced_compatibility.py` (lines 719, 751, 782, 812, 842, 911, 941)
-  - `test_color_properties.py` (line 83)
-  - `test_performance.py` (line 317)
-- **Approach**: Manual review and docstring updates
-- **Estimated Tasks**: 10+ docstring fixes
+**Tasks**:
+- [ ] test_clipping_behavior.py: Move _has_clipping_container to test_utils.py (2 duplicates)
+- [ ] test_font_properties.py: Move _is_code_label and _collect_widget_ids to test_utils.py
+- [ ] test_texture_render_mode.py: Move find_images to test_utils.py
 
-### Phase 3: Medium-Priority Fixes (Code Quality)
+#### Batch 2: Helper Consolidation - Advanced Test Files
+**Files**: test_shortening_and_coordinate.py, tools/test_analysis/test_coverage_preservation.py
+**Issues**: 4 helper functions to consolidate
+**Priority**: HIGH (prerequisite for other work)
+**Estimated Time**: Small batch
 
-**Task 3.1: Remove sys.path Modifications**
-- **Goal**: Replace runtime sys.path modifications with proper package structure
-- **Files Affected**:
-  - `test_comment_format.py` (lines 13, 212, 369, 532, 730)
-  - `test_comment_standardizer.py` (lines 15, 857)
-  - `test_file_analyzer.py` (line 16)
-  - `test_strategy_classification.py` (lines 10-12)
-  - `tools/test_analysis/test_assertion_analyzer.py` (lines 18-21)
-  - `tools/test_analysis/test_code_duplication_minimization.py` (lines 16-19)
-  - `tools/test_analysis/test_coverage_preservation.py` (lines 19-21)
-  - `tools/test_analysis/test_duplicate_detector.py` (lines 15-18)
-  - `tools/test_analysis/test_naming_convention_validator.py` (lines 17-20)
-  - `tools/test_analysis/test_test_file_parser.py` (lines 15-18)
-- **Approach**: 
-  1. Ensure tools directory is a proper Python package
-  2. Add __init__.py if missing
-  3. Update imports to use absolute imports
-- **Estimated Tasks**: 10+ files to update
+**Tasks**:
+- [ ] test_shortening_and_coordinate.py: Move _find_labels_with_refs, _find_labels_with_ref_markup, _get_widget_offset to test_utils.py
+- [ ] tools/test_analysis/test_coverage_preservation.py: Move _simulate_coverage_measurement to test_utils.py
 
-**Task 3.2: Fix Import Placement**
-- **Goal**: Move imports from test methods to module level
-- **Files Affected**:
-  - `test_comment_format.py` (line 730)
-  - `test_comment_standardizer.py` (line 861)
-  - `test_file_analyzer.py` (line 303)
-- **Approach**: Move imports to top of file
-- **Estimated Tasks**: 3+ import moves
+#### Batch 3: Strategy Consolidation - Renderer Tests
+**Files**: test_kivy_renderer.py, test_padding_properties.py, test_text_properties.py
+**Issues**: 14 custom strategies to consolidate
+**Priority**: HIGH (prerequisite for other work)
+**Estimated Time**: Medium batch
 
-**Task 3.3: Remove Redundant sys.path Modifications**
-- **Goal**: Remove duplicate sys.path modifications in setup_method
-- **Files Affected**:
-  - `test_comment_format.py` (lines 212, 369, 532)
-  - `test_comment_standardizer.py` (line 857)
-- **Approach**: Remove redundant modifications
-- **Estimated Tasks**: 4+ removals
+**Tasks**:
+- [ ] test_kivy_renderer.py: Move heading_token, paragraph_token, list_item_token, list_token, code_block_token, block_quote_token, image_token, table_cell_token, table_row_token, table_token to test_utils.py
+- [ ] test_padding_properties.py: Move padding_single, padding_two, padding_four to test_utils.py
+- [ ] test_text_properties.py: Move unicode_errors_strategy to test_utils.py
 
-### Phase 4: Low-Priority Fixes (Code Cleanliness)
+#### Batch 4: Strategy Consolidation - Analysis Tools
+**Files**: tools/test_analysis/test_duplicate_detector.py, tools/test_analysis/test_test_file_parser.py
+**Issues**: 2 custom strategies to consolidate
+**Priority**: HIGH (prerequisite for other work)
+**Estimated Time**: Small batch
 
-**Task 4.1: Add Missing Docstrings**
-- **Goal**: Add docstrings to test methods that are missing them
-- **Files Affected**:
-  - `test_comment_standardizer.py` (lines 91, 109, 170, 198, 238, 418, 469, 504, 536, 708, 773, 802)
-- **Approach**: Add descriptive docstrings
-- **Estimated Tasks**: 12+ docstrings
+**Tasks**:
+- [ ] tools/test_analysis/test_duplicate_detector.py: Move duplicate_helper_functions to test_utils.py
+- [ ] tools/test_analysis/test_test_file_parser.py: Move rebuild_test_file_strategy to test_utils.py
 
-**Task 4.2: Remove Stray Comments**
-- **Goal**: Remove comments that don't correspond to @settings decorators
-- **Files Affected**:
-  - `test_core_functionality.py` (lines 103, 242)
-  - `test_padding_properties.py` (line 78)
-  - `test_shared_infrastructure.py` (line 149)
-  - `test_text_properties.py` (line 108)
-- **Approach**: Remove misplaced comments
-- **Estimated Tasks**: 5+ comment removals
+#### Batch 5: Strategy Classification Fixes - Core Tests
+**Files**: test_comment_standardizer.py, test_documentation_compliance.py, test_file_analyzer.py
+**Issues**: 8 strategy classification errors
+**Priority**: HIGH (test correctness & performance)
+**Estimated Time**: Medium batch
 
-**Task 4.3: Remove Unused Imports**
-- **Goal**: Remove imports that are never used
-- **Files Affected**:
-  - `test_performance.py` (lines 12-15)
-  - `test_sizing_behavior.py` (lines 11-14)
-  - `test_texture_sizing.py` (lines 11-14)
-- **Approach**: Remove unused imports
-- **Estimated Tasks**: 3+ import removals
+**Tasks**:
+- [ ] test_comment_standardizer.py: Fix strategy comments (lines 40, 304, 372, 595, 660) - Complex → Combination
+- [ ] test_documentation_compliance.py: Fix strategy classification (line 123) - Medium finite → Complex
+- [ ] test_file_analyzer.py: Fix strategy type casing and classifications (lines 298, 473, 474, 501)
 
-**Task 4.4: Fix Nested Property Tests**
-- **Goal**: Refactor nested property tests to standalone methods
-- **Files Affected**:
-  - `test_helper_availability.py` (lines 146-182)
-- **Approach**: Extract nested functions to proper test methods
-- **Estimated Tasks**: 4+ test refactors
+#### Batch 6: Strategy Classification Fixes - Performance Tests
+**Files**: test_performance.py, test_serialization.py, test_shortening_and_coordinate.py
+**Issues**: 9 strategy classification errors
+**Priority**: HIGH (test correctness & performance)
+**Estimated Time**: Medium batch
 
-**Task 4.5: Remove Empty/Stub Tests**
-- **Goal**: Remove or properly implement tests that only contain `assert True`
-- **Files Affected**:
-  - `test_comment_standardizer.py` (line 987)
-- **Approach**: Remove or implement properly
-- **Estimated Tasks**: 1 test
+**Tasks**:
+- [ ] test_performance.py: Fix strategy classifications (lines 63, 94, 341, 383) - Complex → Combination
+- [ ] test_serialization.py: Fix strategy classification (line 504) - Complex → Combination
+- [ ] test_shortening_and_coordinate.py: Fix strategy classifications and max_examples (lines 615, 656, 688, 983, 1324)
+
+#### Batch 7: Strategy Classification Fixes - Rebuild & Analysis
+**Files**: test_rebuild_semantics.py, tools/test_analysis/test_assertion_analyzer.py, tools/test_analysis/test_naming_convention_validator.py
+**Issues**: 10 strategy classification errors
+**Priority**: HIGH (test correctness & performance)
+**Estimated Time**: Medium batch
+
+**Tasks**:
+- [ ] test_rebuild_semantics.py: Fix max_examples values (lines 311, 520, 775, 822, 869, 944, 990, 1047) - 100 → 50
+- [ ] tools/test_analysis/test_assertion_analyzer.py: Fix max_examples values (lines 97, 137) - 100 → 20-50
+- [ ] tools/test_analysis/test_naming_convention_validator.py: Fix max_examples values (lines 119, 179) - 100 → 20-50
+
+#### Batch 8: Test Naming & Documentation - Advanced Compatibility
+**Files**: test_advanced_compatibility.py, test_color_properties.py
+**Issues**: 11 naming and documentation issues
+**Priority**: HIGH (test clarity & maintainability)
+**Estimated Time**: Medium batch
+
+**Tasks**:
+- [ ] test_advanced_compatibility.py: Rename tests and fix docstrings (lines 183, 207, 390, 719, 751, 782, 812, 842, 911, 941)
+- [ ] test_color_properties.py: Fix docstring (line 83)
+
+#### Batch 9: Test Naming & Documentation - Font & Text Properties
+**Files**: test_font_properties.py, test_text_properties.py
+**Issues**: 5 naming and documentation issues
+**Priority**: HIGH (test clarity & maintainability)
+**Estimated Time**: Small batch
+
+**Tasks**:
+- [ ] test_font_properties.py: Rename tests (lines 124, 232) and add verification (line 927)
+- [ ] test_text_properties.py: Rename tests and fix docstrings (lines 56, 446, 582)
+
+#### Batch 10: sys.path Removal - Comment & Standardizer Tests
+**Files**: test_comment_format.py, test_comment_standardizer.py
+**Issues**: 8 sys.path modifications to remove
+**Priority**: MEDIUM (code quality)
+**Estimated Time**: Medium batch
+
+**Tasks**:
+- [ ] test_comment_format.py: Remove sys.path modifications (lines 13, 212, 369, 532) and fix import (line 730)
+- [ ] test_comment_standardizer.py: Remove sys.path modifications (lines 15, 857) and fix import (line 861)
+
+#### Batch 11: sys.path Removal - Analysis Tools
+**Files**: test_file_analyzer.py, test_strategy_classification.py, tools/test_analysis/test_assertion_analyzer.py, tools/test_analysis/test_code_duplication_minimization.py, tools/test_analysis/test_coverage_preservation.py, tools/test_analysis/test_duplicate_detector.py, tools/test_analysis/test_naming_convention_validator.py, tools/test_analysis/test_test_file_parser.py
+**Issues**: 10 sys.path modifications to remove
+**Priority**: MEDIUM (code quality)
+**Estimated Time**: Medium batch
+
+**Tasks**:
+- [ ] test_file_analyzer.py: Remove sys.path modification (line 16) and fix import (line 303)
+- [ ] test_strategy_classification.py: Remove sys.path modification (lines 10-12)
+- [ ] tools/test_analysis/test_assertion_analyzer.py: Remove sys.path modification (lines 18-21)
+- [ ] tools/test_analysis/test_code_duplication_minimization.py: Remove sys.path modification (lines 16-19)
+- [ ] tools/test_analysis/test_coverage_preservation.py: Remove sys.path modification (lines 19-21)
+- [ ] tools/test_analysis/test_duplicate_detector.py: Remove sys.path modification (lines 15-18)
+- [ ] tools/test_analysis/test_naming_convention_validator.py: Remove sys.path modification (lines 17-20)
+- [ ] tools/test_analysis/test_test_file_parser.py: Remove sys.path modification (lines 15-18)
+
+#### Batch 12: Code Cleanup - Low Priority Fixes
+**Files**: test_core_functionality.py, test_helper_availability.py, test_performance.py, test_shared_infrastructure.py, test_sizing_behavior.py, test_texture_sizing.py, test_text_properties.py
+**Issues**: 15+ low-priority issues
+**Priority**: LOW (code cleanliness)
+**Estimated Time**: Medium batch
+
+**Tasks**:
+- [ ] test_core_functionality.py: Remove stray comments (lines 103, 242)
+- [ ] test_helper_availability.py: Refactor nested property tests (lines 146-182)
+- [ ] test_performance.py: Remove unused imports (lines 12-15) and fix docstring (line 317)
+- [ ] test_shared_infrastructure.py: Remove stray comment (line 149)
+- [ ] test_sizing_behavior.py: Remove unused imports (lines 11-14)
+- [ ] test_texture_sizing.py: Remove unused imports (lines 11-14)
+- [ ] test_text_properties.py: Remove stray comment (line 108)
+
+#### Batch 13: Docstrings - Missing Documentation
+**Files**: test_comment_standardizer.py
+**Issues**: 12 missing docstrings
+**Priority**: LOW (documentation)
+**Estimated Time**: Small batch
+
+**Tasks**:
+- [ ] test_comment_standardizer.py: Add docstrings (lines 91, 109, 170, 198, 238, 418, 469, 504, 536, 708, 773, 802)
+- [ ] test_comment_standardizer.py: Remove or properly implement test (line 987)
+- [ ] test_padding_properties.py: Remove stray comment (line 78)
 
 ## Detailed Task Breakdown by File
 
@@ -331,42 +359,139 @@ This plan orchestrates the implementation of 150+ deviations identified in `test
 - [ ] Remove sys.path modification (lines 15-18)
 - [ ] Move rebuild_test_file_strategy to test_utils.py (lines 30-84)
 
+## File Summary
+
+| File | Batch | Issues | Type |
+|------|-------|--------|------|
+| test_advanced_compatibility.py | 8 | 11 | Naming & Documentation |
+| test_clipping_behavior.py | 1 | 2 | Helper Consolidation |
+| test_color_properties.py | 8 | 1 | Documentation |
+| test_comment_format.py | 10 | 5 | sys.path & Imports |
+| test_comment_standardizer.py | 5, 10, 13 | 20 | Strategy, sys.path, Docstrings |
+| test_core_functionality.py | 12 | 2 | Stray Comments |
+| test_documentation_compliance.py | 5 | 1 | Strategy Classification |
+| test_file_analyzer.py | 5, 11 | 6 | Strategy, sys.path, Imports |
+| test_font_properties.py | 1, 9 | 5 | Helpers, Naming, Verification |
+| test_helper_availability.py | 12 | 1 | Nested Tests |
+| test_kivy_renderer.py | 3 | 11 | Strategy Consolidation |
+| test_padding_properties.py | 3, 13 | 5 | Strategy, Stray Comments |
+| test_performance.py | 6, 12 | 7 | Strategy, Imports, Documentation |
+| test_rebuild_semantics.py | 7 | 8 | Strategy Classification |
+| test_serialization.py | 6 | 1 | Strategy Classification |
+| test_shared_infrastructure.py | 12 | 1 | Stray Comments |
+| test_shortening_and_coordinate.py | 2, 6, 9 | 8 | Helpers, Strategy, Naming |
+| test_sizing_behavior.py | 12 | 1 | Unused Imports |
+| test_strategy_classification.py | 11 | 2 | sys.path |
+| test_text_properties.py | 3, 9, 12 | 6 | Strategy, Naming, Stray Comments |
+| test_texture_render_mode.py | 1 | 1 | Helper Consolidation |
+| test_texture_sizing.py | 12 | 1 | Unused Imports |
+| tools/test_analysis/test_assertion_analyzer.py | 7, 11 | 3 | Strategy, sys.path |
+| tools/test_analysis/test_code_duplication_minimization.py | 11 | 1 | sys.path |
+| tools/test_analysis/test_coverage_preservation.py | 2, 11 | 2 | Helpers, sys.path |
+| tools/test_analysis/test_duplicate_detector.py | 4, 11 | 2 | Strategy, sys.path |
+| tools/test_analysis/test_naming_convention_validator.py | 7, 11 | 3 | Strategy, sys.path |
+| tools/test_analysis/test_test_file_parser.py | 4, 11 | 2 | Strategy, sys.path |
+
+**Total**: 29 files, 150+ issues across 13 batches
+
 ## Implementation Workflow
 
 ```mermaid
 graph TD
-    A[Start] --> B[Phase 1: Foundation Work]
-    B --> B1[Consolidate Helper Functions]
-    B --> B2[Consolidate Custom Strategies]
-    B1 --> C[Phase 2: High-Priority Fixes]
-    B2 --> C
-    C --> C1[Fix Strategy Classifications]
-    C --> C2[Fix Test Naming]
-    C --> C3[Fix Documentation]
-    C1 --> D[Phase 3: Medium-Priority Fixes]
-    C2 --> D
-    C3 --> D
-    D --> D1[Remove sys.path Modifications]
-    D --> D2[Fix Import Placement]
-    D --> D3[Remove Redundant Modifications]
-    D1 --> E[Phase 4: Low-Priority Fixes]
-    D2 --> E
-    D3 --> E
-    E --> E1[Add Missing Docstrings]
-    E --> E2[Remove Stray Comments]
-    E --> E3[Remove Unused Imports]
-    E --> E4[Fix Nested Tests]
-    E --> E5[Remove Empty Tests]
-    E1 --> F[Run Test Suite]
-    E2 --> F
-    E3 --> F
-    E4 --> F
-    E5 --> F
-    F --> G[All Tests Pass?]
-    G -->|Yes| H[Complete]
-    G -->|No| I[Debug and Fix]
+    A[Start] --> B[Batch 1: Helper Consolidation - Core]
+    B --> C[Validate Batch 1 Tests]
+    C -->|Pass| D[Commit Batch 1]
+    C -->|Fail| E[Debug Batch 1]
+    E --> B
+    D --> F[Batch 2: Helper Consolidation - Advanced]
+    F --> G[Validate Batch 2 Tests]
+    G -->|Pass| H[Commit Batch 2]
+    G -->|Fail| I[Debug Batch 2]
     I --> F
+    H --> J[Batch 3: Strategy Consolidation - Renderer]
+    J --> K[Validate Batch 3 Tests]
+    K -->|Pass| L[Commit Batch 3]
+    K -->|Fail| M[Debug Batch 3]
+    M --> J
+    L --> N[Batch 4: Strategy Consolidation - Analysis]
+    N --> O[Validate Batch 4 Tests]
+    O -->|Pass| P[Commit Batch 4]
+    O -->|Fail| Q[Debug Batch 4]
+    Q --> N
+    P --> R[Batch 5: Strategy Fixes - Core Tests]
+    R --> S[Validate Batch 5 Tests]
+    S -->|Pass| T[Commit Batch 5]
+    S -->|Fail| U[Debug Batch 5]
+    U --> R
+    T --> V[Batch 6: Strategy Fixes - Performance]
+    V --> W[Validate Batch 6 Tests]
+    W -->|Pass| X[Commit Batch 6]
+    W -->|Fail| Y[Debug Batch 6]
+    Y --> V
+    X --> Z[Batch 7: Strategy Fixes - Rebuild & Analysis]
+    Z --> AA[Validate Batch 7 Tests]
+    AA -->|Pass| AB[Commit Batch 7]
+    AA -->|Fail| AC[Debug Batch 7]
+    AC --> Z
+    AB --> AD[Batch 8: Naming & Documentation - Advanced]
+    AD --> AE[Validate Batch 8 Tests]
+    AE -->|Pass| AF[Commit Batch 8]
+    AE -->|Fail| AG[Debug Batch 8]
+    AG --> AD
+    AF --> AH[Batch 9: Naming & Documentation - Font & Text]
+    AH --> AI[Validate Batch 9 Tests]
+    AI -->|Pass| AJ[Commit Batch 9]
+    AI -->|Fail| AK[Debug Batch 9]
+    AK --> AH
+    AJ --> AL[Batch 10: sys.path Removal - Comment Tests]
+    AL --> AM[Validate Batch 10 Tests]
+    AM -->|Pass| AN[Commit Batch 10]
+    AM -->|Fail| AO[Debug Batch 10]
+    AO --> AL
+    AN --> AP[Batch 11: sys.path Removal - Analysis Tools]
+    AP --> AQ[Validate Batch 11 Tests]
+    AQ -->|Pass| AR[Commit Batch 11]
+    AQ -->|Fail| AS[Debug Batch 11]
+    AS --> AP
+    AR --> AT[Batch 12: Code Cleanup - Low Priority]
+    AT --> AU[Validate Batch 12 Tests]
+    AU -->|Pass| AV[Commit Batch 12]
+    AU -->|Fail| AW[Debug Batch 12]
+    AW --> AT
+    AV --> AX[Batch 13: Docstrings - Missing Documentation]
+    AX --> AY[Validate Batch 13 Tests]
+    AY -->|Pass| AZ[Commit Batch 13]
+    AY -->|Fail| BA[Debug Batch 13]
+    BA --> AX
+    AZ --> BB[Run Full Test Suite]
+    BB --> BC[All Tests Pass?]
+    BC -->|Yes| BD[Complete]
+    BC -->|No| BE[Debug and Fix]
+    BE --> BB
 ```
+
+### Batch Execution Pattern
+
+Each batch follows this consistent pattern:
+
+```mermaid
+graph LR
+    A[Start Batch] --> B[Run Tests for Affected Files]
+    B --> C[Apply Fixes]
+    C --> D[Run Tests Again]
+    D -->|Pass| E[Commit Batch]
+    D -->|Fail| F[Debug Issues]
+    F --> C
+    E --> G[Next Batch]
+```
+
+### Benefits of Batch Approach
+
+1. **Fast Feedback**: Test 3-5 files at a time, not 29
+2. **Easy Rollback**: Revert a single batch if needed
+3. **Progress Tracking**: Clear milestones (13 batches)
+4. **Reduced Risk**: Small changes, isolated failures
+5. **Parallelizable**: Some batches could be done independently
 
 ## Risk Assessment
 
@@ -427,10 +552,60 @@ If issues arise during implementation:
 
 ## Timeline Considerations
 
-The work should be approached systematically:
-- **Phase 1**: Foundation work (prerequisite for other phases)
-- **Phase 2**: High-priority fixes (most impactful)
-- **Phase 3**: Medium-priority fixes (code quality)
-- **Phase 4**: Low-priority fixes (polishing)
+### Batch Execution Order
 
-Each phase should be completed and tested before moving to the next phase to minimize risk and enable easy rollback if needed.
+The 13 batches are ordered by dependency and priority:
+
+**Foundation Batches (1-4)** - Must complete first
+- Batches 1-2: Helper consolidation (prerequisite for other work)
+- Batches 3-4: Strategy consolidation (prerequisite for other work)
+
+**High-Priority Batches (5-7)** - Most impactful changes
+- Batches 5-7: Strategy classification fixes (test correctness & performance)
+
+**Medium-Priority Batches (8-11)** - Code quality improvements
+- Batches 8-9: Test naming and documentation fixes
+- Batches 10-11: sys.path removal and import fixes
+
+**Low-Priority Batches (12-13)** - Polishing and cleanup
+- Batches 12-13: Code cleanup and docstrings
+
+### Parallel Execution Opportunities
+
+Some batches can be executed in parallel if desired:
+- **Batches 1 & 2**: Independent helper consolidation
+- **Batches 3 & 4**: Independent strategy consolidation
+- **Batches 5, 6, & 7**: Independent strategy fixes
+- **Batches 8 & 9**: Independent naming fixes
+- **Batches 10 & 11**: Independent sys.path removal
+- **Batches 12 & 13**: Independent cleanup
+
+### Recommended Execution
+
+**Sequential Approach** (Recommended)
+- Execute batches 1-13 in order
+- Test and commit each batch before proceeding
+- Minimal risk, easy to debug
+
+**Parallel Approach** (Advanced)
+- Execute independent batches in parallel
+- Merge branches after validation
+- Faster completion but requires coordination
+
+### Estimated Batch Sizes
+
+| Batch | Files | Issues | Priority | Complexity |
+|-------|-------|--------|----------|------------|
+| 1 | 3 | 8 helpers | HIGH | Small |
+| 2 | 2 | 4 helpers | HIGH | Small |
+| 3 | 3 | 14 strategies | HIGH | Medium |
+| 4 | 2 | 2 strategies | HIGH | Small |
+| 5 | 3 | 8 strategy fixes | HIGH | Medium |
+| 6 | 3 | 9 strategy fixes | HIGH | Medium |
+| 7 | 3 | 10 strategy fixes | HIGH | Medium |
+| 8 | 2 | 11 naming/docs | HIGH | Medium |
+| 9 | 2 | 5 naming/docs | HIGH | Small |
+| 10 | 2 | 8 sys.path | MEDIUM | Medium |
+| 11 | 8 | 10 sys.path | MEDIUM | Medium |
+| 12 | 7 | 15+ cleanup | LOW | Medium |
+| 13 | 1 | 12 docstrings | LOW | Small |
