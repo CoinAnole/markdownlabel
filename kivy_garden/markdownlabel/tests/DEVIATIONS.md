@@ -54,3 +54,6 @@
 - Line 89: Redundant local `import os` statement inside method `test_fast_test_discovery_baseline` when `os` is already imported at module level (line 9). According to TESTING.md best practices (line 628), unused/duplicate code should be removed to keep the code clean.
 - Line 137: Redundant local `import os` statement inside method `test_individual_module_discovery_functionality` when `os` is already imported at module level (line 9). According to TESTING.md best practices (line 628), unused/duplicate code should be removed to keep the code clean.
 - Line 173: Redundant local `import os` statement inside method `test_discovery_startup_functionality` when `os` is already imported at module level (line 9). According to TESTING.md best practices (line 628), unused/duplicate code should be removed to keep the code clean.
+
+## test_font_properties.py
+- Line 9: Unused import `os` - The `import os` statement is declared but never used anywhere in the file. According to best practices (TESTING.md line 628), unused imports should be removed to keep the code clean.
