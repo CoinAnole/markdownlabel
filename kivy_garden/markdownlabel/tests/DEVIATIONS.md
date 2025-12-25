@@ -98,3 +98,6 @@
 
 ## test_core_functionality.py
 - Lines 33, 46, 63, 108, 127, 154, 171, 203, 227, 248, 279, 297, 314: Tests that create `MarkdownLabel` widgets require a Kivy window but are missing the `@pytest.mark.needs_window` marker. According to TESTING.md guidelines (lines 150-158), tests requiring Kivy window should be marked with `@pytest.mark.needs_window` to properly categorize them and ensure they are skipped in environments without a display.
+
+## test_serialization.py
+- Line 156: Orphaned comment `# Complex strategy: 20 examples (adequate coverage)` that is not associated with any `@given` decorator or test method. This appears to be a copy-paste error from `test_paragraph_round_trip`. The comment is positioned between test methods with no corresponding property-based test.
