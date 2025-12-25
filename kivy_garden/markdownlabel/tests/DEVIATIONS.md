@@ -95,3 +95,6 @@
 
 ## test_texture_sizing.py
 - Line 276-278: Test `test_texture_size_updates_on_text_change` uses two `simple_markdown_document()` parameters (a combination strategy), but only uses `max_examples=20`. According to TESTING.md guidelines (lines 363-377), combination strategies should use the product of individual strategy sizes, capped at 50. With two complex strategies, the product would be 20 × 20 = 400, capped at 50. Using only 20 examples is below the capped maximum and may not provide adequate combination coverage.
+
+## test_core_functionality.py
+- Lines 33, 46, 63, 108, 127, 154, 171, 203, 227, 248, 279, 297, 314: Tests that create `MarkdownLabel` widgets require a Kivy window but are missing the `@pytest.mark.needs_window` marker. According to TESTING.md guidelines (lines 150-158), tests requiring Kivy window should be marked with `@pytest.mark.needs_window` to properly categorize them and ensure they are skipped in environments without a display.
