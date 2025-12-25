@@ -104,3 +104,6 @@
 
 ## test_file_analyzer.py
 - Lines 83, 224, 286, 322, 393, 459: Undocumented pytest markers are used throughout the file: `@pytest.mark.unit` (lines 83, 224, 322), `@pytest.mark.property` (lines 286, 459), and `@pytest.mark.integration` (line 393). According to TESTING.md (lines 150-158), only `@pytest.mark.slow`, `@pytest.mark.needs_window`, and `@pytest.mark.test_tests` are documented as valid pytest markers. Using undocumented markers violates the guideline that test practices should follow documented guidelines.
+
+## test_import.py
+- Lines 14, 21: Undocumented pytest marker `@pytest.mark.unit` is used. According to TESTING.md (lines 150-158), only `@pytest.mark.slow`, `@pytest.mark.needs_window`, and `@pytest.mark.test_tests` are documented as valid pytest markers. Using `@pytest.mark.unit` violates the guideline that test practices should follow documented guidelines.
