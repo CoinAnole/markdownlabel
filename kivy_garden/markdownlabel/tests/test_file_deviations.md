@@ -933,3 +933,35 @@ No deviations found.
 - Line 582: Property test `test_strip_change_updates_value` is missing the required docstring format. Should include feature and property information.
 
 - Line 582: Test name `test_strip_change_updates_value` uses "updates_value" naming but docstring says "triggers widget rebuild with new value". According to guidelines section "Test Naming Conventions", tests that verify rebuild behavior should use `test_*_triggers_rebuild_*` naming. The test calls `label.force_rebuild()` and verifies the new value, which is inconsistent with the naming convention.
+
+### test_texture_render_mode.py
+
+- Line 23-31: Helper method `find_images` is defined in the test file. According to guidelines section "Helper Functions", helper functions should be added to `test_utils.py` and imported, not duplicated in test files. This helper should be moved to test_utils.py for consistency with other test files.
+
+- Line 50: Test `test_texture_mode_creates_image_widget` is not a property test (uses @pytest.mark.parametrize), so it doesn't need the property test docstring format. However, the docstring includes feature and property information but is missing the `**Validates: Requirements X.Y**` section. According to guidelines section "Property-Based Testing", while property tests need the full format, regular tests should still be clear about what they validate.
+
+- Line 68: Test `test_texture_mode_with_empty_text_no_image` is not a property test. The docstring includes feature and property information but is missing the `**Validates: Requirements X.Y**` section. Same issue as line 50.
+
+- Line 86: Test `test_widgets_mode_no_image_widget` is not a property test. The docstring includes feature and property information but is missing the `**Validates: Requirements X.Y**` section. Same issue as line 50.
+
+- Line 105: Test `test_render_mode_property_values` is not a property test. The docstring includes feature and property information but is missing the `**Validates: Requirements X.Y**` section. Same issue as line 50.
+
+- Line 115: Test `test_default_render_mode_is_widgets` is not a property test. The docstring includes feature and property information but is missing the `**Validates: Requirements X.Y**` section. Same issue as line 50.
+
+- Line 136: Test `test_aggregated_refs_populated_in_texture_mode` is not a property test. The docstring includes feature and property information but is missing the `**Validates: Requirements X.Y**` section. Same issue as line 50.
+
+- Line 156: Test `test_widgets_mode_no_aggregated_refs` is not a property test. The docstring includes feature and property information but is missing the `**Validates: Requirements X.Y**` section. Same issue as line 50.
+
+- Line 179: Test `test_multiple_links_collected` is not a property test. The docstring includes feature and property information but is missing the `**Validates: Requirements X.Y**` section. Same issue as line 50.
+
+- Line 216: Test `test_inside_zone_dispatch` is not a property test. The docstring includes feature and property information but is missing the `**Validates: Requirements X.Y**` section. Same issue as line 50.
+
+- Line 279: Property test `test_property_inside_zone_dispatch` has the required feature and property information in the docstring but is missing the `**Validates: Requirements X.Y**` section. According to guidelines section "Property-Based Testing", property tests should include both feature/property information and validation requirements.
+
+- Line 330: Test `test_outside_zone_no_dispatch` is not a property test. The docstring includes feature and property information but is missing the `**Validates: Requirements X.Y**` section. Same issue as line 50.
+
+- Line 387: Property test `test_property_outside_zone_no_dispatch` has the required feature and property information in the docstring but is missing the `**Validates: Requirements X.Y**` section. Same issue as line 279.
+
+- Line 436: Test `test_multiple_zones_first_match` is not a property test. The docstring includes feature and property information but is missing the `**Validates: Requirements X.Y**` section. Same issue as line 50.
+
+- Line 483: Test `test_multiple_zones_non_overlapping` is not a property test. The docstring includes feature and property information but is missing the `**Validates: Requirements X.Y**` section. Same issue as line 50.
