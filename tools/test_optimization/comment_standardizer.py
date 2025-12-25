@@ -14,7 +14,7 @@ from typing import List, Optional, Dict, Tuple
 
 from .comment_analyzer import CommentAnalyzer, FileAnalysis
 from .comment_format import CommentFormatValidator, CommentPattern, StrategyType
-from .strategy_type_mapper import StrategyTypeMapper, TestCodeAnalyzer, CommentStrategyClassification
+from .strategy_type_mapper import StrategyTypeMapper, CodeAnalyzer, CommentStrategyClassification
 from .performance_rationale_handler import PerformanceAwareCommentStandardizer
 from .ci_optimization_handler import CIOptimizationIntegrator
 
@@ -55,7 +55,7 @@ class CommentStandardizer:
         self.analyzer = CommentAnalyzer()
         self.validator = CommentFormatValidator()
         self.mapper = StrategyTypeMapper()
-        self.code_analyzer = TestCodeAnalyzer()
+        self.code_analyzer = CodeAnalyzer()
         self.performance_standardizer = PerformanceAwareCommentStandardizer()
         self.ci_integrator = CIOptimizationIntegrator()
         

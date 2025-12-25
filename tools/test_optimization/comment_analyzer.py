@@ -13,7 +13,7 @@ from typing import List, Optional, Dict, Set, Tuple
 from pathlib import Path
 
 from .comment_format import CommentFormatValidator, ValidationResult, CommentPattern
-from .strategy_type_mapper import StrategyTypeMapper, TestCodeAnalyzer
+from .strategy_type_mapper import StrategyTypeMapper, CodeAnalyzer
 
 
 @dataclass
@@ -78,7 +78,7 @@ class CommentAnalyzer:
         """Initialize analyzer with validation and mapping tools."""
         self.validator = CommentFormatValidator()
         self.mapper = StrategyTypeMapper()
-        self.code_analyzer = TestCodeAnalyzer()
+        self.code_analyzer = CodeAnalyzer()
         
         # Default: document every custom max_examples (strict per guide).
         # Optional escape hatch: set SKIP_STANDARD_MAX_EXAMPLES=true to allow

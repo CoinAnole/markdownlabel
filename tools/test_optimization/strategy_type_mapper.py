@@ -236,7 +236,7 @@ class CommentStrategyClassification:
             self.components = []
 
 
-class TestCodeAnalyzer:
+class CodeAnalyzer:
     """Analyzes test code to extract strategy information for comment generation."""
     
     def __init__(self):

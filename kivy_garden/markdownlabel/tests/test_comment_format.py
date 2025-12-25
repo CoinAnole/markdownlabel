@@ -11,7 +11,7 @@ from test_optimization.comment_format import (
     CommentFormatValidator, CommentPattern, StrategyType, ValidationResult
 )
 from test_optimization.comment_analyzer import CommentAnalyzer
-from test_optimization.strategy_type_mapper import StrategyTypeMapper, TestCodeAnalyzer
+from test_optimization.strategy_type_mapper import StrategyTypeMapper, CodeAnalyzer
 
 
 @pytest.mark.test_tests
@@ -362,7 +362,7 @@ class TestStrategyTypeConsistency:
     def setup_method(self):
         """Set up test fixtures."""
         self.mapper = StrategyTypeMapper()
-        self.analyzer = TestCodeAnalyzer()
+        self.analyzer = CodeAnalyzer()
     
     # **Feature: test-comment-standardization, Property 3: Strategy Type Consistency**
     # *For any* strategy type classification, all comments documenting that strategy type 
