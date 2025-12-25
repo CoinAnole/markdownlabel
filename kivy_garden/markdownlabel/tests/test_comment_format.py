@@ -5,16 +5,13 @@ standardized comment formats for max_examples documentation.
 """
 
 import pytest
-import os
-import sys
 from hypothesis import given, strategies as st, settings
-
-# Add tools directory to path for imports
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', '..', 'tools'))
 
 from test_optimization.comment_format import (
     CommentFormatValidator, CommentPattern, StrategyType, ValidationResult
 )
+from test_optimization.comment_analyzer import CommentAnalyzer
+from test_optimization.strategy_type_mapper import StrategyTypeMapper, TestCodeAnalyzer
 
 
 @pytest.mark.test_tests
@@ -209,9 +206,6 @@ class TestCustomValueDocumentation:
     
     def setup_method(self):
         """Set up test fixtures."""
-        sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', '..', 'tools'))
-        from test_optimization.comment_analyzer import CommentAnalyzer
-        
         self.analyzer = CommentAnalyzer()
     
     # **Feature: test-comment-standardization, Property 2: Custom Value Documentation**
@@ -367,9 +361,6 @@ class TestStrategyTypeConsistency:
     
     def setup_method(self):
         """Set up test fixtures."""
-        sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', '..', 'tools'))
-        from test_optimization.strategy_type_mapper import StrategyTypeMapper, TestCodeAnalyzer
-        
         self.mapper = StrategyTypeMapper()
         self.analyzer = TestCodeAnalyzer()
     
@@ -530,10 +521,6 @@ class TestMachineReadableFormat:
     
     def setup_method(self):
         """Set up test fixtures."""
-        sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', '..', 'tools'))
-        from test_optimization.comment_analyzer import CommentAnalyzer
-        from test_optimization.comment_format import CommentFormatValidator
-        
         self.analyzer = CommentAnalyzer()
         self.validator = CommentFormatValidator()
     
@@ -727,7 +714,6 @@ def test_text_processing(text):
         
         for strategy_type, max_examples, rationale in original_patterns:
             # Create a comment pattern
-            from test_optimization.comment_format import CommentPattern
             pattern = CommentPattern(
                 strategy_type=strategy_type,
                 max_examples=max_examples,

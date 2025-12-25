@@ -6,11 +6,17 @@ all test modules in the MarkdownLabel test suite.
 """
 
 import os
+import sys
 import pytest
 
 # Set environment variables for headless Kivy testing
 os.environ['KIVY_NO_ARGS'] = '1'
 os.environ['KIVY_NO_CONSOLELOG'] = '1'
+
+# Add tools directory to path for test optimization utilities
+tools_path = os.path.join(os.path.dirname(__file__), '..', '..', '..', 'tools')
+if tools_path not in sys.path:
+    sys.path.insert(0, tools_path)
 
 
 @pytest.fixture(scope="session", autouse=True)

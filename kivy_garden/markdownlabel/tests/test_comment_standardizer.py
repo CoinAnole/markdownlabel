@@ -7,15 +7,17 @@ comments for property-based tests with proper strategy documentation.
 import pytest
 import os
 import re
-import sys
 import tempfile
 from hypothesis import given, strategies as st, settings
 
-# Add tools directory to path for imports
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', '..', 'tools'))
-
 from test_optimization.comment_standardizer import CommentStandardizer, StandardizationResult
 from test_optimization.comment_format import StrategyType, CommentFormatValidator
+from test_optimization.comment_analyzer import CommentAnalyzer
+from test_optimization.performance_rationale_handler import (
+    PerformanceRationaleDetector,
+    PerformanceCommentGenerator,
+    PerformanceReason
+)
 
 
 @pytest.mark.test_tests
@@ -571,12 +573,6 @@ class TestPerformanceRationaleDocumentation:
         self.validator = CommentFormatValidator()
         
         # Import performance handler components
-        sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', '..', 'tools'))
-        from test_optimization.performance_rationale_handler import (
-            PerformanceRationaleDetector, 
-            PerformanceCommentGenerator,
-            PerformanceReason
-        )
         self.detector = PerformanceRationaleDetector()
         self.generator = PerformanceCommentGenerator()
         self.PerformanceReason = PerformanceReason  # Make accessible to test methods
@@ -853,14 +849,7 @@ class TestCommentStandardizationIntegration:
     def setup_method(self):
         """Set up test fixtures."""
         self.standardizer = CommentStandardizer()
-        self.analyzer = None
-        
-        # Import analyzer only when needed to avoid circular imports
-        try:
-            from test_optimization.comment_analyzer import CommentAnalyzer
-            self.analyzer = CommentAnalyzer()
-        except ImportError:
-            pytest.skip("CommentAnalyzer not available for integration tests")
+        self.analyzer = CommentAnalyzer()
     
     def test_end_to_end_standardization_workflow(self):
         """Test complete workflow: analyze -> standardize -> validate.
