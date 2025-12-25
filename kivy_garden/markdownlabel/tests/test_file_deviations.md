@@ -675,3 +675,27 @@ No deviations found.
 - Line 206-208: Property test `test_document_round_trip` is missing the required docstring format. Should include feature and property information.
 
 - Line 504-506: Property test `test_code_serialization_round_trip_property` has an incorrect strategy classification. The test uses two separate text strategies (`st.text(min_size=0, max_size=200)` for code_content and `st.text(alphabet=st.characters(whitelist_categories=('L', 'N')), min_size=0, max_size=20)` for language), which is a combination strategy (multiple @given arguments), but the comment says `# Complex strategy: 20 examples (adequate coverage)`. According to guidelines section "Property-Based Testing Optimization", combination strategies should use the format `# Combination strategy: [N] examples (combination coverage)`.
+
+### test_shared_infrastructure.py
+
+- Line 53: Property test `test_markdown_paragraph_strategy_generates_valid_paragraphs` is missing the required docstring format. According to guidelines section "Property-Based Testing", property tests should include `**Feature: feature-name, Property N: Property Description**` and `**Validates: Requirements X.Y**` in their docstrings. The current docstring only says "Paragraph strategy generates valid paragraph text." without the required feature and property information.
+
+- Line 65: Property test `test_markdown_bold_strategy_generates_valid_bold_text` is missing the required docstring format. Should include feature and property information following the format `**Feature: feature-name, Property N: Property Description**` and `**Validates: Requirements X.Y**`.
+
+- Line 74: Property test `test_markdown_italic_strategy_generates_valid_italic_text` is missing the required docstring format. Should include feature and property information.
+
+- Line 85: Property test `test_markdown_link_strategy_generates_valid_links` is missing the required docstring format. Should include feature and property information.
+
+- Line 98: Property test `test_simple_markdown_document_strategy_generates_valid_documents` is missing the required docstring format. Should include feature and property information.
+
+- Line 110: Property test `test_color_strategy_generates_valid_colors` is missing the required docstring format. Should include feature and property information.
+
+- Line 125: Property test `test_text_padding_strategy_generates_valid_padding` is missing the required docstring format. Should include feature and property information.
+
+- Line 149: A stray comment `# Complex strategy: 30 examples (adequate coverage)` appears on line 149 that doesn't correspond to any @settings decorator. This is a misplaced comment that should be removed.
+
+- Line 181: Property test `test_colors_equal_function_available` is missing the required docstring format. Should include feature and property information following the format `**Feature: feature-name, Property N: Property Description**` and `**Validates: Requirements X.Y**`.
+
+- Line 195: Property test `test_padding_equal_function_available` is missing the required docstring format. Should include feature and property information.
+
+- Line 209: Property test `test_floats_equal_function_available` is missing the required docstring format. Should include feature and property information.
