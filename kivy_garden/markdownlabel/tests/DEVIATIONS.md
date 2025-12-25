@@ -101,3 +101,6 @@
 
 ## test_serialization.py
 - Line 156: Orphaned comment `# Complex strategy: 20 examples (adequate coverage)` that is not associated with any `@given` decorator or test method. This appears to be a copy-paste error from `test_paragraph_round_trip`. The comment is positioned between test methods with no corresponding property-based test.
+
+## test_file_analyzer.py
+- Lines 83, 224, 286, 322, 393, 459: Undocumented pytest markers are used throughout the file: `@pytest.mark.unit` (lines 83, 224, 322), `@pytest.mark.property` (lines 286, 459), and `@pytest.mark.integration` (line 393). According to TESTING.md (lines 150-158), only `@pytest.mark.slow`, `@pytest.mark.needs_window`, and `@pytest.mark.test_tests` are documented as valid pytest markers. Using undocumented markers violates the guideline that test practices should follow documented guidelines.
