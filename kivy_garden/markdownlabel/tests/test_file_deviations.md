@@ -595,3 +595,21 @@ No deviations found.
 - Line 725-746: Property test `test_bidirectional_synchronization` is missing the required docstring format. Should include feature and property information.
 
 - Line 748-760: Test `test_default_values_synchronized` is not a property test (doesn't use @given), so it doesn't need the property test docstring format. This is correct.
+
+### test_performance.py
+
+- Line 63-70: Property test `test_color_change_preserves_widget_tree` has an incorrect strategy classification. The test uses `st.tuples(st.floats(...), st.floats(...), st.floats(...), st.floats(...))` which is a combination strategy (tuple of 4 float strategies), but the comment says `# Complex strategy: 20 examples (adequate coverage)`. According to guidelines section "Property-Based Testing Optimization", combination strategies should use the format `# Combination strategy: [N] examples (combination coverage)`.
+
+- Line 94-101: Property test `test_color_change_updates_descendant_labels` has an incorrect strategy classification. The test uses `st.tuples(st.floats(...), st.floats(...), st.floats(...), st.floats(...))` which is a combination strategy, but the comment says `# Complex strategy: 20 examples (adequate coverage)`. Should be `# Combination strategy: 20 examples (combination coverage)`.
+
+- Line 341-354: Property test `test_multiple_style_changes_preserve_widget_tree` uses a combination strategy with 5 different strategies (floats, tuples, sampled_from, sampled_from, floats) but the comment says `# Complex strategy: 20 examples (adequate coverage)`. According to guidelines section "Property-Based Testing Optimization", this is a combination strategy and should use the format `# Combination strategy: 20 examples (combination coverage)`.
+
+- Line 349-350: The test uses `st.sampled_from(['left', 'center', 'right'])` which is a small finite strategy with 3 values, but it's combined with other strategies. When part of a combination strategy, the overall strategy should be classified as "Combination strategy" not "Complex strategy".
+
+- Line 350-351: The test uses `st.sampled_from(['top', 'middle', 'bottom'])` which is a small finite strategy with 3 values. Same issue as above - it's part of a combination strategy.
+
+- Line 383-398: Property test `test_disabled_color_switching` uses `st.tuples(st.floats(...), st.floats(...), st.floats(...), st.floats(...))` twice which is a combination strategy (two 4-float tuples combined), but the comment says `# Complex strategy: 20 examples (adequate coverage)`. Should be `# Combination strategy: 20 examples (combination coverage)`.
+
+- Line 12-15: Unused imports `BoxLayout`, `Label`, `Widget`, and `GridLayout` from kivy.uix are imported but never used in the test file. According to guidelines section "Best Practices", unused imports should be removed to keep the code clean and maintainable.
+
+- Line 317-339: Test `test_font_name_structure_property_rebuilds_tree` has a docstring saying "Changing font_name (structure property) rebuilds the widget tree" but according to guidelines section "Rebuild Contract Testing", font_name is listed as a style-only property that updates existing widgets without rebuilding (line 201 in TESTING.md). The test implementation calls `force_rebuild()` and verifies a rebuild occurred, but this contradicts the guidelines which state font_name should be a style-only property. Either the test is incorrect or the guidelines need clarification.
