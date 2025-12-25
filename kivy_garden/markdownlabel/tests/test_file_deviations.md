@@ -523,3 +523,75 @@ No deviations found.
 - Line 461: Test `test_shared_utilities_imports_resolve` is also in the meta-test class and is not a property test, so it doesn't need the property test docstring format. This is correct.
 
 - Line 497: Test `test_cross_module_imports_work` is also in the meta-test class and is not a property test, so it doesn't need the property test docstring format. This is correct.
+
+### test_padding_properties.py
+
+- Line 24-33: Custom strategies `padding_single`, `padding_two`, and `padding_four` are defined in the test file. According to guidelines section "Helper Functions", custom Hypothesis strategies should be added to test_utils.py and imported, not duplicated in test files. These strategies are used throughout the file and should be consolidated.
+
+- Line 44-60: Property test `test_single_padding_applied_uniformly` is missing the required docstring format. According to guidelines section "Property-Based Testing", property tests should include `**Feature: feature-name, Property N: Property Description**` and `**Validates: Requirements X.Y**` in their docstrings. The current docstring only says "Single padding value is applied uniformly to all sides." without the required feature and property information.
+
+- Line 61-77: Property test `test_two_element_padding_applied_to_axes` is missing the required docstring format. Should include feature and property information following the format `**Feature: feature-name, Property N: Property Description**` and `**Validates: Requirements X.Y**`.
+
+- Line 78: A stray comment `# Complex strategy: 20 examples (adequate coverage)` appears on line 78 that doesn't correspond to any @settings decorator. This is a misplaced comment that should be removed.
+
+- Line 80-92: Property test `test_four_element_padding_applied_directly` is missing the required docstring format. Should include feature and property information.
+
+- Line 94-106: Property test `test_padding_property_stored_correctly` is missing the required docstring format. Should include feature and property information.
+
+- Line 108-127: Property test `test_padding_change_updates_container` is missing the required docstring format. Should include feature and property information.
+
+- Line 129-142: Property test `test_default_padding_is_zero` is missing the required docstring format. Should include feature and property information.
+
+- Line 153-166: Property test `test_padding_applied_to_paragraph` is missing the required docstring format. Should include feature and property information.
+
+- Line 168-181: Property test `test_padding_applied_to_heading` is missing the required docstring format. Should include feature and property information.
+
+- Line 183-197: Property test `test_padding_applied_to_list_items` is missing the required docstring format. Should include feature and property information.
+
+- Line 199-213: Property test `test_padding_applied_to_table_cells` is missing the required docstring format. Should include feature and property information.
+
+- Line 215-243: Property test `test_padding_applied_to_nested_structures` is missing the required docstring format. Should include feature and property information.
+
+- Line 245-267: Property test `test_padding_change_updates_value` is missing the required docstring format. Should include feature and property information.
+
+- Line 269-279: Test `test_default_padding_is_zero_for_all_labels` is not a property test (doesn't use @given), so it doesn't need the property test docstring format. This is correct.
+
+- Line 290-313: Property test `test_padding_update_paragraph` is missing the required docstring format. Should include feature and property information.
+
+- Line 315-351: Property test `test_padding_update_complex_content` is missing the required docstring format. Should include feature and property information.
+
+- Line 353-369: Property test `test_multiple_padding_updates` is missing the required docstring format. Should include feature and property information.
+
+- Line 380-405: Property test `test_padding_in_nested_lists` is missing the required docstring format. Should include feature and property information.
+
+- Line 407-432: Property test `test_padding_in_nested_quotes` is missing the required docstring format. Should include feature and property information.
+
+- Line 434-458: Property test `test_padding_in_complex_table` is missing the required docstring format. Should include feature and property information.
+
+- Line 460-500: Property test `test_padding_in_mixed_nested_structures` is missing the required docstring format. Should include feature and property information.
+
+- Line 502-526: Property test `test_padding_preserves_widget_hierarchy` is missing the required docstring format. Should include feature and property information.
+
+- Line 537-550: Property test `test_text_padding_applied_to_paragraph_labels` is missing the required docstring format. Should include feature and property information.
+
+- Line 552-565: Property test `test_text_padding_applied_to_heading_labels` is missing the required docstring format. Should include feature and property information.
+
+- Line 567-581: Property test `test_text_padding_applied_to_list_labels` is missing the required docstring format. Should include feature and property information.
+
+- Line 583-597: Property test `test_text_padding_applied_to_table_labels` is missing the required docstring format. Should include feature and property information.
+
+- Line 608-626: Property test `test_padding_applied_to_container_only` is missing the required docstring format. Should include feature and property information.
+
+- Line 628-651: Property test `test_padding_and_text_padding_independent` is missing the required docstring format. Should include feature and property information.
+
+- Line 653-676: Property test `test_padding_change_affects_container_only` is missing the required docstring format. Should include feature and property information.
+
+- Line 686-698: Property test `test_label_padding_setter_updates_text_padding` is missing the required docstring format. Should include feature and property information.
+
+- Line 700-709: Property test `test_label_padding_getter_returns_text_padding` is missing the required docstring format. Should include feature and property information.
+
+- Line 711-723: Property test `test_text_padding_setter_updates_label_padding` is missing the required docstring format. Should include feature and property information.
+
+- Line 725-746: Property test `test_bidirectional_synchronization` is missing the required docstring format. Should include feature and property information.
+
+- Line 748-760: Test `test_default_values_synchronized` is not a property test (doesn't use @given), so it doesn't need the property test docstring format. This is correct.
