@@ -865,3 +865,71 @@ No deviations found.
 - Line 315-317: Property test `test_small_finite_over_testing_detected` has a correct comment format. This is correct.
 
 - Line 318-326: Property test `test_small_finite_over_testing_detected` is missing the required docstring format. Should include feature and property information.
+
+### test_text_properties.py
+
+- Line 21: Custom strategy `unicode_errors_strategy` is defined in the test file. According to guidelines section "Helper Functions", custom Hypothesis strategies should be added to test_utils.py and imported, not duplicated in test files.
+
+- Line 31: Property test `test_text_size_width_stored_correctly` is missing the required docstring format. According to guidelines section "Property-Based Testing", property tests should include `**Feature: feature-name, Property N: Property Description**` and `**Validates: Requirements X.Y**` in their docstrings. The current docstring only says "text_size width is stored correctly on MarkdownLabel." without the required feature and property information.
+
+- Line 42: Property test `test_text_size_property_stored_correctly` is missing the required docstring format. Should include feature and property information following the format `**Feature: feature-name, Property N: Property Description**` and `**Validates: Requirements X.Y**`.
+
+- Line 56: Property test `test_text_size_change_updates_value` is missing the required docstring format. Should include feature and property information.
+
+- Line 56: Test name `test_text_size_change_updates_value` uses "updates_value" naming but docstring says "triggers widget rebuild". According to guidelines section "Test Naming Conventions", tests that verify rebuild behavior should use `test_*_triggers_rebuild_*` naming, while tests that verify value changes without rebuild verification should use `test_*_updates_value_*` naming. The test doesn't verify whether a rebuild occurred (no widget ID comparison), so the docstring is inconsistent with the naming convention.
+
+- Line 88: Property test `test_text_size_with_width_passed_to_renderer` is missing the required docstring format. Should include feature and property information.
+
+- Line 108: A decorator comment `# Complex strategy: 50 examples (adequate coverage)` is placed between the class definition and its docstring. According to guidelines, such comments are meant to be used with @settings decorators, not as standalone comments in class bodies. The comment should be removed as it doesn't correspond to any decorator.
+
+- Line 115: Property test `test_text_size_height_forwarded_to_paragraph` is missing the required docstring format. Should include feature and property information.
+
+- Line 131: Property test `test_text_size_height_forwarded_to_heading` is missing the required docstring format. Should include feature and property information.
+
+- Line 148: Property test `test_text_size_both_width_and_height_forwarded` is missing the required docstring format. Should include feature and property information.
+
+- Line 167: Property test `test_valign_forwarded_with_height` is missing the required docstring format. Should include feature and property information.
+
+- Line 183: Property test `test_text_size_height_forwarded_to_table_cells` is missing the required docstring format. Should include feature and property information.
+
+- Line 209: Property test `test_text_size_height_none_preserves_auto_sizing` is missing the required docstring format. Should include feature and property information.
+
+- Line 227: Property test `test_text_size_width_only_preserves_height_none` is missing the required docstring format. Should include feature and property information.
+
+- Line 269: Property test `test_text_size_height_change_updates_labels` is missing the required docstring format. Should include feature and property information.
+
+- Line 293: Property test `test_text_size_height_to_none_updates_labels` is missing the required docstring format. Should include feature and property information.
+
+- Line 318: Property test `test_text_size_none_to_height_updates_labels` is missing the required docstring format. Should include feature and property information.
+
+- Line 352: Property test `test_unicode_errors_stored_correctly` is missing the required docstring format. Should include feature and property information.
+
+- Line 363: Property test `test_unicode_errors_applied_to_paragraph` is missing the required docstring format. Should include feature and property information.
+
+- Line 379: Property test `test_unicode_errors_applied_to_heading` is missing the required docstring format. Should include feature and property information.
+
+- Line 395: Property test `test_unicode_errors_applied_to_code_block` is missing the required docstring format. Should include feature and property information.
+
+- Line 412: Property test `test_unicode_errors_applied_to_list_items` is missing the required docstring format. Should include feature and property information.
+
+- Line 429: Property test `test_unicode_errors_applied_to_table_cells` is missing the required docstring format. Should include feature and property information.
+
+- Line 446: Property test `test_unicode_errors_change_updates_value` is missing the required docstring format. Should include feature and property information.
+
+- Line 446: Test name `test_unicode_errors_change_updates_value` uses "updates_value" naming but docstring says "triggers widget rebuild with new value". According to guidelines section "Test Naming Conventions", tests that verify rebuild behavior should use `test_*_triggers_rebuild_*` naming. The test calls `label.force_rebuild()` and verifies the new value, which is inconsistent with the naming convention.
+
+- Line 488: Property test `test_strip_stored_correctly` is missing the required docstring format. Should include feature and property information.
+
+- Line 499: Property test `test_strip_applied_to_paragraph` is missing the required docstring format. Should include feature and property information.
+
+- Line 515: Property test `test_strip_applied_to_heading` is missing the required docstring format. Should include feature and property information.
+
+- Line 531: Property test `test_strip_applied_to_code_block` is missing the required docstring format. Should include feature and property information.
+
+- Line 548: Property test `test_strip_applied_to_list_items` is missing the required docstring format. Should include feature and property information.
+
+- Line 565: Property test `test_strip_applied_to_table_cells` is missing the required docstring format. Should include feature and property information.
+
+- Line 582: Property test `test_strip_change_updates_value` is missing the required docstring format. Should include feature and property information.
+
+- Line 582: Test name `test_strip_change_updates_value` uses "updates_value" naming but docstring says "triggers widget rebuild with new value". According to guidelines section "Test Naming Conventions", tests that verify rebuild behavior should use `test_*_triggers_rebuild_*` naming. The test calls `label.force_rebuild()` and verifies the new value, which is inconsistent with the naming convention.
