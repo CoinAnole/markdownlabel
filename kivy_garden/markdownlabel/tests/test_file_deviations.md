@@ -965,3 +965,27 @@ No deviations found.
 - Line 436: Test `test_multiple_zones_first_match` is not a property test. The docstring includes feature and property information but is missing the `**Validates: Requirements X.Y**` section. Same issue as line 50.
 
 - Line 483: Test `test_multiple_zones_non_overlapping` is not a property test. The docstring includes feature and property information but is missing the `**Validates: Requirements X.Y**` section. Same issue as line 50.
+
+### test_texture_sizing.py
+
+- Line 42: Property test `test_texture_size_returns_tuple` is missing the required docstring format. According to guidelines section "Property-Based Testing", property tests should include `**Feature: feature-name, Property N: Property Description**` and `**Validates: Requirements X.Y**` in their docstrings. The current docstring only says "texture_size returns a list/tuple with two elements." without the required feature and property information.
+
+- Line 56: Property test `test_texture_size_non_negative` is missing the required docstring format. Should include feature and property information following the format `**Feature: feature-name, Property N: Property Description**` and `**Validates: Requirements X.Y**`.
+
+- Line 79: Property test `test_heading_creates_label_widget` is missing the required docstring format. Should include feature and property information.
+
+- Line 95: Property test `test_paragraph_creates_label_widget` is missing the required docstring format. Should include feature and property information.
+
+- Line 185: Property test `test_more_content_increases_texture_height` is missing the required docstring format. Should include feature and property information.
+
+- Line 229: Property test `test_texture_size_accessible_for_all_content` is missing the required docstring format. Should include feature and property information.
+
+- Line 280: Property test `test_texture_size_updates_on_text_change` is missing the required docstring format. Should include feature and property information.
+
+- Line 327: Property test `test_all_heading_levels_create_label_widgets` is missing the required docstring format. Should include feature and property information.
+
+- Line 376: Property test `test_texture_sizing_classes_grouped_together` is missing the required docstring format. Should include feature and property information.
+
+- Line 410: Property test `test_module_focuses_on_texture_sizing` is missing the required docstring format. Should include feature and property information.
+
+- Line 11-14: Unused imports `BoxLayout`, `Label`, `Widget`, and `GridLayout` from kivy.uix are imported but never used in the test file. According to guidelines section "Best Practices", unused imports should be removed to keep the code clean and maintainable.
