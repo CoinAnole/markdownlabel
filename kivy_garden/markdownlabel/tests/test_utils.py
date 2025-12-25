@@ -8,7 +8,9 @@ functions used across multiple test modules in the MarkdownLabel test suite.
 from hypothesis import strategies as st
 from kivy.uix.label import Label
 from kivy.uix.widget import Widget
-from typing import List, Optional, Dict
+from kivy.uix.image import Image
+from kivy.uix.stencilview import StencilView
+from typing import List, Optional, Dict, Set
 
 
 # Touch Simulation Classes
@@ -264,3 +266,88 @@ def assert_no_rebuild(widget: Widget, ids_before: Dict[int, Widget], exclude_roo
     assert ids_before == ids_after, \
         f"Expected no rebuild, but widget instances changed: " \
         f"{len(ids_before)} before, {len(ids_after)} after"
+
+
+# Widget Search Helpers
+
+def find_images(widget: Widget, images: Optional[List[Image]] = None) -> List[Image]:
+    """Recursively find all Image widgets in a widget tree.
+    
+    Args:
+        widget: The root widget to search from
+        images: Optional list to accumulate results (used for recursion)
+        
+    Returns:
+        List of all Image widgets found in the widget tree
+    """
+    if images is None:
+        images = []
+    
+    if isinstance(widget, Image):
+        images.append(widget)
+    
+    if hasattr(widget, 'children'):
+        for child in widget.children:
+            find_images(child, images)
+    
+    return images
+
+
+def has_clipping_container(widget: Widget) -> bool:
+    """Check if widget contains a clipping container (StencilView).
+    
+    This helper function searches through the widget tree to determine if
+    a StencilView (used for clipping) is present.
+    
+    Args:
+        widget: Widget to check
+        
+    Returns:
+        True if a clipping container is found, False otherwise
+    """
+    for child in widget.children:
+        if isinstance(child, StencilView):
+            return True
+    return False
+
+
+def is_code_label(label: Label, code_font_name: str = 'RobotoMono-Regular') -> bool:
+    """Check if a label is a code label based on its font.
+    
+    Code labels use a monospace font (typically RobotoMono-Regular) to
+    distinguish them from regular text labels.
+    
+    Args:
+        label: Label widget to check
+        code_font_name: Expected code font name (default: 'RobotoMono-Regular')
+        
+    Returns:
+        True if this appears to be a code label, False otherwise
+    """
+    return label.font_name == code_font_name
+
+
+def collect_widget_ids(widget: Widget, ids: Optional[Set[int]] = None) -> Set[int]:
+    """Recursively collect all widget object IDs in the tree.
+    
+    This helper function traverses the widget tree and collects a set of
+    Python object IDs for all widgets. Used for comparing widget identities
+    before and after changes to detect rebuilds.
+    
+    Args:
+        widget: Root widget to collect from
+        ids: Optional set to accumulate results (used for recursion)
+        
+    Returns:
+        Set of all widget object IDs in the tree
+    """
+    if ids is None:
+        ids = set()
+    
+    ids.add(id(widget))
+    
+    if hasattr(widget, 'children'):
+        for child in widget.children:
+            collect_widget_ids(child, ids)
+    
+    return ids

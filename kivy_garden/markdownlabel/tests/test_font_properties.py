@@ -15,10 +15,12 @@ from kivy.uix.label import Label
 
 from kivy_garden.markdownlabel import MarkdownLabel
 from .test_utils import (
-    KIVY_FONTS, 
+    KIVY_FONTS,
     simple_markdown_document,
     find_labels_recursive,
-    floats_equal
+    floats_equal,
+    is_code_label,
+    collect_widget_ids
 )
 
 
@@ -34,18 +36,6 @@ line_height_strategy = st.floats(min_value=0.5, max_value=3.0, allow_nan=False, 
 
 class TestFontNamePropertyForwarding:
     """Property tests for font_name forwarding (Property 2)."""
-    
-    def _is_code_label(self, label, code_font_name='RobotoMono-Regular'):
-        """Check if a label is a code label based on its font.
-        
-        Args:
-            label: Label widget to check
-            code_font_name: Expected code font name
-            
-        Returns:
-            True if this appears to be a code label
-        """
-        return label.font_name == code_font_name
     
     @pytest.mark.parametrize('font_name', KIVY_FONTS)
     def test_font_name_applied_to_paragraph(self, font_name):
@@ -812,14 +802,6 @@ class TestHeadingScalePreservation:
 class TestNoRebuildOnFontSizeChange:
     """Property tests for no rebuild on font size change (Property 5)."""
     
-    def _collect_widget_ids(self, widget):
-        """Recursively collect all widget object IDs in the tree."""
-        ids = [id(widget)]
-        if hasattr(widget, 'children'):
-            for child in widget.children:
-                ids.extend(self._collect_widget_ids(child))
-        return set(ids)
-    
     @given(
         simple_markdown_document(),
         st.floats(min_value=10.0, max_value=20.0, allow_nan=False, allow_infinity=False),
@@ -836,14 +818,14 @@ class TestNoRebuildOnFontSizeChange:
         label = MarkdownLabel(text=markdown_text, base_font_size=initial_size)
         
         # Collect widget IDs before change
-        ids_before = self._collect_widget_ids(label)
+        ids_before = collect_widget_ids(label)
         assume(len(ids_before) > 1)  # Need at least the label itself + children
         
         # Change base_font_size
         label.base_font_size = new_size
         
         # Collect widget IDs after change
-        ids_after = self._collect_widget_ids(label)
+        ids_after = collect_widget_ids(label)
         
         # Widget identities should be exactly the same (no rebuild occurred)
         assert ids_before == ids_after, \
@@ -905,15 +887,15 @@ class TestNoRebuildOnFontSizeChange:
         label = MarkdownLabel(text=markdown_text, base_font_size=size1)
         
         # Collect initial widget IDs
-        initial_ids = self._collect_widget_ids(label)
+        initial_ids = collect_widget_ids(label)
         assume(len(initial_ids) > 2)  # Need multiple widgets
         
         # Make multiple font size changes
         label.base_font_size = size2
-        ids_after_first = self._collect_widget_ids(label)
+        ids_after_first = collect_widget_ids(label)
         
         label.base_font_size = size3
-        ids_after_second = self._collect_widget_ids(label)
+        ids_after_second = collect_widget_ids(label)
         
         # All widget identities should be preserved through all changes
         assert initial_ids == ids_after_first == ids_after_second, \

@@ -17,18 +17,7 @@ from kivy.uix.label import Label
 from kivy.uix.image import Image
 
 from kivy_garden.markdownlabel import MarkdownLabel
-from .test_utils import find_labels_recursive, FakeTouch
-
-
-def find_images(widget):
-    """Recursively find all Image widgets in a widget tree."""
-    images = []
-    if isinstance(widget, Image):
-        images.append(widget)
-    if hasattr(widget, 'children'):
-        for child in widget.children:
-            images.extend(find_images(child))
-    return images
+from .test_utils import find_labels_recursive, FakeTouch, find_images
 
 
 # **Feature: label-compatibility, Property 14: Texture render mode structure**
