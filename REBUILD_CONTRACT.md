@@ -40,6 +40,7 @@ These properties update existing widgets **without rebuilding** the widget tree:
 ### Container Properties
 - `padding` - Updates container padding without rebuilding child widgets
 - `spacing` - Updates container spacing without rebuilding child widgets
+- `text_padding` - Updates `Label.padding` on all existing Labels
 
 ## Structure Properties
 
@@ -228,6 +229,13 @@ def assert_no_rebuild(widget, change_func):
 - **Behavior**: Updates `Label.text_size` on all Labels
 - **Layout impact**: May trigger Kivy layout recalculation
 - **None handling**: `(None, None)` allows unlimited size
+
+#### `text_padding`
+- **Type**: Style-only
+- **Behavior**: Updates `Label.padding` on all existing Labels
+- **Purpose**: Controls padding within individual Label widgets, not container padding
+- **Format**: List `[left, top, right, bottom]` with float values
+- **Difference from `padding`**: `padding` affects the MarkdownLabel container, `text_padding` affects child Labels
 
 ### Rendering Properties
 
