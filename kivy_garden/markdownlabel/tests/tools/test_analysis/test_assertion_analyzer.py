@@ -174,9 +174,9 @@ class TestAssertionAnalyzerIntegration:
     def test_file_analysis_integration(self):
         """Integration test for analyzing a complete test file."""
         analyzer = AssertionAnalyzer()
-    
-    # Create a temporary test file
-    test_content = '''
+        
+        # Create a temporary test file
+        test_content = '''
 import pytest
 
 class TestExample:
@@ -200,30 +200,30 @@ def test_module_level_function(self):
     """Module-level test function."""
     assert True
 '''
-    
-    with tempfile.NamedTemporaryFile(mode='w', suffix='.py', delete=False) as f:
-        f.write(test_content)
-        temp_file = f.name
-    
-    try:
-        analyses = analyzer.analyze_file(temp_file)
         
-        # Should find 4 test methods
-        assert len(analyses) == 4
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.py', delete=False) as f:
+            f.write(test_content)
+            temp_file = f.name
         
-        # Check for naming mismatch in first test
-        first_test = next(a for a in analyses if a.test_name == "test_property_triggers_rebuild")
-        assert first_test.naming_mismatch_detected
-        
-        # Check that correctly named tests don't have mismatches
-        value_test = next(a for a in analyses if a.test_name == "test_property_updates_value")
-        assert not value_test.naming_mismatch_detected
-        
-        rebuild_test = next(a for a in analyses if a.test_name == "test_widget_rebuild_detection")
-        assert not rebuild_test.naming_mismatch_detected
-        
-    finally:
-        os.unlink(temp_file)
+        try:
+            analyses = analyzer.analyze_file(temp_file)
+            
+            # Should find 4 test methods
+            assert len(analyses) == 4
+            
+            # Check for naming mismatch in first test
+            first_test = next(a for a in analyses if a.test_name == "test_property_triggers_rebuild")
+            assert first_test.naming_mismatch_detected
+            
+            # Check that correctly named tests don't have mismatches
+            value_test = next(a for a in analyses if a.test_name == "test_property_updates_value")
+            assert not value_test.naming_mismatch_detected
+            
+            rebuild_test = next(a for a in analyses if a.test_name == "test_widget_rebuild_detection")
+            assert not rebuild_test.naming_mismatch_detected
+            
+        finally:
+            os.unlink(temp_file)
 
 
 if __name__ == "__main__":

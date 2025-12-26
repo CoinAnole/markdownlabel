@@ -12,7 +12,7 @@ import os
 from pathlib import Path
 from typing import List, Dict
 
-from tools.test_analysis.duplicate_detector import DuplicateDetector, ConsolidationReport
+from test_analysis.duplicate_detector import DuplicateDetector, ConsolidationReport
 
 
 # **Feature: test-suite-refactoring, Property 9: Code Duplication Minimization**
