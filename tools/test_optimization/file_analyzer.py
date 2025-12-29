@@ -14,6 +14,7 @@ from .strategy_classifier import StrategyClassifier
 from .max_examples_calculator import MaxExamplesCalculator
 from .comment_analyzer import CommentAnalyzer
 from .comment_format import CommentFormatValidator, ValidationResult
+from tools.test_analysis.test_discovery import find_property_tests as shared_find_property_tests
 
 
 @dataclass
@@ -202,49 +203,49 @@ class FileAnalyzer:
         )
     
     def _extract_property_tests(self, content: str) -> List[PropertyTest]:
-        """Extract property-based tests from file content."""
-        tests = []
+        """Extract property-based tests from file content.
+        
+        This method uses the shared test discovery utility from test_discovery.py
+        to find property tests, then extracts additional information needed for
+        optimization analysis. Only tests with both @given and @settings decorators
+        are included to maintain compatibility with the original behavior.
+        """
+        # Use the shared test discovery utility
+        shared_tests = shared_find_property_tests(content)
         lines = content.split('\n')
         
-        i = 0
-        while i < len(lines):
-            line = lines[i].strip()
+        tests = []
+        for shared_test in shared_tests:
+            # Only include tests that have @settings decorator (max_examples is not None)
+            # This maintains the original behavior of requiring both @given and @settings
+            if shared_test.max_examples is None:
+                continue
             
-            # Look for @given decorator
-            if line.startswith('@given('):
-                given_match = self._extract_given_decorator(lines, i)
-                if given_match:
-                    strategy_code, given_end_line = given_match
-                    
-                    # Look for @settings decorator after @given
-                    settings_match = self._extract_settings_decorator(lines, given_end_line + 1)
-                    if settings_match:
-                        max_examples, settings_line = settings_match
-                        
-                        # Look for function definition
-                        func_match = self._extract_function_name(lines, settings_line + 1)
-                        if func_match:
-                            func_name, func_line = func_match
-                            
-                            tests.append(PropertyTest(
-                                name=func_name,
-                                file_path="",  # Will be set by caller
-                                line_number=i + 1,  # 1-based line numbers (decorator start)
-                                def_line_number=func_line + 1,  # 1-based function definition line
-                                strategy_code=strategy_code,
-                                current_max_examples=max_examples,
-                                decorator_line=lines[settings_line]
-                            ))
-                            
-                            i = func_line
-                        else:
-                            i = settings_line + 1
-                    else:
-                        i = given_end_line + 1
-                else:
-                    i += 1
-            else:
-                i += 1
+            # Extract strategy code from @given decorator
+            strategy_code = self._extract_given_decorator(lines, shared_test.decorator_start_line)
+            
+            if strategy_code:
+                strategy_code_str, _ = strategy_code
+                
+                # Look for @settings decorator after @given to get the decorator line
+                settings_match = self._extract_settings_decorator(
+                    lines, shared_test.decorator_start_line + 1
+                )
+                
+                decorator_line = ""
+                if settings_match:
+                    _, settings_line = settings_match
+                    decorator_line = lines[settings_line]
+                
+                tests.append(PropertyTest(
+                    name=shared_test.name,
+                    file_path="",  # Will be set by caller
+                    line_number=shared_test.decorator_start_line + 1,  # 1-based line numbers
+                    def_line_number=shared_test.start_line,  # 1-based function definition line
+                    strategy_code=strategy_code_str,
+                    current_max_examples=shared_test.max_examples,
+                    decorator_line=decorator_line
+                ))
         
         return tests
     
