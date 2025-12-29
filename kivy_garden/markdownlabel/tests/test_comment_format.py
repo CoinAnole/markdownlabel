@@ -7,10 +7,10 @@ standardized comment formats for max_examples documentation.
 import pytest
 from hypothesis import given, strategies as st, settings
 
-from test_optimization.comment_manager import (
+from tools.test_optimization.comment_manager import (
     CommentFormatValidator, CommentPattern, StrategyType, ValidationResult, CommentAnalyzer
 )
-from test_optimization.strategy_analyzer import StrategyTypeMapper, CodeAnalyzer
+from tools.test_optimization.strategy_analyzer import StrategyTypeMapper, CodeAnalyzer
 
 
 @pytest.mark.test_tests

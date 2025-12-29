@@ -14,7 +14,7 @@ import os
 from pathlib import Path
 from typing import List, Dict
 
-from test_analysis.assertion_analyzer import AssertionAnalyzer, AssertionType, AssertionPattern, AssertionAnalysis
+from tools.test_analysis.assertion_analyzer import AssertionAnalyzer, AssertionType, AssertionPattern, AssertionAnalysis
 
 
 @pytest.mark.test_tests

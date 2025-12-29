@@ -10,10 +10,10 @@ import re
 import tempfile
 from hypothesis import given, strategies as st, settings
 
-from test_optimization.comment_manager import (
+from tools.test_optimization.comment_manager import (
     CommentStandardizer, StandardizationResult, StrategyType, CommentFormatValidator, CommentAnalyzer
 )
-from test_optimization.optimization_detector import (
+from tools.test_optimization.optimization_detector import (
     OptimizationDetector as PerformanceRationaleDetector,
     OptimizationCommentGenerator as PerformanceCommentGenerator,
     OptimizationType as PerformanceReason
@@ -253,7 +253,7 @@ def test_boolean_integration(flag):
         
         try:
             # First analyze without standardization
-            from test_optimization.comment_manager import CommentAnalyzer
+            from tools.test_optimization.comment_manager import CommentAnalyzer
             analyzer = CommentAnalyzer()
             
             initial_analysis = analyzer.analyze_file(temp_file)
@@ -421,10 +421,10 @@ def test_sampled_from_strategy(item):
         """Finite strategies are correctly classified by size."""
         test_cases = [
             # Small finite (≤10 elements)
-            ('st.integers(min_value=0, max_value=5)', "Small finite", 6),
+            ('st.integers(min_value=0, max_value=4)', "Small finite", 5),
             ('st.integers(min_value=1, max_value=10)', "Small finite", 10),
             
-            # Medium finite (11-50 elements)  
+            # Medium finite (11-51 elements)
             ('st.integers(min_value=0, max_value=25)', "Medium finite", 26),
             ('st.integers(min_value=10, max_value=50)', "Medium finite", 41),
         ]

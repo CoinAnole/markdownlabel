@@ -11,7 +11,7 @@ import tempfile
 import os
 from pathlib import Path
 
-from test_analysis.file_parser import FileParser, FileMetadata
+from tools.test_analysis.file_parser import FileParser, FileMetadata
 # Import strategies from test_utils using absolute import
 from kivy_garden.markdownlabel.tests.test_utils import rebuild_test_file_strategy
 

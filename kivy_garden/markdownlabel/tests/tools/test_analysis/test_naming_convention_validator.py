@@ -13,10 +13,10 @@ import os
 from hypothesis import given, strategies as st, settings
 from pathlib import Path
 
-from test_analysis.naming_convention_validator import (
+from tools.test_analysis.naming_convention_validator import (
     NamingConventionValidator, NamingViolationType, NamingViolation
 )
-from test_analysis.assertion_analyzer import AssertionAnalyzer, AssertionType, AssertionAnalysis
+from tools.test_analysis.assertion_analyzer import AssertionAnalyzer, AssertionType, AssertionAnalysis
 
 
 @pytest.mark.test_tests

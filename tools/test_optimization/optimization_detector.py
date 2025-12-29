@@ -73,6 +73,16 @@ class OptimizationInfo:
     rationale: Optional[str] = None
     line_number: Optional[int] = None
     
+    # Backward compatibility: alias for old attribute name
+    @property
+    def reason(self) -> OptimizationType:
+        """Backward compatibility property for 'reason' attribute.
+        
+        This property provides backward compatibility with the old PerformanceRationale
+        class that used 'reason' instead of 'optimization_type'.
+        """
+        return self.optimization_type
+    
     def to_comment_rationale(self) -> str:
         """Convert to comment rationale text.
         
@@ -103,6 +113,9 @@ class OptimizationDetector:
     def __init__(self):
         """Initialize detector with pattern matching rules."""
         self.mapper = StrategyTypeMapper()
+        
+        # Backward compatibility: alias for old attribute name
+        self.performance_standardizer = None  # Will be set by OptimizationAwareCommentStandardizer
         
         # Consolidated CI detection patterns (merged from both modules)
         self.ci_conditional_patterns = [
@@ -417,6 +430,15 @@ class OptimizationDetector:
         
         return None
     
+    # Backward compatibility: alias for old method name
+    def detect_performance_rationale(self, test_code: str, max_examples: int) -> Optional[OptimizationInfo]:
+        """Backward compatibility alias for detect_optimization.
+        
+        This method is kept for backward compatibility with existing tests.
+        Use detect_optimization() instead.
+        """
+        return self.detect_optimization(test_code, max_examples)
+    
     def is_optimized(self, test_code: str, max_examples: int) -> bool:
         """Check if a test appears to be optimized.
         
@@ -488,6 +510,18 @@ class OptimizationCommentGenerator:
         """Initialize generator with detector and mapper."""
         self.detector = OptimizationDetector()
         self.mapper = StrategyTypeMapper()
+        
+        # Backward compatibility: set detector's performance_standardizer reference
+        self.detector.performance_standardizer = self
+    
+    # Backward compatibility: alias for old method name
+    def generate_performance_comment(self, test_code: str, max_examples: int) -> Optional[str]:
+        """Backward compatibility alias for generate_optimization_comment.
+        
+        This method is kept for backward compatibility with existing tests.
+        Use generate_optimization_comment() instead.
+        """
+        return self.generate_optimization_comment(test_code, max_examples)
     
     def generate_optimization_comment(self, test_code: str, max_examples: int) -> Optional[str]:
         """Generate an optimization-aware comment for the given test.
@@ -596,6 +630,10 @@ class OptimizationAwareCommentStandardizer:
         self.detector = OptimizationDetector()
         self.generator = OptimizationCommentGenerator()
         self.mapper = StrategyTypeMapper()
+        
+        # Backward compatibility: set detector's performance_standardizer reference
+        self.detector.performance_standardizer = self.generator
+        self.generator.detector.performance_standardizer = self.generator
     
     def generate_comment_with_optimization_awareness(self, test_code: str, max_examples: int) -> str:
         """Generate a comment with optimization awareness.
@@ -630,6 +668,15 @@ class OptimizationAwareCommentStandardizer:
             True if optimization documentation is recommended
         """
         return self.detector.is_optimized(test_code, max_examples)
+    
+    # Backward compatibility: alias for old method name
+    def analyze_performance_patterns(self, test_files: List[str]) -> Dict[str, List[Dict]]:
+        """Backward compatibility alias for analyze_optimization_patterns.
+        
+        This method is kept for backward compatibility with existing tests.
+        Use analyze_optimization_patterns() instead.
+        """
+        return self.analyze_optimization_patterns(test_files)
     
     def analyze_optimization_patterns(self, test_files: List[str]) -> Dict[str, List[Dict]]:
         """Analyze optimization patterns across multiple test files.

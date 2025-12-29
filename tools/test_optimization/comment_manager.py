@@ -1203,11 +1203,10 @@ class CommentAnalyzer:
         }
     
     def _analyze_strategy_from_code(self, func_code: str) -> Optional[CommentStrategyClassification]:
-        """Analyze strategy from function code (simplified version).
+        """Analyze strategy from function code using StrategyClassifier.
         
-        This is a placeholder for the full strategy analysis functionality
-        that would normally be provided by StrategyTypeMapper and CodeAnalyzer.
-        For the unified module, we provide a basic implementation.
+        This method uses the proper StrategyClassifier from strategy_analyzer
+        to ensure consistent strategy classification across all modules.
         
         Args:
             func_code: Function source code
@@ -1215,6 +1214,9 @@ class CommentAnalyzer:
         Returns:
             CommentStrategyClassification if analysis successful, None otherwise
         """
+        # Import StrategyClassifier lazily to avoid circular imports
+        from .strategy_analyzer import StrategyClassifier
+        
         # Extract @given decorator
         given_match = re.search(r'@given\([^)]+\)', func_code, re.DOTALL)
         if not given_match:
@@ -1222,42 +1224,11 @@ class CommentAnalyzer:
         
         strategy_code = given_match.group(0)
         
-        # Simple strategy classification
-        if 'st.booleans()' in strategy_code:
-            return CommentStrategyClassification(
-                strategy_type=StrategyType.BOOLEAN,
-                rationale="True/False coverage",
-                input_space_size=2
-            )
-        elif 'st.sampled_from' in strategy_code:
-            # Count items in sampled_from
-            sampled_match = re.search(r'st\.sampled_from\(\s*\[([^\]]*)\]', strategy_code)
-            if sampled_match:
-                items = [item.strip() for item in sampled_match.group(1).split(',') if item.strip()]
-                size = len(items)
-                if size <= 10:
-                    return CommentStrategyClassification(
-                        strategy_type=StrategyType.SMALL_FINITE,
-                        rationale=f"input space size: {size}",
-                        input_space_size=size
-                    )
-                else:
-                    return CommentStrategyClassification(
-                        strategy_type=StrategyType.MEDIUM_FINITE,
-                        rationale="adequate finite coverage",
-                        input_space_size=size
-                    )
-        elif 'st.tuples' in strategy_code or (strategy_code.count('st.') > 1):
-            return CommentStrategyClassification(
-                strategy_type=StrategyType.COMBINATION,
-                rationale="combination coverage"
-            )
+        # Use classify_strategy_for_comments to get CommentStrategyClassification with rationale
+        classifier = StrategyClassifier()
+        classification = classifier.classify_strategy_for_comments(strategy_code)
         
-        # Default to complex
-        return CommentStrategyClassification(
-            strategy_type=StrategyType.COMPLEX,
-            rationale="adequate coverage"
-        )
+        return classification
 
 
 # =============================================================================
@@ -1276,6 +1247,11 @@ class CommentStandardizer:
         """
         self.analyzer = CommentAnalyzer()
         self.validator = CommentFormatValidator()
+        
+        # Backward compatibility: performance_standardizer attribute
+        # This is used by tests that expect the old API
+        # Initialized lazily to avoid circular imports
+        self._performance_standardizer = None
         
         # Set up backup directory
         env_enable = os.getenv("COMMENT_STANDARDIZER_ENABLE_BACKUPS", "").lower() in {"1", "true", "yes", "on"}
@@ -1303,6 +1279,18 @@ class CommentStandardizer:
         
         # Pattern to match function definition
         self.function_pattern = re.compile(r'(def\s+test_[^\s(]+\s*\([^)]*\):)')
+    
+    @property
+    def performance_standardizer(self):
+        """Backward compatibility property for performance_standardizer.
+        
+        This property lazily initializes OptimizationAwareCommentStandardizer
+        to avoid circular imports with optimization_detector module.
+        """
+        if self._performance_standardizer is None:
+            from .optimization_detector import OptimizationAwareCommentStandardizer
+            self._performance_standardizer = OptimizationAwareCommentStandardizer()
+        return self._performance_standardizer
     
     def standardize_file(self, file_path: str, dry_run: bool = False) -> StandardizationResult:
         """Standardize comments in a single test file.
@@ -1585,7 +1573,7 @@ class CommentStandardizer:
         Args:
             strategy_classification: Strategy classification result
             max_examples: Number of examples
-            func_code: Function source code (for CI optimization detection)
+            func_code: Function source code (for CI/performance optimization detection)
             
         Returns:
             Generated comment string
@@ -1593,6 +1581,10 @@ class CommentStandardizer:
         # Check for CI optimization
         if self.analyzer._has_ci_optimization_pattern(func_code):
             rationale = "CI optimized"
+        # Check for performance optimization (complex strategy with low max_examples)
+        elif (strategy_classification.strategy_type == StrategyType.COMPLEX and
+              max_examples <= 5):
+            rationale = "performance optimized"
         else:
             rationale = strategy_classification.rationale
         
@@ -1915,3 +1907,4 @@ __all__ = [
     'CommentAnalyzer',
     'CommentStandardizer',
 ]
+

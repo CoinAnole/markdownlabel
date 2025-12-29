@@ -11,11 +11,11 @@ from pathlib import Path
 import pytest
 from hypothesis import given, strategies as st, settings
 
-from test_optimization.file_analyzer import (
+from tools.test_optimization.file_analyzer import (
     FileAnalyzer, PropertyTest, OptimizationRecommendation,
     FileAnalysis, ValidationReport
 )
-from test_optimization.strategy_analyzer import StrategyType, StrategyAnalysis
+from tools.test_optimization.strategy_analyzer import StrategyType, StrategyAnalysis
 
 
 @pytest.mark.test_tests
