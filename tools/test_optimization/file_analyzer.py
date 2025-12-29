@@ -10,10 +10,9 @@ from pathlib import Path
 from dataclasses import dataclass
 from typing import List, Optional, Dict, Tuple
 
-from .strategy_classifier import StrategyClassifier
+from .strategy_analyzer import StrategyClassifier
 from .max_examples_calculator import MaxExamplesCalculator
-from .comment_analyzer import CommentAnalyzer
-from .comment_format import CommentFormatValidator, ValidationResult
+from .comment_manager import CommentAnalyzer, CommentFormatValidator, ValidationResult
 from tools.test_analysis.test_discovery import find_property_tests as shared_find_property_tests
 
 

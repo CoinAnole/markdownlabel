@@ -562,3 +562,7 @@ __all__ = [
     'StrategyClassifier',
     'CodeAnalyzer',
 ]
+
+# Backward compatibility alias for StrategyTypeMapper
+# This allows code that imported StrategyTypeMapper to continue working
+StrategyTypeMapper = StrategyClassifier

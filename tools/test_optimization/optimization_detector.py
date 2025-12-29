@@ -21,8 +21,8 @@ from dataclasses import dataclass
 from typing import Optional, Dict, List, Tuple
 from enum import Enum
 
-from .comment_format import CommentPattern, StrategyType
-from .strategy_type_mapper import StrategyTypeMapper, CommentStrategyClassification
+from .comment_manager import CommentPattern, StrategyType, CommentStrategyClassification
+from .strategy_analyzer import StrategyTypeMapper
 
 # Import the unified test discovery function from test_analysis package
 from tools.test_analysis.test_discovery import find_property_tests, PropertyTest

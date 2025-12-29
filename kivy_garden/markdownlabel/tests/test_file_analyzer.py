@@ -15,7 +15,7 @@ from test_optimization.file_analyzer import (
     FileAnalyzer, PropertyTest, OptimizationRecommendation,
     FileAnalysis, ValidationReport
 )
-from test_optimization.strategy_classifier import StrategyType, StrategyAnalysis
+from test_optimization.strategy_analyzer import StrategyType, StrategyAnalysis
 
 
 @pytest.mark.test_tests

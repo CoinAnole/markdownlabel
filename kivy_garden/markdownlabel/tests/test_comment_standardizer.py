@@ -10,13 +10,13 @@ import re
 import tempfile
 from hypothesis import given, strategies as st, settings
 
-from test_optimization.comment_standardizer import CommentStandardizer, StandardizationResult
-from test_optimization.comment_format import StrategyType, CommentFormatValidator
-from test_optimization.comment_analyzer import CommentAnalyzer
-from test_optimization.performance_rationale_handler import (
-    PerformanceRationaleDetector,
-    PerformanceCommentGenerator,
-    PerformanceReason
+from test_optimization.comment_manager import (
+    CommentStandardizer, StandardizationResult, StrategyType, CommentFormatValidator, CommentAnalyzer
+)
+from test_optimization.optimization_detector import (
+    OptimizationDetector as PerformanceRationaleDetector,
+    OptimizationCommentGenerator as PerformanceCommentGenerator,
+    OptimizationType as PerformanceReason
 )
 
 
@@ -253,7 +253,7 @@ def test_boolean_integration(flag):
         
         try:
             # First analyze without standardization
-            from test_optimization.comment_analyzer import CommentAnalyzer
+            from test_optimization.comment_manager import CommentAnalyzer
             analyzer = CommentAnalyzer()
             
             initial_analysis = analyzer.analyze_file(temp_file)

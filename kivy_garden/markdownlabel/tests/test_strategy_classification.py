@@ -7,7 +7,7 @@ Hypothesis strategies for max_examples optimization.
 import pytest
 from hypothesis import given, strategies as st, settings
 
-from test_optimization.strategy_classifier import (
+from test_optimization.strategy_analyzer import (
     StrategyClassifier, StrategyType, StrategyAnalysis
 )
 
@@ -165,7 +165,7 @@ class TestMaxExamplesCalculation:
         **Validates: Requirements 1.5, 2.3**
         """
         # Simulate a complex strategy analysis
-        from test_optimization.strategy_classifier import StrategyAnalysis, StrategyType
+        from test_optimization.strategy_analyzer import StrategyAnalysis, StrategyType
         
         analysis = StrategyAnalysis(
             strategy_type=StrategyType.COMPLEX,
@@ -258,7 +258,7 @@ class TestCombinationStrategies:
 
     def test_combination_with_strategy_variables(self):
         """Multiple @given arguments should be classified as a combination even when passed as variables."""
-        from test_optimization.strategy_classifier import StrategyClassifier, StrategyType
+        from test_optimization.strategy_analyzer import StrategyClassifier, StrategyType
 
         strategy_code = 'alpha_strategy, beta_strategy'
         analysis = StrategyClassifier().classify_strategy(strategy_code)
@@ -270,7 +270,7 @@ class TestCombinationStrategies:
 
     def test_combination_with_keyword_strategies(self):
         """Keyword arguments with multiple strategies should be treated as a combination."""
-        from test_optimization.strategy_classifier import StrategyClassifier, StrategyType
+        from test_optimization.strategy_analyzer import StrategyClassifier, StrategyType
 
         strategy_code = 'x=st.booleans(), y=st.integers(min_value=0, max_value=1)'
         analysis = StrategyClassifier().classify_strategy(strategy_code)
