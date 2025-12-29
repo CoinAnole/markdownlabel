@@ -17,9 +17,8 @@ import json
 # Add the tools directory to Python path
 tools_dir = Path(__file__).parent
 sys.path.insert(0, str(tools_dir))
-sys.path.insert(0, str(tools_dir / 'test_analysis'))
 
-from kivy_garden.markdownlabel.tests.test_analysis.duplicate_detector import DuplicateDetector, ConsolidationReport
+from kivy_garden.markdownlabel.tests.modules.duplicate_detector import DuplicateDetector, ConsolidationReport
 
 
 @dataclass

@@ -12,7 +12,7 @@ import os
 from pathlib import Path
 from typing import List, Dict
 
-from kivy_garden.markdownlabel.tests.test_analysis.duplicate_detector import DuplicateDetector, ConsolidationReport
+from kivy_garden.markdownlabel.tests.modules.duplicate_detector import DuplicateDetector, ConsolidationReport
 
 
 # **Feature: test-suite-refactoring, Property 9: Code Duplication Minimization**

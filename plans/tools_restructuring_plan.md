@@ -22,7 +22,7 @@ tools/
 │   ├── max_examples_calculator.py
 │   ├── optimization_detector.py
 │   └── strategy_analyzer.py
-└── test_analysis/                    # ❌ Imported by tests (wrong location)
+└── modules/                         # ❌ Imported by tests (wrong location)
     ├── __init__.py
     ├── assertion_analyzer.py
     ├── duplicate_detector.py
@@ -35,7 +35,7 @@ kivy_garden/markdownlabel/tests/
 ├── test_strategy_classification.py      # ❌ Imports from tools.test_optimization
 ├── test_comment_format.py             # ❌ Imports from tools.test_optimization
 ├── test_comment_standardizer.py       # ❌ Imports from tools.test_optimization
-└── tools/test_analysis/              # ✅ Meta-tests (correct location)
+└── meta_tests/                      # ✅ Meta-tests (correct location)
     ├── test_assertion_analyzer.py
     ├── test_code_duplication_minimization.py
     ├── test_coverage_preservation.py
@@ -62,7 +62,7 @@ kivy_garden/markdownlabel/tests/
 │   ├── max_examples_calculator.py
 │   ├── optimization_detector.py
 │   └── strategy_analyzer.py
-├── test_analysis/                    # ✅ Test infrastructure (moved)
+├── modules/                         # ✅ Test infrastructure (moved)
 │   ├── __init__.py
 │   ├── assertion_analyzer.py
 │   ├── duplicate_detector.py
@@ -73,7 +73,7 @@ kivy_garden/markdownlabel/tests/
 ├── test_strategy_classification.py      # ✅ Updated imports
 ├── test_comment_format.py             # ✅ Updated imports
 ├── test_comment_standardizer.py       # ✅ Updated imports
-└── tools/test_analysis/              # ✅ Meta-tests (unchanged)
+└── meta_tests/                      # ✅ Meta-tests (unchanged)
     ├── test_assertion_analyzer.py
     ├── test_code_duplication_minimization.py
     ├── test_coverage_preservation.py
@@ -128,17 +128,17 @@ rmdir tools/test_optimization
 
 2.1 Create target directory
 ```bash
-mkdir -p kivy_garden/markdownlabel/tests/test_analysis
+mkdir -p kivy_garden/markdownlabel/tests/modules
 ```
 
 2.2 Move all files from tools/test_analysis/
 ```bash
-mv tools/test_analysis/__init__.py kivy_garden/markdownlabel/tests/test_analysis/
-mv tools/test_analysis/assertion_analyzer.py kivy_garden/markdownlabel/tests/test_analysis/
-mv tools/test_analysis/duplicate_detector.py kivy_garden/markdownlabel/tests/test_analysis/
-mv tools/test_analysis/file_parser.py kivy_garden/markdownlabel/tests/test_analysis/
-mv tools/test_analysis/naming_convention_validator.py kivy_garden/markdownlabel/tests/test_analysis/
-mv tools/test_analysis/test_discovery.py kivy_garden/markdownlabel/tests/test_analysis/
+mv tools/test_analysis/__init__.py kivy_garden/markdownlabel/tests/modules/
+mv tools/test_analysis/assertion_analyzer.py kivy_garden/markdownlabel/tests/modules/
+mv tools/test_analysis/duplicate_detector.py kivy_garden/markdownlabel/tests/modules/
+mv tools/test_analysis/file_parser.py kivy_garden/markdownlabel/tests/modules/
+mv tools/test_analysis/naming_convention_validator.py kivy_garden/markdownlabel/tests/modules/
+mv tools/test_analysis/test_discovery.py kivy_garden/markdownlabel/tests/modules/
 ```
 
 2.3 Remove empty tools/test_analysis directory
@@ -236,7 +236,7 @@ from kivy_garden.markdownlabel.tests.test_optimization.optimization_detector imp
 )
 ```
 
-#### 3.5 Meta-tests in tests/tools/test_analysis/
+#### 3.5 Meta-tests in tests/meta_tests/
 
 **Current imports** (all files):
 ```python
@@ -248,18 +248,18 @@ from tools.test_analysis.naming_convention_validator import NamingConventionVali
 
 **New imports**:
 ```python
-from kivy_garden.markdownlabel.tests.test_analysis.assertion_analyzer import AssertionAnalyzer, AssertionType, AssertionPattern, AssertionAnalysis
-from kivy_garden.markdownlabel.tests.test_analysis.duplicate_detector import DuplicateDetector, DuplicateGroup, ConsolidationReport
-from kivy_garden.markdownlabel.tests.test_analysis.file_parser import FileParser, FileMetadata
-from kivy_garden.markdownlabel.tests.test_analysis.naming_convention_validator import NamingConventionValidator, NamingViolationType, NamingViolation
+from kivy_garden.markdownlabel.tests.modules.assertion_analyzer import AssertionAnalyzer, AssertionType, AssertionPattern, AssertionAnalysis
+from kivy_garden.markdownlabel.tests.modules.duplicate_detector import DuplicateDetector, DuplicateGroup, ConsolidationReport
+from kivy_garden.markdownlabel.tests.modules.file_parser import FileParser, FileMetadata
+from kivy_garden.markdownlabel.tests.modules.naming_convention_validator import NamingConventionValidator, NamingViolationType, NamingViolation
 ```
 
 **Files affected**:
-- `kivy_garden/markdownlabel/tests/tools/test_analysis/test_assertion_analyzer.py`
-- `kivy_garden/markdownlabel/tests/tools/test_analysis/test_duplicate_detector.py`
-- `kivy_garden/markdownlabel/tests/tools/test_analysis/test_naming_convention_validator.py`
-- `kivy_garden/markdownlabel/tests/tools/test_analysis/test_test_file_parser.py`
-- `kivy_garden/markdownlabel/tests/tools/test_analysis/test_code_duplication_minimization.py`
+- `kivy_garden/markdownlabel/tests/meta_tests/test_assertion_analyzer.py`
+- `kivy_garden/markdownlabel/tests/meta_tests/test_duplicate_detector.py`
+- `kivy_garden/markdownlabel/tests/meta_tests/test_naming_convention_validator.py`
+- `kivy_garden/markdownlabel/tests/meta_tests/test_test_file_parser.py`
+- `kivy_garden/markdownlabel/tests/meta_tests/test_code_duplication_minimization.py`
 
 #### 3.6 CLI tools that import from moved packages
 
@@ -282,7 +282,7 @@ from test_analysis.duplicate_detector import DuplicateDetector, ConsolidationRep
 
 **New imports**:
 ```python
-from kivy_garden.markdownlabel.tests.test_analysis.duplicate_detector import DuplicateDetector, ConsolidationReport
+from kivy_garden.markdownlabel.tests.modules.duplicate_detector import DuplicateDetector, ConsolidationReport
 ```
 
 **measure_baseline_performance.py** (line 22):
@@ -305,7 +305,7 @@ from kivy_garden.markdownlabel.tests.test_optimization.file_analyzer import File
 
 **Remove** sections referencing:
 - `test_optimization/` package
-- `test_analysis/` package
+- `modules/` package
 
 **Update** to clarify that tools/ now contains only:
 - CLI scripts for manual execution
@@ -329,7 +329,7 @@ pytest kivy_garden/markdownlabel/tests/ -v
 
 5.2 Run meta-tests specifically
 ```bash
-pytest kivy_garden/markdownlabel/tests/tools/test_analysis/ -v
+pytest kivy_garden/markdownlabel/tests/meta_tests/ -v
 ```
 
 5.3 Test CLI tools still work
@@ -342,7 +342,7 @@ python tools/validate_refactoring.py
 5.4 Check for import errors
 ```bash
 python -c "from kivy_garden.markdownlabel.tests.test_optimization.file_analyzer import FileAnalyzer"
-python -c "from kivy_garden.markdownlabel.tests.test_analysis.assertion_analyzer import AssertionAnalyzer"
+python -c "from kivy_garden.markdownlabel.tests.modules.assertion_analyzer import AssertionAnalyzer"
 ```
 
 ---
@@ -365,6 +365,7 @@ find kivy_garden/markdownlabel/tests/ -type d -empty
 ```bash
 grep -r "from tools\.test_optimization" kivy_garden/markdownlabel/tests/
 grep -r "from tools\.test_analysis" kivy_garden/markdownlabel/tests/
+grep -r "from.*test_analysis" kivy_garden/markdownlabel/tests/
 ```
 
 ---
@@ -374,13 +375,13 @@ grep -r "from tools\.test_analysis" kivy_garden/markdownlabel/tests/
 If any issues arise during restructuring:
 
 1. **Rollback Phase 3**: Revert import changes
-2. **Rollback Phase 2**: Move test_analysis back to tools/
-3. **Rollback Phase 1**: Move test_optimization back to tools/
+2. **Rollback Phase 2**: Move modules back to test_analysis/
+3. **Rollback Phase 1**: Move meta_tests back to tools/test_analysis/
 
 ```bash
 # Rollback commands
-mv kivy_garden/markdownlabel/tests/test_optimization tools/test_optimization
-mv kivy_garden/markdownlabel/tests/test_analysis tools/test_analysis
+mv kivy_garden/markdownlabel/tests/modules kivy_garden/markdownlabel/tests/test_analysis
+mv kivy_garden/markdownlabel/tests/meta_tests kivy_garden/markdownlabel/tests/tools/test_analysis
 git checkout -- kivy_garden/markdownlabel/tests/*.py
 git checkout -- tools/*.py
 ```

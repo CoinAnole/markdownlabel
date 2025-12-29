@@ -11,7 +11,7 @@ import tempfile
 import os
 from pathlib import Path
 
-from kivy_garden.markdownlabel.tests.test_analysis.duplicate_detector import DuplicateDetector, DuplicateGroup, ConsolidationReport
+from kivy_garden.markdownlabel.tests.modules.duplicate_detector import DuplicateDetector, DuplicateGroup, ConsolidationReport
 # Import strategies from test_utils using absolute import
 from kivy_garden.markdownlabel.tests.test_utils import duplicate_helper_functions
 

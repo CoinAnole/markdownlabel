@@ -60,11 +60,12 @@ python3 tools/validate_comments.py validate kivy_garden/markdownlabel/tests/
   - `max_examples_calculator.py` - Calculates optimal execution counts
   - `comment_standardizer.py` - Automates comment format updates
 
-- `test_analysis/` - Infrastructure for general test suite analysis
+- `modules/` - Infrastructure for general test suite analysis
   - `file_parser.py` - AST-based parser for test metadata extraction
   - `duplicate_detector.py` - Identifies redundant helper functions
   - `assertion_analyzer.py` - Validates assertion patterns against test names
   - `naming_convention_validator.py` - Enforces consistent test naming
+  - `test_discovery.py` - Discovers and analyzes test files
 
 ## Related Documentation
 

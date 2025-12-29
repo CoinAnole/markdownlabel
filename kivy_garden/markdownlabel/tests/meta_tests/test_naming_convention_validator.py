@@ -13,10 +13,10 @@ import os
 from hypothesis import given, strategies as st, settings
 from pathlib import Path
 
-from kivy_garden.markdownlabel.tests.test_analysis.naming_convention_validator import (
+from kivy_garden.markdownlabel.tests.modules.naming_convention_validator import (
     NamingConventionValidator, NamingViolationType, NamingViolation
 )
-from kivy_garden.markdownlabel.tests.test_analysis.assertion_analyzer import AssertionAnalyzer, AssertionType, AssertionAnalysis
+from kivy_garden.markdownlabel.tests.modules.assertion_analyzer import AssertionAnalyzer, AssertionType, AssertionAnalysis
 
 
 @pytest.mark.test_tests

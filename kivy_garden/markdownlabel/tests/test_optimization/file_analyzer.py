@@ -13,7 +13,7 @@ from typing import List, Optional, Dict, Tuple
 from .strategy_analyzer import StrategyClassifier
 from .max_examples_calculator import MaxExamplesCalculator
 from .comment_manager import CommentAnalyzer, CommentFormatValidator, ValidationResult
-from kivy_garden.markdownlabel.tests.test_analysis.test_discovery import find_property_tests as shared_find_property_tests
+from kivy_garden.markdownlabel.tests.modules.test_discovery import find_property_tests as shared_find_property_tests
 
 
 @dataclass

@@ -6,10 +6,10 @@ test functions in Python test files, extracting metadata about test functions
 including their location, decorators, and max_examples configuration.
 
 This consolidates duplicate test discovery logic from multiple modules:
-- tools/test_analysis/file_parser.py
-- tools/test_optimization/comment_analyzer.py
-- tools/test_optimization/ci_optimization_handler.py
-- tools/test_optimization/performance_rationale_handler.py
+- modules/file_parser.py
+- test_optimization/comment_analyzer.py
+- test_optimization/ci_optimization_handler.py
+- test_optimization/performance_rationale_handler.py
 """
 
 import re
