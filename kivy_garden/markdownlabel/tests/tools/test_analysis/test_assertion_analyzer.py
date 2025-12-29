@@ -14,7 +14,7 @@ import os
 from pathlib import Path
 from typing import List, Dict
 
-from tools.test_analysis.assertion_analyzer import AssertionAnalyzer, AssertionType, AssertionPattern, AssertionAnalysis
+from kivy_garden.markdownlabel.tests.test_analysis.assertion_analyzer import AssertionAnalyzer, AssertionType, AssertionPattern, AssertionAnalysis
 
 
 @pytest.mark.test_tests

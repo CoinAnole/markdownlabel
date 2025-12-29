@@ -1,6 +1,6 @@
 # MarkdownLabel Test Tools
 
-This directory contains tools for analyzing, validating, and optimizing the MarkdownLabel test suite.
+This directory contains CLI tools for analyzing, validating, and optimizing the MarkdownLabel test suite.
 
 ## Core Tools
 
@@ -32,22 +32,6 @@ Establishes performance baselines for property-based tests.
 python3 tools/measure_baseline_performance.py
 ```
 
-## Internal Packages
-
-### `test_optimization/`
-Infrastructure for Hypothesis test optimization:
-- **`file_analyzer.py`** - Analyzes tests for over-testing patterns
-- **`strategy_classifier.py`** - Classifies strategies by complexity
-- **`max_examples_calculator.py`** - Calculates optimal execution counts
-- **`comment_standardizer.py`** - Automates comment format updates
-
-### `test_analysis/`
-Infrastructure for general test suite analysis:
-- **`file_parser.py`** - AST-based parser for test metadata extraction
-- **`duplicate_detector.py`** - Identifies redundant helper functions
-- **`assertion_analyzer.py`** - Validates assertion patterns against test names
-- **`naming_convention_validator.py`** - Enforces consistent test naming
-
 ## Integration
 
 ### CI Integration
@@ -65,6 +49,22 @@ Add to `.git/hooks/pre-commit`:
 #!/bin/bash
 python3 tools/validate_comments.py validate kivy_garden/markdownlabel/tests/
 ```
+
+## Test Infrastructure
+
+**Note:** Test infrastructure has been moved to `kivy_garden/markdownlabel/tests/`. The following packages are now located there:
+
+- `test_optimization/` - Infrastructure for Hypothesis test optimization
+  - `file_analyzer.py` - Analyzes tests for over-testing patterns
+  - `strategy_classifier.py` - Classifies strategies by complexity
+  - `max_examples_calculator.py` - Calculates optimal execution counts
+  - `comment_standardizer.py` - Automates comment format updates
+
+- `test_analysis/` - Infrastructure for general test suite analysis
+  - `file_parser.py` - AST-based parser for test metadata extraction
+  - `duplicate_detector.py` - Identifies redundant helper functions
+  - `assertion_analyzer.py` - Validates assertion patterns against test names
+  - `naming_convention_validator.py` - Enforces consistent test naming
 
 ## Related Documentation
 

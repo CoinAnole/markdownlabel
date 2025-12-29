@@ -25,7 +25,7 @@ from .comment_manager import CommentPattern, StrategyType, CommentStrategyClassi
 from .strategy_analyzer import StrategyTypeMapper
 
 # Import the unified test discovery function from test_analysis package
-from tools.test_analysis.test_discovery import find_property_tests, PropertyTest
+from kivy_garden.markdownlabel.tests.test_analysis.test_discovery import find_property_tests, PropertyTest
 
 
 class OptimizationType(Enum):

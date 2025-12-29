@@ -7,10 +7,10 @@ standardized comment formats for max_examples documentation.
 import pytest
 from hypothesis import given, strategies as st, settings
 
-from tools.test_optimization.comment_manager import (
+from kivy_garden.markdownlabel.tests.test_optimization.comment_manager import (
     CommentFormatValidator, CommentPattern, StrategyType, ValidationResult, CommentAnalyzer
 )
-from tools.test_optimization.strategy_analyzer import StrategyTypeMapper, CodeAnalyzer
+from kivy_garden.markdownlabel.tests.test_optimization.strategy_analyzer import StrategyTypeMapper, CodeAnalyzer
 
 
 @pytest.mark.test_tests

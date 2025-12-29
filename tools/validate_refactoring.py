@@ -19,7 +19,7 @@ tools_dir = Path(__file__).parent
 sys.path.insert(0, str(tools_dir))
 sys.path.insert(0, str(tools_dir / 'test_analysis'))
 
-from test_analysis.duplicate_detector import DuplicateDetector, ConsolidationReport
+from kivy_garden.markdownlabel.tests.test_analysis.duplicate_detector import DuplicateDetector, ConsolidationReport
 
 
 @dataclass

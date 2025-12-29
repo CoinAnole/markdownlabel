@@ -16,8 +16,8 @@ from typing import List, Dict, Any, Optional
 # Add the tools directory to the path for imports
 sys.path.insert(0, os.path.dirname(__file__))
 
-from test_optimization.comment_manager import CommentAnalyzer, DirectoryAnalysis, CommentStandardizer, BatchResult
-from test_optimization.file_analyzer import FileAnalyzer
+from kivy_garden.markdownlabel.tests.test_optimization.comment_manager import CommentAnalyzer, DirectoryAnalysis, CommentStandardizer, BatchResult
+from kivy_garden.markdownlabel.tests.test_optimization.file_analyzer import FileAnalyzer
 
 
 class CommentValidationCLI:
