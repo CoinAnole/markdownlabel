@@ -109,7 +109,7 @@ class TestFontNamePropertyForwarding:
         ('Roboto-Bold', 'Roboto'), ('Roboto-Bold', 'Roboto-Italic'),
         ('Roboto-Italic', 'Roboto'), ('Roboto-Italic', 'Roboto-Bold')
     ])
-    def test_font_name_change_triggers_rebuild(self, font1, font2):
+    def test_font_name_property_forwarding_triggers_rebuild(self, font1, font2):
         """Changing font_name triggers widget rebuild with new font.
         
         **Feature: label-compatibility, Property 2: font_name Forwarding**
