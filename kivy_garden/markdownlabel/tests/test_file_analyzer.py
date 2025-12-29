@@ -116,7 +116,7 @@ class TestExample:
             assert rec.test_name == 'test_boolean_property'
             assert rec.current_examples == 100
             assert rec.recommended_examples == 2
-            assert rec.strategy_type == 'boolean'
+            assert rec.strategy_type == 'Boolean'
             assert rec.time_savings_percent > 90  # Should be ~98%
         finally:
             os.unlink(temp_file)
@@ -147,7 +147,7 @@ def test_small_range_property(self, value):
             assert rec.test_name == 'test_small_range_property'
             assert rec.current_examples == 100
             assert rec.recommended_examples == 5  # Range size
-            assert rec.strategy_type == 'small_finite'
+            assert rec.strategy_type == 'Small finite'
         finally:
             os.unlink(temp_file)
     
@@ -215,7 +215,7 @@ def test_multiline_given(self, value):
                 rec = analysis.recommendations[0]
                 assert rec.current_examples == 100
                 assert rec.recommended_examples == 6
-                assert rec.strategy_type == 'combination'
+                assert rec.strategy_type == 'Combination'
         finally:
             os.unlink(temp_file)
 
@@ -288,7 +288,7 @@ class TestRationaleGeneration:
         """Set up test fixtures."""
         self.analyzer = FileAnalyzer()
     
-    @given(st.sampled_from(['boolean', 'small_finite', 'medium_finite', 'combination', 'complex']))
+    @given(st.sampled_from(['Boolean', 'Small finite', 'Medium finite', 'Combination', 'Complex']))
     # Small finite strategy: 5 examples (input space size: 5)
     @settings(max_examples=5, deadline=None)
     def test_rationale_generation_for_strategy_types(self, strategy_type):
@@ -296,7 +296,7 @@ class TestRationaleGeneration:
         # Create mock analysis
         analysis = StrategyAnalysis(
             strategy_type=StrategyType(strategy_type),
-            input_space_size=10 if strategy_type != 'complex' else None,
+            input_space_size=10 if strategy_type != 'Complex' else None,
             complexity_level=2
         )
         
@@ -306,13 +306,13 @@ class TestRationaleGeneration:
         assert len(rationale) > 0
         
         # Check that rationale contains relevant keywords
-        if strategy_type == 'boolean':
+        if strategy_type == 'Boolean':
             assert 'Boolean' in rationale or 'True/False' in rationale
-        elif strategy_type == 'small_finite':
+        elif strategy_type == 'Small finite':
             assert 'finite' in rationale or 'input space' in rationale
-        elif strategy_type == 'combination':
+        elif strategy_type == 'Combination':
             assert 'combination' in rationale or 'product' in rationale
-        elif strategy_type == 'complex':
+        elif strategy_type == 'Complex':
             assert 'complex' in rationale or 'complexity' in rationale
 
 
@@ -415,7 +415,7 @@ def test_color_enum(self, color):
             assert analysis.over_tested_count == 1
             
             rec = analysis.recommendations[0]
-            assert rec.strategy_type == 'small_finite'
+            assert rec.strategy_type == 'Small finite'
             assert rec.recommended_examples == 3  # Three colors
         finally:
             os.unlink(temp_file)
@@ -444,7 +444,7 @@ def test_two_booleans(self, values):
             assert analysis.over_tested_count == 1
             
             rec = analysis.recommendations[0]
-            assert rec.strategy_type == 'combination'
+            assert rec.strategy_type == 'Combination'
             assert rec.recommended_examples == 4  # 2 * 2 combinations
             assert rec.time_savings_percent > 90  # Significant savings
         finally:

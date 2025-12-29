@@ -314,13 +314,13 @@ class FileAnalyzer:
         """Generate human-readable rationale for optimization."""
         strategy_type = analysis.strategy_type.value
         
-        if strategy_type == 'boolean':
+        if strategy_type == 'Boolean':
             return f"Boolean strategy only needs {optimal_examples} examples (True/False)"
-        elif strategy_type == 'small_finite':
+        elif strategy_type == 'Small finite':
             return f"Small finite strategy needs {optimal_examples} examples (input space size)"
-        elif strategy_type == 'medium_finite':
+        elif strategy_type == 'Medium finite':
             return f"Medium finite strategy capped at {optimal_examples} examples"
-        elif strategy_type == 'combination':
+        elif strategy_type == 'Combination':
             return f"Combination strategy uses {optimal_examples} examples (product formula, capped at 50)"
         else:
             return f"Complex strategy uses {optimal_examples} examples based on complexity"
