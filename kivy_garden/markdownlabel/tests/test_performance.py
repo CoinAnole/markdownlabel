@@ -11,18 +11,18 @@ from hypothesis import given, strategies as st, settings, assume
 
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label import Label
-from kivy.uix.widget import Widget
 from kivy.uix.gridlayout import GridLayout
 
 from kivy_garden.markdownlabel import MarkdownLabel
 from .test_utils import (
     markdown_heading, markdown_paragraph, markdown_bold, markdown_italic,
     markdown_link, simple_markdown_document, color_strategy, text_padding_strategy,
-    find_labels_recursive, colors_equal, padding_equal, floats_equal, KIVY_FONTS
+    find_labels_recursive, colors_equal, padding_equal, floats_equal, KIVY_FONTS,
+    collect_widget_ids
 )
 
 @pytest.mark.slow
-class TestEfficientStyleUpdates:
+class TestStyleOnlyPropertyUpdates:
     """Property tests for efficient style updates (Property 7).
     
     Tests verify that style-only property changes update descendant widgets
@@ -30,41 +30,9 @@ class TestEfficientStyleUpdates:
     changes trigger a full rebuild.
     """
 
-    def _collect_widget_ids(self, widget):
-        """Collect Python object ids of all widgets in the tree.
-        
-        Args:
-            widget: Root widget to collect from
-        
-        Returns:
-            Set of widget object ids
-        """
-        ids = {id(widget)}
-        if hasattr(widget, 'children'):
-            for child in widget.children:
-                ids.update(self._collect_widget_ids(child))
-        return ids
-
-    def _find_labels_recursive(self, widget):
-        """Find all Label widgets recursively.
-        
-        Args:
-            widget: Root widget to search from
-        
-        Returns:
-            List of Label widgets
-        """
-        labels = []
-        if isinstance(widget, Label):
-            labels.append(widget)
-        if hasattr(widget, 'children'):
-            for child in widget.children:
-                labels.extend(self._find_labels_recursive(child))
-        return labels
-
     @given(st.floats(min_value=10, max_value=50, allow_nan=False, allow_infinity=False),
            st.floats(min_value=10, max_value=50, allow_nan=False, allow_infinity=False))
-    # Complex strategy: 20 examples (adequate coverage)
+    # Combination strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_font_size_change_preserves_widget_tree(self, initial_size, new_size):
         """Changing font_size preserves widget tree structure (widget identities).
@@ -79,13 +47,13 @@ class TestEfficientStyleUpdates:
         label = MarkdownLabel(text=markdown, font_size=initial_size)
         
         # Collect widget ids before change
-        ids_before = self._collect_widget_ids(label)
+        ids_before = collect_widget_ids(label)
         
         # Change font_size (style-only property)
         label.font_size = new_size
         
         # Collect widget ids after change
-        ids_after = self._collect_widget_ids(label)
+        ids_after = collect_widget_ids(label)
         
         # Widget tree structure should be preserved (same widget objects)
         assert ids_before == ids_after, \
@@ -97,7 +65,7 @@ class TestEfficientStyleUpdates:
         st.floats(min_value=0, max_value=1, allow_nan=False, allow_infinity=False),
         st.floats(min_value=0, max_value=1, allow_nan=False, allow_infinity=False)
     ))
-    # Complex strategy: 20 examples (adequate coverage)
+    # Combination strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_color_change_preserves_widget_tree(self, new_color):
         """Changing color preserves widget tree structure (widget identities).
@@ -110,13 +78,13 @@ class TestEfficientStyleUpdates:
         label = MarkdownLabel(text=markdown, color=[1, 1, 1, 1])
         
         # Collect widget ids before change
-        ids_before = self._collect_widget_ids(label)
+        ids_before = collect_widget_ids(label)
         
         # Change color (style-only property)
         label.color = list(new_color)
         
         # Collect widget ids after change
-        ids_after = self._collect_widget_ids(label)
+        ids_after = collect_widget_ids(label)
         
         # Widget tree structure should be preserved
         assert ids_before == ids_after, \
@@ -128,7 +96,7 @@ class TestEfficientStyleUpdates:
         st.floats(min_value=0, max_value=1, allow_nan=False, allow_infinity=False),
         st.floats(min_value=0, max_value=1, allow_nan=False, allow_infinity=False)
     ))
-    # Complex strategy: 20 examples (adequate coverage)
+    # Combination strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_color_change_updates_descendant_labels(self, new_color):
         """Changing color updates all descendant Label widgets.
@@ -145,7 +113,7 @@ class TestEfficientStyleUpdates:
         label.color = new_color_list
         
         # All descendant labels should have the new color
-        child_labels = self._find_labels_recursive(label)
+        child_labels = find_labels_recursive(label)
         assert len(child_labels) >= 1, "Expected at least one child Label"
         
         for child_label in child_labels:
@@ -164,13 +132,13 @@ class TestEfficientStyleUpdates:
         label = MarkdownLabel(text=markdown, halign='left')
         
         # Collect widget ids before change
-        ids_before = self._collect_widget_ids(label)
+        ids_before = collect_widget_ids(label)
         
         # Change halign (style-only property)
         label.halign = new_halign
         
         # Collect widget ids after change
-        ids_after = self._collect_widget_ids(label)
+        ids_after = collect_widget_ids(label)
         
         # Widget tree structure should be preserved
         assert ids_before == ids_after, \
@@ -191,7 +159,7 @@ class TestEfficientStyleUpdates:
         label.halign = new_halign
         
         # All descendant labels should have the new halign
-        child_labels = self._find_labels_recursive(label)
+        child_labels = find_labels_recursive(label)
         assert len(child_labels) >= 1, "Expected at least one child Label"
         
         for child_label in child_labels:
@@ -210,13 +178,13 @@ class TestEfficientStyleUpdates:
         label = MarkdownLabel(text=markdown, valign='top')
         
         # Collect widget ids before change
-        ids_before = self._collect_widget_ids(label)
+        ids_before = collect_widget_ids(label)
         
         # Change valign (style-only property)
         label.valign = new_valign
         
         # Collect widget ids after change
-        ids_after = self._collect_widget_ids(label)
+        ids_after = collect_widget_ids(label)
         
         # Widget tree structure should be preserved
         assert ids_before == ids_after, \
@@ -237,7 +205,7 @@ class TestEfficientStyleUpdates:
         label.valign = new_valign
         
         # All descendant labels should have the new valign
-        child_labels = self._find_labels_recursive(label)
+        child_labels = find_labels_recursive(label)
         assert len(child_labels) >= 1, "Expected at least one child Label"
         
         for child_label in child_labels:
@@ -258,13 +226,13 @@ class TestEfficientStyleUpdates:
         label = MarkdownLabel(text=markdown, line_height=1.0)
         
         # Collect widget ids before change
-        ids_before = self._collect_widget_ids(label)
+        ids_before = collect_widget_ids(label)
         
         # Change line_height (style-only property)
         label.line_height = new_line_height
         
         # Collect widget ids after change
-        ids_after = self._collect_widget_ids(label)
+        ids_after = collect_widget_ids(label)
         
         # Widget tree structure should be preserved
         assert ids_before == ids_after, \
@@ -287,7 +255,7 @@ class TestEfficientStyleUpdates:
         label.line_height = new_line_height
         
         # All descendant labels should have the new line_height
-        child_labels = self._find_labels_recursive(label)
+        child_labels = find_labels_recursive(label)
         assert len(child_labels) >= 1, "Expected at least one child Label"
         
         for child_label in child_labels:
@@ -308,13 +276,13 @@ class TestEfficientStyleUpdates:
         label = MarkdownLabel(text=markdown, disabled=False)
         
         # Collect widget ids before change
-        ids_before = self._collect_widget_ids(label)
+        ids_before = collect_widget_ids(label)
         
         # Change disabled (style-only property)
         label.disabled = new_disabled
         
         # Collect widget ids after change
-        ids_after = self._collect_widget_ids(label)
+        ids_after = collect_widget_ids(label)
         
         # Widget tree structure should be preserved
         assert ids_before == ids_after, \
@@ -331,7 +299,7 @@ class TestEfficientStyleUpdates:
         label = MarkdownLabel(text=markdown1)
         
         # Collect widget ids before change
-        ids_before = self._collect_widget_ids(label)
+        ids_before = collect_widget_ids(label, exclude_root=True)
         
         # Change text (structure property) - use force_rebuild() for immediate
         # update since text changes now use deferred rebuilds
@@ -339,20 +307,16 @@ class TestEfficientStyleUpdates:
         label.force_rebuild()
         
         # Collect widget ids after change
-        ids_after = self._collect_widget_ids(label)
+        ids_after = collect_widget_ids(label, exclude_root=True)
         
         # Widget tree should be rebuilt (different widget objects)
-        # The MarkdownLabel itself stays the same, but children change
-        children_before = ids_before - {id(label)}
-        children_after = ids_after - {id(label)}
-        
-        assert children_before != children_after, \
+        assert ids_before != ids_after, \
             "Widget tree should be rebuilt after text change"
 
     def test_font_name_structure_property_rebuilds_tree(self):
         """Changing font_name (structure property) rebuilds the widget tree.
         
-        **Feature: label-compatibility-phase2, Property 7: Efficient Style Updates**
+        **Feature: label-compatibility-phase2, Property 7: Structure Property Rebuilds**
         **Validates: Requirements 7.3**
         """
         # Create label with some content
@@ -360,20 +324,17 @@ class TestEfficientStyleUpdates:
         label = MarkdownLabel(text=markdown, font_name='Roboto')
         
         # Collect widget ids before change
-        ids_before = self._collect_widget_ids(label)
+        ids_before = collect_widget_ids(label, exclude_root=True)
         
         # Change font_name (structure property)
         label.font_name = 'RobotoMono-Regular'
         label.force_rebuild()  # Force immediate rebuild for test
         
         # Collect widget ids after change
-        ids_after = self._collect_widget_ids(label)
+        ids_after = collect_widget_ids(label, exclude_root=True)
         
         # Widget tree should be rebuilt (different widget objects)
-        children_before = ids_before - {id(label)}
-        children_after = ids_after - {id(label)}
-        
-        assert children_before != children_after, \
+        assert ids_before != ids_after, \
             "Widget tree should be rebuilt after font_name change"
 
     @given(
@@ -388,7 +349,7 @@ class TestEfficientStyleUpdates:
         st.sampled_from(['top', 'middle', 'bottom']),
         st.floats(min_value=0.8, max_value=2.0, allow_nan=False, allow_infinity=False)
     )
-    # Complex strategy: 20 examples (adequate coverage)
+    # Combination strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_multiple_style_changes_preserve_widget_tree(self, font_size, color, 
                                                           halign, valign, line_height):
@@ -402,7 +363,7 @@ class TestEfficientStyleUpdates:
         label = MarkdownLabel(text=markdown)
         
         # Collect widget ids before changes
-        ids_before = self._collect_widget_ids(label)
+        ids_before = collect_widget_ids(label)
         
         # Apply multiple style changes
         label.font_size = font_size
@@ -412,7 +373,7 @@ class TestEfficientStyleUpdates:
         label.line_height = line_height
         
         # Collect widget ids after changes
-        ids_after = self._collect_widget_ids(label)
+        ids_after = collect_widget_ids(label)
         
         # Widget tree structure should be preserved through all changes
         assert ids_before == ids_after, \
@@ -450,7 +411,7 @@ class TestEfficientStyleUpdates:
         )
         
         # Get child labels
-        child_labels = self._find_labels_recursive(label)
+        child_labels = find_labels_recursive(label)
         assert len(child_labels) >= 1, "Expected at least one child Label"
         
         # Initially should use normal color

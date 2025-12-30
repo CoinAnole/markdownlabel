@@ -7,15 +7,12 @@ Hypothesis strategies for max_examples optimization.
 import pytest
 from hypothesis import given, strategies as st, settings
 
-import sys
-import os
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', '..', 'tools'))
-
-from test_optimization.strategy_classifier import (
+from kivy_garden.markdownlabel.tests.test_optimization.strategy_analyzer import (
     StrategyClassifier, StrategyType, StrategyAnalysis
 )
 
 
+@pytest.mark.property
 class TestStrategyClassification:
     """Property tests for strategy classification (Property 1)."""
     
@@ -25,8 +22,8 @@ class TestStrategyClassification:
     
     # **Feature: test-performance-optimization, Property 1: Boolean tests use exactly 2 examples**
     @given(st.just('st.booleans()'))
-    # Small finite strategy: 1 examples (input space size: 1)
-    @settings(max_examples=1, deadline=None)
+    # Boolean strategy: 2 examples (True/False coverage)
+    @settings(max_examples=2, deadline=None)
     def test_boolean_strategy_classification(self, strategy_code):
         """Boolean strategies are correctly classified with input space size 2.
         
@@ -80,7 +77,7 @@ class TestStrategyClassification:
         assert analysis.input_space_size == range_size
     
     @given(st.sampled_from(['st.text()', 'st.floats()', 'st.integers()']))
-    # Small finite strategy: 3 examples (input space size: 3)
+    # Small finite strategy: 3 examples (testing complex strategy classification)
     @settings(max_examples=3, deadline=None)
     def test_complex_strategy_classification(self, strategy_code):
         """Complex/infinite strategies are classified as COMPLEX."""
@@ -102,12 +99,13 @@ class TestStrategyClassification:
         assert analysis.complexity_level == 1
 
 
+@pytest.mark.property
 class TestMaxExamplesCalculation:
     """Property tests for max_examples calculation (Property 2)."""
     
     def setup_method(self):
         """Set up test fixtures."""
-        from test_optimization.max_examples_calculator import MaxExamplesCalculator
+        from kivy_garden.markdownlabel.tests.test_optimization.max_examples_calculator import MaxExamplesCalculator
         self.calculator = MaxExamplesCalculator()
     
     # **Feature: test-performance-optimization, Property 2: Small finite strategies use input space size**
@@ -167,7 +165,7 @@ class TestMaxExamplesCalculation:
         **Validates: Requirements 1.5, 2.3**
         """
         # Simulate a complex strategy analysis
-        from test_optimization.strategy_classifier import StrategyAnalysis, StrategyType
+        from kivy_garden.markdownlabel.tests.test_optimization.strategy_analyzer import StrategyAnalysis, StrategyType
         
         analysis = StrategyAnalysis(
             strategy_type=StrategyType.COMPLEX,
@@ -182,12 +180,13 @@ class TestMaxExamplesCalculation:
         
         assert optimal in possible, f"Expected one of {possible} examples for complexity {complexity_level}, got {optimal}"
     
+@pytest.mark.property
 class TestCombinationStrategies:
     """Property tests for combination strategy handling (Property 3)."""
     
     def setup_method(self):
         """Set up test fixtures."""
-        from test_optimization.max_examples_calculator import MaxExamplesCalculator
+        from kivy_garden.markdownlabel.tests.test_optimization.max_examples_calculator import MaxExamplesCalculator
         self.calculator = MaxExamplesCalculator()
     
     # **Feature: test-performance-optimization, Property 3: Combination strategies use product formula**
@@ -259,7 +258,7 @@ class TestCombinationStrategies:
 
     def test_combination_with_strategy_variables(self):
         """Multiple @given arguments should be classified as a combination even when passed as variables."""
-        from test_optimization.strategy_classifier import StrategyClassifier, StrategyType
+        from kivy_garden.markdownlabel.tests.test_optimization.strategy_analyzer import StrategyClassifier, StrategyType
 
         strategy_code = 'alpha_strategy, beta_strategy'
         analysis = StrategyClassifier().classify_strategy(strategy_code)
@@ -271,7 +270,7 @@ class TestCombinationStrategies:
 
     def test_combination_with_keyword_strategies(self):
         """Keyword arguments with multiple strategies should be treated as a combination."""
-        from test_optimization.strategy_classifier import StrategyClassifier, StrategyType
+        from kivy_garden.markdownlabel.tests.test_optimization.strategy_analyzer import StrategyClassifier, StrategyType
 
         strategy_code = 'x=st.booleans(), y=st.integers(min_value=0, max_value=1)'
         analysis = StrategyClassifier().classify_strategy(strategy_code)
@@ -281,12 +280,13 @@ class TestCombinationStrategies:
         # boolean (2) × integers 0..1 (2) = 4
         assert analysis.input_space_size == 4
 
+@pytest.mark.test_tests
 class TestOverTestingDetection:
     """Property tests for over-testing detection (Property 7)."""
     
     def setup_method(self):
         """Set up test fixtures."""
-        from test_optimization.test_file_analyzer import FileAnalyzer
+        from kivy_garden.markdownlabel.tests.test_optimization.file_analyzer import FileAnalyzer
         self.analyzer = FileAnalyzer()
     
     # **Feature: test-performance-optimization, Property 7: Over-testing detection works correctly**

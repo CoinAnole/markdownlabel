@@ -1,0 +1,713 @@
+# Testing Guidelines for MarkdownLabel
+
+This document provides comprehensive guidelines for writing, organizing, and maintaining tests in the MarkdownLabel project, including both general testing practices and specialized property-based testing with Hypothesis.
+
+## Table of Contents
+
+- [Test Organization](#test-organization)
+- [Test Naming Conventions](#test-naming-conventions)
+- [Test Types and Markers](#test-types-and-markers)
+- [Rebuild Contract Testing](#rebuild-contract-testing)
+- [Property-Based Testing](#property-based-testing)
+- [Property-Based Testing Optimization](#property-based-testing-optimization)
+- [Helper Functions](#helper-functions)
+- [Test File Structure](#test-file-structure)
+- [Standardization Tools](#standardization-tools)
+- [Validation and CI Integration](#validation-and-ci-integration)
+- [Best Practices](#best-practices)
+
+## Test Organization
+
+### File Organization
+
+Tests are organized by **functionality**, not by implementation file:
+
+```
+tests/
+├── test_core_functionality.py      # Core parsing and rendering
+├── test_label_compatibility.py     # Basic label property forwarding
+├── test_font_properties.py         # Font-related property forwarding
+├── test_color_properties.py        # Color and styling properties
+├── test_text_properties.py         # Text-related property forwarding
+├── test_padding_properties.py      # Padding and spacing properties
+├── test_sizing_behavior.py         # Auto-sizing and layout behavior
+├── test_advanced_compatibility.py  # Advanced label features
+├── test_serialization.py           # Round-trip serialization
+├── test_performance.py             # Performance and stability tests
+├── test_strategy_classification.py # Tests for optimization infrastructure
+├── test_file_analyzer.py           # Tests for test file analysis tools
+├── test_documentation_compliance.py # Tests for max_examples documentation
+└── test_utils.py                   # Shared test utilities and strategies
+```
+
+### Class Organization
+
+Within each test file, organize tests into logical classes:
+
+- **One class per property or behavior being tested**
+- **Descriptive class names** that clearly indicate what is being tested
+- **Related test methods** grouped within the same class
+
+#### Good Class Organization Examples:
+
+```python
+class TestFontNamePropertyForwarding:
+    """Tests for font_name property forwarding to child Labels."""
+    
+    def test_font_name_applied_to_paragraph(self):
+        # Test font_name forwarding to paragraph labels
+        
+    def test_font_name_applied_to_heading(self):
+        # Test font_name forwarding to heading labels
+        
+    def test_font_name_preserves_code_font(self):
+        # Test that code blocks preserve their special font
+
+class TestColorPropertyForwarding:
+    """Tests for color property forwarding to child Labels."""
+    
+    def test_color_applied_to_paragraph(self):
+        # Test color forwarding to paragraph labels
+        
+    def test_color_applied_to_heading(self):
+        # Test color forwarding to heading labels
+```
+
+#### Poor Class Organization Examples:
+
+```python
+# DON'T: Mix unrelated functionality
+class TestMixedFunctionality:
+    def test_font_size_forwarding(self):
+        pass
+    def test_serialization_roundtrip(self):
+        pass
+    def test_performance_benchmark(self):
+        pass
+
+# DON'T: Vague class names
+class TestBasicStuff:
+    pass
+
+class TestMisc:
+    pass
+```
+
+## Test Naming Conventions
+
+### Test Method Names
+
+Test method names should **accurately reflect what they assert**:
+
+#### Rebuild Testing Names
+
+- `test_*_triggers_rebuild_*` - ONLY for tests that verify a rebuild occurred
+- `test_*_preserves_widget_tree_*` - For tests that verify NO rebuild occurred
+- `test_*_rebuilds_*` - For tests that verify rebuild behavior
+
+#### Value/Property Testing Names
+
+- `test_*_updates_value_*` - For tests that verify value changes without rebuild verification
+- `test_*_changes_property_*` - For tests that verify property changes
+- `test_*_forwards_to_*` - For tests that verify property forwarding
+- `test_*_applied_to_*` - For tests that verify property application
+
+#### Examples:
+
+```python
+# GOOD: Name matches assertion
+def test_font_size_change_triggers_rebuild(self):
+    """Test that changing font_size rebuilds the widget tree."""
+    ids_before = collect_widget_ids(label)
+    label.font_size = 20
+    ids_after = collect_widget_ids(label)
+    assert ids_before != ids_after  # Verifies rebuild occurred
+
+def test_color_updates_value_immediately(self):
+    """Test that color changes update Label.color immediately."""
+    label.color = [1, 0, 0, 1]
+    labels = find_labels_recursive(label)
+    assert all(l.color == [1, 0, 0, 1] for l in labels)  # Verifies value change
+
+# BAD: Name doesn't match assertion
+def test_font_size_triggers_rebuild(self):
+    """Test font size changes."""
+    label.font_size = 20
+    labels = find_labels_recursive(label)
+    assert labels[0].font_size == 20  # Only tests value, not rebuild!
+```
+
+### Test Class Names
+
+Use descriptive, specific class names:
+
+- `Test[Property][Behavior]` - e.g., `TestFontSizeImmediateUpdates`
+- `Test[Component][Functionality]` - e.g., `TestMarkdownLinkRendering`
+- `Test[Feature][Aspect]` - e.g., `TestRebuildContractEnforcement`
+
+## Test Types and Markers
+
+### Pytest Markers
+
+Use appropriate pytest markers to categorize tests:
+
+```python
+@pytest.mark.slow           # Performance-intensive tests
+@pytest.mark.needs_window   # Tests requiring Kivy window
+@pytest.mark.test_tests     # Meta-tests (tests about test suite structure)
+```
+
+#### Meta-Test Marking
+
+Tests that validate the test suite itself must be marked with `@pytest.mark.test_tests`:
+
+```python
+@pytest.mark.test_tests
+class TestHelperFunctionAvailability:
+    """Tests that verify helper functions are available and consolidated."""
+    
+    def test_widget_traversal_helpers_available(self):
+        # Test that helper functions exist in test_utils
+```
+
+### Test Categories
+
+#### Unit Tests
+- Test specific examples and edge cases
+- Verify concrete behavior with known inputs
+- Fast execution, deterministic results
+
+#### Property-Based Tests
+- Test universal properties across many inputs
+- Use Hypothesis for input generation
+- Verify behavior holds for all valid inputs
+- Minimum 100 iterations per property test (unless optimized)
+
+## Rebuild Contract Testing
+
+### Understanding the Rebuild Contract
+
+MarkdownLabel distinguishes between two types of property changes:
+
+1. **Style-only changes** - Update existing widgets in place (no rebuild)
+2. **Structure changes** - Rebuild the entire widget tree
+
+### Style-Only Properties
+
+These properties update existing widgets without rebuilding:
+
+- `color` - Updates Label.color on existing Labels
+- `font_size` / `base_font_size` - Updates Label.font_size on existing Labels  
+- `font_name` - Updates Label.font_name on existing Labels
+- `line_height` - Updates Label.line_height on existing Labels
+- `halign`, `valign` - Updates alignment on existing Labels
+- `text_size` - Updates Label.text_size on existing Labels
+- `padding` - Updates container padding
+
+### Structure Properties
+
+These properties trigger a complete widget tree rebuild:
+
+- `text` - Changes the markdown content structure
+- `render_mode` - Changes between widgets/texture rendering
+- Properties that affect parsing or widget hierarchy
+
+### Testing Rebuild Behavior
+
+#### Testing Style-Only Changes (No Rebuild)
+
+```python
+def test_color_change_preserves_widget_tree(self):
+    """Test that color changes preserve widget identities (no rebuild)."""
+    label = MarkdownLabel(text="Hello World")
+    
+    # Collect widget IDs before change
+    ids_before = collect_widget_ids(label)
+    
+    # Change style-only property
+    label.color = [1, 0, 0, 1]
+    
+    # Verify widget tree structure is preserved
+    ids_after = collect_widget_ids(label)
+    assert ids_before == ids_after, "Widget tree should not rebuild for style changes"
+    
+    # Verify the style change was applied
+    labels = find_labels_recursive(label)
+    assert all(l.color == [1, 0, 0, 1] for l in labels)
+```
+
+#### Testing Structure Changes (Rebuild Required)
+
+```python
+def test_text_change_triggers_rebuild(self):
+    """Test that text changes rebuild the widget tree."""
+    label = MarkdownLabel(text="Original text")
+    
+    # Collect widget IDs before change
+    ids_before = collect_widget_ids(label)
+    
+    # Change structure property
+    label.text = "New text with different structure"
+    
+    # Verify widget tree was rebuilt
+    ids_after = collect_widget_ids(label)
+    assert ids_before != ids_after, "Widget tree should rebuild for structure changes"
+    
+    # Verify the content change was applied
+    assert label.text == "New text with different structure"
+```
+
+### Rebuild Testing Helpers
+
+Use these helper functions from `test_utils.py`:
+
+```python
+def collect_widget_ids(widget):
+    """Collect Python object IDs of all widgets in the tree."""
+    
+def assert_rebuild_occurred(widget, change_func):
+    """Assert that a change function triggers a rebuild."""
+    
+def assert_no_rebuild(widget, change_func):
+    """Assert that a change function does NOT trigger a rebuild."""
+```
+
+## Property-Based Testing
+
+### When to Use Property-Based Tests
+
+Use property-based tests for:
+
+- **Universal properties** that should hold for all inputs
+- **Invariants** that must be preserved across operations
+- **Round-trip properties** (serialize → deserialize → compare)
+- **Metamorphic properties** (relationships between inputs/outputs)
+
+### Property Test Structure
+
+```python
+from hypothesis import given, strategies as st, settings
+
+class TestPropertyName:
+    """Property tests for [specific behavior]."""
+    
+    @given(st.text(min_size=1, max_size=100))
+    @settings(max_examples=20, deadline=None)  # Adjust based on complexity
+    def test_property_description(self, input_value):
+        """Test that [property] holds for all valid inputs."""
+        # Test implementation
+        assert property_holds(input_value)
+```
+
+## Property-Based Testing Optimization
+
+### Overview
+
+Property-based testing with Hypothesis generates random inputs to verify that properties hold across many examples. However, using excessive `max_examples` values can lead to unnecessary test execution time without proportional coverage benefits.
+
+### Comment Format Requirements
+
+All property-based tests with custom `max_examples` values MUST include a standardized comment:
+
+```python
+# [Strategy Type] strategy: [N] examples ([Rationale])
+@settings(max_examples=N, deadline=None)
+def test_example(value):
+    pass
+```
+
+### Strategy Classifications
+
+#### 1. Boolean Strategies
+
+**Pattern:** `st.booleans()`
+**Recommended max_examples:** `2`
+**Format:** `Boolean strategy: 2 examples (True/False coverage)`
+
+```python
+@given(st.booleans())
+# Boolean strategy: 2 examples (True/False coverage)
+@settings(max_examples=2, deadline=None)
+def test_boolean_property(value):
+    assert isinstance(value, bool)
+```
+
+#### 2. Small Finite Strategies
+
+**Pattern:** Small integer ranges (≤10 values), small `sampled_from` lists
+**Recommended max_examples:** Equal to input space size
+**Format:** `Small finite strategy: [N] examples (input space size: [N])`
+
+```python
+@given(st.integers(min_value=1, max_value=6))
+# Small finite strategy: 6 examples (input space size: 6)
+@settings(max_examples=6, deadline=None)
+def test_dice_roll(value):
+    assert 1 <= value <= 6
+```
+
+#### 3. Medium Finite Strategies
+
+**Pattern:** Integer ranges or lists with 11-50 values
+**Recommended max_examples:** Input space size, capped at 20-50
+**Format:** `Medium finite strategy: [N] examples (adequate finite coverage)`
+
+```python
+@given(st.integers(min_value=1, max_value=20))
+# Medium finite strategy: 20 examples (adequate finite coverage)
+@settings(max_examples=20, deadline=None)
+def test_medium_range(value):
+    assert 1 <= value <= 20
+```
+
+#### 4. Combination Strategies
+
+**Pattern:** Multiple strategies combined (tuples, multiple @given arguments)
+**Recommended max_examples:** Product of individual strategy sizes, capped at 50
+**Format:** `Combination strategy: [N] examples (combination coverage)`
+
+```python
+@given(st.tuples(st.booleans(), st.sampled_from(['a', 'b', 'c'])))
+# Combination strategy: 6 examples (combination coverage)
+@settings(max_examples=6, deadline=None)
+def test_boolean_enum_combination(value):
+    bool_val, enum_val = value
+    assert isinstance(bool_val, bool)
+    assert enum_val in ['a', 'b', 'c']
+```
+
+#### 5. Complex/Infinite Strategies
+
+**Pattern:** `st.text()`, `st.floats()`, large ranges, recursive strategies
+**Recommended max_examples:** 10-50 based on complexity
+**Format:** `Complex strategy: [N] examples (adequate coverage)` or `Complex strategy: [N] examples (performance optimized)`
+
+```python
+@given(st.text())
+# Complex strategy: 10 examples (adequate coverage)
+@settings(max_examples=10, deadline=None)
+def test_text_length_property(text):
+    assert len(text) >= 0
+```
+
+### Right-Sizing Principles
+
+- **Finite strategies:** Use input space size (test each value once)
+- **Infinite strategies:** Use moderate counts based on property complexity
+- **Combination strategies:** Calculate combinations, cap at reasonable limits
+
+### Performance Impact
+
+Following these guidelines typically results in:
+
+- **Boolean tests:** 98% time reduction (100 → 2 examples)
+- **Small finite tests:** 80-95% time reduction
+- **Medium finite tests:** 50-80% time reduction  
+- **Complex tests:** 0-50% time reduction (may already be appropriate)
+
+## Helper Functions
+
+### Using Shared Helpers
+
+Always use helper functions from `test_utils.py` instead of duplicating code:
+
+```python
+from .test_utils import (
+    find_labels_recursive,
+    collect_widget_ids,
+    colors_equal,
+    padding_equal,
+    floats_equal
+)
+
+def test_example(self):
+    label = MarkdownLabel(text="Test")
+    labels = find_labels_recursive(label)  # Use shared helper
+    assert len(labels) > 0
+```
+
+### Available Helper Functions
+
+#### Widget Traversal
+- `find_labels_recursive(widget)` - Find all Label widgets in tree
+- `collect_widget_ids(widget)` - Collect widget object IDs for rebuild testing
+
+#### Comparison Utilities
+- `colors_equal(color1, color2)` - Compare color values with tolerance
+- `padding_equal(pad1, pad2)` - Compare padding values with tolerance
+- `floats_equal(f1, f2, tolerance=1e-6)` - Compare floats with tolerance
+
+#### Test Data Generation (Hypothesis Strategies)
+- `markdown_heading()` - Generate valid markdown headings
+- `markdown_paragraph()` - Generate valid markdown paragraphs
+- `markdown_bold()` - Generate bold text markdown
+- `simple_markdown_document()` - Generate simple markdown documents
+- `color_strategy` - Generate valid RGBA color values
+
+### Adding New Helpers
+
+When adding new helper functions:
+
+1. **Add to `test_utils.py`** - Never duplicate in individual test files
+2. **Use descriptive names** - Make the purpose clear
+3. **Add docstrings** - Document parameters and return values
+4. **Write tests** - Add tests for complex helper functions
+
+## Test File Structure
+
+### Standard Test File Template
+
+```python
+"""
+Brief description of what this test file covers.
+
+This module contains tests for [specific functionality area],
+including [list key areas tested].
+"""
+
+import pytest
+from hypothesis import given, strategies as st, settings
+
+from kivy_garden.markdownlabel import MarkdownLabel
+from .test_utils import (
+    # Import needed helpers
+)
+
+
+class TestDescriptiveClassName:
+    """Property tests for [specific behavior]."""
+    
+    def test_specific_example(self):
+        """Test [specific behavior] with concrete example."""
+        # Unit test implementation
+        
+    @given(st.text())
+    # Complex strategy: 20 examples (adequate coverage)
+    @settings(max_examples=20, deadline=None)
+    def test_property_holds_universally(self, input_text):
+        """Test that [property] holds for all valid inputs."""
+        # Property test implementation
+```
+
+### File Naming
+
+- `test_[functionality_area].py` - e.g., `test_font_properties.py`
+- Use underscores for word separation
+- Be descriptive about the functionality area
+- Group related functionality in the same file
+
+## Standardization Tools
+
+### Command-Line Tools
+
+#### validate_comments.py
+
+Primary CLI tool for comment validation and standardization:
+
+```bash
+# Validate all test files
+python tools/validate_comments.py validate kivy_garden/markdownlabel/tests/
+
+# Generate detailed report
+python tools/validate_comments.py report kivy_garden/markdownlabel/tests/ --output report.json
+
+# Standardize comments (dry run)
+python tools/validate_comments.py standardize kivy_garden/markdownlabel/tests/ --dry-run
+
+# Apply standardization with backup
+python tools/validate_comments.py standardize kivy_garden/markdownlabel/tests/ --backup-dir ./backups
+
+# Optimize max_examples and add comments
+python tools/validate_comments.py optimize kivy_garden/markdownlabel/tests/ --include-comments
+```
+
+#### analyze_tests.py
+
+Analyzes test performance and comment compliance:
+
+```bash
+# Full analysis with comment validation
+python tools/analyze_tests.py --include-comments
+
+# Generate optimization report
+python tools/analyze_tests.py --report-format json --output analysis.json
+```
+
+## Validation and CI Integration
+
+### Pre-commit Hook
+
+Add comment validation to your pre-commit hook:
+
+```bash
+#!/bin/bash
+# .git/hooks/pre-commit
+
+echo "Validating test comments..."
+python tools/validate_comments.py validate kivy_garden/markdownlabel/tests/
+
+if [ $? -ne 0 ]; then
+    echo "❌ Comment format violations detected."
+    echo "Run: python tools/validate_comments.py standardize kivy_garden/markdownlabel/tests/ --dry-run"
+    echo "to see suggested fixes."
+    exit 1
+fi
+
+echo "✅ All comments properly formatted."
+```
+
+### GitHub Actions Integration
+
+Add to your CI workflow:
+
+```yaml
+name: Test Quality Validation
+
+on: [push, pull_request]
+
+jobs:
+  validate-comments:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+    
+    - name: Install dependencies
+      run: |
+        pip install -e .
+        pip install -e ".[dev]"
+    
+    - name: Validate comment format
+      run: python tools/validate_comments.py validate kivy_garden/markdownlabel/tests/
+    
+    - name: Check for over-testing
+      run: python tools/analyze_tests.py --include-comments
+```
+
+### Local Development Workflow
+
+1. **Write your test** following the documentation format
+2. **Validate locally:**
+   ```bash
+   python tools/validate_comments.py validate kivy_garden/markdownlabel/tests/test_your_file.py
+   ```
+3. **Fix any issues:**
+   ```bash
+   python tools/validate_comments.py standardize kivy_garden/markdownlabel/tests/test_your_file.py --dry-run
+   ```
+4. **Apply fixes if needed:**
+   ```bash
+   python tools/validate_comments.py standardize kivy_garden/markdownlabel/tests/test_your_file.py
+   ```
+5. **Run tests to ensure functionality:**
+   ```bash
+   pytest kivy_garden/markdownlabel/tests/test_your_file.py
+   ```
+
+## Best Practices
+
+### Do's
+
+✅ **Use descriptive test and class names**
+✅ **Group related tests in the same class**
+✅ **Use shared helper functions from test_utils.py**
+✅ **Test both positive and negative cases**
+✅ **Use appropriate pytest markers**
+✅ **Write property tests for universal behaviors**
+✅ **Test rebuild contracts explicitly**
+✅ **Document complex test logic**
+✅ **Follow standardized comment format for property tests**
+✅ **Right-size max_examples based on strategy type**
+
+### Don'ts
+
+❌ **Don't duplicate helper function implementations**
+❌ **Don't mix unrelated functionality in the same class**
+❌ **Don't use vague test names like `test_basic` or `test_misc`**
+❌ **Don't claim to test rebuilds without verifying them**
+❌ **Don't write property tests for simple examples**
+❌ **Don't ignore test failures or skip tests without good reason**
+❌ **Don't test implementation details instead of behavior**
+❌ **Don't use default max_examples=100 for all property tests**
+❌ **Don't ignore finite input space sizes**
+❌ **Don't use undocumented custom max_examples values**
+
+### Performance Considerations
+
+- **Mark slow tests** with `@pytest.mark.slow`
+- **Use appropriate max_examples** for property tests based on strategy type
+- **Avoid unnecessary widget creation** in test setup
+- **Use `assume()` to filter invalid inputs** in property tests
+- **Consider CI optimization** for complex strategies
+
+### Debugging Tests
+
+- **Use descriptive assertion messages** with context
+- **Print intermediate values** when debugging complex failures
+- **Use `pytest -v`** for verbose output
+- **Use `pytest -x`** to stop on first failure
+- **Use `pytest --tb=short`** for concise tracebacks
+
+## Examples
+
+### Complete Test Class Example
+
+```python
+class TestFontSizeImmediateUpdates:
+    """Property tests for font size immediate updates."""
+    
+    def test_font_size_updates_single_label(self):
+        """Test font_size updates immediately for single label."""
+        label = MarkdownLabel(text="Hello", base_font_size=16)
+        
+        # Change font size
+        label.base_font_size = 24
+        
+        # Verify immediate update
+        labels = find_labels_recursive(label)
+        assert labels[0].font_size == 24
+    
+    @given(
+        st.floats(min_value=8.0, max_value=50.0, allow_nan=False),
+        st.floats(min_value=8.0, max_value=50.0, allow_nan=False)
+    )
+    # Combination strategy: 50 examples (combination coverage)
+    @settings(max_examples=50, deadline=None)
+    def test_font_size_updates_preserve_scale_factors(self, initial_size, new_size):
+        """Test that font size updates preserve heading scale factors."""
+        assume(abs(initial_size - new_size) > 1.0)
+        
+        label = MarkdownLabel(text="# Heading", base_font_size=initial_size)
+        
+        # Get heading scale factor
+        heading_label = find_labels_recursive(label)[0]
+        scale_factor = heading_label.font_size / initial_size
+        
+        # Change base font size
+        label.base_font_size = new_size
+        
+        # Verify scale factor preserved
+        expected_size = new_size * scale_factor
+        assert abs(heading_label.font_size - expected_size) < 0.1
+```
+
+### Validation Checklist
+
+Before committing tests, verify:
+
+1. **Boolean strategies use max_examples=2**
+2. **Small finite strategies use input space size**
+3. **Combination strategies use product formula (capped at 50)**
+4. **Complex strategies use 10-50 examples based on complexity**
+5. **All custom values include standardized comments**
+6. **Comments follow the format: `# [Strategy Type] strategy: [N] examples ([Rationale])`**
+7. **Strategy type classifications use standardized terminology**
+8. **Rationale templates match the strategy type**
+9. **Test names accurately reflect what they assert**
+10. **Helper functions are used from test_utils.py**
+
+This comprehensive testing guide ensures consistent, maintainable, and high-performance test coverage for the MarkdownLabel project.

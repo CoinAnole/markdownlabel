@@ -10,7 +10,6 @@ from hypothesis import given, strategies as st, settings, assume
 
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label import Label
-from kivy.uix.widget import Widget
 from kivy.uix.gridlayout import GridLayout
 
 from kivy_garden.markdownlabel import MarkdownLabel
@@ -32,30 +31,9 @@ from .test_utils import (
 # 4. Proper handling of empty content
 # 5. Widget types that have explicit heights (thematic_break, blank_line, AsyncImage)
 
+@pytest.mark.test_tests
 class TestComprehensiveTextureSizeCalculation:
     """Property tests for comprehensive texture_size calculation (Property 3)."""
-    
-    def _find_all_widgets_recursive(self, widget, widgets=None):
-        """Recursively find all widgets in a widget tree.
-
-        Args:
-            widget: Root widget to search
-            widgets: List to accumulate widgets (created if None)
-            
-        Returns:
-            List of all widgets found
-        """
-        if widgets is None:
-            widgets = []
-        
-        widgets.append(widget)
-        
-        if hasattr(widget, 'children'):
-            for child in widget.children:
-                # Complex strategy: 20 examples (adequate coverage)
-                self._find_all_widgets_recursive(child, widgets)
-        
-        return widgets
     
     @given(simple_markdown_document())
     # Complex strategy: 20 examples (adequate coverage)
@@ -296,8 +274,8 @@ code = "block"
         assert texture_size[0] >= 0 and texture_size[1] >= 0
     
     @given(simple_markdown_document(), simple_markdown_document())
-    # Combination strategy: 20 examples (combination coverage)
-    @settings(max_examples=20, deadline=None)
+    # Combination strategy: 50 examples (product of strategy sizes, capped)
+    @settings(max_examples=50, deadline=None)
     def test_texture_size_updates_on_text_change(self, text1, text2):
         """texture_size updates when text property changes."""
         assume(text1.strip() and text2.strip())
@@ -389,6 +367,7 @@ code = "block"
 # *For any* two test classes that test the same feature area, they should be located in the same module
 # **Validates: Requirements 1.4, 4.3, 4.4**
 
+@pytest.mark.test_tests
 class TestTextureSizingTestGrouping:
     """Property tests for texture sizing test grouping (Property 9)."""
     

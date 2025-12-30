@@ -21,7 +21,7 @@ from .test_utils import (
 )
 
 
-class TestRoundTripSerialization:
+class TestMarkdownRoundTripSerialization:
     """Property tests for round-trip serialization (Property 17)."""
     
     def _normalize_ast(self, tokens):
@@ -153,7 +153,6 @@ class TestRoundTripSerialization:
         
         assert ast1 == ast2, \
             f"AST mismatch after round-trip:\nOriginal: {ast1}\nAfter: {ast2}"
-     # Complex strategy: 20 examples (adequate coverage)
     
     @given(markdown_bold())
     # Complex strategy: 20 examples (adequate coverage)
@@ -502,7 +501,7 @@ class TestCodeFenceCollisionProperty:
             f"Original content should be preserved in result. Content: {code_content!r}, Result: {result!r}"
     
     @given(st.text(min_size=0, max_size=200), st.text(alphabet=st.characters(whitelist_categories=('L', 'N')), min_size=0, max_size=20))
-    # Complex strategy: 20 examples (adequate coverage)
+    # Combination strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_code_serialization_round_trip_property(self, code_content, language):
         """**Feature: test-improvements, Property 8: Code serialization round-trip**

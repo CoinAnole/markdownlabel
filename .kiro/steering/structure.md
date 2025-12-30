@@ -34,7 +34,25 @@ kivy_garden/
         ├── test_strategy_classification.py # Tests for optimization infrastructure
         ├── test_file_analyzer.py         # Tests for test file analysis tools
         ├── test_documentation_compliance.py # Tests for max_examples documentation
-        └── test_utils.py                 # Shared test utilities and strategies
+        ├── test_utils.py                 # Shared test utilities and strategies
+        ├── test_import.py                # Import and basic functionality tests
+        ├── test_inline_renderer.py       # Inline markdown rendering tests
+        ├── test_kivy_renderer.py         # Block-level rendering tests
+        ├── test_rebuild_scheduling.py    # Rebuild scheduling and timing tests
+        ├── test_rebuild_semantics.py     # Rebuild contract semantics tests
+        ├── test_clipping_behavior.py     # Text clipping and overflow behavior
+        ├── test_texture_render_mode.py   # Texture rendering mode tests
+        ├── test_texture_sizing.py        # Texture sizing behavior tests
+        ├── test_rtl_alignment.py         # Right-to-left text alignment tests
+        ├── test_shortening_and_coordinate.py # Text shortening and coordinate tests
+        ├── test_refactoring_properties.py # Property refactoring validation tests
+        ├── test_shared_infrastructure.py # Shared testing infrastructure tests
+        ├── test_helper_availability.py   # Helper function availability tests
+        ├── test_comment_format.py        # Comment format validation tests
+        ├── test_comment_standardizer.py  # Comment standardization tests
+        ├── test_core_functionality_properties.py # Core functionality property tests
+        ├── conftest.py                   # Pytest configuration and fixtures
+        └── TESTING.md                    # Comprehensive testing guidelines
 ```
 
 ### Import Conventions
@@ -91,7 +109,14 @@ Tests are organized by **functionality**, not by implementation file:
 - `test_*_properties.py`: Property forwarding tests (font, color, text, padding)
 - `test_*_compatibility.py`: Label API compatibility
 - `test_performance.py`: Performance and stability (uses Hypothesis property-based testing)
+- `test_serialization.py`: Round-trip serialization tests
+- `test_*_behavior.py`: Behavioral tests (sizing, clipping, etc.)
+- `test_rebuild_*.py`: Rebuild contract and semantics testing
+- `test_strategy_classification.py`: Tests for optimization infrastructure
+- `test_file_analyzer.py`: Tests for test file analysis tools
+- `test_documentation_compliance.py`: Tests for max_examples documentation
 - `test_utils.py`: Shared test utilities and Hypothesis strategies
+- `TESTING.md`: Comprehensive testing guidelines and property-based testing optimization
 
 **When adding tests**: Place in the appropriate functional test file, not necessarily matching the implementation file.
 
@@ -99,6 +124,7 @@ Tests are organized by **functionality**, not by implementation file:
 Contains test optimization and analysis tools:
 - `test_optimization/`: Hypothesis test performance optimization infrastructure
 - `analyze_tests.py`: Command-line tool for analyzing test performance
+- `validate_comments.py`: Tool for validating and standardizing property-based test comments
 - **When modifying tests**: Run `python tools/analyze_tests.py` to validate performance
 
 ## External Dependencies (Submodules)
@@ -114,7 +140,7 @@ Located in `external/`:
 - `setup.py`: Package metadata, dependencies, entry points
 - `setup.cfg`: Flake8 configuration, code style rules (80 char line limit, PEP8 compliance)
 - `pytest.ini`: Pytest configuration
-- `PROPERTY_BASED_TESTING_GUIDE.md`: Guidelines for optimizing property-based tests
+- `kivy_garden/markdownlabel/tests/TESTING.md`: Comprehensive testing guidelines including property-based testing optimization
 
 ## Documentation Structure
 
@@ -153,7 +179,7 @@ doc/
 4. Document in API reference
 
 ### Optimizing test performance
-1. Review `PROPERTY_BASED_TESTING_GUIDE.md`
+1. Review `kivy_garden/markdownlabel/tests/TESTING.md`
 2. Run `python tools/analyze_tests.py` to identify slow tests
-3. Adjust `max_examples` based on strategy complexity
+3. Adjust `max_examples` based on strategy complexity using standardized comment format
 4. Add performance rationale comments to tests

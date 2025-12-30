@@ -7,7 +7,7 @@ and environment conditions (CI vs local development).
 import os
 from typing import Optional
 
-from .strategy_classifier import StrategyType, StrategyAnalysis, StrategyClassifier
+from .strategy_analyzer import StrategyType, StrategyAnalysis, StrategyClassifier
 
 
 class MaxExamplesCalculator:

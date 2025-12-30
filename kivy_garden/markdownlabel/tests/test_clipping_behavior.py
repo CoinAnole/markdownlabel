@@ -7,30 +7,17 @@ This module focuses on verifying that MarkdownLabel:
 """
 
 
+import pytest
 from hypothesis import given, strategies as st, settings, assume
 
 from kivy_garden.markdownlabel import MarkdownLabel
+from .test_utils import has_clipping_container
 
 
 class TestContentClippingWhenHeightConstrained:
     """Property tests for content clipping when height-constrained (Property 1)."""
 
-    def _has_clipping_container(self, widget):
-        """Check if widget contains a _ClippingContainer (StencilView).
-
-        Args:
-            widget: Widget to check
-
-        Returns:
-            bool: True if a clipping container is found
-        """
-        from kivy.uix.stencilview import StencilView
-
-        for child in widget.children:
-            if isinstance(child, StencilView):
-                return True
-        return False
-
+    @pytest.mark.property
     @given(
         st.text(
             min_size=1,
@@ -51,10 +38,11 @@ class TestContentClippingWhenHeightConstrained:
         label = MarkdownLabel(text=text, text_size=[None, height])
         label.force_rebuild()
 
-        assert self._has_clipping_container(label), (
+        assert has_clipping_container(label), (
             f"Expected clipping container when text_size[1]={height}"
         )
 
+    @pytest.mark.property
     @given(
         st.text(
             min_size=1,
@@ -80,13 +68,14 @@ class TestContentClippingWhenHeightConstrained:
         )
         label.force_rebuild()
 
-        assert self._has_clipping_container(label), (
+        assert has_clipping_container(label), (
             f"Expected clipping container when strict_label_mode=True and height={height}"
         )
 
+    @pytest.mark.property
     @given(st.floats(min_value=10.0, max_value=500.0, allow_nan=False, allow_infinity=False))
-    # Complex strategy: 50 examples (adequate coverage)
-    @settings(max_examples=50, deadline=None)
+    # Complex strategy: 15 examples (adequate coverage)
+    @settings(max_examples=15, deadline=None)
     def test_clipping_container_height_matches_text_size(self, height):
         """Clipping container height matches text_size[1]."""
         from kivy.uix.stencilview import StencilView
@@ -109,6 +98,7 @@ class TestContentClippingWhenHeightConstrained:
             f"Expected container height={height}, got {clipping_container.height}"
         )
 
+    @pytest.mark.property
     @given(
         st.integers(min_value=1, max_value=6),
         st.floats(min_value=50.0, max_value=200.0, allow_nan=False, allow_infinity=False),
@@ -122,7 +112,7 @@ class TestContentClippingWhenHeightConstrained:
         label = MarkdownLabel(text=heading, text_size=[None, height])
         label.force_rebuild()
 
-        assert self._has_clipping_container(label), (
+        assert has_clipping_container(label), (
             f"Expected clipping for heading level {level} with height={height}"
         )
 
@@ -149,22 +139,7 @@ class TestContentClippingWhenHeightConstrained:
 class TestNoClippingWhenUnconstrained:
     """Property tests for no clipping when unconstrained (Property 2)."""
 
-    def _has_clipping_container(self, widget):
-        """Check if widget contains a _ClippingContainer (StencilView).
-
-        Args:
-            widget: Widget to check
-
-        Returns:
-            bool: True if a clipping container is found
-        """
-        from kivy.uix.stencilview import StencilView
-
-        for child in widget.children:
-            if isinstance(child, StencilView):
-                return True
-        return False
-
+    @pytest.mark.property
     @given(
         st.text(
             min_size=1,
@@ -184,10 +159,11 @@ class TestNoClippingWhenUnconstrained:
         label = MarkdownLabel(text=text, text_size=[None, None])
         label.force_rebuild()
 
-        assert not self._has_clipping_container(label), (
+        assert not has_clipping_container(label), (
             "Expected no clipping container when text_size[1] is None"
         )
 
+    @pytest.mark.property
     @given(
         st.text(
             min_size=1,
@@ -207,10 +183,11 @@ class TestNoClippingWhenUnconstrained:
         label = MarkdownLabel(text=text, strict_label_mode=False)
         label.force_rebuild()
 
-        assert not self._has_clipping_container(label), (
+        assert not has_clipping_container(label), (
             "Expected no clipping container when strict_label_mode=False"
         )
 
+    @pytest.mark.property
     @given(
         st.text(
             min_size=1,
@@ -238,6 +215,7 @@ class TestNoClippingWhenUnconstrained:
                 "Content should be added directly, not wrapped in StencilView"
             )
 
+    @pytest.mark.property
     @given(st.integers(min_value=1, max_value=6))
     # Small finite strategy: 6 examples (input space size: 6)
     @settings(max_examples=6, deadline=None)
@@ -248,7 +226,7 @@ class TestNoClippingWhenUnconstrained:
         label = MarkdownLabel(text=heading)
         label.force_rebuild()
 
-        assert not self._has_clipping_container(label), (
+        assert not has_clipping_container(label), (
             f"Expected no clipping for heading level {level} when unconstrained"
         )
 
@@ -257,13 +235,14 @@ class TestNoClippingWhenUnconstrained:
         label = MarkdownLabel(text="Test content")
         label.force_rebuild()
 
-        assert not self._has_clipping_container(label), (
+        assert not has_clipping_container(label), (
             "Default settings should not enable clipping"
         )
 
+    @pytest.mark.property
     @given(st.floats(min_value=100.0, max_value=500.0, allow_nan=False, allow_infinity=False))
-    # Complex strategy: 50 examples (adequate coverage)
-    @settings(max_examples=50, deadline=None)
+    # Complex strategy: 15 examples (adequate coverage)
+    @settings(max_examples=15, deadline=None)
     def test_text_size_width_only_no_clipping(self, width):
         """Setting only text_size width (not height) does not enable clipping."""
         label = MarkdownLabel(
@@ -272,7 +251,7 @@ class TestNoClippingWhenUnconstrained:
         )
         label.force_rebuild()
 
-        assert not self._has_clipping_container(label), (
+        assert not has_clipping_container(label), (
             f"Expected no clipping when only text_size width={width} is set"
         )
 

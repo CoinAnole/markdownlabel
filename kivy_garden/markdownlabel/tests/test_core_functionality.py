@@ -24,9 +24,10 @@ from .test_utils import (
 # block-level element in the AST.
 # **Validates: Requirements 1.1**
 
-class TestWidgetTreeGeneration:
+class TestMarkdownToWidgetTreeGeneration:
     """Property tests for widget tree generation (Property 1)."""
 
+    @pytest.mark.needs_window
     @given(simple_markdown_document())
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -40,6 +41,7 @@ class TestWidgetTreeGeneration:
         assert len(label.children) >= 1, \
             f"Expected at least 1 child for markdown: {markdown_text!r}"
     
+    @pytest.mark.needs_window
     @given(markdown_heading())
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -57,6 +59,7 @@ class TestWidgetTreeGeneration:
         assert isinstance(heading_widget, Label), \
             f"Expected Label, got {type(heading_widget)}"
 
+    @pytest.mark.needs_window
     @given(markdown_paragraph())
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -99,10 +102,10 @@ class TestWidgetTreeGeneration:
 # of the second text, not the first.
 # **Validates: Requirements 1.2**
 
-class TestReactiveTextUpdates:
-    # Complex strategy: 20 examples (adequate coverage)
+class TestMarkdownTextPropertyUpdates:
     """Property tests for reactive text updates (Property 2)."""
     
+    @pytest.mark.needs_window
     @given(markdown_heading(), markdown_paragraph())
     # Combination strategy: 50 examples (combination coverage)
     @settings(max_examples=50, deadline=None)
@@ -123,6 +126,7 @@ class TestReactiveTextUpdates:
         assert label.text == text2, \
             f"Expected text to be {text2!r}, got {label.text!r}"
     
+    @pytest.mark.needs_window
     @given(st.integers(min_value=1, max_value=3), st.integers(min_value=1, max_value=3))
     # Combination strategy: 9 examples (combination coverage)
     @settings(max_examples=9, deadline=None)
@@ -149,6 +153,7 @@ class TestReactiveTextUpdates:
         assert children_after >= count2, \
             f"Expected at least {count2} children after update, got {children_after}"
     
+    @pytest.mark.needs_window
     @given(simple_markdown_document())
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -167,6 +172,7 @@ class TestReactiveTextUpdates:
         assert len(label.children) == 0, \
             f"Expected 0 children after clearing text, got {len(label.children)}"
     
+    @pytest.mark.needs_window
     @given(simple_markdown_document(), simple_markdown_document())
     # Combination strategy: 50 examples (combination coverage)
     @settings(max_examples=50, deadline=None)
@@ -195,9 +201,10 @@ class TestReactiveTextUpdates:
 # [ref=url]text[/ref].
 # **Validates: Requirements 7.1**
 
-class TestLinkRefMarkup:
+class TestMarkdownLinkRendering:
     """Property tests for link ref markup (Property 12)."""
     
+    @pytest.mark.needs_window
     @given(markdown_link())
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -220,6 +227,7 @@ class TestLinkRefMarkup:
         assert found_ref, \
             f"Expected to find [ref=...][/ref] markup in children for: {link_markdown!r}"
     
+    @pytest.mark.needs_window
     @given(st.text(min_size=1, max_size=20, alphabet=st.characters(
         whitelist_categories=['L', 'N'],
         blacklist_characters='[]()&\n\r'
@@ -239,11 +247,11 @@ class TestLinkRefMarkup:
                 if f'[ref={url}]' in child.text:
                     assert '[/ref]' in child.text, \
                         f"Missing closing [/ref] tag in: {child.text}"
-                    # Complex strategy: 20 examples (adequate coverage)
                     return
         
         pytest.fail(f"Expected to find [ref={url}] in markup for: {markdown!r}")
     
+    @pytest.mark.needs_window
     @given(st.from_regex(r'https?://[a-z]+\.[a-z]+/[a-z]+', fullmatch=True))
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -272,9 +280,10 @@ class TestLinkRefMarkup:
 # the MarkdownLabel SHALL render without raising exceptions or causing stack overflow.
 # **Validates: Requirements 13.1**
 
-class TestDeepNestingStability:
+class TestMarkdownNestingStability:
     """Property tests for deep nesting stability (Property 18)."""
     
+    @pytest.mark.needs_window
     @given(st.integers(min_value=1, max_value=15))
     # Medium finite strategy: 15 examples (adequate finite coverage)
     @settings(max_examples=15, deadline=None)
@@ -293,6 +302,7 @@ class TestDeepNestingStability:
         except Exception as e:
             pytest.fail(f"Unexpected exception at depth {depth}: {e}")
     
+    @pytest.mark.needs_window
     @given(st.integers(min_value=1, max_value=15))
     # Medium finite strategy: 15 examples (adequate finite coverage)
     @settings(max_examples=15, deadline=None)
@@ -310,6 +320,7 @@ class TestDeepNestingStability:
         except Exception as e:
             pytest.fail(f"Unexpected exception at depth {depth}: {e}")
     
+    @pytest.mark.needs_window
     @given(st.integers(min_value=1, max_value=15))
     # Medium finite strategy: 15 examples (adequate finite coverage)
     @settings(max_examples=15, deadline=None)

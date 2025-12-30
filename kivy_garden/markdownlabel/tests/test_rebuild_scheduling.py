@@ -13,6 +13,7 @@ import pytest
 from kivy_garden.markdownlabel import MarkdownLabel
 
 
+@pytest.mark.property
 class TestBatchedRebuilds:
     """Property tests for batched rebuilds (Property 6).
 
@@ -63,7 +64,7 @@ class TestBatchedRebuilds:
         )
 
     @given(st.text(min_size=1, max_size=20, alphabet=st.characters(whitelist_categories=["L", "N"], blacklist_characters="#[]&\n\r")), st.floats(min_value=10, max_value=30, allow_nan=False, allow_infinity=False), st.sampled_from(["Roboto", "RobotoMono-Regular"]))
-    # Small finite strategy: 2 examples (input space size: 2)
+    # Combination strategy: 2 examples (combination coverage)
     @settings(max_examples=2, deadline=None)
     def test_mixed_property_changes_batch_rebuilds(self, text, font_size, font_name):
         """Mixed structure property changes batch into single rebuild.
@@ -133,6 +134,7 @@ class TestBatchedRebuilds:
         )
 
 
+@pytest.mark.property
 class TestDeferredRebuildScheduling:
     """Property tests for deferred rebuild scheduling (Property 7).
 

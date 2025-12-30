@@ -128,7 +128,7 @@ class TestInlineFormattingConversion:
         assert result.endswith('[/s]'), f"Strikethrough should end with [/s], got: {result}"
     
     @given(link_token())
-    # Complex strategy: 20 examples (adequate coverage)
+    # Combination strategy: 20 examples (combination coverage)
     @settings(max_examples=20, deadline=None)
     def test_link_produces_ref_tags_unstyled(self, token):
         """Unstyled links produce [ref=url]...[/ref] without forced styling."""
@@ -203,7 +203,6 @@ class TestSpecialCharacterEscaping:
         assert output_br == input_brackets_close, \
             f"Expected {input_brackets_close} &br; escapes, got {output_br}"
         
-        # Complex strategy: 30 examples (adequate coverage)
         # Each & should become &amp;
         assert output_amp == input_ampersands, \
             f"Expected {input_ampersands} &amp; escapes, got {output_amp}"
@@ -409,7 +408,7 @@ class TestURLMarkupSafetyProperty:
     @given(st.one_of(
         # URLs with closing brackets
         st.text(min_size=1, max_size=100).map(lambda s: f"http://example.com/{s}]"),
-        # URLs with opening brackets  
+        # URLs with opening brackets
         st.text(min_size=1, max_size=100).map(lambda s: f"http://example.com/[{s}"),
         # URLs with both brackets
         st.text(min_size=1, max_size=100).map(lambda s: f"http://example.com/[{s}]"),
@@ -417,7 +416,7 @@ class TestURLMarkupSafetyProperty:
         st.text(min_size=1, max_size=50).map(lambda s: f"http://example.com/{s}]]]"),
         st.text(min_size=1, max_size=50).map(lambda s: f"http://example.com/[[[{s}"),
     ))
-    # Complex strategy: 20 examples (adequate coverage)
+    # Combination strategy: 20 examples (combination coverage)
     @settings(max_examples=20, deadline=None)
     def test_urls_with_brackets_are_safe(self, full_url):
         """URLs containing brackets should be safely escaped."""
@@ -676,7 +675,7 @@ class TestHTMLContentEscapingProperty:
         # Raw HTML-like strings
         st.text(min_size=1, max_size=100).filter(lambda s: '<' in s or '>' in s),
     ))
-    # Complex strategy: 20 examples (adequate coverage)
+    # Combination strategy: 20 examples (combination coverage)
     @settings(max_examples=20, deadline=None)
     def test_html_content_is_escaped(self, html_content):
         """HTML content should be escaped to prevent markup injection."""
