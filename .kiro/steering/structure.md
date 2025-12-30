@@ -18,10 +18,13 @@ kivy_garden/
     ├── markdown_serializer.py  # AST → Markdown serialization
     └── tests/               # Test suite (organized by functionality)
         ├── __init__.py
-        ├── test_import.py
-        ├── test_inline_renderer.py
-        ├── test_kivy_renderer.py
+        ├── conftest.py                   # Pytest configuration and fixtures
+        ├── TESTING.md                    # Comprehensive testing guidelines
+        ├── test_import.py                # Import and basic functionality tests
+        ├── test_inline_renderer.py       # Inline markdown rendering tests
+        ├── test_kivy_renderer.py         # Block-level rendering tests
         ├── test_core_functionality.py    # Core markdown parsing and rendering
+        ├── test_core_functionality_properties.py # Core functionality property tests
         ├── test_label_compatibility.py   # Basic label property forwarding
         ├── test_font_properties.py       # Font-related property forwarding
         ├── test_color_properties.py      # Color and styling properties
@@ -31,13 +34,6 @@ kivy_garden/
         ├── test_advanced_compatibility.py # Advanced label features
         ├── test_serialization.py         # Round-trip serialization
         ├── test_performance.py           # Performance and stability tests
-        ├── test_strategy_classification.py # Tests for optimization infrastructure
-        ├── test_file_analyzer.py         # Tests for test file analysis tools
-        ├── test_documentation_compliance.py # Tests for max_examples documentation
-        ├── test_utils.py                 # Shared test utilities and strategies
-        ├── test_import.py                # Import and basic functionality tests
-        ├── test_inline_renderer.py       # Inline markdown rendering tests
-        ├── test_kivy_renderer.py         # Block-level rendering tests
         ├── test_rebuild_scheduling.py    # Rebuild scheduling and timing tests
         ├── test_rebuild_semantics.py     # Rebuild contract semantics tests
         ├── test_clipping_behavior.py     # Text clipping and overflow behavior
@@ -50,9 +46,32 @@ kivy_garden/
         ├── test_helper_availability.py   # Helper function availability tests
         ├── test_comment_format.py        # Comment format validation tests
         ├── test_comment_standardizer.py  # Comment standardization tests
-        ├── test_core_functionality_properties.py # Core functionality property tests
-        ├── conftest.py                   # Pytest configuration and fixtures
-        └── TESTING.md                    # Comprehensive testing guidelines
+        ├── test_strategy_classification.py # Tests for optimization infrastructure
+        ├── test_file_analyzer.py         # Tests for test file analysis tools
+        ├── test_documentation_compliance.py # Tests for max_examples documentation
+        ├── test_utils.py                 # Shared test utilities and strategies
+        ├── meta_tests/                   # Meta-testing infrastructure
+        │   ├── test_assertion_analyzer.py
+        │   ├── test_code_duplication_minimization.py
+        │   ├── test_coverage_preservation.py
+        │   ├── test_duplicate_detector.py
+        │   ├── test_naming_convention_validator.py
+        │   └── test_test_file_parser.py
+        ├── modules/                      # Test analysis and utility modules
+        │   ├── __init__.py
+        │   ├── assertion_analyzer.py
+        │   ├── duplicate_detector.py
+        │   ├── file_parser.py
+        │   ├── naming_convention_validator.py
+        │   └── test_discovery.py
+        └── test_optimization/            # Test optimization infrastructure
+            ├── __init__.py
+            ├── comment_manager.py
+            ├── file_analyzer.py
+            ├── max_examples_calculator.py
+            ├── optimization_detector.py
+            ├── over_testing_validator.py
+            └── strategy_analyzer.py
 ```
 
 ### Import Conventions
@@ -106,26 +125,39 @@ The codebase follows a strict three-layer architecture for converting Markdown t
 ### Test Suite Organization
 Tests are organized by **functionality**, not by implementation file:
 - `test_core_functionality.py`: Core parsing and rendering
+- `test_core_functionality_properties.py`: Core functionality property tests
 - `test_*_properties.py`: Property forwarding tests (font, color, text, padding)
 - `test_*_compatibility.py`: Label API compatibility
 - `test_performance.py`: Performance and stability (uses Hypothesis property-based testing)
 - `test_serialization.py`: Round-trip serialization tests
 - `test_*_behavior.py`: Behavioral tests (sizing, clipping, etc.)
 - `test_rebuild_*.py`: Rebuild contract and semantics testing
+- `test_*_alignment.py`: Text alignment and RTL support tests
+- `test_texture_*.py`: Texture rendering and sizing tests
 - `test_strategy_classification.py`: Tests for optimization infrastructure
 - `test_file_analyzer.py`: Tests for test file analysis tools
 - `test_documentation_compliance.py`: Tests for max_examples documentation
 - `test_utils.py`: Shared test utilities and Hypothesis strategies
+- `test_comment_*.py`: Comment format validation and standardization tests
+- `test_*_infrastructure.py`: Shared testing infrastructure tests
+- `test_helper_availability.py`: Helper function availability tests
+- `test_refactoring_properties.py`: Property refactoring validation tests
 - `TESTING.md`: Comprehensive testing guidelines and property-based testing optimization
+- `meta_tests/`: Meta-testing infrastructure for test analysis and validation
+- `modules/`: Test analysis and utility modules for code quality and duplication detection
+- `test_optimization/`: Test optimization infrastructure for performance analysis
 
 **When adding tests**: Place in the appropriate functional test file, not necessarily matching the implementation file.
 
 ### Tools Directory (`tools/`)
-Contains test optimization and analysis tools:
-- `test_optimization/`: Hypothesis test performance optimization infrastructure
-- `analyze_tests.py`: Command-line tool for analyzing test performance
+Contains development and analysis tools:
+- `README.md`: Documentation for available tools
+- `measure_baseline_performance.py`: Performance measurement and baseline tracking
 - `validate_comments.py`: Tool for validating and standardizing property-based test comments
-- **When modifying tests**: Run `python tools/analyze_tests.py` to validate performance
+- `validate_refactoring.py`: Tool for validating refactoring changes
+- `hooks/`: Git hooks for development workflow
+  - `pre-commit`: Pre-commit validation hook
+**When modifying tests**: Use tools for validation and performance analysis
 
 ## External Dependencies (Submodules)
 
@@ -180,6 +212,7 @@ doc/
 
 ### Optimizing test performance
 1. Review `kivy_garden/markdownlabel/tests/TESTING.md`
-2. Run `python tools/analyze_tests.py` to identify slow tests
+2. Use tools in `tools/` directory for validation and performance analysis
 3. Adjust `max_examples` based on strategy complexity using standardized comment format
 4. Add performance rationale comments to tests
+5. Utilize test optimization infrastructure in `tests/test_optimization/`
