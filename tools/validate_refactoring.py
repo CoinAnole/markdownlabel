@@ -14,10 +14,6 @@ from dataclasses import dataclass
 from typing import Dict, List, Optional
 import json
 
-# Add the tools directory to Python path
-tools_dir = Path(__file__).parent
-sys.path.insert(0, str(tools_dir))
-
 from kivy_garden.markdownlabel.tests.modules.duplicate_detector import DuplicateDetector, ConsolidationReport
 
 
