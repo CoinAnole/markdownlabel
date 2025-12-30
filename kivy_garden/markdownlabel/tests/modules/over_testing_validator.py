@@ -178,9 +178,9 @@ echo "Running over-testing validation..."
 python3 -c "
 import sys
 from pathlib import Path
-sys.path.insert(0, str(Path.cwd() / 'tools'))
+sys.path.insert(0, str(Path.cwd()))
 
-from test_optimization.over_testing_validator import OverTestingValidator
+from kivy_garden.markdownlabel.tests.modules.over_testing_validator import OverTestingValidator
 
 validator = OverTestingValidator()
 result = validator.validate_test_suite('{test_directory}', 'over_testing_report.json')
@@ -246,9 +246,9 @@ def fix_over_testing():
     # Get recommendations
     import sys
     from pathlib import Path
-    sys.path.insert(0, str(Path.cwd() / 'tools'))
+    sys.path.insert(0, str(Path.cwd()))
     
-    from test_optimization.over_testing_validator import OverTestingValidator
+    from kivy_garden.markdownlabel.tests.modules.over_testing_validator import OverTestingValidator
     
     validator = OverTestingValidator()
     result = validator.validate_test_suite('{test_directory}')

@@ -1,166 +1,46 @@
 {
   "metadata": {
-    "generated_at": "2025-12-29T16:36:57.575832",
+    "generated_at": "2025-12-30T12:46:02.364334",
     "test_directory": "/home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests",
     "measurement_type": "baseline_performance"
   },
   "full_suite_performance": {
-    "total_execution_time_seconds": 31.099225997924805,
+    "total_execution_time_seconds": 35.31095862388611,
     "total_tests": 0,
     "passed_tests": 0,
     "failed_tests": 0,
     "average_time_per_test": 0,
     "return_code": 0,
-    "stdout_sample": "est_auto_mode_selection_combinations[True-None-texture] PASSED [ 98%]\nkivy_garden/markdownlabel/tests/test_texture_render_mode.py::TestAutoRenderModeSelection::test_explicit_widgets_mode_overrides_auto_logic PASSED [ 99%]\nkivy_garden/markdownlabel/tests/test_texture_render_mode.py::TestAutoRenderModeSelection::test_explicit_texture_mode_overrides_auto_logic PASSED [ 99%]\nkivy_garden/markdownlabel/tests/tools/test_analysis/test_naming_convention_validator.py::test_naming_pattern_consistency_property PASSED [ 99%]\nkivy_garden/markdownlabel/tests/tools/test_analysis/test_naming_convention_validator.py::test_file_level_consistency PASSED [ 99%]\nkivy_garden/markdownlabel/tests/tools/test_analysis/test_naming_convention_validator.py::test_file_validation_integration PASSED [ 99%]\nkivy_garden/markdownlabel/tests/tools/test_analysis/test_naming_convention_validator.py::test_rename_script_generation PASSED [100%]\n\n===================== 569 passed, 363 deselected in 29.53s =====================\n",
+    "stdout_sample": "tests/test_texture_render_mode.py::TestAutoRenderModeSelection::test_auto_mode_selection_combinations[False-1-widgets] PASSED [ 99%]\nkivy_garden/markdownlabel/tests/test_texture_render_mode.py::TestAutoRenderModeSelection::test_auto_mode_selection_combinations[False-None-widgets] PASSED [ 99%]\nkivy_garden/markdownlabel/tests/test_texture_render_mode.py::TestAutoRenderModeSelection::test_auto_mode_selection_combinations[True-1-widgets] PASSED [ 99%]\nkivy_garden/markdownlabel/tests/test_texture_render_mode.py::TestAutoRenderModeSelection::test_auto_mode_selection_combinations[True-None-texture] PASSED [ 99%]\nkivy_garden/markdownlabel/tests/test_texture_render_mode.py::TestAutoRenderModeSelection::test_explicit_widgets_mode_overrides_auto_logic PASSED [ 99%]\nkivy_garden/markdownlabel/tests/test_texture_render_mode.py::TestAutoRenderModeSelection::test_explicit_texture_mode_overrides_auto_logic PASSED [100%]\n\n===================== 569 passed, 363 deselected in 33.58s =====================\n",
     "stderr_sample": ""
   },
   "file_level_performance": {
-    "/home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_import.py": {
-      "execution_time_seconds": 0.8610038757324219,
-      "test_count": 2,
-      "passed_tests": 2,
-      "failed_tests": 0,
-      "average_time_per_test": 0.43050193786621094,
-      "return_code": 0
-    },
     "/home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_advanced_compatibility.py": {
-      "execution_time_seconds": 2.0549566745758057,
+      "execution_time_seconds": 2.2881102561950684,
       "test_count": 83,
       "passed_tests": 83,
       "failed_tests": 0,
-      "average_time_per_test": 0.02475851415151573,
-      "return_code": 0
-    },
-    "/home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_color_properties.py": {
-      "execution_time_seconds": 1.543595552444458,
-      "test_count": 9,
-      "passed_tests": 9,
-      "failed_tests": 0,
-      "average_time_per_test": 0.1715106169382731,
-      "return_code": 0
-    },
-    "/home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_core_functionality_properties.py": {
-      "execution_time_seconds": 0.7361178398132324,
-      "test_count": 0,
-      "passed_tests": 0,
-      "failed_tests": 0,
-      "average_time_per_test": 0,
-      "return_code": 5
-    },
-    "/home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_documentation_compliance.py": {
-      "execution_time_seconds": 0.6918504238128662,
-      "test_count": 0,
-      "passed_tests": 0,
-      "failed_tests": 0,
-      "average_time_per_test": 0,
-      "return_code": 5
-    },
-    "/home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_label_compatibility.py": {
-      "execution_time_seconds": 1.831653356552124,
-      "test_count": 0,
-      "passed_tests": 0,
-      "failed_tests": 0,
-      "average_time_per_test": 0,
-      "return_code": 0
-    },
-    "/home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_rebuild_scheduling.py": {
-      "execution_time_seconds": 1.0305588245391846,
-      "test_count": 12,
-      "passed_tests": 12,
-      "failed_tests": 0,
-      "average_time_per_test": 0.08587990204493205,
-      "return_code": 0
-    },
-    "/home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_refactoring_properties.py": {
-      "execution_time_seconds": 0.712104320526123,
-      "test_count": 0,
-      "passed_tests": 0,
-      "failed_tests": 0,
-      "average_time_per_test": 0,
-      "return_code": 5
-    },
-    "/home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_rtl_alignment.py": {
-      "execution_time_seconds": 0.7307868003845215,
-      "test_count": 0,
-      "passed_tests": 0,
-      "failed_tests": 0,
-      "average_time_per_test": 0,
-      "return_code": 5
-    },
-    "/home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_font_properties.py": {
-      "execution_time_seconds": 2.904970645904541,
-      "test_count": 56,
-      "passed_tests": 56,
-      "failed_tests": 0,
-      "average_time_per_test": 0.051874475819723945,
-      "return_code": 0
-    },
-    "/home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_texture_render_mode.py": {
-      "execution_time_seconds": 1.8608763217926025,
-      "test_count": 33,
-      "passed_tests": 33,
-      "failed_tests": 0,
-      "average_time_per_test": 0.0563901915694728,
-      "return_code": 0
-    },
-    "/home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_utils.py": {
-      "execution_time_seconds": 0.7444736957550049,
-      "test_count": 0,
-      "passed_tests": 0,
-      "failed_tests": 0,
-      "average_time_per_test": 0,
-      "return_code": 5
-    },
-    "/home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_serialization.py": {
-      "execution_time_seconds": 2.1207571029663086,
-      "test_count": 20,
-      "passed_tests": 20,
-      "failed_tests": 0,
-      "average_time_per_test": 0.10603785514831543,
-      "return_code": 0
-    },
-    "/home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_shortening_and_coordinate.py": {
-      "execution_time_seconds": 3.3460187911987305,
-      "test_count": 0,
-      "passed_tests": 0,
-      "failed_tests": 0,
-      "average_time_per_test": 0,
-      "return_code": 0
-    },
-    "/home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_core_functionality.py": {
-      "execution_time_seconds": 0.9957702159881592,
-      "test_count": 0,
-      "passed_tests": 0,
-      "failed_tests": 0,
-      "average_time_per_test": 0,
-      "return_code": 0
-    },
-    "/home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_shared_infrastructure.py": {
-      "execution_time_seconds": 0.7546114921569824,
-      "test_count": 0,
-      "passed_tests": 0,
-      "failed_tests": 0,
-      "average_time_per_test": 0,
-      "return_code": 5
-    },
-    "/home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_sizing_behavior.py": {
-      "execution_time_seconds": 3.2463219165802,
-      "test_count": 0,
-      "passed_tests": 0,
-      "failed_tests": 0,
-      "average_time_per_test": 0,
+      "average_time_per_test": 0.027567593448133355,
       "return_code": 0
     },
     "/home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_clipping_behavior.py": {
-      "execution_time_seconds": 1.5588877201080322,
+      "execution_time_seconds": 1.6176416873931885,
       "test_count": 11,
       "passed_tests": 11,
       "failed_tests": 0,
-      "average_time_per_test": 0.14171706546436658,
+      "average_time_per_test": 0.1470583352175626,
+      "return_code": 0
+    },
+    "/home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_color_properties.py": {
+      "execution_time_seconds": 1.6108481884002686,
+      "test_count": 9,
+      "passed_tests": 9,
+      "failed_tests": 0,
+      "average_time_per_test": 0.17898313204447427,
       "return_code": 0
     },
     "/home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_comment_format.py": {
-      "execution_time_seconds": 0.7877583503723145,
+      "execution_time_seconds": 0.797903299331665,
       "test_count": 0,
       "passed_tests": 0,
       "failed_tests": 0,
@@ -168,55 +48,175 @@
       "return_code": 5
     },
     "/home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_comment_standardizer.py": {
-      "execution_time_seconds": 0.7480282783508301,
+      "execution_time_seconds": 0.7838327884674072,
       "test_count": 0,
       "passed_tests": 0,
       "failed_tests": 0,
       "average_time_per_test": 0,
       "return_code": 5
     },
-    "/home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_helper_availability.py": {
-      "execution_time_seconds": 0.7093801498413086,
+    "/home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_core_functionality.py": {
+      "execution_time_seconds": 1.0007004737854004,
+      "test_count": 0,
+      "passed_tests": 0,
+      "failed_tests": 0,
+      "average_time_per_test": 0,
+      "return_code": 0
+    },
+    "/home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_core_functionality_properties.py": {
+      "execution_time_seconds": 0.7504575252532959,
       "test_count": 0,
       "passed_tests": 0,
       "failed_tests": 0,
       "average_time_per_test": 0,
       "return_code": 5
     },
-    "/home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_inline_renderer.py": {
-      "execution_time_seconds": 1.1026239395141602,
+    "/home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_documentation_compliance.py": {
+      "execution_time_seconds": 0.7471404075622559,
+      "test_count": 0,
+      "passed_tests": 0,
+      "failed_tests": 0,
+      "average_time_per_test": 0,
+      "return_code": 5
+    },
+    "/home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_file_analyzer.py": {
+      "execution_time_seconds": 0.8738691806793213,
+      "test_count": 0,
+      "passed_tests": 0,
+      "failed_tests": 0,
+      "average_time_per_test": 0,
+      "return_code": 0
+    },
+    "/home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_font_properties.py": {
+      "execution_time_seconds": 3.1264851093292236,
       "test_count": 56,
       "passed_tests": 56,
       "failed_tests": 0,
-      "average_time_per_test": 0.019689713205610002,
+      "average_time_per_test": 0.05583009123802185,
+      "return_code": 0
+    },
+    "/home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_helper_availability.py": {
+      "execution_time_seconds": 0.7582321166992188,
+      "test_count": 0,
+      "passed_tests": 0,
+      "failed_tests": 0,
+      "average_time_per_test": 0,
+      "return_code": 5
+    },
+    "/home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_import.py": {
+      "execution_time_seconds": 0.8791537284851074,
+      "test_count": 2,
+      "passed_tests": 2,
+      "failed_tests": 0,
+      "average_time_per_test": 0.4395768642425537,
+      "return_code": 0
+    },
+    "/home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_inline_renderer.py": {
+      "execution_time_seconds": 1.1241037845611572,
+      "test_count": 56,
+      "passed_tests": 56,
+      "failed_tests": 0,
+      "average_time_per_test": 0.020073281867163523,
       "return_code": 0
     },
     "/home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_kivy_renderer.py": {
-      "execution_time_seconds": 4.0883262157440186,
+      "execution_time_seconds": 4.294036865234375,
       "test_count": 47,
       "passed_tests": 47,
       "failed_tests": 0,
-      "average_time_per_test": 0.08698566416476636,
+      "average_time_per_test": 0.0913624864943484,
+      "return_code": 0
+    },
+    "/home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_label_compatibility.py": {
+      "execution_time_seconds": 2.2559621334075928,
+      "test_count": 0,
+      "passed_tests": 0,
+      "failed_tests": 0,
+      "average_time_per_test": 0,
+      "return_code": 0
+    },
+    "/home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_padding_properties.py": {
+      "execution_time_seconds": 4.968297243118286,
+      "test_count": 33,
+      "passed_tests": 33,
+      "failed_tests": 0,
+      "average_time_per_test": 0.15055446191267532,
       "return_code": 0
     },
     "/home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_performance.py": {
-      "execution_time_seconds": 1.471524953842163,
+      "execution_time_seconds": 1.5160634517669678,
       "test_count": 24,
       "passed_tests": 24,
       "failed_tests": 0,
-      "average_time_per_test": 0.06131353974342346,
+      "average_time_per_test": 0.06316931049029033,
+      "return_code": 0
+    },
+    "/home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_rebuild_scheduling.py": {
+      "execution_time_seconds": 1.0816431045532227,
+      "test_count": 12,
+      "passed_tests": 12,
+      "failed_tests": 0,
+      "average_time_per_test": 0.09013692537943523,
       "return_code": 0
     },
     "/home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_rebuild_semantics.py": {
-      "execution_time_seconds": 4.245450973510742,
+      "execution_time_seconds": 4.895124435424805,
       "test_count": 32,
       "passed_tests": 32,
       "failed_tests": 0,
-      "average_time_per_test": 0.1326703429222107,
+      "average_time_per_test": 0.15297263860702515,
+      "return_code": 0
+    },
+    "/home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_refactoring_properties.py": {
+      "execution_time_seconds": 0.756549596786499,
+      "test_count": 0,
+      "passed_tests": 0,
+      "failed_tests": 0,
+      "average_time_per_test": 0,
+      "return_code": 5
+    },
+    "/home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_rtl_alignment.py": {
+      "execution_time_seconds": 0.7878823280334473,
+      "test_count": 0,
+      "passed_tests": 0,
+      "failed_tests": 0,
+      "average_time_per_test": 0,
+      "return_code": 5
+    },
+    "/home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_serialization.py": {
+      "execution_time_seconds": 2.075766086578369,
+      "test_count": 20,
+      "passed_tests": 20,
+      "failed_tests": 0,
+      "average_time_per_test": 0.10378830432891846,
+      "return_code": 0
+    },
+    "/home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_shared_infrastructure.py": {
+      "execution_time_seconds": 0.762415885925293,
+      "test_count": 0,
+      "passed_tests": 0,
+      "failed_tests": 0,
+      "average_time_per_test": 0,
+      "return_code": 5
+    },
+    "/home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_shortening_and_coordinate.py": {
+      "execution_time_seconds": 3.4969594478607178,
+      "test_count": 0,
+      "passed_tests": 0,
+      "failed_tests": 0,
+      "average_time_per_test": 0,
+      "return_code": 0
+    },
+    "/home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_sizing_behavior.py": {
+      "execution_time_seconds": 3.153402090072632,
+      "test_count": 0,
+      "passed_tests": 0,
+      "failed_tests": 0,
+      "average_time_per_test": 0,
       "return_code": 0
     },
     "/home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_strategy_classification.py": {
-      "execution_time_seconds": 1.014355182647705,
+      "execution_time_seconds": 1.0333223342895508,
       "test_count": 0,
       "passed_tests": 0,
       "failed_tests": 0,
@@ -224,36 +224,36 @@
       "return_code": 0
     },
     "/home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_text_properties.py": {
-      "execution_time_seconds": 2.9548301696777344,
+      "execution_time_seconds": 3.0557219982147217,
       "test_count": 32,
       "passed_tests": 32,
       "failed_tests": 0,
-      "average_time_per_test": 0.0923384428024292,
+      "average_time_per_test": 0.09549131244421005,
+      "return_code": 0
+    },
+    "/home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_texture_render_mode.py": {
+      "execution_time_seconds": 1.9974541664123535,
+      "test_count": 33,
+      "passed_tests": 33,
+      "failed_tests": 0,
+      "average_time_per_test": 0.06052891413370768,
       "return_code": 0
     },
     "/home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_texture_sizing.py": {
-      "execution_time_seconds": 0.7729218006134033,
+      "execution_time_seconds": 0.7998843193054199,
       "test_count": 0,
       "passed_tests": 0,
       "failed_tests": 0,
       "average_time_per_test": 0,
       "return_code": 5
     },
-    "/home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_padding_properties.py": {
-      "execution_time_seconds": 4.596431493759155,
-      "test_count": 33,
-      "passed_tests": 33,
-      "failed_tests": 0,
-      "average_time_per_test": 0.13928580284118652,
-      "return_code": 0
-    },
-    "/home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_file_analyzer.py": {
-      "execution_time_seconds": 0.8760175704956055,
+    "/home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_utils.py": {
+      "execution_time_seconds": 0.7759487628936768,
       "test_count": 0,
       "passed_tests": 0,
       "failed_tests": 0,
       "average_time_per_test": 0,
-      "return_code": 0
+      "return_code": 5
     }
   },
   "max_examples_analysis": {
@@ -305,29 +305,6 @@
         "average_examples": 53.0,
         "median_examples": 50.0
       },
-      "Complex": {
-        "count": 1,
-        "total_examples": 50,
-        "min_examples": 50,
-        "max_examples": 50,
-        "values": [
-          50
-        ],
-        "average_examples": 50.0,
-        "median_examples": 50
-      },
-      "Medium finite": {
-        "count": 2,
-        "total_examples": 80,
-        "min_examples": 40,
-        "max_examples": 40,
-        "values": [
-          40,
-          40
-        ],
-        "average_examples": 40.0,
-        "median_examples": 40.0
-      },
       "Boolean": {
         "count": 3,
         "total_examples": 300,
@@ -353,6 +330,29 @@
         ],
         "average_examples": 100.0,
         "median_examples": 100
+      },
+      "Complex": {
+        "count": 1,
+        "total_examples": 50,
+        "min_examples": 50,
+        "max_examples": 50,
+        "values": [
+          50
+        ],
+        "average_examples": 50.0,
+        "median_examples": 50
+      },
+      "Medium finite": {
+        "count": 2,
+        "total_examples": 80,
+        "min_examples": 40,
+        "max_examples": 40,
+        "values": [
+          40,
+          40
+        ],
+        "average_examples": 40.0,
+        "median_examples": 40.0
       }
     },
     "value_frequency": {
@@ -364,43 +364,43 @@
   },
   "strategy_category_performance": {
     "Combination": {
-      "execution_time_seconds": 15.318389654159546,
+      "execution_time_seconds": 16.68041706085205,
       "test_count": 30,
       "files_involved": 12,
-      "average_time_per_test": 0.5106129884719849,
-      "return_code": 0
-    },
-    "Complex": {
-      "execution_time_seconds": 0.7282023429870605,
-      "test_count": 1,
-      "files_involved": 1,
-      "average_time_per_test": 0.7282023429870605,
-      "return_code": 5
-    },
-    "Medium finite": {
-      "execution_time_seconds": 0.9450240135192871,
-      "test_count": 2,
-      "files_involved": 1,
-      "average_time_per_test": 0.47251200675964355,
+      "average_time_per_test": 0.5560139020284017,
       "return_code": 0
     },
     "Boolean": {
-      "execution_time_seconds": 1.0074410438537598,
+      "execution_time_seconds": 1.0751559734344482,
       "test_count": 3,
       "files_involved": 2,
-      "average_time_per_test": 0.3358136812845866,
+      "average_time_per_test": 0.3583853244781494,
       "return_code": 0
     },
     "Small finite": {
-      "execution_time_seconds": 1.009049654006958,
+      "execution_time_seconds": 1.088747262954712,
       "test_count": 3,
       "files_involved": 2,
-      "average_time_per_test": 0.336349884668986,
+      "average_time_per_test": 0.3629157543182373,
+      "return_code": 0
+    },
+    "Complex": {
+      "execution_time_seconds": 0.779975175857544,
+      "test_count": 1,
+      "files_involved": 1,
+      "average_time_per_test": 0.779975175857544,
+      "return_code": 5
+    },
+    "Medium finite": {
+      "execution_time_seconds": 1.0312001705169678,
+      "test_count": 2,
+      "files_involved": 1,
+      "average_time_per_test": 0.5156000852584839,
       "return_code": 0
     }
   },
   "benchmarks": {
-    "total_execution_time_baseline": 31.099225997924805,
+    "total_execution_time_baseline": 35.31095862388611,
     "average_time_per_test_baseline": 0,
     "total_tests_baseline": 0
   }

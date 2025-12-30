@@ -104,8 +104,6 @@ class FileAnalyzer:
         # Keep optimization reports aligned with comment validation reports by
         # excluding meta-validator tests (these often contain intentionally
         # malformed examples and/or different semantics).
-        #
-        # This mirrors the exclusions in tools/test_optimization/comment_analyzer.py.
         self.excluded_test_files = {
             'test_comment_format.py',
             'test_comment_standardizer.py',

@@ -471,10 +471,9 @@ class CommentAnalyzer:
         # Find all Python test files
         test_files = []
         excluded_patterns = {
-            'test_comment_format.py', 
-            'test_comment_standardizer.py', 
+            'test_comment_format.py',
+            'test_comment_standardizer.py',
             'file_analyzer.py',
-            'tools/test_optimization',
             'tools/validate_comments.py'
         }
         

@@ -4,10 +4,6 @@ This module consolidates performance rationale and CI optimization detection
 into a single, unified module, eliminating duplicate code and providing a
 consistent API for detecting and documenting test optimizations.
 
-This merges functionality from:
-- tools/test_optimization/performance_rationale_handler.py
-- tools/test_optimization/ci_optimization_handler.py
-
 Key consolidations:
 - Unified CI detection patterns (eliminated ~50 lines of duplicate patterns)
 - Single _extract_ci_values() method (eliminated ~30 lines)
