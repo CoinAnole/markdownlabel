@@ -26,6 +26,7 @@ from kivy_garden.markdownlabel.tests.test_utils import (
 )
 
 
+@pytest.mark.test_tests
 class TestSharedStrategyAvailability:
     """Property tests for shared strategy availability (Property 6)."""
     
@@ -33,11 +34,7 @@ class TestSharedStrategyAvailability:
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_markdown_heading_strategy_generates_valid_headings(self, heading):
-        """**Feature: test-refactoring, Property 6: Shared Strategy Availability**
-        *For any* Hypothesis strategy used in multiple modules, that strategy should be 
-        importable from the shared utilities module and generate valid test data.
-        **Validates: Requirements 3.2**
-        """
+        """Test that the shared markdown_heading strategy generates valid heading text that can be used with MarkdownLabel."""
         # Verify heading format
         assert heading.startswith('#'), f"Heading should start with #: {heading}"
         assert ' ' in heading, f"Heading should have space after #: {heading}"
@@ -145,23 +142,19 @@ class TestSharedStrategyAvailability:
         # Verify fonts can be used with MarkdownLabel
         label = MarkdownLabel(text="Test", font_name=KIVY_FONTS[0])
         labels = find_labels_recursive(label)
-        # Complex strategy: 30 examples (adequate coverage)
         if labels:
             assert labels[0].font_name == KIVY_FONTS[0], "Font should be applied to labels"
 
 
-class TestHelperFunctionConsolidation:
-    """Property tests for helper function consolidation (Property 7)."""
+@pytest.mark.test_tests
+class TestSharedInfrastructureHelpers:
+    """Property tests for shared infrastructure helper functions (Property 7)."""
     
     @given(st.text(min_size=1, max_size=50))
     # Complex strategy: 50 examples (adequate coverage)
     @settings(max_examples=50, deadline=None)
     def test_find_labels_recursive_function_available(self, text):
-        """**Feature: test-refactoring, Property 7: Helper Function Consolidation**
-        *For any* helper function, it should appear in exactly one location 
-        (either in a specific module or in shared utilities) and be functional.
-        **Validates: Requirements 3.3**
-        """
+        """Test that the shared find_labels_recursive helper function is available and correctly finds all Label widgets in the widget tree."""
         label = MarkdownLabel(text=text)
         
         # Test that find_labels_recursive is available and works

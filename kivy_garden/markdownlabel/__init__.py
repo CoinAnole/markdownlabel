@@ -105,6 +105,7 @@ class MarkdownLabel(BoxLayout):
         'disabled',
         'disabled_color',
         'base_direction',
+        'text_padding',
     })
     """Properties that affect only visual styling and can be updated in-place.
     
@@ -120,7 +121,6 @@ class MarkdownLabel(BoxLayout):
         'text_size',
         'strict_label_mode',
         'padding',
-        'text_padding',
         'outline_width',
         'outline_color',
         'disabled_outline_color',
@@ -1104,7 +1104,7 @@ class MarkdownLabel(BoxLayout):
         """Update style properties on existing child widgets without rebuild.
 
         This method updates purely stylistic properties (color,
-        halign, valign, line_height, disabled state) on all descendant Label
+        halign, valign, line_height, disabled state, text_padding) on all descendant Label
         widgets without reconstructing the widget tree.
 
         This is more efficient than a full rebuild when only visual styling
@@ -1128,6 +1128,9 @@ class MarkdownLabel(BoxLayout):
         # Determine effective halign using the new method
         effective_halign = self._get_effective_halign()
 
+        # Get text_padding value
+        effective_text_padding = list(self.text_padding)
+
         def update_widget(widget):
             """Recursively update style properties on widget and children.
 
@@ -1139,6 +1142,7 @@ class MarkdownLabel(BoxLayout):
                 widget.halign = effective_halign
                 widget.valign = self.valign
                 widget.line_height = self.line_height
+                widget.padding = effective_text_padding
                 if hasattr(widget, 'outline_color'):
                     widget.outline_color = effective_outline_color
                 if hasattr(widget, 'disabled_outline_color'):

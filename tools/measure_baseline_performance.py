@@ -15,11 +15,7 @@ from pathlib import Path
 from datetime import datetime
 from typing import Dict, List, Tuple, Any
 
-# Add the tools directory to Python path so local imports work regardless of CWD
-sys.path.insert(0, str(Path(__file__).parent))
-
-# Use local analyzer implementation from tools instead of the package namespace.
-from test_optimization.test_file_analyzer import FileAnalyzer
+from kivy_garden.markdownlabel.tests.test_optimization.file_analyzer import FileAnalyzer
 
 
 class BaselinePerformanceMeasurer:

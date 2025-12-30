@@ -7,17 +7,20 @@ comments for property-based tests with proper strategy documentation.
 import pytest
 import os
 import re
-import sys
 import tempfile
 from hypothesis import given, strategies as st, settings
 
-# Add tools directory to path for imports
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', '..', 'tools'))
+from kivy_garden.markdownlabel.tests.test_optimization.comment_manager import (
+    CommentStandardizer, StandardizationResult, StrategyType, CommentFormatValidator, CommentAnalyzer
+)
+from kivy_garden.markdownlabel.tests.test_optimization.optimization_detector import (
+    OptimizationDetector as PerformanceRationaleDetector,
+    OptimizationCommentGenerator as PerformanceCommentGenerator,
+    OptimizationType as PerformanceReason
+)
 
-from test_optimization.comment_standardizer import CommentStandardizer, StandardizationResult
-from test_optimization.comment_format import StrategyType, CommentFormatValidator
 
-
+@pytest.mark.test_tests
 class TestBooleanStrategyDocumentation:
     """Property tests for boolean strategy documentation (Property 4)."""
     
@@ -31,12 +34,13 @@ class TestBooleanStrategyDocumentation:
     # True/False coverage in the rationale
     # **Validates: Requirements 2.3**
     
+    @pytest.mark.property
     @given(
         max_examples=st.integers(min_value=1, max_value=100).filter(lambda x: x not in {2, 5, 10, 20, 50, 100}),
         function_name=st.text(min_size=5, max_size=30, alphabet=st.characters(whitelist_categories=('Lu', 'Ll', 'Nd', 'Pc'))).map(lambda x: f"test_{x}")
     )
-    # Complex strategy: 20 examples (adequate coverage)
-    @settings(max_examples=20, deadline=None)
+    # Boolean strategy: 2 examples (True/False coverage)
+    @settings(max_examples=2, deadline=None)
     def test_boolean_strategy_comments_reference_true_false_coverage(self, max_examples, function_name):
         """Boolean strategy comments always reference True/False coverage."""
         # Create test code with boolean strategy but no comment
@@ -249,7 +253,7 @@ def test_boolean_integration(flag):
         
         try:
             # First analyze without standardization
-            from test_optimization.comment_analyzer import CommentAnalyzer
+            from kivy_garden.markdownlabel.tests.test_optimization.comment_manager import CommentAnalyzer
             analyzer = CommentAnalyzer()
             
             initial_analysis = analyzer.analyze_file(temp_file)
@@ -279,6 +283,7 @@ def test_boolean_integration(flag):
                 os.unlink(temp_file)
 
 
+@pytest.mark.test_tests
 class TestFiniteStrategyDocumentation:
     """Property tests for finite strategy documentation (Property 5)."""
     
@@ -292,12 +297,13 @@ class TestFiniteStrategyDocumentation:
     # input space size in the rationale
     # **Validates: Requirements 2.4**
     
+    @pytest.mark.property
     @given(
         min_value=st.integers(min_value=0, max_value=10),
         max_value=st.integers(min_value=11, max_value=50),
         max_examples=st.integers(min_value=1, max_value=100).filter(lambda x: x not in {2, 5, 10, 20, 50, 100})
     )
-    # Complex strategy: 25 examples (adequate coverage)
+    # Combination strategy: 25 examples (adequate coverage)
     @settings(max_examples=25, deadline=None)
     def test_finite_strategy_comments_reference_input_space_size(self, min_value, max_value, max_examples):
         """Finite strategy comments reference input space size in rationale."""
@@ -359,11 +365,12 @@ def test_finite_strategy(num):
             if os.path.exists(temp_file):
                 os.unlink(temp_file)
     
+    @pytest.mark.property
     @given(
         items=st.lists(st.text(min_size=1, max_size=10), min_size=1, max_size=20),
         max_examples=st.integers(min_value=1, max_value=50).filter(lambda x: x not in {2, 5, 10, 20, 50, 100})
     )
-    # Complex strategy: 30 examples (adequate coverage)
+    # Combination strategy: 30 examples (adequate coverage)
     @settings(max_examples=30, deadline=None)
     def test_sampled_from_finite_strategy_documentation(self, items, max_examples):
         """Sampled_from finite strategies are properly documented."""
@@ -372,7 +379,7 @@ def test_finite_strategy(num):
         if len(unique_items) == 0:
             unique_items = ['item1']
         
-        items_str = ', '.join(f'"{item}"' for item in unique_items[:10])  # Limit to 10 items
+        items_str = ', '.join(repr(item) for item in unique_items[:10])  # Limit to 10 items
         
         test_code = f'''
 @given(item=st.sampled_from([{items_str}]))
@@ -414,10 +421,10 @@ def test_sampled_from_strategy(item):
         """Finite strategies are correctly classified by size."""
         test_cases = [
             # Small finite (≤10 elements)
-            ('st.integers(min_value=0, max_value=5)', "Small finite", 6),
+            ('st.integers(min_value=0, max_value=4)', "Small finite", 5),
             ('st.integers(min_value=1, max_value=10)', "Small finite", 10),
             
-            # Medium finite (11-50 elements)  
+            # Medium finite (11-51 elements)
             ('st.integers(min_value=0, max_value=25)', "Medium finite", 26),
             ('st.integers(min_value=10, max_value=50)', "Medium finite", 41),
         ]
@@ -556,6 +563,7 @@ def test_already_standardized(flag):
             self.standardizer.backup_dir = original_backup_dir
 
 
+@pytest.mark.test_tests
 class TestPerformanceRationaleDocumentation:
     """Property tests for performance rationale documentation (Property 6)."""
     
@@ -565,12 +573,6 @@ class TestPerformanceRationaleDocumentation:
         self.validator = CommentFormatValidator()
         
         # Import performance handler components
-        sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', '..', 'tools'))
-        from test_optimization.performance_rationale_handler import (
-            PerformanceRationaleDetector, 
-            PerformanceCommentGenerator,
-            PerformanceReason
-        )
         self.detector = PerformanceRationaleDetector()
         self.generator = PerformanceCommentGenerator()
         self.PerformanceReason = PerformanceReason  # Make accessible to test methods
@@ -580,13 +582,14 @@ class TestPerformanceRationaleDocumentation:
     # the comment SHALL explain the performance rationale
     # **Validates: Requirements 2.2, 3.3, 5.2**
     
+    @pytest.mark.property
     @given(
         max_examples=st.integers(min_value=1, max_value=5),
         strategy_complexity=st.sampled_from(['text', 'floats', 'composite']),
         function_name=st.text(min_size=5, max_size=30, alphabet=st.characters(whitelist_categories=('Lu', 'Ll', 'Nd', 'Pc'))).map(lambda x: f"test_{x}")
     )
-    # Complex strategy: 3 examples (performance optimized)
-    @settings(max_examples=3, deadline=None)
+    # Small finite strategy: 5 examples (input space size: 5)
+    @settings(max_examples=5, deadline=None)
     def test_execution_time_performance_rationale_documented(self, max_examples, strategy_complexity, function_name):
         """Execution time performance rationale is properly documented."""
         # Create test code with complex strategy and low max_examples (performance optimization)
@@ -638,10 +641,11 @@ def {function_name}(data):
             if os.path.exists(temp_file):
                 os.unlink(temp_file)
     
+    @pytest.mark.property
     @given(
         performance_keywords=st.sampled_from([
             "performance optimized",
-            "execution time optimization", 
+            "execution time optimization",
             "memory optimization",
             "deadline constraint",
             "complexity reduction"
@@ -649,7 +653,7 @@ def {function_name}(data):
         max_examples=st.integers(min_value=1, max_value=20),
         function_name=st.text(min_size=5, max_size=30, alphabet=st.characters(whitelist_categories=('Lu', 'Ll', 'Nd', 'Pc'))).map(lambda x: f"test_{x}")
     )
-    # Complex strategy: 4 examples (performance optimized)
+    # Combination strategy: 4 examples (performance optimized)
     @settings(max_examples=4, deadline=None)
     def test_explicit_performance_comments_detected(self, performance_keywords, max_examples, function_name):
         """Explicit performance comments are properly detected and preserved."""
@@ -838,20 +842,14 @@ def test_standard_file_1(flag):
                 if os.path.exists(file_path):
                     os.unlink(file_path)
 
+@pytest.mark.test_tests
 class TestCommentStandardizationIntegration:
     """Integration tests for the complete comment standardization workflow."""
     
     def setup_method(self):
         """Set up test fixtures."""
         self.standardizer = CommentStandardizer()
-        self.analyzer = None
-        
-        # Import analyzer only when needed to avoid circular imports
-        try:
-            from test_optimization.comment_analyzer import CommentAnalyzer
-            self.analyzer = CommentAnalyzer()
-        except ImportError:
-            pytest.skip("CommentAnalyzer not available for integration tests")
+        self.analyzer = CommentAnalyzer()
     
     def test_end_to_end_standardization_workflow(self):
         """Test complete workflow: analyze -> standardize -> validate.

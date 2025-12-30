@@ -5,14 +5,13 @@ Tests verify that the MarkdownLabel correctly handles RTL text direction
 and auto alignment behavior.
 """
 
-import os
-
 import pytest
 from hypothesis import given, strategies as st, settings, assume
 
 from kivy.uix.label import Label
 
 from kivy_garden.markdownlabel import MarkdownLabel
+from .test_utils import find_labels_recursive, collect_widget_ids
 
 
 # **Feature: label-compatibility, Property 11: Auto alignment respects direction**
@@ -24,20 +23,8 @@ from kivy_garden.markdownlabel import MarkdownLabel
 class TestAutoAlignmentRespectsDirection:
     """Property tests for auto alignment respecting direction (Property 11)."""
     
-    def _find_labels_recursive(self, widget, labels=None):
-        """Recursively find all Label widgets in a widget tree."""
-        if labels is None:
-            labels = []
-        
-        if isinstance(widget, Label):
-            labels.append(widget)
-        
-        if hasattr(widget, 'children'):
-            for child in widget.children:
-                self._find_labels_recursive(child, labels)
-        
-        return labels
-    
+    @pytest.mark.unit
+    @pytest.mark.needs_window
     @pytest.mark.parametrize('base_direction', ['rtl', 'weak_rtl'])
     def test_auto_alignment_rtl_directions_use_right(self, base_direction):
         """Auto alignment uses 'right' for RTL base directions.
@@ -51,7 +38,7 @@ class TestAutoAlignmentRespectsDirection:
             base_direction=base_direction
         )
         
-        labels = self._find_labels_recursive(label)
+        labels = find_labels_recursive(label)
         assert len(labels) >= 1, "Expected at least one Label"
         
         # All labels should have halign='right' for RTL directions
@@ -59,6 +46,8 @@ class TestAutoAlignmentRespectsDirection:
             assert lbl.halign == 'right', \
                 f"Expected halign='right' for base_direction={base_direction}, got {lbl.halign}"
     
+    @pytest.mark.unit
+    @pytest.mark.needs_window
     @pytest.mark.parametrize('base_direction', ['ltr', 'weak_ltr', None])
     def test_auto_alignment_ltr_directions_use_left(self, base_direction):
         """Auto alignment uses 'left' for LTR base directions and None.
@@ -72,7 +61,7 @@ class TestAutoAlignmentRespectsDirection:
             base_direction=base_direction
         )
         
-        labels = self._find_labels_recursive(label)
+        labels = find_labels_recursive(label)
         assert len(labels) >= 1, "Expected at least one Label"
         
         # All labels should have halign='left' for LTR directions and None
@@ -80,6 +69,8 @@ class TestAutoAlignmentRespectsDirection:
             assert lbl.halign == 'left', \
                 f"Expected halign='left' for base_direction={base_direction}, got {lbl.halign}"
     
+    @pytest.mark.property
+    @pytest.mark.needs_window
     @given(
         st.sampled_from(['rtl', 'weak_rtl']),
         st.integers(min_value=1, max_value=6)
@@ -99,7 +90,7 @@ class TestAutoAlignmentRespectsDirection:
             base_direction=base_direction
         )
         
-        labels = self._find_labels_recursive(label)
+        labels = find_labels_recursive(label)
         assert len(labels) >= 1, "Expected at least one Label"
         
         # All labels should have halign='right' for RTL directions
@@ -107,6 +98,8 @@ class TestAutoAlignmentRespectsDirection:
             assert lbl.halign == 'right', \
                 f"Expected halign='right' for heading with base_direction={base_direction}, got {lbl.halign}"
     
+    @pytest.mark.property
+    @pytest.mark.needs_window
     @given(
         st.sampled_from(['ltr', 'weak_ltr', None]),
         st.integers(min_value=1, max_value=6)
@@ -126,7 +119,7 @@ class TestAutoAlignmentRespectsDirection:
             base_direction=base_direction
         )
         
-        labels = self._find_labels_recursive(label)
+        labels = find_labels_recursive(label)
         assert len(labels) >= 1, "Expected at least one Label"
         
         # All labels should have halign='left' for LTR directions and None
@@ -134,6 +127,8 @@ class TestAutoAlignmentRespectsDirection:
             assert lbl.halign == 'left', \
                 f"Expected halign='left' for heading with base_direction={base_direction}, got {lbl.halign}"
     
+    @pytest.mark.unit
+    @pytest.mark.needs_window
     @pytest.mark.parametrize('base_direction', ['rtl', 'weak_rtl'])
     def test_auto_alignment_rtl_applies_to_mixed_content(self, base_direction):
         """Auto alignment with RTL direction applies to mixed content types.
@@ -148,7 +143,7 @@ class TestAutoAlignmentRespectsDirection:
             base_direction=base_direction
         )
         
-        labels = self._find_labels_recursive(label)
+        labels = find_labels_recursive(label)
         assert len(labels) >= 2, "Expected at least 2 Labels for mixed content"
         
         # Filter out list markers (which have halign='right' by design)
@@ -159,6 +154,8 @@ class TestAutoAlignmentRespectsDirection:
             assert lbl.halign == 'right', \
                 f"Expected halign='right' for mixed content with base_direction={base_direction}, got {lbl.halign}"
     
+    @pytest.mark.unit
+    @pytest.mark.needs_window
     @pytest.mark.parametrize('base_direction', ['ltr', 'weak_ltr', None])
     def test_auto_alignment_ltr_applies_to_mixed_content(self, base_direction):
         """Auto alignment with LTR direction applies to mixed content types.
@@ -173,7 +170,7 @@ class TestAutoAlignmentRespectsDirection:
             base_direction=base_direction
         )
         
-        labels = self._find_labels_recursive(label)
+        labels = find_labels_recursive(label)
         assert len(labels) >= 2, "Expected at least 2 Labels for mixed content"
         
         # Filter out list markers (which have halign='right' by design)
@@ -194,20 +191,9 @@ class TestAutoAlignmentRespectsDirection:
 class TestDirectionChangeUpdatesAlignment:
     """Property tests for direction change updating alignment (Property 12)."""
     
-    def _find_labels_recursive(self, widget, labels=None):
-        """Recursively find all Label widgets in a widget tree."""
-        if labels is None:
-            labels = []
-        
-        if isinstance(widget, Label):
-            labels.append(widget)
-        
-        if hasattr(widget, 'children'):
-            for child in widget.children:
-                self._find_labels_recursive(child, labels)
-        
-        return labels
     
+    @pytest.mark.property
+    @pytest.mark.needs_window
     @given(
         st.sampled_from(['ltr', 'weak_ltr', None]),
         st.sampled_from(['rtl', 'weak_rtl'])
@@ -226,7 +212,7 @@ class TestDirectionChangeUpdatesAlignment:
             base_direction=initial_direction
         )
         
-        labels = self._find_labels_recursive(label)
+        labels = find_labels_recursive(label)
         assert len(labels) >= 1, "Expected at least one Label"
         
         # Verify initial alignment (should be 'left' for LTR/None)
@@ -238,11 +224,13 @@ class TestDirectionChangeUpdatesAlignment:
         label.base_direction = new_direction
         
         # Verify alignment updated to 'right' for RTL
-        labels_after = self._find_labels_recursive(label)
+        labels_after = find_labels_recursive(label)
         for lbl in labels_after:
             assert lbl.halign == 'right', \
                 f"Expected halign='right' after changing to base_direction={new_direction}, got {lbl.halign}"
     
+    @pytest.mark.property
+    @pytest.mark.needs_window
     @given(
         st.sampled_from(['rtl', 'weak_rtl']),
         st.sampled_from(['ltr', 'weak_ltr', None])
@@ -261,7 +249,7 @@ class TestDirectionChangeUpdatesAlignment:
             base_direction=initial_direction
         )
         
-        labels = self._find_labels_recursive(label)
+        labels = find_labels_recursive(label)
         assert len(labels) >= 1, "Expected at least one Label"
         
         # Verify initial alignment (should be 'right' for RTL)
@@ -273,11 +261,13 @@ class TestDirectionChangeUpdatesAlignment:
         label.base_direction = new_direction
         
         # Verify alignment updated to 'left' for LTR/None
-        labels_after = self._find_labels_recursive(label)
+        labels_after = find_labels_recursive(label)
         for lbl in labels_after:
             assert lbl.halign == 'left', \
                 f"Expected halign='left' after changing to base_direction={new_direction}, got {lbl.halign}"
     
+    @pytest.mark.property
+    @pytest.mark.needs_window
     @given(
         st.integers(min_value=1, max_value=6),
         st.sampled_from(['ltr', 'weak_ltr', None]),
@@ -298,7 +288,7 @@ class TestDirectionChangeUpdatesAlignment:
             base_direction=initial_direction
         )
         
-        labels = self._find_labels_recursive(label)
+        labels = find_labels_recursive(label)
         assert len(labels) >= 1, "Expected at least one Label"
         
         # Verify initial alignment (should be 'left' for LTR/None)
@@ -310,11 +300,13 @@ class TestDirectionChangeUpdatesAlignment:
         label.base_direction = new_direction
         
         # Verify alignment updated to 'right' for RTL
-        labels_after = self._find_labels_recursive(label)
+        labels_after = find_labels_recursive(label)
         for lbl in labels_after:
             assert lbl.halign == 'right', \
                 f"Expected halign='right' for heading after changing to base_direction={new_direction}, got {lbl.halign}"
     
+    @pytest.mark.property
+    @pytest.mark.needs_window
     @given(
         st.sampled_from(['ltr', 'weak_ltr', None]),
         st.sampled_from(['rtl', 'weak_rtl'])
@@ -334,13 +326,6 @@ class TestDirectionChangeUpdatesAlignment:
         )
         
         # Collect widget IDs before change
-        def collect_widget_ids(widget):
-            ids = [id(widget)]
-            if hasattr(widget, 'children'):
-                for child in widget.children:
-                    ids.extend(collect_widget_ids(child))
-            return set(ids)
-        
         ids_before = collect_widget_ids(label)
         
         # Change base_direction
@@ -353,6 +338,8 @@ class TestDirectionChangeUpdatesAlignment:
         assert ids_before == ids_after, \
             f"Widget identities changed during direction change: {len(ids_before)} before, {len(ids_after)} after"
     
+    @pytest.mark.property
+    @pytest.mark.needs_window
     @given(
         st.sampled_from(['ltr', 'weak_ltr', None]),
         st.sampled_from(['rtl', 'weak_rtl'])
@@ -372,7 +359,7 @@ class TestDirectionChangeUpdatesAlignment:
             base_direction=initial_direction
         )
         
-        labels = self._find_labels_recursive(label)
+        labels = find_labels_recursive(label)
         assert len(labels) >= 2, "Expected at least 2 Labels for mixed content"
         
         # Filter out list markers (which have halign='right' by design)
@@ -387,7 +374,7 @@ class TestDirectionChangeUpdatesAlignment:
         label.base_direction = new_direction
         
         # Verify alignment updated to 'right' for RTL
-        labels_after = self._find_labels_recursive(label)
+        labels_after = find_labels_recursive(label)
         content_labels_after = [lbl for lbl in labels_after if lbl.text not in ('•', '1.', '2.')]
         
         for lbl in content_labels_after:
@@ -403,20 +390,9 @@ class TestDirectionChangeUpdatesAlignment:
 class TestExplicitAlignmentOverridesAuto:
     """Property tests for explicit alignment overriding auto (Property 13)."""
     
-    def _find_labels_recursive(self, widget, labels=None):
-        """Recursively find all Label widgets in a widget tree."""
-        if labels is None:
-            labels = []
-        
-        if isinstance(widget, Label):
-            labels.append(widget)
-        
-        if hasattr(widget, 'children'):
-            for child in widget.children:
-                self._find_labels_recursive(child, labels)
-        
-        return labels
     
+    @pytest.mark.property
+    @pytest.mark.needs_window
     @given(
         st.sampled_from(['left', 'center', 'right', 'justify']),
         st.sampled_from(['rtl', 'weak_rtl', 'ltr', 'weak_ltr', None])
@@ -435,7 +411,7 @@ class TestExplicitAlignmentOverridesAuto:
             base_direction=base_direction
         )
         
-        labels = self._find_labels_recursive(label)
+        labels = find_labels_recursive(label)
         assert len(labels) >= 1, "Expected at least one Label"
         
         # All labels should have the explicit halign, regardless of base_direction
@@ -443,6 +419,8 @@ class TestExplicitAlignmentOverridesAuto:
             assert lbl.halign == explicit_halign, \
                 f"Expected halign={explicit_halign} (explicit) with base_direction={base_direction}, got {lbl.halign}"
     
+    @pytest.mark.property
+    @pytest.mark.needs_window
     @given(
         st.sampled_from(['left', 'center', 'right', 'justify']),
         st.sampled_from(['rtl', 'weak_rtl']),
@@ -463,7 +441,7 @@ class TestExplicitAlignmentOverridesAuto:
             base_direction=base_direction
         )
         
-        labels = self._find_labels_recursive(label)
+        labels = find_labels_recursive(label)
         assert len(labels) >= 1, "Expected at least one Label"
         
         # All labels should have the explicit halign, not 'right' from RTL
@@ -471,6 +449,8 @@ class TestExplicitAlignmentOverridesAuto:
             assert lbl.halign == explicit_halign, \
                 f"Expected halign={explicit_halign} (explicit) for heading with RTL base_direction={base_direction}, got {lbl.halign}"
     
+    @pytest.mark.property
+    @pytest.mark.needs_window
     @given(
         st.sampled_from(['left', 'center', 'right', 'justify']),
         st.sampled_from(['rtl', 'weak_rtl', 'ltr', 'weak_ltr', None])
@@ -490,7 +470,7 @@ class TestExplicitAlignmentOverridesAuto:
             base_direction=base_direction
         )
         
-        labels = self._find_labels_recursive(label)
+        labels = find_labels_recursive(label)
         assert len(labels) >= 2, "Expected at least 2 Labels for mixed content"
         
         # Filter out list markers (which have halign='right' by design)
@@ -501,6 +481,8 @@ class TestExplicitAlignmentOverridesAuto:
             assert lbl.halign == explicit_halign, \
                 f"Expected halign={explicit_halign} (explicit) for mixed content with base_direction={base_direction}, got {lbl.halign}"
     
+    @pytest.mark.property
+    @pytest.mark.needs_window
     @given(
         st.sampled_from(['left', 'center', 'right', 'justify']),
         st.sampled_from(['rtl', 'weak_rtl']),
@@ -520,7 +502,7 @@ class TestExplicitAlignmentOverridesAuto:
             base_direction=initial_direction
         )
         
-        labels = self._find_labels_recursive(label)
+        labels = find_labels_recursive(label)
         assert len(labels) >= 1, "Expected at least one Label"
         
         # Verify initial alignment (should be explicit halign)
@@ -532,11 +514,13 @@ class TestExplicitAlignmentOverridesAuto:
         label.base_direction = new_direction
         
         # Verify alignment remains the explicit value
-        labels_after = self._find_labels_recursive(label)
+        labels_after = find_labels_recursive(label)
         for lbl in labels_after:
             assert lbl.halign == explicit_halign, \
                 f"Expected halign={explicit_halign} (explicit) after direction change, got {lbl.halign}"
     
+    @pytest.mark.property
+    @pytest.mark.needs_window
     @given(
         st.sampled_from(['left', 'center', 'right', 'justify']),
         st.sampled_from(['rtl', 'weak_rtl', 'ltr', 'weak_ltr', None])

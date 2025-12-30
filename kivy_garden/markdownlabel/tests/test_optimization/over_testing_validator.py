@@ -12,7 +12,7 @@ from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 from dataclasses import dataclass, asdict
 
-from .test_file_analyzer import FileAnalyzer, ValidationReport, OptimizationRecommendation
+from .file_analyzer import FileAnalyzer, ValidationReport, OptimizationRecommendation
 
 
 @dataclass

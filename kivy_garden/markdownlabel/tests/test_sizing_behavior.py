@@ -8,11 +8,6 @@ and strict label mode sizing.
 import pytest
 from hypothesis import given, strategies as st, settings, assume
 
-from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.label import Label
-from kivy.uix.widget import Widget
-from kivy.uix.gridlayout import GridLayout
-
 from kivy_garden.markdownlabel import MarkdownLabel
 from .test_utils import (
     simple_markdown_document, markdown_heading, markdown_paragraph,
@@ -45,7 +40,6 @@ class TestAutoSizingBehavior:
         assert label.size_hint_y == 1, \
             f"Expected default size_hint_y=1, got {label.size_hint_y}"
     
-    # Complex strategy: 20 examples (adequate coverage)
     @given(markdown_heading())
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -72,8 +66,7 @@ class TestAutoSizingBehavior:
     @settings(max_examples=5, deadline=None)
     def test_more_content_means_more_height_potential(self, num_paragraphs):
         """More content should result in more minimum height."""
-        # Create markdown with varying number of paragraphs
-        text = '\n\n'.join([f'Paragraph number {i} with some text content.' 
+        text = '\n\n'.join([f'Paragraph number {i} with some text content.'
                            for i in range(num_paragraphs)])
         
         label = MarkdownLabel(text=text, auto_size_height=True)
@@ -91,7 +84,6 @@ class TestAutoSizingBehavior:
 
 class TestAutoSizeHeightTrueBehavior:
     """Property tests for auto_size_height True behavior (Property 7)."""
-     # Complex strategy: 20 examples (adequate coverage)
     
     @given(simple_markdown_document())
     # Complex strategy: 20 examples (adequate coverage)
@@ -171,7 +163,7 @@ class TestAutoSizeHeightFalseBehavior:
         assert label.auto_size_height is False, \
             f"Expected auto_size_height=False, got {label.auto_size_height}"
     
-    @given(simple_markdown_document(), 
+    @given(simple_markdown_document(),
            st.floats(min_value=0.1, max_value=2.0, allow_nan=False, allow_infinity=False))
     # Complex strategy: 50 examples (adequate coverage)
     @settings(max_examples=50, deadline=None)
@@ -257,7 +249,7 @@ class TestAutoSizeHeightDynamicToggling:
         assert label.auto_size_height is True, \
             f"Expected auto_size_height=True after toggle, got {label.auto_size_height}"
     
-    @given(simple_markdown_document(), 
+    @given(simple_markdown_document(),
            st.floats(min_value=0.1, max_value=2.0, allow_nan=False, allow_infinity=False))
     # Complex strategy: 50 examples (adequate coverage)
     @settings(max_examples=50, deadline=None)
@@ -323,6 +315,7 @@ class TestAutoSizeHeightDynamicToggling:
 # `auto_size_height` settings.
 # **Validates: Requirements 2.1, 2.2, 2.3, 2.4**
 
+@pytest.mark.test_tests
 class TestStrictLabelModeSizingBehavior:
     """Property tests for strict label mode sizing behavior (Property 2)."""
     
@@ -339,7 +332,7 @@ class TestStrictLabelModeSizingBehavior:
         assert label.strict_label_mode is True, \
             f"Expected strict_label_mode=True, got {label.strict_label_mode}"
     
-    @given(simple_markdown_document(), 
+    @given(simple_markdown_document(),
            st.floats(min_value=0.1, max_value=2.0, allow_nan=False, allow_infinity=False))
     # Complex strategy: 50 examples (adequate coverage)
     @settings(max_examples=50, deadline=None)
@@ -444,7 +437,7 @@ class TestStrictLabelModeSizingBehavior:
         assert label.size_hint_y is None, \
             f"Expected size_hint_y=None after toggling to strict_label_mode=False, got {label.size_hint_y}"
     
-    @given(simple_markdown_document(), 
+    @given(simple_markdown_document(),
            st.floats(min_value=0.1, max_value=2.0, allow_nan=False, allow_infinity=False))
     # Complex strategy: 50 examples (adequate coverage)
     @settings(max_examples=50, deadline=None)
@@ -488,7 +481,6 @@ class TestStrictLabelModeSizingBehavior:
     
     @given(simple_markdown_document())
     # Complex strategy: 20 examples (adequate coverage)
-    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_strict_mode_ignores_auto_size_height_changes(self, markdown_text):
         """When strict_label_mode=True, auto_size_height changes are ignored."""
@@ -506,9 +498,8 @@ class TestStrictLabelModeSizingBehavior:
     
     @given(simple_markdown_document())
     # Complex strategy: 20 examples (adequate coverage)
-    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
-    def test_strict_mode_triggers_rebuild(self, markdown_text):
+    def test_strict_mode_updates_value(self, markdown_text):
         """Changing strict_label_mode triggers widget rebuild."""
         assume(markdown_text.strip())
         
@@ -553,6 +544,7 @@ class TestStrictLabelModeSizingBehavior:
 # *For any* two test classes that test the same feature area, they should be located in the same module
 # **Validates: Requirements 1.4, 4.3, 4.4**
 
+@pytest.mark.test_tests
 class TestLogicalTestGrouping:
     """Property tests for logical test grouping (Property 9)."""
     

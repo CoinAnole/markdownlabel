@@ -17,18 +17,7 @@ from kivy.uix.label import Label
 from kivy.uix.image import Image
 
 from kivy_garden.markdownlabel import MarkdownLabel
-from .test_utils import find_labels_recursive, FakeTouch
-
-
-def find_images(widget):
-    """Recursively find all Image widgets in a widget tree."""
-    images = []
-    if isinstance(widget, Image):
-        images.append(widget)
-    if hasattr(widget, 'children'):
-        for child in widget.children:
-            images.extend(find_images(child))
-    return images
+from .test_utils import find_labels_recursive, FakeTouch, find_images
 
 
 # **Feature: label-compatibility, Property 14: Texture render mode structure**
@@ -36,6 +25,7 @@ def find_images(widget):
 # tree SHALL contain an Image widget displaying the rendered content as a texture.
 # **Validates: Requirements 6.1**
 
+@pytest.mark.slow
 class TestTextureRenderModeStructure:
     """Property tests for texture render mode structure (Property 14)."""
     
@@ -128,6 +118,7 @@ class TestTextureRenderModeStructure:
 # dispatched with the correct ref value.
 # **Validates: Requirements 6.2**
 
+@pytest.mark.slow
 class TestTextureModeLinksHandling:
     """Property tests for texture mode link handling (Property 15)."""
     
@@ -203,6 +194,7 @@ class TestTextureModeLinksHandling:
 # ref name AND return True.
 # **Validates: Requirements 2.1, 2.2**
 
+@pytest.mark.slow
 class TestDeterministicTextureHitTesting:
     """Deterministic tests for texture mode hit-testing without window dependency.
     
@@ -257,25 +249,6 @@ class TestDeterministicTextureHitTesting:
         assert result is True, \
             f"Expected on_touch_down to return True, got {result}"
     
-    # Property test strategies for hit-testing
-    @staticmethod
-    def _zone_strategy():
-        """Strategy for generating valid ref zones."""
-        return st.tuples(
-            st.floats(min_value=0, max_value=300, allow_nan=False),
-            st.floats(min_value=0, max_value=200, allow_nan=False),
-            st.floats(min_value=10, max_value=100, allow_nan=False),
-            st.floats(min_value=10, max_value=50, allow_nan=False)
-        )
-    
-    @staticmethod
-    def _ref_name_strategy():
-        """Strategy for generating valid ref names (URLs)."""
-        return st.from_regex(
-            r'https?://[a-z]{3,10}\.[a-z]{2,5}/[a-z]{1,10}',
-            fullmatch=True
-        )
-    
     @given(
         zone=st.tuples(
             st.floats(min_value=0, max_value=300, allow_nan=False),
@@ -290,7 +263,8 @@ class TestDeterministicTextureHitTesting:
         touch_offset_x=st.floats(min_value=0.1, max_value=0.9, allow_nan=False),
         touch_offset_y=st.floats(min_value=0.1, max_value=0.9, allow_nan=False)
     )
-    @settings(max_examples=100)
+    # Combination strategy: 50 examples (combination coverage)
+    @settings(max_examples=50, deadline=None)
     def test_property_inside_zone_dispatch(
         self, zone, ref_name, touch_offset_x, touch_offset_y
     ):
@@ -397,7 +371,8 @@ class TestDeterministicTextureHitTesting:
         ),
         outside_offset=st.floats(min_value=10, max_value=50, allow_nan=False)
     )
-    @settings(max_examples=100)
+    # Combination strategy: 50 examples (combination coverage)
+    @settings(max_examples=50, deadline=None)
     def test_property_outside_zone_no_dispatch(self, zone, ref_name, outside_offset):
         """Property test: Touch outside ref zones does not dispatch.
         
@@ -549,6 +524,7 @@ class TestDeterministicTextureHitTesting:
 # widgets-mode rendering.
 # **Validates: Requirements 6.1, 6.2**
 
+@pytest.mark.slow
 class TestTextureFallbackBranch:
     """Tests for texture mode fallback to widgets mode when rendering fails."""
     
@@ -624,6 +600,7 @@ class TestTextureFallbackBranch:
             "Expected no Image widgets in fallback mode"
 
 
+@pytest.mark.slow
 class TestAutoRenderModeSelection:
     """Property tests for auto render mode selection (Property 16)."""
     

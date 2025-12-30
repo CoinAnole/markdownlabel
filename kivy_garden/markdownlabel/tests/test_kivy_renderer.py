@@ -17,119 +17,18 @@ from kivy.uix.image import AsyncImage
 from kivy.uix.gridlayout import GridLayout
 
 from kivy_garden.markdownlabel.kivy_renderer import KivyRenderer
-
-
-# Custom strategies for generating valid AST tokens
-
-@st.composite
-def heading_token(draw, level=None):
-    """Generate a heading token with specified or random level."""
-    if level is None:
-        level = draw(st.integers(min_value=1, max_value=6))
-    text = draw(st.text(min_size=1, max_size=50, alphabet=st.characters(
-        whitelist_categories=['L', 'N', 'P', 'S'],
-        blacklist_characters='[]&'
-    )))
-    return {
-        'type': 'heading',
-        'children': [{'type': 'text', 'raw': text}],
-        'attrs': {'level': level}
-    }
-
-
-@st.composite
-def paragraph_token(draw):
-    """Generate a paragraph token with text content."""
-    text = draw(st.text(min_size=1, max_size=100, alphabet=st.characters(
-        whitelist_categories=['L', 'N', 'P', 'S'],
-        blacklist_characters='[]&'
-    )))
-    return {
-        'type': 'paragraph',
-        'children': [{'type': 'text', 'raw': text}]
-    }
-
-
-@st.composite
-def list_item_token(draw):
-    """Generate a list item token."""
-    text = draw(st.text(min_size=1, max_size=50, alphabet=st.characters(
-        whitelist_categories=['L', 'N', 'P', 'S'],
-        blacklist_characters='[]&'
-    )))
-    return {
-        'type': 'list_item',
-        'children': [{
-            'type': 'paragraph',
-            'children': [{'type': 'text', 'raw': text}]
-        }]
-    }
-
-
-@st.composite
-def list_token(draw, ordered=None):
-    """Generate a list token (ordered or unordered)."""
-    if ordered is None:
-        ordered = draw(st.booleans())
-    
-    num_items = draw(st.integers(min_value=1, max_value=5))
-    items = [draw(list_item_token()) for _ in range(num_items)]
-    
-    return {
-        'type': 'list',
-        'children': items,
-        'attrs': {
-            'ordered': ordered,
-            'start': 1
-        }
-    }
-
-
-@st.composite
-def code_block_token(draw):
-    """Generate a code block token."""
-    code = draw(st.text(min_size=1, max_size=200, alphabet=st.characters(
-        whitelist_categories=['L', 'N', 'P', 'S', 'Z'],
-        blacklist_characters='[]&'
-    )))
-    language = draw(st.sampled_from(['', 'python', 'javascript', 'rust', 'go', 'java']))
-    return {
-        'type': 'block_code',
-        'raw': code,
-        'attrs': {'info': language}
-    }
-
-
-@st.composite
-def block_quote_token(draw):
-    """Generate a block quote token."""
-    text = draw(st.text(min_size=1, max_size=100, alphabet=st.characters(
-        whitelist_categories=['L', 'N', 'P', 'S'],
-        blacklist_characters='[]&'
-    )))
-    return {
-        'type': 'block_quote',
-        'children': [{
-            'type': 'paragraph',
-            'children': [{'type': 'text', 'raw': text}]
-        }]
-    }
-
-
-@st.composite
-def image_token(draw):
-    """Generate an image token."""
-    alt = draw(st.text(min_size=0, max_size=50, alphabet=st.characters(
-        whitelist_categories=['L', 'N', 'P', 'S'],
-        blacklist_characters='[]&'
-    )))
-    # Generate a simple URL-like string
-    url = draw(st.from_regex(r'https?://[a-z]+\.[a-z]+/[a-z]+\.(png|jpg|gif)', fullmatch=True))
-    return {
-        'type': 'image',
-        'children': [{'type': 'text', 'raw': alt}] if alt else [],
-        'attrs': {'url': url}
-    }
+from .test_utils import (
+    heading_token,
+    paragraph_token,
+    list_item_token,
+    list_token,
+    code_block_token,
+    block_quote_token,
+    image_token,
+    table_cell_token,
+    table_row_token,
+    table_token
+)
 
 
 # **Feature: markdown-label, Property 3: Heading Font Size Hierarchy**
@@ -187,7 +86,7 @@ class TestHeadingFontHierarchy:
         assert widget.markup is True, "Heading should have markup=True"
     
     @given(st.integers(min_value=1, max_value=6), st.floats(min_value=10, max_value=30))
-    # Complex strategy: 10 examples (adequate coverage)
+    # Combination strategy: 10 examples (performance optimized)
     @settings(max_examples=10, deadline=None)
     def test_heading_font_size_scales_with_base(self, level, base_size):
         """Heading font size scales proportionally with base_font_size."""
@@ -225,7 +124,6 @@ class TestParagraphMarkupEnabled:
         widget = renderer.paragraph(token, None)
         
         assert isinstance(widget, Label), f"Expected Label, got {type(widget)}"
-        # Complex strategy: 20 examples (adequate coverage)
         assert widget.markup is True, "Paragraph should have markup=True"
 
     @given(paragraph_token())
@@ -457,8 +355,6 @@ class TestCodeBlockLanguageMetadata:
         assert widget.language_info == language, \
             f"Expected language '{language}', got '{widget.language_info}'"
 
- # Complex strategy: 20 examples (adequate coverage)
-
 
 # **Feature: markdown-label, Property 14: Block Quote Structure**
 # *For any* Markdown block quote, the rendered widget SHALL be a BoxLayout
@@ -582,76 +478,6 @@ class TestImageWidgetCreation:
         widget = renderer.image(token, None)
         
         assert hasattr(widget, 'alt_text'), "Image should have alt_text attribute"
-
-
-# Custom strategies for table tokens
-
-@st.composite
-def table_cell_token(draw, align=None, is_head=False):
-    """Generate a table cell token."""
-    text = draw(st.text(min_size=0, max_size=30, alphabet=st.characters(
-        whitelist_categories=['L', 'N', 'P', 'S'],
-        blacklist_characters='[]&'
-    )))
-    if align is None:
-        align = draw(st.sampled_from([None, 'left', 'center', 'right']))
-    
-    return {
-        'type': 'table_cell',
-        'children': [{'type': 'text', 'raw': text}] if text else [],
-        'attrs': {'align': align, 'head': is_head}
-    }
-
-
-@st.composite
-def table_row_token(draw, num_cols, alignments=None, is_head=False):
-    """Generate a table row token with specified number of columns."""
-    cells = []
-    for i in range(num_cols):
-        align = alignments[i] if alignments else None
-        cell = draw(table_cell_token(align=align, is_head=is_head))
-        cells.append(cell)
-    
-    return {
-        'type': 'table_row',
-        'children': cells
-    }
-
-
-@st.composite
-def table_token(draw, num_rows=None, num_cols=None):
-    """Generate a table token with specified dimensions."""
-    if num_rows is None:
-        num_rows = draw(st.integers(min_value=1, max_value=5))
-    if num_cols is None:
-        num_cols = draw(st.integers(min_value=1, max_value=5))
-    
-    # Generate alignments for columns
-    alignments = [draw(st.sampled_from([None, 'left', 'center', 'right'])) 
-                  for _ in range(num_cols)]
-    
-    # Generate header row
-    head_row = draw(table_row_token(num_cols, alignments, is_head=True))
-    
-    # Generate body rows
-    body_rows = []
-    for _ in range(num_rows - 1):  # -1 because header is one row
-        body_row = draw(table_row_token(num_cols, alignments, is_head=False))
-        body_rows.append(body_row)
-    
-    return {
-        'type': 'table',
-        'children': [
-            {
-                'type': 'table_head',
-                'children': [head_row]
-            },
-            {
-                'type': 'table_body',
-                'children': body_rows
-            }
-        ]
-    }
 
 
 # **Feature: markdown-label, Property 8: Table Grid Structure**

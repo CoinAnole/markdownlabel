@@ -13,17 +13,16 @@ from kivy.uix.label import Label
 from kivy_garden.markdownlabel import MarkdownLabel
 from .test_utils import (
     find_labels_recursive,
-    simple_markdown_document
+    simple_markdown_document,
+    unicode_errors_strategy,
+    collect_widget_ids
 )
-
-
-# Strategy for generating valid unicode_errors values
-unicode_errors_strategy = st.sampled_from(['strict', 'replace', 'ignore'])
 
 
 class TestTextSizeForwarding:
     """Property tests for text_size forwarding (Property 9)."""
     
+    @pytest.mark.property
     @given(st.floats(min_value=50, max_value=1000, allow_nan=False, allow_infinity=False))
     # Complex strategy: 50 examples (adequate coverage)
     @settings(max_examples=50, deadline=None)
@@ -34,6 +33,7 @@ class TestTextSizeForwarding:
         assert label.text_size[0] == width, \
             f"Expected text_size[0]={width}, got {label.text_size[0]}"
 
+    @pytest.mark.property
     @given(st.floats(min_value=50, max_value=1000, allow_nan=False, allow_infinity=False))
     # Complex strategy: 50 examples (adequate coverage)
     @settings(max_examples=50, deadline=None)
@@ -46,12 +46,13 @@ class TestTextSizeForwarding:
         assert label.text_size[0] == width, \
             f"Expected text_size[0]={width}, got {label.text_size[0]}"
     
+    @pytest.mark.property
     @given(st.floats(min_value=50, max_value=1000, allow_nan=False, allow_infinity=False),
            st.floats(min_value=50, max_value=1000, allow_nan=False, allow_infinity=False))
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
-    def test_text_size_change_triggers_rebuild(self, width1, width2):
-        """Changing text_size triggers widget rebuild."""
+    def test_text_size_change_updates_value(self, width1, width2):
+        """Changing text_size updates the stored value on MarkdownLabel."""
         assume(abs(width1 - width2) > 1)  # Ensure they're different
         
         label = MarkdownLabel(text='Hello World', text_size=[width1, None])
@@ -66,10 +67,8 @@ class TestTextSizeForwarding:
         assert label.text_size[0] == width2, \
             f"After change, expected text_size[0]={width2}, got {label.text_size[0]}"
     
-    @given(st.data())
-    # Complex strategy: 100 examples (adequate coverage)
-    @settings(max_examples=100, deadline=None)
-    def test_default_text_size_is_none_none(self, data):
+    @pytest.mark.unit
+    def test_default_text_size_is_none_none(self):
         """Default text_size is [None, None]."""
         label = MarkdownLabel(text='Hello World')
 
@@ -80,6 +79,7 @@ class TestTextSizeForwarding:
         assert label.text_size[1] is None, \
             f"Default text_size[1] should be None, got {label.text_size[1]}"
     
+    @pytest.mark.property
     @given(st.floats(min_value=50, max_value=1000, allow_nan=False, allow_infinity=False))
     # Complex strategy: 50 examples (adequate coverage)
     @settings(max_examples=50, deadline=None)
@@ -103,9 +103,9 @@ class TestTextSizeForwarding:
 # **Validates: Requirements 1.1, 1.2**
 
 class TestTextSizeHeightForwarding:
-    # Complex strategy: 50 examples (adequate coverage)
     """Property tests for text_size height forwarding (Property 1)."""
     
+    @pytest.mark.property
     @given(st.floats(min_value=50, max_value=500, allow_nan=False, allow_infinity=False))
     # Complex strategy: 50 examples (adequate coverage)
     @settings(max_examples=50, deadline=None)
@@ -121,6 +121,7 @@ class TestTextSizeHeightForwarding:
             assert lbl.text_size[1] == height, \
                 f"Expected text_size[1]={height}, got {lbl.text_size[1]}"
     
+    @pytest.mark.property
     @given(st.floats(min_value=50, max_value=500, allow_nan=False, allow_infinity=False))
     # Complex strategy: 50 examples (adequate coverage)
     @settings(max_examples=50, deadline=None)
@@ -136,6 +137,7 @@ class TestTextSizeHeightForwarding:
             assert lbl.text_size[1] == height, \
                 f"Expected text_size[1]={height}, got {lbl.text_size[1]}"
     
+    @pytest.mark.property
     @given(st.floats(min_value=100, max_value=500, allow_nan=False, allow_infinity=False),
            st.floats(min_value=50, max_value=300, allow_nan=False, allow_infinity=False))
     # Complex strategy: 20 examples (adequate coverage)
@@ -154,9 +156,10 @@ class TestTextSizeHeightForwarding:
             assert lbl.text_size[1] == height, \
                 f"Expected text_size[1]={height}, got {lbl.text_size[1]}"
     
+    @pytest.mark.property
     @given(st.floats(min_value=50, max_value=500, allow_nan=False, allow_infinity=False),
            st.sampled_from(['top', 'middle', 'bottom']))
-    # Small finite strategy: 3 examples (input space size: 3)
+    # Combination strategy: 3 examples (combination coverage)
     @settings(max_examples=3, deadline=None)
     def test_valign_forwarded_with_height(self, height, valign):
         """valign is forwarded to Labels when text_size height is set."""
@@ -170,6 +173,7 @@ class TestTextSizeHeightForwarding:
             assert lbl.valign == valign, \
                 f"Expected valign={valign}, got {lbl.valign}"
     
+    @pytest.mark.property
     @given(st.floats(min_value=50, max_value=500, allow_nan=False, allow_infinity=False))
     # Complex strategy: 50 examples (adequate coverage)
     @settings(max_examples=50, deadline=None)
@@ -195,6 +199,7 @@ class TestTextSizeHeightForwarding:
 class TestTextSizeHeightNoneBackwardCompatibility:
     """Property tests for text_size height None backward compatibility (Property 2)."""
     
+    @pytest.mark.property
     @given(simple_markdown_document())
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -212,6 +217,7 @@ class TestTextSizeHeightNoneBackwardCompatibility:
             assert lbl.text_size[1] is None, \
                 f"Expected text_size[1]=None for auto-sizing, got {lbl.text_size[1]}"
     
+    @pytest.mark.property
     @given(st.floats(min_value=50, max_value=1000, allow_nan=False, allow_infinity=False))
     # Complex strategy: 50 examples (adequate coverage)
     @settings(max_examples=50, deadline=None)
@@ -252,6 +258,7 @@ class TestTextSizeHeightNoneBackwardCompatibility:
 class TestTextSizeDynamicUpdates:
     """Property tests for text_size dynamic updates (Property 3)."""
     
+    @pytest.mark.property
     @given(st.floats(min_value=50, max_value=300, allow_nan=False, allow_infinity=False),
            st.floats(min_value=350, max_value=600, allow_nan=False, allow_infinity=False))
     # Complex strategy: 20 examples (adequate coverage)
@@ -276,6 +283,7 @@ class TestTextSizeDynamicUpdates:
             assert lbl.text_size[1] == height2, \
                 f"After change: Expected text_size[1]={height2}, got {lbl.text_size[1]}"
     
+    @pytest.mark.property
     @given(st.floats(min_value=50, max_value=300, allow_nan=False, allow_infinity=False))
     # Complex strategy: 50 examples (adequate coverage)
     @settings(max_examples=50, deadline=None)
@@ -300,6 +308,7 @@ class TestTextSizeDynamicUpdates:
                 assert lbl.text_size[1] is None, \
                     f"After change to None: Expected text_size[1]=None, got {lbl.text_size[1]}"
     
+    @pytest.mark.property
     @given(st.floats(min_value=50, max_value=300, allow_nan=False, allow_infinity=False))
     # Complex strategy: 50 examples (adequate coverage)
     @settings(max_examples=50, deadline=None)
@@ -333,6 +342,7 @@ class TestTextSizeDynamicUpdates:
 class TestUnicodeErrorsForwarding:
     """Property tests for unicode_errors forwarding (Property 10)."""
     
+    @pytest.mark.property
     @given(unicode_errors_strategy)
     # Small finite strategy: 3 examples (input space size: 3)
     @settings(max_examples=3, deadline=None)
@@ -343,6 +353,7 @@ class TestUnicodeErrorsForwarding:
         assert label.unicode_errors == unicode_errors, \
             f"Expected unicode_errors={unicode_errors}, got {label.unicode_errors}"
     
+    @pytest.mark.property
     @given(unicode_errors_strategy)
     # Small finite strategy: 3 examples (input space size: 3)
     @settings(max_examples=3, deadline=None)
@@ -358,6 +369,7 @@ class TestUnicodeErrorsForwarding:
             assert lbl.unicode_errors == unicode_errors, \
                 f"Expected unicode_errors={unicode_errors}, got {lbl.unicode_errors}"
     
+    @pytest.mark.property
     @given(unicode_errors_strategy)
     # Small finite strategy: 3 examples (input space size: 3)
     @settings(max_examples=3, deadline=None)
@@ -373,6 +385,7 @@ class TestUnicodeErrorsForwarding:
             assert lbl.unicode_errors == unicode_errors, \
                 f"Expected unicode_errors={unicode_errors}, got {lbl.unicode_errors}"
     
+    @pytest.mark.property
     @given(unicode_errors_strategy)
     # Small finite strategy: 3 examples (input space size: 3)
     @settings(max_examples=3, deadline=None)
@@ -389,6 +402,7 @@ class TestUnicodeErrorsForwarding:
             assert lbl.unicode_errors == unicode_errors, \
                 f"Expected unicode_errors={unicode_errors}, got {lbl.unicode_errors}"
     
+    @pytest.mark.property
     @given(unicode_errors_strategy)
     # Small finite strategy: 3 examples (input space size: 3)
     @settings(max_examples=3, deadline=None)
@@ -405,6 +419,7 @@ class TestUnicodeErrorsForwarding:
             assert lbl.unicode_errors == unicode_errors, \
                 f"Expected unicode_errors={unicode_errors}, got {lbl.unicode_errors}"
     
+    @pytest.mark.property
     @given(unicode_errors_strategy)
     # Small finite strategy: 3 examples (input space size: 3)
     @settings(max_examples=3, deadline=None)
@@ -421,16 +436,22 @@ class TestUnicodeErrorsForwarding:
             assert lbl.unicode_errors == unicode_errors, \
                 f"Expected unicode_errors={unicode_errors}, got {lbl.unicode_errors}"
     
-    @pytest.mark.parametrize('errors1,errors2', [
-        ('strict', 'replace'), ('strict', 'ignore'),
-        ('replace', 'strict'), ('replace', 'ignore'),
-        ('ignore', 'strict'), ('ignore', 'replace')
-    ])
+    @pytest.mark.property
+    @given(unicode_errors_strategy, unicode_errors_strategy)
+    # Combination strategy: 50 examples (combination coverage)
+    @settings(max_examples=50, deadline=None)
     def test_unicode_errors_change_triggers_rebuild(self, errors1, errors2):
-        """Changing unicode_errors triggers widget rebuild with new value."""
-
+        """Changing unicode_errors triggers widget rebuild with new value.
+        
+        **Feature: label-compatibility, Property 10: unicode_errors Forwarding**
+        **Validates: Requirements 10.1, 10.2**
+        """
+        assume(errors1 != errors2)
         
         label = MarkdownLabel(text='Hello World', unicode_errors=errors1)
+        
+        # Collect widget IDs before change
+        ids_before = collect_widget_ids(label)
         
         # Verify initial unicode_errors
         labels = find_labels_recursive(label)
@@ -441,16 +462,18 @@ class TestUnicodeErrorsForwarding:
         label.unicode_errors = errors2
         label.force_rebuild()  # Force immediate rebuild for test
         
+        # Verify rebuild occurred
+        ids_after = collect_widget_ids(label)
+        assert ids_before != ids_after, "Widget tree should rebuild for unicode_errors changes"
+        
         # Verify new unicode_errors
         labels = find_labels_recursive(label)
         for lbl in labels:
             assert lbl.unicode_errors == errors2, \
                 f"After change, expected unicode_errors={errors2}, got {lbl.unicode_errors}"
     
-    @given(st.data())
-    # Complex strategy: 100 examples (adequate coverage)
-    @settings(max_examples=100, deadline=None)
-    def test_default_unicode_errors_is_replace(self, data):
+    @pytest.mark.unit
+    def test_default_unicode_errors_is_replace(self):
         """Default unicode_errors is 'replace'."""
         label = MarkdownLabel(text='Hello World')
         
@@ -466,6 +489,7 @@ class TestUnicodeErrorsForwarding:
 class TestStripForwarding:
     """Property tests for strip forwarding (Property 13)."""
     
+    @pytest.mark.property
     @given(st.booleans())
     # Boolean strategy: 2 examples (True/False coverage)
     @settings(max_examples=2, deadline=None)
@@ -476,6 +500,7 @@ class TestStripForwarding:
         assert label.strip == strip_value, \
             f"Expected strip={strip_value}, got {label.strip}"
     
+    @pytest.mark.property
     @given(st.booleans())
     # Boolean strategy: 2 examples (True/False coverage)
     @settings(max_examples=2, deadline=None)
@@ -491,6 +516,7 @@ class TestStripForwarding:
             assert lbl.strip == strip_value, \
                 f"Expected strip={strip_value}, got {lbl.strip}"
     
+    @pytest.mark.property
     @given(st.booleans())
     # Boolean strategy: 2 examples (True/False coverage)
     @settings(max_examples=2, deadline=None)
@@ -506,6 +532,7 @@ class TestStripForwarding:
             assert lbl.strip == strip_value, \
                 f"Expected strip={strip_value}, got {lbl.strip}"
     
+    @pytest.mark.property
     @given(st.booleans())
     # Boolean strategy: 2 examples (True/False coverage)
     @settings(max_examples=2, deadline=None)
@@ -522,6 +549,7 @@ class TestStripForwarding:
             assert lbl.strip == strip_value, \
                 f"Expected strip={strip_value}, got {lbl.strip}"
     
+    @pytest.mark.property
     @given(st.booleans())
     # Boolean strategy: 2 examples (True/False coverage)
     @settings(max_examples=2, deadline=None)
@@ -538,6 +566,7 @@ class TestStripForwarding:
             assert lbl.strip == strip_value, \
                 f"Expected strip={strip_value}, got {lbl.strip}"
     
+    @pytest.mark.property
     @given(st.booleans())
     # Boolean strategy: 2 examples (True/False coverage)
     @settings(max_examples=2, deadline=None)
@@ -554,14 +583,22 @@ class TestStripForwarding:
             assert lbl.strip == strip_value, \
                 f"Expected strip={strip_value}, got {lbl.strip}"
     
+    @pytest.mark.property
     @given(st.booleans(), st.booleans())
     # Combination strategy: 2 examples (combination coverage)
     @settings(max_examples=2, deadline=None)
     def test_strip_change_triggers_rebuild(self, strip1, strip2):
-        """Changing strip triggers widget rebuild with new value."""
+        """Changing strip triggers widget rebuild with new value.
+        
+        **Feature: label-compatibility, Property 13: strip Forwarding**
+        **Validates: Requirements 14.1**
+        """
         assume(strip1 != strip2)
         
         label = MarkdownLabel(text='Hello World', strip=strip1)
+        
+        # Collect widget IDs before change
+        ids_before = collect_widget_ids(label)
         
         # Verify initial strip
         labels = find_labels_recursive(label)
@@ -572,16 +609,18 @@ class TestStripForwarding:
         label.strip = strip2
         label.force_rebuild()  # Force immediate rebuild for test
         
+        # Verify rebuild occurred
+        ids_after = collect_widget_ids(label)
+        assert ids_before != ids_after, "Widget tree should rebuild for strip changes"
+        
         # Verify new strip
         labels = find_labels_recursive(label)
         for lbl in labels:
             assert lbl.strip == strip2, \
                 f"After change, expected strip={strip2}, got {lbl.strip}"
     
-    @given(st.data())
-    # Complex strategy: 100 examples (adequate coverage)
-    @settings(max_examples=100, deadline=None)
-    def test_default_strip_is_false(self, data):
+    @pytest.mark.unit
+    def test_default_strip_is_false(self):
         """Default strip is False."""
         label = MarkdownLabel(text='Hello World')
         
