@@ -40,7 +40,7 @@ This plan outlines the process to merge the 7 modules from `kivy_garden/markdown
 
 ---
 
-## Phase 2: Module Migration (test_optimization → modules)
+## Phase 1: Module Migration (test_optimization → modules)
 
 ### Tasks
 1. **Move all 7 modules from test_optimization/ to modules/**
@@ -67,7 +67,7 @@ This plan outlines the process to merge the 7 modules from `kivy_garden/markdown
 
 ---
 
-## Phase 3: Test File Import Updates
+## Phase 2: Test File Import Updates
 
 ### Tasks
 
@@ -155,7 +155,7 @@ from kivy_garden.markdownlabel.tests.modules.strategy_analyzer import StrategyTy
 
 ---
 
-## Phase 4: Tool Script Import Updates
+## Phase 3: Tool Script Import Updates
 
 ### Tasks
 
@@ -192,7 +192,7 @@ from kivy_garden.markdownlabel.tests.modules.file_analyzer import FileAnalyzer
 
 ---
 
-## Phase 5: Verification and Testing
+## Phase 4: Verification and Testing
 
 ### Tasks
 
@@ -235,7 +235,7 @@ from kivy_garden.markdownlabel.tests.modules.file_analyzer import FileAnalyzer
 
 ---
 
-## Phase 6: Cleanup and Documentation
+## Phase 5: Cleanup and Documentation
 
 ### Tasks
 
