@@ -14,7 +14,6 @@ os.environ['KIVY_NO_ARGS'] = '1'
 os.environ['KIVY_NO_CONSOLELOG'] = '1'
 
 # Add parent directory of tools to path for absolute imports
-# This allows imports like 'from tools.test_optimization.comment_manager'
 repo_root = os.path.join(os.path.dirname(__file__), '..', '..', '..')
 if repo_root not in sys.path:
     sys.path.insert(0, repo_root)

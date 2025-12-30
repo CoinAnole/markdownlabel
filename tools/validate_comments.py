@@ -13,8 +13,8 @@ import sys
 from pathlib import Path
 from typing import List, Dict, Any, Optional
 
-from kivy_garden.markdownlabel.tests.test_optimization.comment_manager import CommentAnalyzer, DirectoryAnalysis, CommentStandardizer, BatchResult
-from kivy_garden.markdownlabel.tests.test_optimization.file_analyzer import FileAnalyzer
+from kivy_garden.markdownlabel.tests.modules.comment_manager import CommentAnalyzer, DirectoryAnalysis, CommentStandardizer, BatchResult
+from kivy_garden.markdownlabel.tests.modules.file_analyzer import FileAnalyzer
 
 
 class CommentValidationCLI:

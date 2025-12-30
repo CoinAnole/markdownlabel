@@ -231,7 +231,7 @@ class TestCoveragePreservation:
                 refactored_content = f'''"""Refactored test module {i}."""
 import pytest
 # Simulated import from consolidated helpers
-from test_utils import helper_function
+from ..test_utils import helper_function
 
 {content.replace('class Test', 'class TestRefactored')}
 
@@ -318,7 +318,7 @@ class TestBefore{i}:
                 # Refactoring might consolidate some tests but shouldn't remove functionality
                 content = f'''"""Refactored test module {i}."""
 import pytest
-from test_utils import consolidated_helper
+from ..test_utils import consolidated_helper
 
 class TestAfter{i}:
     """Refactored test class {i}."""

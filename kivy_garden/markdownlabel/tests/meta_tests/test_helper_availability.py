@@ -11,7 +11,7 @@ from kivy.uix.label import Label
 from kivy.uix.boxlayout import BoxLayout
 
 from kivy_garden.markdownlabel import MarkdownLabel
-from .test_utils import (
+from kivy_garden.markdownlabel.tests.test_utils import (
     find_labels_recursive,
     colors_equal,
     padding_equal,
@@ -196,7 +196,7 @@ class TestHelperFunctionConsolidation:
         import ast
         from pathlib import Path
         
-        test_dir = Path(__file__).parent
+        test_dir = Path(__file__).parent.parent  # Go up from meta_tests to tests
         duplicate_implementations = []
         
         for test_file in test_dir.glob('test_*.py'):
@@ -230,7 +230,7 @@ class TestHelperFunctionConsolidation:
         import ast
         from pathlib import Path
         
-        test_dir = Path(__file__).parent
+        test_dir = Path(__file__).parent.parent  # Go up from meta_tests to tests
         duplicate_implementations = []
         
         for test_file in test_dir.glob('test_*.py'):
@@ -263,7 +263,7 @@ class TestHelperFunctionConsolidation:
         import ast
         from pathlib import Path
         
-        test_dir = Path(__file__).parent
+        test_dir = Path(__file__).parent.parent  # Go up from meta_tests to tests
         files_without_imports = []
         
         for test_file in test_dir.glob('test_*.py'):
@@ -276,7 +276,9 @@ class TestHelperFunctionConsolidation:
                 
                 # Check if file uses find_labels_recursive but doesn't import from test_utils
                 if 'find_labels_recursive' in content:
-                    if 'from .test_utils import' not in content and 'from kivy_garden.markdownlabel.tests.test_utils import' not in content:
+                    has_absolute_import = 'from kivy_garden.markdownlabel.tests.test_utils import' in content
+                    has_relative_import = 'from .test_utils import' in content
+                    if not (has_absolute_import or has_relative_import):
                         files_without_imports.append(str(test_file.name))
                         
             except Exception:

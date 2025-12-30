@@ -15,7 +15,7 @@ from pathlib import Path
 from datetime import datetime
 from typing import Dict, List, Tuple, Any
 
-from kivy_garden.markdownlabel.tests.test_optimization.file_analyzer import FileAnalyzer
+from kivy_garden.markdownlabel.tests.modules.file_analyzer import FileAnalyzer
 
 
 class BaselinePerformanceMeasurer:
