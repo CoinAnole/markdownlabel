@@ -89,6 +89,6 @@ twine upload dist/*
 ## Code Style
 
 - **PEP8 compliance** with exceptions defined in `setup.cfg`
-- **Max line length**: 80 characters
+- **Max line length**: 110 characters
 - **Flake8 configuration**: See `setup.cfg` for ignored rules
 - Pre-commit hook available in `tools/hooks/pre-commit`

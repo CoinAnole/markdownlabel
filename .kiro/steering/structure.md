@@ -170,7 +170,7 @@ Located in `external/`:
 ## Configuration Files
 
 - `setup.py`: Package metadata, dependencies, entry points
-- `setup.cfg`: Flake8 configuration, code style rules (80 char line limit, PEP8 compliance)
+- `setup.cfg`: Flake8 configuration, code style rules (110 char line limit, PEP8 compliance)
 - `pytest.ini`: Pytest configuration
 - `kivy_garden/markdownlabel/tests/TESTING.md`: Comprehensive testing guidelines including property-based testing optimization
 
