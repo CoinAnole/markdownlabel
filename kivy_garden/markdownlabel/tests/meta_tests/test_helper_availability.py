@@ -276,7 +276,9 @@ class TestHelperFunctionConsolidation:
                 
                 # Check if file uses find_labels_recursive but doesn't import from test_utils
                 if 'find_labels_recursive' in content:
-                    if 'from kivy_garden.markdownlabel.tests.test_utils import' not in content:
+                    has_absolute_import = 'from kivy_garden.markdownlabel.tests.test_utils import' in content
+                    has_relative_import = 'from .test_utils import' in content
+                    if not (has_absolute_import or has_relative_import):
                         files_without_imports.append(str(test_file.name))
                         
             except Exception:
