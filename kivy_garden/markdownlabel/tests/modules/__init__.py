@@ -143,7 +143,7 @@ __all__ = [
     'AssertionPattern',
     'AssertionAnalysis',
     'AssertionAnalyzer',
-    
+
     # From comment_manager
     'StrategyType',
     'CommentPattern',
@@ -160,12 +160,12 @@ __all__ = [
     'CommentFormatRegistry',
     'CommentAnalyzer',
     'CommentStandardizer',
-    
+
     # From duplicate_detector
     'DuplicateGroup',
     'ConsolidationReport',
     'DuplicateDetector',
-    
+
     # From file_analyzer
     'FileAnalyzerPropertyTest',
     'CommentInfo',
@@ -174,23 +174,23 @@ __all__ = [
     'CommentComplianceStats',
     'FileAnalyzerValidationReport',
     'FileAnalyzer',
-    
+
     # From file_parser
     'ParsedMethod',
     'ParsedClass',
     'HelperFunction',
     'FileMetadata',
     'FileParser',
-    
+
     # From max_examples_calculator
     'MaxExamplesCalculator',
-    
+
     # From naming_convention_validator
     'NamingViolationType',
     'NamingViolation',
     'NamingConventionReport',
     'NamingConventionValidator',
-    
+
     # From optimization_detector
     'OptimizationType',
     'CIOptimizationPattern',
@@ -198,18 +198,18 @@ __all__ = [
     'OptimizationDetector',
     'OptimizationCommentGenerator',
     'OptimizationAwareCommentStandardizer',
-    
+
     # From over_testing_validator
     'ValidationThresholds',
     'OverTestingValidationResult',
     'OverTestingValidator',
-    
+
     # From strategy_analyzer
     'StrategyAnalysis',
     'StrategyClassifier',
     'CodeAnalyzer',
     'StrategyTypeMapper',
-    
+
     # From test_discovery
     'PropertyTest',
     'find_property_tests',
