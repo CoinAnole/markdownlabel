@@ -1,0 +1,128 @@
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:9:1: F401 'os' imported but unused
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:85:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:93:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:96:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:104:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:115:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:126:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:129:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:138:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:142:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:147:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:156:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:160:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:175:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:184:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:187:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:192:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:197:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:201:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:205:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:209:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:218:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:222:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:225:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:231:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:240:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:243:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:249:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:267:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:272:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:275:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:280:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:297:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:302:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:306:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:312:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:316:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:325:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:330:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:334:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:338:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:347:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:351:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:361:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:365:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:369:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:376:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:384:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:388:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:393:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:407:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:425:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:431:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:433:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:437:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:438:111: E501 line too long (121 > 110 characters)
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:439:111: E501 line too long (124 > 110 characters)
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:440:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:445:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:450:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:451:111: E501 line too long (127 > 110 characters)
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:452:111: E501 line too long (127 > 110 characters)
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:457:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:480:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:484:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:490:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:496:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:514:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:519:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:523:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:532:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:534:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:538:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:548:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:552:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:562:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:564:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:568:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:573:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:575:111: E501 line too long (127 > 110 characters)
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:582:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:592:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:594:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:598:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:603:111: E501 line too long (121 > 110 characters)
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:604:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:608:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:610:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:614:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:618:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:623:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:633:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:635:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:639:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:644:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:657:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:684:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:687:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:689:111: E501 line too long (111 > 110 characters)
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:690:111: E501 line too long (111 > 110 characters)
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:691:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:694:111: E501 line too long (117 > 110 characters)
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:696:111: E501 line too long (117 > 110 characters)
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:697:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:703:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:707:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:710:111: E501 line too long (149 > 110 characters)
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:711:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:714:111: E501 line too long (150 > 110 characters)
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:715:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:727:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:729:111: E501 line too long (187 > 110 characters)
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:730:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:733:111: E501 line too long (176 > 110 characters)
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:734:111: E501 line too long (180 > 110 characters)
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:735:111: E501 line too long (180 > 110 characters)
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:736:111: E501 line too long (180 > 110 characters)
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:737:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:746:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:755:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:757:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:761:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:763:111: E501 line too long (115 > 110 characters)
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:764:111: E501 line too long (115 > 110 characters)
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:765:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:767:111: E501 line too long (131 > 110 characters)
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:768:111: E501 line too long (131 > 110 characters)
+kivy_garden/markdownlabel/tests/test_inline_renderer.py:769:1: W293 blank line contains whitespace

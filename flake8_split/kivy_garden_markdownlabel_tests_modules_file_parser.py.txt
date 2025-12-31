@@ -1,0 +1,57 @@
+kivy_garden/markdownlabel/tests/modules/file_parser.py:11:1: F401 'typing.Any' imported but unused
+kivy_garden/markdownlabel/tests/modules/file_parser.py:65:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/file_parser.py:68:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/file_parser.py:71:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/file_parser.py:74:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/file_parser.py:79:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/file_parser.py:82:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/file_parser.py:87:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/file_parser.py:89:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/file_parser.py:92:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/file_parser.py:95:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/file_parser.py:102:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/file_parser.py:116:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/file_parser.py:118:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/file_parser.py:121:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/file_parser.py:124:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/file_parser.py:130:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/file_parser.py:138:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/file_parser.py:140:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/file_parser.py:144:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/file_parser.py:153:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/file_parser.py:155:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/file_parser.py:159:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/file_parser.py:166:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/file_parser.py:168:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/file_parser.py:175:5: E129 visually indented line with same indent as next logical line
+kivy_garden/markdownlabel/tests/modules/file_parser.py:179:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/file_parser.py:181:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/file_parser.py:185:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/file_parser.py:189:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/file_parser.py:193:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/file_parser.py:204:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/file_parser.py:212:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/file_parser.py:214:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/file_parser.py:220:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/file_parser.py:222:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/file_parser.py:234:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/file_parser.py:239:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/file_parser.py:249:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/file_parser.py:261:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/file_parser.py:265:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/file_parser.py:271:86: W291 trailing whitespace
+kivy_garden/markdownlabel/tests/modules/file_parser.py:276:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/file_parser.py:278:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/file_parser.py:282:65: W291 trailing whitespace
+kivy_garden/markdownlabel/tests/modules/file_parser.py:285:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/file_parser.py:288:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/file_parser.py:292:68: W291 trailing whitespace
+kivy_garden/markdownlabel/tests/modules/file_parser.py:295:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/file_parser.py:298:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/file_parser.py:302:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/file_parser.py:305:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/file_parser.py:312:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/file_parser.py:321:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/file_parser.py:325:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/file_parser.py:328:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/file_parser.py:350:11: W292 no newline at end of file

@@ -1,0 +1,63 @@
+kivy_garden/markdownlabel/tests/meta_tests/test_naming_convention_validator.py:14:1: F401 'pathlib.Path' imported but unused
+kivy_garden/markdownlabel/tests/meta_tests/test_naming_convention_validator.py:16:1: F401 'kivy_garden.markdownlabel.tests.modules.naming_convention_validator.NamingViolation' imported but unused
+kivy_garden/markdownlabel/tests/meta_tests/test_naming_convention_validator.py:19:1: F401 'kivy_garden.markdownlabel.tests.modules.assertion_analyzer.AssertionType' imported but unused
+kivy_garden/markdownlabel/tests/meta_tests/test_naming_convention_validator.py:19:1: F401 'kivy_garden.markdownlabel.tests.modules.assertion_analyzer.AssertionAnalysis' imported but unused
+kivy_garden/markdownlabel/tests/meta_tests/test_naming_convention_validator.py:19:111: E501 line too long (122 > 110 characters)
+kivy_garden/markdownlabel/tests/meta_tests/test_naming_convention_validator.py:25:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_naming_convention_validator.py:30:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_naming_convention_validator.py:40:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_naming_convention_validator.py:43:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_naming_convention_validator.py:46:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_naming_convention_validator.py:57:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_naming_convention_validator.py:60:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_naming_convention_validator.py:63:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_naming_convention_validator.py:73:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_naming_convention_validator.py:76:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_naming_convention_validator.py:78:111: E501 line too long (112 > 110 characters)
+kivy_garden/markdownlabel/tests/meta_tests/test_naming_convention_validator.py:80:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_naming_convention_validator.py:83:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_naming_convention_validator.py:93:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_naming_convention_validator.py:96:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_naming_convention_validator.py:97:111: E501 line too long (112 > 110 characters)
+kivy_garden/markdownlabel/tests/meta_tests/test_naming_convention_validator.py:99:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_naming_convention_validator.py:107:111: E501 line too long (124 > 110 characters)
+kivy_garden/markdownlabel/tests/meta_tests/test_naming_convention_validator.py:116:111: E501 line too long (149 > 110 characters)
+kivy_garden/markdownlabel/tests/meta_tests/test_naming_convention_validator.py:119:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_naming_convention_validator.py:121:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_naming_convention_validator.py:127:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_naming_convention_validator.py:132:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_naming_convention_validator.py:136:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_naming_convention_validator.py:139:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_naming_convention_validator.py:142:111: E501 line too long (112 > 110 characters)
+kivy_garden/markdownlabel/tests/meta_tests/test_naming_convention_validator.py:144:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_naming_convention_validator.py:148:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_naming_convention_validator.py:152:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_naming_convention_validator.py:160:111: E501 line too long (120 > 110 characters)
+kivy_garden/markdownlabel/tests/meta_tests/test_naming_convention_validator.py:172:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_naming_convention_validator.py:175:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_naming_convention_validator.py:193:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_naming_convention_validator.py:198:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_naming_convention_validator.py:201:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_naming_convention_validator.py:204:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_naming_convention_validator.py:207:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_naming_convention_validator.py:210:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_naming_convention_validator.py:213:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_naming_convention_validator.py:222:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_naming_convention_validator.py:231:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_naming_convention_validator.py:236:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_naming_convention_validator.py:247:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_naming_convention_validator.py:251:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_naming_convention_validator.py:254:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_naming_convention_validator.py:257:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_naming_convention_validator.py:260:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_naming_convention_validator.py:263:41: W291 trailing whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_naming_convention_validator.py:267:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_naming_convention_validator.py:271:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_naming_convention_validator.py:279:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_naming_convention_validator.py:285:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_naming_convention_validator.py:289:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_naming_convention_validator.py:292:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_naming_convention_validator.py:295:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_naming_convention_validator.py:299:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_naming_convention_validator.py:302:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_naming_convention_validator.py:308:28: W292 no newline at end of file

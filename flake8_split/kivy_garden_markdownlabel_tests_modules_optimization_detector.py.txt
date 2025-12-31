@@ -1,0 +1,166 @@
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:20:1: F401 '.comment_manager.CommentPattern' imported but unused
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:20:1: F401 '.comment_manager.CommentStrategyClassification' imported but unused
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:47:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:50:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:71:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:76:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:81:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:84:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:92:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:97:73: W291 trailing whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:108:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:112:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:115:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:139:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:150:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:160:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:169:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:172:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:175:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:178:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:182:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:190:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:195:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:200:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:202:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:218:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:228:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:234:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:254:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:260:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:265:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:277:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:279:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:283:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:287:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:303:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:310:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:312:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:319:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:329:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:335:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:340:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:342:78: W291 trailing whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:343:13: E129 visually indented line with same indent as next logical line
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:344:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:352:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:358:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:362:13: E129 visually indented line with same indent as next logical line
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:363:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:369:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:371:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:374:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:377:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:383:70: W291 trailing whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:391:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:394:64: W291 trailing whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:402:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:411:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:413:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:418:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:426:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:428:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:432:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:437:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:440:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:444:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:449:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:452:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:455:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:460:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:463:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:467:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:472:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:482:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:485:111: E501 line too long (111 > 110 characters)
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:488:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:504:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:509:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:512:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:516:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:521:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:524:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:528:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:536:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:544:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:547:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:549:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:550:111: E501 line too long (114 > 110 characters)
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:552:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:557:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:562:66: W291 trailing whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:565:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:570:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:577:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:580:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:582:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:586:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:588:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:591:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:594:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:605:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:616:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:623:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:629:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:633:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:636:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:640:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:648:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:653:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:654:111: E501 line too long (137 > 110 characters)
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:655:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:658:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:662:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:667:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:671:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:676:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:679:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:683:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:686:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:698:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:702:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:706:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:709:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:713:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:716:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:719:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:726:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:731:111: E501 line too long (122 > 110 characters)
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:736:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:743:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:746:111: E501 line too long (131 > 110 characters)
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:756:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:760:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:768:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:772:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:774:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:777:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:781:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:789:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:793:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:797:62: W291 trailing whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:800:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:802:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:805:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:809:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:818:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:822:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:824:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:827:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:830:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:837:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:840:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:844:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:848:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:852:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:856:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:859:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:861:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:864:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:868:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:871:111: E501 line too long (127 > 110 characters)
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:873:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:876:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:879:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:882:111: E501 line too long (122 > 110 characters)
+kivy_garden/markdownlabel/tests/modules/optimization_detector.py:883:1: W293 blank line contains whitespace

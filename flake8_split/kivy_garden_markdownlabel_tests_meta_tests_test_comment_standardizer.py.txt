@@ -1,0 +1,219 @@
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:9:1: F401 're' imported but unused
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:13:1: F401 'kivy_garden.markdownlabel.tests.modules.comment_manager.StandardizationResult' imported but unused
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:26:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:31:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:33:90: W291 trailing whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:36:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:39:111: E501 line too long (112 > 110 characters)
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:40:111: E501 line too long (152 > 110 characters)
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:54:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:59:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:63:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:68:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:75:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:78:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:81:111: E501 line too long (116 > 110 characters)
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:82:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:87:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:92:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:97:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:100:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:103:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:107:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:109:111: E501 line too long (113 > 110 characters)
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:110:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:135:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:140:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:143:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:147:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:154:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:160:62: W291 trailing whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:166:111: E501 line too long (111 > 110 characters)
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:167:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:171:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:176:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:181:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:186:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:190:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:193:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:199:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:218:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:223:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:226:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:229:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:235:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:239:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:249:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:253:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:258:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:261:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:266:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:269:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:273:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:277:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:280:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:289:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:294:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:296:89: W291 trailing whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:299:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:304:111: E501 line too long (111 > 110 characters)
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:313:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:315:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:324:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:328:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:332:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:337:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:344:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:347:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:350:61: W291 trailing whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:352:111: E501 line too long (125 > 110 characters)
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:353:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:358:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:363:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:367:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:381:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:383:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:391:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:395:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:398:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:401:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:408:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:412:64: W291 trailing whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:415:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:419:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:426:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:431:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:442:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:446:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:449:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:452:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:455:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:458:111: E501 line too long (126 > 110 characters)
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:459:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:462:81: W291 trailing whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:466:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:470:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:478:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:483:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:489:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:493:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:494:40: W291 trailing whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:499:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:505:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:506:5: E303 too many blank lines (3)
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:517:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:521:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:525:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:529:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:533:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:537:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:542:29: W291 trailing whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:546:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:550:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:554:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:558:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:561:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:569:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:574:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:579:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:581:87: W291 trailing whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:584:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:589:111: E501 line too long (152 > 110 characters)
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:593:111: E501 line too long (117 > 110 characters)
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:601:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:603:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:613:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:617:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:621:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:624:111: E501 line too long (151 > 110 characters)
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:627:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:630:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:633:111: E501 line too long (116 > 110 characters)
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:635:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:638:111: E501 line too long (112 > 110 characters)
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:639:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:643:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:654:111: E501 line too long (152 > 110 characters)
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:669:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:673:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:677:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:679:111: E501 line too long (129 > 110 characters)
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:681:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:691:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:695:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:697:111: E501 line too long (112 > 110 characters)
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:699:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:703:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:735:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:740:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:744:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:746:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:750:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:754:5: E129 visually indented line with same indent as next logical line
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:757:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:758:111: E501 line too long (121 > 110 characters)
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:759:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:763:111: E501 line too long (129 > 110 characters)
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:764:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:768:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:782:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:784:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:787:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:791:65: W291 trailing whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:793:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:797:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:802:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:822:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:827:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:832:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:834:111: E501 line too long (120 > 110 characters)
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:835:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:839:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:845:1: E302 expected 2 blank lines, found 1
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:848:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:853:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:856:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:882:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:886:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:890:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:895:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:898:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:902:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:905:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:910:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:914:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:921:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:924:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:929:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:940:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:944:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:951:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:953:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:956:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:961:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:967:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:969:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:975:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:978:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:983:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:986:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:1012:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:1016:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:1020:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:1026:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:1032:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:1038:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:1041:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:1044:111: E501 line too long (118 > 110 characters)
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:1045:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:1050:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:1053:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:1064:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:1068:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:1072:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:1076:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:1080:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:1082:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:1086:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:1096:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer.py:1103:25: W292 no newline at end of file

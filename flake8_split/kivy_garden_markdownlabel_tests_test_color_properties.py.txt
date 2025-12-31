@@ -1,0 +1,34 @@
+kivy_garden/markdownlabel/tests/test_color_properties.py:9:1: F401 'pytest' imported but unused
+kivy_garden/markdownlabel/tests/test_color_properties.py:10:1: F401 'hypothesis.strategies as st' imported but unused
+kivy_garden/markdownlabel/tests/test_color_properties.py:12:1: F401 'kivy.uix.label.Label' imported but unused
+kivy_garden/markdownlabel/tests/test_color_properties.py:30:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_color_properties.py:37:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_color_properties.py:40:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_color_properties.py:52:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_color_properties.py:55:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_color_properties.py:60:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_color_properties.py:68:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_color_properties.py:70:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_color_properties.py:73:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_color_properties.py:78:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_color_properties.py:85:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_color_properties.py:87:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_color_properties.py:92:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_color_properties.py:95:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_color_properties.py:101:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_color_properties.py:109:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_color_properties.py:112:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_color_properties.py:117:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_color_properties.py:125:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_color_properties.py:128:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_color_properties.py:133:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_color_properties.py:141:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_color_properties.py:143:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_color_properties.py:146:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_color_properties.py:150:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_color_properties.py:159:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_color_properties.py:162:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_color_properties.py:167:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_color_properties.py:172:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_color_properties.py:175:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_color_properties.py:178:1: W391 blank line at end of file

@@ -1,0 +1,176 @@
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:8:1: F401 'os' imported but unused
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:17:111: E501 line too long (128 > 110 characters)
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:23:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:26:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:29:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:34:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:37:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:39:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:49:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:51:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:57:47: W291 trailing whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:61:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:65:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:67:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:72:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:78:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:80:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:83:111: E501 line too long (112 > 110 characters)
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:85:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:87:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:93:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:96:43: W291 trailing whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:104:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:117:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:120:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:123:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:129:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:134:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:138:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:158:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:162:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:168:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:171:111: E501 line too long (112 > 110 characters)
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:173:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:180:86: W291 trailing whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:181:81: W291 trailing whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:188:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:191:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:194:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:199:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:202:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:214:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:218:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:220:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:237:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:244:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:246:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:253:75: W291 trailing whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:254:84: W291 trailing whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:261:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:264:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:267:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:272:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:275:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:279:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:287:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:300:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:302:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:305:111: E501 line too long (123 > 110 characters)
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:306:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:308:111: E501 line too long (111 > 110 characters)
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:310:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:312:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:329:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:336:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:338:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:345:82: W291 trailing whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:346:81: W291 trailing whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:353:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:356:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:359:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:364:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:367:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:375:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:381:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:383:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:400:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:407:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:409:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:416:84: W291 trailing whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:423:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:426:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:429:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:434:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:437:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:445:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:449:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:451:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:468:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:475:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:479:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:481:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:488:87: W291 trailing whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:495:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:498:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:501:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:506:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:509:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:514:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:517:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:521:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:526:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:532:111: E501 line too long (112 > 110 characters)
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:533:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:537:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:543:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:547:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:551:111: E501 line too long (116 > 110 characters)
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:552:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:554:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:557:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:560:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:566:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:570:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:590:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:597:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:601:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:603:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:607:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:611:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:612:74: W291 trailing whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:623:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:626:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:633:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:637:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:642:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:645:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:648:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:651:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:654:15: F541 f-string is missing placeholders
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:658:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:664:80: W291 trailing whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:671:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:674:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:677:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:686:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:689:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:693:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:697:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:701:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:714:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:719:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:723:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:726:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:728:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:731:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:737:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:740:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:742:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:746:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:750:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:767:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:774:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:776:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:788:84: W291 trailing whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:789:83: W291 trailing whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:796:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:799:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:802:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:807:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:810:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:818:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:827:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:829:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:852:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:859:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:863:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:865:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:870:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:873:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:878:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:881:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:884:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:888:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:892:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_core_functionality_properties.py:895:69: W292 no newline at end of file

@@ -1,0 +1,3 @@
+kivy_garden/markdownlabel/tests/test_import.py:8:1: F401 'pytest' imported but unused
+kivy_garden/markdownlabel/tests/test_import.py:13:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_import.py:19:1: W293 blank line contains whitespace

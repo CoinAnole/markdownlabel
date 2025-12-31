@@ -1,0 +1,336 @@
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:21:1: F401 'pathlib.Path' imported but unused
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:22:1: F401 'typing.Set' imported but unused
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:50:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:53:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:109:111: E501 line too long (129 > 110 characters)
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:156:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:168:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:176:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:205:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:208:55: W291 trailing whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:211:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:214:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:217:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:222:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:229:111: E501 line too long (123 > 110 characters)
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:232:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:234:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:241:111: E501 line too long (127 > 110 characters)
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:244:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:262:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:270:111: E501 line too long (131 > 110 characters)
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:273:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:286:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:289:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:293:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:299:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:309:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:311:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:312:88: W291 trailing whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:315:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:320:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:340:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:346:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:352:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:356:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:360:111: E501 line too long (129 > 110 characters)
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:361:111: E501 line too long (119 > 110 characters)
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:365:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:368:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:371:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:376:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:379:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:392:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:396:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:403:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:406:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:409:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:415:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:418:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:421:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:424:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:435:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:452:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:454:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:457:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:460:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:470:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:488:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:493:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:499:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:501:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:507:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:510:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:513:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:522:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:525:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:528:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:533:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:536:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:539:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:544:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:547:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:550:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:556:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:558:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:562:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:564:51: W291 trailing whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:567:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:571:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:575:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:578:111: E501 line too long (146 > 110 characters)
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:583:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:585:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:589:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:598:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:604:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:620:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:627:111: E501 line too long (124 > 110 characters)
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:630:111: E501 line too long (123 > 110 characters)
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:632:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:634:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:635:111: E501 line too long (111 > 110 characters)
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:638:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:640:51: W291 trailing whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:643:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:647:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:651:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:654:111: E501 line too long (137 > 110 characters)
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:659:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:661:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:665:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:667:51: W291 trailing whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:670:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:674:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:679:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:681:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:689:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:691:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:695:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:698:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:706:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:709:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:712:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:717:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:732:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:736:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:739:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:742:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:745:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:749:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:760:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:767:111: E501 line too long (159 > 110 characters)
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:769:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:774:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:779:42: W291 trailing whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:780:33: W291 trailing whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:783:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:787:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:798:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:801:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:806:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:809:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:813:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:819:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:823:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:827:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:833:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:839:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:845:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:852:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:857:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:865:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:867:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:868:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:869:29: E303 too many blank lines (2)
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:877:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:881:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:883:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:885:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:887:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:895:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:903:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:905:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:906:111: E501 line too long (116 > 110 characters)
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:909:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:917:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:919:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:920:111: E501 line too long (111 > 110 characters)
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:922:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:965:111: E501 line too long (112 > 110 characters)
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:972:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:975:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:982:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:987:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:991:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:997:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1000:111: E501 line too long (138 > 110 characters)
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1003:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1006:111: E501 line too long (116 > 110 characters)
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1008:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1011:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1016:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1019:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1030:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1033:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1036:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1044:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1046:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1052:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1055:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1073:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1075:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1078:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1081:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1084:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1090:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1097:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1104:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1110:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1112:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1115:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1118:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1130:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1134:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1136:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1149:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1157:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1159:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1162:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1165:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1173:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1176:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1179:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1188:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1191:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1194:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1199:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1206:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1209:44: W291 trailing whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1212:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1215:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1218:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1221:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1227:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1232:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1234:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1238:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1248:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1251:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1258:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1263:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1265:111: E501 line too long (111 > 110 characters)
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1277:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1281:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1284:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1287:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1290:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1294:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1302:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1305:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1309:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1320:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1332:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1335:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1348:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1350:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1360:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1373:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1386:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1394:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1403:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1404:70: W291 trailing whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1407:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1412:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1423:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1427:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1434:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1437:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1441:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1450:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1465:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1471:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1477:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1486:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1495:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1496:111: E501 line too long (130 > 110 characters)
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1498:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1502:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1509:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1514:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1520:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1529:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1534:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1537:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1540:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1551:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1560:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1568:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1573:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1576:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1580:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1585:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1598:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1605:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1607:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1610:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1614:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1620:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1629:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1635:51: W291 trailing whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1637:17: E129 visually indented line with same indent as next logical line
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1640:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1642:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1645:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1649:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1655:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1669:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1671:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1674:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1678:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1686:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1691:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1698:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1702:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1704:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1707:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1711:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1718:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1723:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1726:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1729:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1735:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1739:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1743:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1746:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1757:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1760:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1769:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1774:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1778:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1781:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1784:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1794:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1797:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1801:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1808:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1812:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1815:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1818:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1827:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1831:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1835:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1839:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1843:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1846:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1849:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1856:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1861:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1863:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1866:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1869:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1878:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1880:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1899:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1911:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/comment_manager.py:1918:1: W391 blank line at end of file

@@ -1,0 +1,2 @@
+kivy_garden/markdownlabel/tests/test_rebuild_scheduling.py:66:111: E501 line too long (263 > 110 characters)
+kivy_garden/markdownlabel/tests/test_rebuild_scheduling.py:338:1: W391 blank line at end of file

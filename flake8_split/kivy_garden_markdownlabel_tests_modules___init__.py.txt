@@ -1,0 +1,10 @@
+kivy_garden/markdownlabel/tests/modules/__init__.py:146:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/__init__.py:163:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/__init__.py:168:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/__init__.py:177:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/__init__.py:184:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/__init__.py:187:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/__init__.py:193:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/__init__.py:201:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/__init__.py:206:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/__init__.py:212:1: W293 blank line contains whitespace

@@ -1,0 +1,37 @@
+kivy_garden/markdownlabel/tests/modules/max_examples_calculator.py:15:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/max_examples_calculator.py:24:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/max_examples_calculator.py:27:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/max_examples_calculator.py:32:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/max_examples_calculator.py:33:41: W291 trailing whitespace
+kivy_garden/markdownlabel/tests/modules/max_examples_calculator.py:37:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/max_examples_calculator.py:41:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/max_examples_calculator.py:47:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/max_examples_calculator.py:50:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/max_examples_calculator.py:53:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/max_examples_calculator.py:58:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/max_examples_calculator.py:62:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/max_examples_calculator.py:66:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/max_examples_calculator.py:68:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/max_examples_calculator.py:72:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/max_examples_calculator.py:75:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/max_examples_calculator.py:80:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/max_examples_calculator.py:83:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/max_examples_calculator.py:88:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/max_examples_calculator.py:91:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/max_examples_calculator.py:94:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/max_examples_calculator.py:99:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/max_examples_calculator.py:103:62: W291 trailing whitespace
+kivy_garden/markdownlabel/tests/modules/max_examples_calculator.py:107:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/max_examples_calculator.py:110:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/max_examples_calculator.py:114:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/max_examples_calculator.py:121:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/max_examples_calculator.py:127:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/max_examples_calculator.py:131:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/max_examples_calculator.py:133:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/max_examples_calculator.py:136:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/max_examples_calculator.py:140:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/max_examples_calculator.py:146:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/max_examples_calculator.py:148:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/max_examples_calculator.py:151:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/max_examples_calculator.py:155:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/modules/max_examples_calculator.py:160:42: W292 no newline at end of file

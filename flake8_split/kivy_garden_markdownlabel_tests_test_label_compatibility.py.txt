@@ -1,0 +1,73 @@
+kivy_garden/markdownlabel/tests/test_label_compatibility.py:8:1: F401 'importlib' imported but unused
+kivy_garden/markdownlabel/tests/test_label_compatibility.py:9:1: F401 'os' imported but unused
+kivy_garden/markdownlabel/tests/test_label_compatibility.py:10:1: F401 'sys' imported but unused
+kivy_garden/markdownlabel/tests/test_label_compatibility.py:25:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_label_compatibility.py:32:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_label_compatibility.py:35:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_label_compatibility.py:42:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_label_compatibility.py:45:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_label_compatibility.py:54:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_label_compatibility.py:57:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_label_compatibility.py:66:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_label_compatibility.py:76:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_label_compatibility.py:81:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_label_compatibility.py:95:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_label_compatibility.py:104:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_label_compatibility.py:112:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_label_compatibility.py:120:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_label_compatibility.py:128:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_label_compatibility.py:136:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_label_compatibility.py:155:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_label_compatibility.py:164:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_label_compatibility.py:168:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_label_compatibility.py:179:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_label_compatibility.py:183:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_label_compatibility.py:192:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_label_compatibility.py:201:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_label_compatibility.py:210:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_label_compatibility.py:219:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_label_compatibility.py:231:111: E501 line too long (115 > 110 characters)
+kivy_garden/markdownlabel/tests/test_label_compatibility.py:231:116: W291 trailing whitespace
+kivy_garden/markdownlabel/tests/test_label_compatibility.py:232:101: W291 trailing whitespace
+kivy_garden/markdownlabel/tests/test_label_compatibility.py:239:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_label_compatibility.py:247:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_label_compatibility.py:255:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_label_compatibility.py:267:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_label_compatibility.py:278:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_label_compatibility.py:284:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_label_compatibility.py:297:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_label_compatibility.py:318:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_label_compatibility.py:325:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_label_compatibility.py:334:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_label_compatibility.py:343:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_label_compatibility.py:355:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_label_compatibility.py:367:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_label_compatibility.py:374:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_label_compatibility.py:388:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_label_compatibility.py:402:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_label_compatibility.py:406:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_label_compatibility.py:418:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_label_compatibility.py:425:76: W291 trailing whitespace
+kivy_garden/markdownlabel/tests/test_label_compatibility.py:432:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_label_compatibility.py:437:13: F401 'kivy_garden.markdownlabel.tests.test_label_compatibility' imported but unused
+kivy_garden/markdownlabel/tests/test_label_compatibility.py:438:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_label_compatibility.py:445:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_label_compatibility.py:450:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_label_compatibility.py:455:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_label_compatibility.py:460:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_label_compatibility.py:465:13: F401 'kivy_garden.markdownlabel.tests.test_utils.markdown_bold' imported but unused
+kivy_garden/markdownlabel/tests/test_label_compatibility.py:465:13: F401 'kivy_garden.markdownlabel.tests.test_utils.markdown_italic' imported but unused
+kivy_garden/markdownlabel/tests/test_label_compatibility.py:465:13: F401 'kivy_garden.markdownlabel.tests.test_utils.markdown_link' imported but unused
+kivy_garden/markdownlabel/tests/test_label_compatibility.py:465:13: F401 'kivy_garden.markdownlabel.tests.test_utils.padding_equal' imported but unused
+kivy_garden/markdownlabel/tests/test_label_compatibility.py:465:13: F401 'kivy_garden.markdownlabel.tests.test_utils.floats_equal' imported but unused
+kivy_garden/markdownlabel/tests/test_label_compatibility.py:465:13: F401 'kivy_garden.markdownlabel.tests.test_utils.color_strategy' imported but unused
+kivy_garden/markdownlabel/tests/test_label_compatibility.py:465:13: F401 'kivy_garden.markdownlabel.tests.test_utils.text_padding_strategy' imported but unused
+kivy_garden/markdownlabel/tests/test_label_compatibility.py:480:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_label_compatibility.py:487:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_label_compatibility.py:491:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_label_compatibility.py:496:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_label_compatibility.py:501:111: E501 line too long (114 > 110 characters)
+kivy_garden/markdownlabel/tests/test_label_compatibility.py:502:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_label_compatibility.py:506:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_label_compatibility.py:510:1: W293 blank line contains whitespace
+kivy_garden/markdownlabel/tests/test_label_compatibility.py:514:73: W292 no newline at end of file
