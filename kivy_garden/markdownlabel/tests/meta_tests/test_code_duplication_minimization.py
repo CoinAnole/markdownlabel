@@ -250,7 +250,7 @@ def find_labels_recursive(widget, labels=None):
             for i in range(num_duplicates):
                 content = f'''"""Test module {i} - after consolidation."""
 import pytest
-from test_utils import find_labels_recursive
+from ..test_utils import find_labels_recursive
 
 class TestAfter{i}:
     """Test class {i}."""
