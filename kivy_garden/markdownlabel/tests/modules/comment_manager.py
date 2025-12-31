@@ -473,8 +473,17 @@ class CommentAnalyzer:
         excluded_patterns = {
             'test_comment_format.py',
             'test_comment_standardizer.py',
-            'file_analyzer.py',
-            'tools/validate_comments.py'
+            'test_assertion_analyzer.py',
+            'test_code_duplication_minimization.py',
+            'test_coverage_preservation.py',
+            'test_documentation_compliance.py',
+            'test_duplicate_detector.py',
+            'test_file_analyzer.py',
+            'test_helper_availability.py',
+            'test_naming_convention_validator.py',
+            'test_strategy_classification.py',
+            'test_test_file_parser.py',
+            'tools/validate_comments.py',
         }
         
         for root, dirs, files in os.walk(directory_path):

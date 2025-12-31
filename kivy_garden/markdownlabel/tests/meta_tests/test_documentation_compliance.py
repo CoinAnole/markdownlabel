@@ -21,16 +21,24 @@ class TestDocumentationCompliance:
         For any property test using custom max_examples values that deviate from 
         standard patterns, the rationale SHALL be documented in test comments.
         """
-        test_dir = Path('kivy_garden/markdownlabel/tests')
+        test_dir = Path(__file__).parent.parent  # Go up from meta_tests to tests
         undocumented_tests = []
         
         # Files to skip - these contain intentional test fixtures for testing
         # the optimization tools themselves
         skip_files = {
-            'test_documentation_compliance.py',  # This file
-            'test_comment_format.py',  # Test fixtures for comment format validation
-            'test_file_analyzer.py',  # Test fixtures for file analyzer
-            'test_comment_standardizer.py',  # Test fixtures for comment standardizer
+            'test_documentation_compliance.py',  # This file (in meta_tests)
+            'test_comment_format.py',  # Test fixtures for comment format validation (in meta_tests)
+            'test_file_analyzer.py',  # Test fixtures for file analyzer (in meta_tests)
+            'test_comment_standardizer.py',  # Test fixtures for comment standardizer (in meta_tests)
+            'test_assertion_analyzer.py',  # Test fixtures for assertion analyzer (in meta_tests)
+            'test_code_duplication_minimization.py',  # Test fixtures for code duplication (in meta_tests)
+            'test_coverage_preservation.py',  # Test fixtures for coverage (in meta_tests)
+            'test_duplicate_detector.py',  # Test fixtures for duplicate detector (in meta_tests)
+            'test_helper_availability.py',  # Test fixtures for helper availability (in meta_tests)
+            'test_naming_convention_validator.py',  # Test fixtures for naming validation (in meta_tests)
+            'test_strategy_classification.py',  # Test fixtures for strategy classification (in meta_tests)
+            'test_test_file_parser.py',  # Test fixtures for test file parser (in meta_tests)
         }
         
         for test_file in test_dir.glob('test_*.py'):

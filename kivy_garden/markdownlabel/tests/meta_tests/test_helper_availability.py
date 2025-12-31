@@ -196,7 +196,7 @@ class TestHelperFunctionConsolidation:
         import ast
         from pathlib import Path
         
-        test_dir = Path(__file__).parent
+        test_dir = Path(__file__).parent.parent  # Go up from meta_tests to tests
         duplicate_implementations = []
         
         for test_file in test_dir.glob('test_*.py'):
@@ -230,7 +230,7 @@ class TestHelperFunctionConsolidation:
         import ast
         from pathlib import Path
         
-        test_dir = Path(__file__).parent
+        test_dir = Path(__file__).parent.parent  # Go up from meta_tests to tests
         duplicate_implementations = []
         
         for test_file in test_dir.glob('test_*.py'):
@@ -263,7 +263,7 @@ class TestHelperFunctionConsolidation:
         import ast
         from pathlib import Path
         
-        test_dir = Path(__file__).parent
+        test_dir = Path(__file__).parent.parent  # Go up from meta_tests to tests
         files_without_imports = []
         
         for test_file in test_dir.glob('test_*.py'):

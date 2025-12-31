@@ -104,10 +104,20 @@ class FileAnalyzer:
         # Keep optimization reports aligned with comment validation reports by
         # excluding meta-validator tests (these often contain intentionally
         # malformed examples and/or different semantics).
+        # These files are now in meta_tests/ subdirectory
         self.excluded_test_files = {
             'test_comment_format.py',
             'test_comment_standardizer.py',
-            'file_analyzer.py',
+            'test_assertion_analyzer.py',
+            'test_code_duplication_minimization.py',
+            'test_coverage_preservation.py',
+            'test_documentation_compliance.py',
+            'test_duplicate_detector.py',
+            'test_file_analyzer.py',
+            'test_helper_availability.py',
+            'test_naming_convention_validator.py',
+            'test_strategy_classification.py',
+            'test_test_file_parser.py',
         }
     
     def analyze_file(self, file_path: str) -> FileAnalysis:
