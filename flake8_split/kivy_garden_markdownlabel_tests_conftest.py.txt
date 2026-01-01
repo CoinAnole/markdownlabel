@@ -1,1 +1,0 @@
-kivy_garden/markdownlabel/tests/conftest.py:88:76: W292 no newline at end of file
