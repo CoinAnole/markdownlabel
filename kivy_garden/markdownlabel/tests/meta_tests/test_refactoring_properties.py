@@ -118,7 +118,7 @@ class TestDiscoveryPerformance:
 
         # Test discovery startup by running discovery on a minimal module
         minimal_module = 'test_import.py'  # Should be a simple, fast module
-        module_path = os.path.join(test_dir, minimal_module)
+        module_path = os.path.join(os.path.dirname(test_dir), minimal_module)
 
         # Skip if minimal module doesn't exist
         if not os.path.exists(module_path):
