@@ -24,7 +24,6 @@ kivy_garden/
         ├── test_inline_renderer.py       # Inline markdown rendering tests
         ├── test_kivy_renderer.py         # Block-level rendering tests
         ├── test_core_functionality.py    # Core markdown parsing and rendering
-        ├── test_core_functionality_properties.py # Core functionality property tests
         ├── test_label_compatibility.py   # Basic label property forwarding
         ├── test_font_properties.py       # Font-related property forwarding
         ├── test_color_properties.py      # Color and styling properties
@@ -41,37 +40,39 @@ kivy_garden/
         ├── test_texture_sizing.py        # Texture sizing behavior tests
         ├── test_rtl_alignment.py         # Right-to-left text alignment tests
         ├── test_shortening_and_coordinate.py # Text shortening and coordinate tests
-        ├── test_refactoring_properties.py # Property refactoring validation tests
-        ├── test_shared_infrastructure.py # Shared testing infrastructure tests
-        ├── test_helper_availability.py   # Helper function availability tests
-        ├── test_comment_format.py        # Comment format validation tests
-        ├── test_comment_standardizer.py  # Comment standardization tests
-        ├── test_strategy_classification.py # Tests for optimization infrastructure
-        ├── test_file_analyzer.py         # Tests for test file analysis tools
-        ├── test_documentation_compliance.py # Tests for max_examples documentation
         ├── test_utils.py                 # Shared test utilities and strategies
+        ├── TESTING.md                    # Comprehensive testing guidelines
         ├── meta_tests/                   # Meta-testing infrastructure
         │   ├── test_assertion_analyzer.py
         │   ├── test_code_duplication_minimization.py
+        │   ├── test_comment_format.py
+        │   ├── test_comment_standardizer.py
+        │   ├── test_core_functionality_properties.py # Core functionality property tests
         │   ├── test_coverage_preservation.py
+        │   ├── test_documentation_compliance.py
         │   ├── test_duplicate_detector.py
+        │   ├── test_file_analyzer.py
+        │   ├── test_helper_availability.py
         │   ├── test_naming_convention_validator.py
-        │   └── test_test_file_parser.py
-        ├── modules/                      # Test analysis and utility modules
-        │   ├── __init__.py
-        │   ├── assertion_analyzer.py
-        │   ├── duplicate_detector.py
-        │   ├── file_parser.py
-        │   ├── naming_convention_validator.py
-        │   └── test_discovery.py
-        └── test_optimization/            # Test optimization infrastructure
+        │   ├── test_refactoring_properties.py # Property refactoring validation tests
+        │   ├── test_shared_infrastructure.py # Shared testing infrastructure tests
+        │   ├── test_sizing_behavior_grouping.py # Sizing behavior test grouping validation
+        │   ├── test_strategy_classification.py
+        │   ├── test_test_file_parser.py
+        │   └── test_texture_sizing_grouping.py # Texture sizing test grouping validation
+        └── modules/                      # Test analysis and utility modules
             ├── __init__.py
+            ├── assertion_analyzer.py
             ├── comment_manager.py
+            ├── duplicate_detector.py
             ├── file_analyzer.py
+            ├── file_parser.py
             ├── max_examples_calculator.py
+            ├── naming_convention_validator.py
             ├── optimization_detector.py
             ├── over_testing_validator.py
-            └── strategy_analyzer.py
+            ├── strategy_analyzer.py
+            └── test_discovery.py
 ```
 
 ### Import Conventions
@@ -125,7 +126,6 @@ The codebase follows a strict three-layer architecture for converting Markdown t
 ### Test Suite Organization
 Tests are organized by **functionality**, not by implementation file:
 - `test_core_functionality.py`: Core parsing and rendering
-- `test_core_functionality_properties.py`: Core functionality property tests
 - `test_*_properties.py`: Property forwarding tests (font, color, text, padding)
 - `test_*_compatibility.py`: Label API compatibility
 - `test_performance.py`: Performance and stability (uses Hypothesis property-based testing)
@@ -134,18 +134,19 @@ Tests are organized by **functionality**, not by implementation file:
 - `test_rebuild_*.py`: Rebuild contract and semantics testing
 - `test_*_alignment.py`: Text alignment and RTL support tests
 - `test_texture_*.py`: Texture rendering and sizing tests
-- `test_strategy_classification.py`: Tests for optimization infrastructure
-- `test_file_analyzer.py`: Tests for test file analysis tools
-- `test_documentation_compliance.py`: Tests for max_examples documentation
 - `test_utils.py`: Shared test utilities and Hypothesis strategies
-- `test_comment_*.py`: Comment format validation and standardization tests
-- `test_*_infrastructure.py`: Shared testing infrastructure tests
-- `test_helper_availability.py`: Helper function availability tests
-- `test_refactoring_properties.py`: Property refactoring validation tests
 - `TESTING.md`: Comprehensive testing guidelines and property-based testing optimization
 - `meta_tests/`: Meta-testing infrastructure for test analysis and validation
+  - `test_core_functionality_properties.py`: Core functionality property tests
+  - `test_refactoring_properties.py`: Property refactoring validation tests
+  - `test_shared_infrastructure.py`: Shared testing infrastructure tests
+  - `test_strategy_classification.py`: Tests for optimization infrastructure
+  - `test_file_analyzer.py`: Tests for test file analysis tools
+  - `test_documentation_compliance.py`: Tests for max_examples documentation
+  - `test_comment_*.py`: Comment format validation and standardization tests
+  - `test_helper_availability.py`: Helper function availability tests
+  - `test_*_grouping.py`: Test grouping validation tests
 - `modules/`: Test analysis and utility modules for code quality and duplication detection
-- `test_optimization/`: Test optimization infrastructure for performance analysis
 
 **When adding tests**: Place in the appropriate functional test file, not necessarily matching the implementation file.
 
@@ -215,4 +216,4 @@ doc/
 2. Use tools in `tools/` directory for validation and performance analysis
 3. Adjust `max_examples` based on strategy complexity using standardized comment format
 4. Add performance rationale comments to tests
-5. Utilize test optimization infrastructure in `tests/test_optimization/`
+5. Utilize test optimization infrastructure in `tests/modules/` and `tests/meta_tests/`

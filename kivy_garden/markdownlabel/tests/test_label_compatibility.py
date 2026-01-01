@@ -232,7 +232,6 @@ class TestNoOpPropertiesAcceptance:
 # AND return the same value when accessed.
 # **Validates: Requirements 1.1, 1.2, 1.3**
 
-@pytest.mark.test_tests
 class TestNoOpPropertyAcceptanceAndStorage:
     """Property tests for no-op property acceptance and storage (Property 1)."""
 
@@ -425,7 +424,6 @@ class TestNoOpPropertyAcceptanceAndStorage:
 # and tests should execute without import errors
 # **Validates: Requirements 2.4**
 
-@pytest.mark.test_tests
 class TestImportFunctionality:
     """Property test for import functionality (Property 4)."""
 
