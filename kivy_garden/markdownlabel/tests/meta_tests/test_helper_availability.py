@@ -257,6 +257,7 @@ class TestHelperFunctionConsolidation:
         **Feature: test-suite-refactoring, Property 3: Helper Function Consolidation**
         **Validates: Requirements 2.1, 2.2, 2.3**
         """
+        import ast
         from pathlib import Path
 
         test_dir = Path(__file__).parent.parent  # Go up from meta_tests to tests
@@ -270,8 +271,26 @@ class TestHelperFunctionConsolidation:
                 with open(test_file, 'r') as f:
                     content = f.read()
 
-                # Check if file uses find_labels_recursive but doesn't import from test_utils
-                if 'find_labels_recursive' in content:
+                # Parse the AST to find actual function calls (not string literals)
+                tree = ast.parse(content)
+                has_function_call = False
+
+                # Check for actual calls to find_labels_recursive
+                for node in ast.walk(tree):
+                    # Check for function calls
+                    if isinstance(node, ast.Call):
+                        if isinstance(node.func, ast.Name) and \
+                           node.func.id == 'find_labels_recursive':
+                            has_function_call = True
+                            break
+                        # Also check for attribute calls
+                        elif isinstance(node.func, ast.Attribute) and \
+                             node.func.attr == 'find_labels_recursive':
+                            has_function_call = True
+                            break
+
+                # Only check for imports if the file actually calls the function
+                if has_function_call:
                     has_absolute_import = 'from kivy_garden.markdownlabel.tests.test_utils import' in content
                     has_relative_import = 'from .test_utils import' in content
                     if not (has_absolute_import or has_relative_import):
