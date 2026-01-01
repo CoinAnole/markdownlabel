@@ -1,5 +1,5 @@
 """
-Property-based tests for shared test infrastructure.
+Meta tests for shared test infrastructure.
 
 These tests validate that the shared test utilities and strategies work correctly
 and are available for use across all test modules.
