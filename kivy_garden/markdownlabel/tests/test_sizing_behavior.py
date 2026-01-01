@@ -5,7 +5,6 @@ This module contains tests for auto-sizing behavior, size hint management,
 and strict label mode sizing.
 """
 
-import pytest
 from hypothesis import given, strategies as st, settings, assume
 
 from kivy_garden.markdownlabel import MarkdownLabel

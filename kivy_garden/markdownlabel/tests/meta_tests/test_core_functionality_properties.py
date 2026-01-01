@@ -5,11 +5,10 @@ This module contains property-based tests that validate the refactoring
 process for the core functionality test module.
 """
 
-import ast
 import re
 from pathlib import Path
 import pytest
-from typing import Set, List
+from typing import List
 
 
 # **Feature: test-improvements, Property 1: No timing assertions in tests**

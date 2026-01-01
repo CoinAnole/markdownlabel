@@ -5,7 +5,6 @@ This module contains tests for texture size calculation behavior and
 logical test grouping validation.
 """
 
-import pytest
 from hypothesis import given, strategies as st, settings, assume
 
 from kivy.uix.gridlayout import GridLayout
