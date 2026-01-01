@@ -254,5 +254,3 @@ class TestNoClippingWhenUnconstrained:
         assert not has_clipping_container(label), (
             f"Expected no clipping when only text_size width={width} is set"
         )
-
-

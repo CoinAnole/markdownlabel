@@ -22,14 +22,14 @@ logger = logging.getLogger(__name__)
 
 class KivyRenderer:
     """Renders mistune AST to Kivy widgets.
-    
+
     This renderer handles block-level Markdown elements like paragraphs,
     headings, lists, code blocks, tables, and block quotes, converting
     them to appropriate Kivy widgets.
     """
-    
+
     NAME = "kivy"
-    
+
     # Heading font size multipliers relative to base_font_size
     HEADING_SIZES = {
         1: 2.5,   # h1
@@ -39,7 +39,7 @@ class KivyRenderer:
         5: 1.25,  # h5
         6: 1.0,   # h6
     }
-    
+
     def __init__(self,
                  base_font_size: float = 15,
                  code_font_name: str = 'RobotoMono-Regular',
@@ -77,7 +77,7 @@ class KivyRenderer:
                  strict_label_mode: bool = False,
                  ellipsis_options: Optional[Dict] = None):
         """Initialize the KivyRenderer.
-        
+
         Args:
             base_font_size: Base font size in sp for body text
             code_font_name: Font name for code blocks and inline code
@@ -152,13 +152,13 @@ class KivyRenderer:
         self.text_padding = text_padding or [0, 0, 0, 0]
         self.strict_label_mode = strict_label_mode
         self.ellipsis_options = ellipsis_options or {}
-        
+
         # Compute effective color based on disabled state
         self.effective_color = self.disabled_color if self.disabled else self.color
         self.effective_outline_color = (
             self.disabled_outline_color if self.disabled else self.outline_color
         )
-        
+
         self.inline_renderer = InlineRenderer(
             link_color=self.link_color,
             code_font_name=self.code_font_name,
@@ -168,25 +168,25 @@ class KivyRenderer:
         # Track nesting depth for deep nesting protection
         self._nesting_depth = 0
         self._max_nesting_depth = 10
-        
+
         # Track list nesting for indentation
         self._list_depth = 0
         self._list_counters = []  # Stack of counters for ordered lists
-    
+
     def _apply_text_size_binding(self, label: Label) -> None:
         """Apply text_size binding to a Label based on mode and text_size settings.
-        
+
         In strict_label_mode with text_size=[None, None], no automatic width
         binding is applied (Label handles sizing naturally).
-        
+
         In non-strict mode (default), width is bound to text_size for auto-wrap.
-        
+
         Args:
             label: The Label widget to apply bindings to
         """
         text_width = self.text_size[0]
         text_height = self.text_size[1]
-        
+
         if text_width is not None:
             if text_height is not None:
                 # Both width and height specified
@@ -210,37 +210,37 @@ class KivyRenderer:
                     # Markdown-friendly mode: auto-bind width for text wrapping
                     label.bind(width=lambda inst, val: setattr(
                         inst, 'text_size', (val, None)))
-        
+
         # Always bind texture_size to height for proper sizing
         label.bind(texture_size=lambda inst, val: setattr(inst, 'height', val[1]))
-    
+
     def __call__(self, tokens: List[Dict[str, Any]], state: Any = None) -> BoxLayout:
         """Render tokens to a BoxLayout containing all widgets.
-        
+
         Args:
             tokens: List of AST tokens from mistune
             state: Block state from mistune (optional)
-            
+
         Returns:
             BoxLayout containing rendered widgets
         """
         root = BoxLayout(orientation='vertical', size_hint_y=None)
         root.bind(minimum_height=root.setter('height'))
-        
+
         for token in tokens:
             widget = self._render_token(token, state)
             if widget is not None:
                 root.add_widget(widget)
-        
+
         return root
-    
+
     def _render_token(self, token: Dict[str, Any], state: Any = None) -> Optional[Widget]:
         """Render a single token to a widget.
-        
+
         Args:
             token: AST token dictionary
             state: Block state from mistune
-            
+
         Returns:
             Rendered widget or None
         """
@@ -252,19 +252,19 @@ class KivyRenderer:
             )
             # Return a placeholder widget indicating truncation
             return self._create_truncation_placeholder()
-        
+
         token_type = token.get('type', '')
         method = getattr(self, token_type, None)
-        
+
         if method is not None:
             return method(token, state)
-        
+
         # Unknown token type - skip with warning
         return None
-    
+
     def _create_truncation_placeholder(self) -> Widget:
         """Create a placeholder widget for truncated deeply nested content.
-        
+
         Returns:
             Label widget indicating content was truncated
         """
@@ -278,31 +278,31 @@ class KivyRenderer:
         )
         label.bind(texture_size=label.setter('size'))
         return label
-    
+
     def _render_inline(self, children: List[Dict[str, Any]]) -> str:
         """Render inline tokens to Kivy markup string.
-        
+
         Args:
             children: List of inline tokens
-            
+
         Returns:
             Kivy markup string
         """
         return self.inline_renderer.render(children)
-    
+
     def paragraph(self, token: Dict[str, Any], state: Any = None) -> Label:
         """Render a paragraph as a Label with markup enabled.
-        
+
         Args:
             token: Paragraph token with 'children'
             state: Block state
-            
+
         Returns:
             Label widget with markup=True
         """
         children = token.get('children', [])
         text = self._render_inline(children)
-        
+
         label_kwargs = {
             'text': text,
             'markup': True,
@@ -332,11 +332,11 @@ class KivyRenderer:
             'limit_render_to_text_bbox': self.limit_render_to_text_bbox,
             'ellipsis_options': self.ellipsis_options,
         }
-        
+
         # Add max_lines only if set (non-zero)
         if self.max_lines > 0:
             label_kwargs['max_lines'] = self.max_lines
-        
+
         # Add optional font properties if set
         if self.font_family is not None:
             label_kwargs['font_family'] = self.font_family
@@ -344,34 +344,34 @@ class KivyRenderer:
             label_kwargs['font_context'] = self.font_context
         if self.font_hinting is not None:
             label_kwargs['font_hinting'] = self.font_hinting
-        
+
         # Add ellipsis_options if non-empty
         if self.ellipsis_options:
             label_kwargs['ellipsis_options'] = self.ellipsis_options
-        
+
         label = Label(**label_kwargs)
-        
+
         # Apply text_size binding based on mode
         self._apply_text_size_binding(label)
-        
+
         # Set font scale metadata for body text
         label._font_scale = 1.0
-        
+
         return label
-    
+
     def block_text(self, token: Dict[str, Any], state: Any = None) -> Label:
         """Render block text (used in list items) as a Label with markup enabled.
-        
+
         Args:
             token: Block text token with 'children'
             state: Block state
-            
+
         Returns:
             Label widget with markup=True
         """
         children = token.get('children', [])
         text = self._render_inline(children)
-        
+
         label_kwargs = {
             'text': text,
             'markup': True,
@@ -401,11 +401,11 @@ class KivyRenderer:
             'limit_render_to_text_bbox': self.limit_render_to_text_bbox,
             'ellipsis_options': self.ellipsis_options,
         }
-        
+
         # Add max_lines only if set (non-zero)
         if self.max_lines > 0:
             label_kwargs['max_lines'] = self.max_lines
-        
+
         # Add optional font properties if set
         if self.font_family is not None:
             label_kwargs['font_family'] = self.font_family
@@ -413,24 +413,24 @@ class KivyRenderer:
             label_kwargs['font_context'] = self.font_context
         if self.font_hinting is not None:
             label_kwargs['font_hinting'] = self.font_hinting
-        
+
         # Add ellipsis_options if non-empty
         if self.ellipsis_options:
             label_kwargs['ellipsis_options'] = self.ellipsis_options
-        
+
         label = Label(**label_kwargs)
-        
+
         # Apply text_size binding based on mode
         self._apply_text_size_binding(label)
-        
+
         # Set font scale metadata for body text
         label._font_scale = 1.0
-        
+
         return label
-    
+
     def heading(self, token: Dict[str, Any], state: Any = None) -> Label:
         """Render a heading as a Label with scaled font size.
-        
+
         Font sizes are based on heading level:
         - h1: 2.5x base
         - h2: 2.0x base
@@ -438,25 +438,25 @@ class KivyRenderer:
         - h4: 1.5x base
         - h5: 1.25x base
         - h6: 1.0x base
-        
+
         Args:
             token: Heading token with 'children' and 'attrs'
             state: Block state
-            
+
         Returns:
             Label widget with scaled font size
         """
         children = token.get('children', [])
         attrs = token.get('attrs', {})
         level = attrs.get('level', 1)
-        
+
         # Clamp level to valid range
         level = max(1, min(6, level))
-        
+
         text = self._render_inline(children)
         multiplier = self.HEADING_SIZES.get(level, 1.0)
         font_size = self.base_font_size * multiplier
-        
+
         label_kwargs = {
             'text': text,
             'markup': True,
@@ -487,11 +487,11 @@ class KivyRenderer:
             'limit_render_to_text_bbox': self.limit_render_to_text_bbox,
             'ellipsis_options': self.ellipsis_options,
         }
-        
+
         # Add max_lines only if set (non-zero)
         if self.max_lines > 0:
             label_kwargs['max_lines'] = self.max_lines
-        
+
         # Add optional font properties if set
         if self.font_family is not None:
             label_kwargs['font_family'] = self.font_family
@@ -499,31 +499,31 @@ class KivyRenderer:
             label_kwargs['font_context'] = self.font_context
         if self.font_hinting is not None:
             label_kwargs['font_hinting'] = self.font_hinting
-        
+
         # Add ellipsis_options if non-empty
         if self.ellipsis_options:
             label_kwargs['ellipsis_options'] = self.ellipsis_options
-        
+
         label = Label(**label_kwargs)
-        
+
         # Apply text_size binding based on mode
         self._apply_text_size_binding(label)
-        
+
         # Store heading level as metadata
         label.heading_level = level
-        
+
         # Set font scale metadata for headings
         label._font_scale = multiplier
-        
+
         return label
-    
+
     def blank_line(self, token: Dict[str, Any], state: Any = None) -> Widget:
         """Render a blank line as an empty widget with height.
-        
+
         Args:
             token: Blank line token
             state: Block state
-            
+
         Returns:
             Empty widget with fixed height
         """
@@ -532,11 +532,11 @@ class KivyRenderer:
 
     def list(self, token: Dict[str, Any], state: Any = None) -> BoxLayout:
         """Render a list as a vertical BoxLayout.
-        
+
         Args:
             token: List token with 'children' and 'attrs'
             state: Block state
-            
+
         Returns:
             BoxLayout containing list items
         """
@@ -544,49 +544,49 @@ class KivyRenderer:
         ordered = attrs.get('ordered', False)
         start = attrs.get('start', 1)
         children = token.get('children', [])
-        
+
         # Track list depth for indentation and nesting depth for protection
         self._list_depth += 1
         self._nesting_depth += 1
-        
+
         # Push counter for ordered lists
         if ordered:
             self._list_counters.append(start)
-        
+
         # Add bottom spacing only for top-level lists
         bottom_padding = self.base_font_size if self._list_depth == 1 else 0
-        
+
         container = BoxLayout(
             orientation='vertical',
             size_hint_y=None,
             padding=[self._list_depth * 20, 0, 0, bottom_padding]  # Left indent + bottom spacing
         )
         container.bind(minimum_height=container.setter('height'))
-        
+
         for i, child in enumerate(children):
             item_widget = self._render_list_item(child, ordered, i, state)
             if item_widget is not None:
                 container.add_widget(item_widget)
-        
+
         # Pop counter for ordered lists
         if ordered:
             self._list_counters.pop()
-        
+
         self._list_depth -= 1
         self._nesting_depth -= 1
-        
+
         return container
-    
-    def _render_list_item(self, token: Dict[str, Any], ordered: bool, 
+
+    def _render_list_item(self, token: Dict[str, Any], ordered: bool,
                           index: int, state: Any = None) -> BoxLayout:
         """Render a list item with bullet/number prefix.
-        
+
         Args:
             token: List item token
             ordered: Whether this is an ordered list
             index: Item index (0-based)
             state: Block state
-            
+
         Returns:
             BoxLayout with marker and content
         """
@@ -596,14 +596,14 @@ class KivyRenderer:
             size_hint_y=None
         )
         item_layout.bind(minimum_height=item_layout.setter('height'))
-        
+
         # Create marker (bullet or number)
         if ordered:
             counter = self._list_counters[-1] if self._list_counters else 1
             marker_text = f'{counter + index}.'
         else:
             marker_text = '•'
-        
+
         marker_kwargs = {
             'text': marker_text,
             'font_name': self.font_name,
@@ -633,11 +633,11 @@ class KivyRenderer:
             'limit_render_to_text_bbox': self.limit_render_to_text_bbox,
             'ellipsis_options': self.ellipsis_options,
         }
-        
+
         # Add max_lines only if set (non-zero)
         if self.max_lines > 0:
             marker_kwargs['max_lines'] = self.max_lines
-        
+
         # Add optional font properties if set
         if self.font_family is not None:
             marker_kwargs['font_family'] = self.font_family
@@ -645,47 +645,47 @@ class KivyRenderer:
             marker_kwargs['font_context'] = self.font_context
         if self.font_hinting is not None:
             marker_kwargs['font_hinting'] = self.font_hinting
-        
+
         # Add ellipsis_options if non-empty
         if self.ellipsis_options:
             marker_kwargs['ellipsis_options'] = self.ellipsis_options
-        
+
         marker = Label(**marker_kwargs)
         # Bind text_size to enable valign to work properly
         marker.bind(size=lambda inst, val: setattr(inst, 'text_size', val))
-        
+
         # Set font scale metadata for list markers
         marker._font_scale = 1.0
-        
+
         item_layout.add_widget(marker)
-        
+
         # Create content container
         content = BoxLayout(
             orientation='vertical',
             size_hint_y=None
         )
         content.bind(minimum_height=content.setter('height'))
-        
+
         # Render children of list item
         children = token.get('children', [])
         for child in children:
             child_widget = self._render_token(child, state)
             if child_widget is not None:
                 content.add_widget(child_widget)
-        
+
         item_layout.add_widget(content)
-        
+
         return item_layout
-    
+
     def list_item(self, token: Dict[str, Any], state: Any = None) -> BoxLayout:
         """Render a list item (called directly if needed).
-        
+
         Note: Usually list items are rendered via _render_list_item from list().
-        
+
         Args:
             token: List item token
             state: Block state
-            
+
         Returns:
             BoxLayout with content
         """
@@ -694,51 +694,51 @@ class KivyRenderer:
             size_hint_y=None
         )
         content.bind(minimum_height=content.setter('height'))
-        
+
         children = token.get('children', [])
         for child in children:
             child_widget = self._render_token(child, state)
             if child_widget is not None:
                 content.add_widget(child_widget)
-        
+
         return content
 
     def block_code(self, token: Dict[str, Any], state: Any = None) -> Widget:
         """Render a code block with monospace font and dark background.
-        
+
         Args:
             token: Code block token with 'raw' and optional 'attrs'
             state: Block state
-            
+
         Returns:
             Widget containing styled code block
         """
         raw = token.get('raw', '')
         attrs = token.get('attrs', {})
         language = attrs.get('info', '')
-        
+
         # Escape the code text for Kivy markup
         escaped_text = self.inline_renderer._escape_markup(raw.rstrip('\n'))
-        
+
         # Create container with background
         container = BoxLayout(
             orientation='vertical',
             size_hint_y=None,
             padding=[10, 10, 10, 10]
         )
-        
+
         # Add dark background using canvas
         with container.canvas.before:
             Color(*self.code_bg_color)
             container._bg_rect = Rectangle(pos=container.pos, size=container.size)
-        
+
         # Bind background to container size/pos
         def update_bg(instance, value):
             container._bg_rect.pos = instance.pos
             container._bg_rect.size = instance.size
-        
+
         container.bind(pos=update_bg, size=update_bg)
-        
+
         # Create label with monospace font
         # Note: code blocks use code_font_name and fixed light color, not font_name/color
         # font_family is intentionally excluded from code blocks to preserve monospace
@@ -768,44 +768,44 @@ class KivyRenderer:
             'limit_render_to_text_bbox': self.limit_render_to_text_bbox,
             'ellipsis_options': self.ellipsis_options,
         }
-        
+
         # Add optional font properties if set (excluding font_family for code blocks)
         if self.font_context is not None:
             label_kwargs['font_context'] = self.font_context
         if self.font_hinting is not None:
             label_kwargs['font_hinting'] = self.font_hinting
-        
+
         label = Label(**label_kwargs)
         label.bind(texture_size=label.setter('size'))
         label.bind(size=lambda instance, value: setattr(instance, 'text_size', (value[0], None)))
-        
+
         # Set font scale metadata for code blocks
         label._font_scale = 1.0
         label._is_code = True
-        
+
         container.add_widget(label)
         container.bind(minimum_height=container.setter('height'))
-        
+
         # Store language info as metadata
         container.language_info = language
-        
+
         return container
 
     def block_quote(self, token: Dict[str, Any], state: Any = None) -> BoxLayout:
         """Render a block quote with left border and indentation.
-        
+
         Args:
             token: Block quote token with 'children'
             state: Block state
-            
+
         Returns:
             BoxLayout with left border styling
         """
         children = token.get('children', [])
-        
+
         # Track nesting depth
         self._nesting_depth += 1
-        
+
         # Create container with left padding for indentation
         container = BoxLayout(
             orientation='vertical',
@@ -813,7 +813,7 @@ class KivyRenderer:
             padding=[20, 5, 5, 5]  # Left padding for quote indentation
         )
         container.bind(minimum_height=container.setter('height'))
-        
+
         # Add left border using canvas
         border_color = [0.5, 0.5, 0.5, 1]  # Gray border
         with container.canvas.before:
@@ -822,33 +822,33 @@ class KivyRenderer:
                 points=[container.x + 5, container.y, container.x + 5, container.y + container.height],
                 width=2
             )
-        
+
         # Bind border to container size/pos
         def update_border(instance, value):
             container._border_line.points = [
                 instance.x + 5, instance.y,
                 instance.x + 5, instance.y + instance.height
             ]
-        
+
         container.bind(pos=update_border, size=update_border)
-        
+
         # Render children
         for child in children:
             child_widget = self._render_token(child, state)
             if child_widget is not None:
                 container.add_widget(child_widget)
-        
+
         self._nesting_depth -= 1
-        
+
         return container
 
     def thematic_break(self, token: Dict[str, Any], state: Any = None) -> Widget:
         """Render a thematic break (horizontal rule) as a widget with a line.
-        
+
         Args:
             token: Thematic break token
             state: Block state
-            
+
         Returns:
             Widget with horizontal line on canvas
         """
@@ -856,7 +856,7 @@ class KivyRenderer:
             size_hint_y=None,
             height=20  # Fixed height for the rule
         )
-        
+
         # Draw horizontal line on canvas
         line_color = [0.5, 0.5, 0.5, 1]  # Gray line
         with widget.canvas:
@@ -865,35 +865,35 @@ class KivyRenderer:
                 points=[widget.x, widget.center_y, widget.x + widget.width, widget.center_y],
                 width=1
             )
-        
+
         # Bind line to widget size/pos
         def update_line(instance, value):
             widget._hr_line.points = [
                 instance.x, instance.center_y,
                 instance.x + instance.width, instance.center_y
             ]
-        
+
         widget.bind(pos=update_line, size=update_line)
-        
+
         return widget
 
     def image(self, token: Dict[str, Any], state: Any = None) -> Widget:
         """Render an image as an AsyncImage widget.
-        
+
         Args:
             token: Image token with 'attrs' containing url
             state: Block state
-            
+
         Returns:
             AsyncImage widget or Label with alt text on failure
         """
         attrs = token.get('attrs', {})
         url = attrs.get('url', '')
         children = token.get('children', [])
-        
+
         # Get alt text from children
         alt_text = self._render_inline(children) if children else ''
-        
+
         # Create AsyncImage
         image = AsyncImage(
             source=url,
@@ -901,10 +901,10 @@ class KivyRenderer:
             allow_stretch=True,
             keep_ratio=True
         )
-        
+
         # Store alt text for fallback
         image.alt_text = alt_text
-        
+
         # Set initial height based on texture when loaded
         def on_texture(instance, value):
             if value:
@@ -914,21 +914,21 @@ class KivyRenderer:
             else:
                 # Fallback height if no texture
                 instance.height = 100
-        
+
         image.bind(texture=on_texture)
-        
+
         # Set default height until texture loads
         image.height = 100
-        
+
         return image
-    
+
     def newline(self, token: Dict[str, Any], state: Any = None) -> Widget:
         """Render a newline as a small spacer widget.
-        
+
         Args:
             token: Newline token
             state: Block state
-            
+
         Returns:
             Small spacer widget
         """
@@ -936,19 +936,19 @@ class KivyRenderer:
 
     def table(self, token: Dict[str, Any], state: Any = None) -> GridLayout:
         """Render a table as a GridLayout with bottom spacing.
-        
+
         Args:
             token: Table token with 'children' containing head and body
             state: Block state
-            
+
         Returns:
             GridLayout containing table cells
         """
         children = token.get('children', [])
-        
+
         # Determine number of columns from the first row
         num_cols = self._get_table_column_count(token)
-        
+
         # Create GridLayout with correct number of columns and bottom padding
         grid = GridLayout(
             cols=num_cols,
@@ -957,7 +957,7 @@ class KivyRenderer:
             padding=[5, 5, 5, 5 + self.base_font_size]  # Add bottom spacing via padding
         )
         grid.bind(minimum_height=grid.setter('height'))
-        
+
         # Process table head and body
         for child in children:
             child_type = child.get('type', '')
@@ -965,15 +965,15 @@ class KivyRenderer:
                 self._render_table_section(child, grid, state, is_head=True)
             elif child_type == 'table_body':
                 self._render_table_section(child, grid, state, is_head=False)
-        
+
         return grid
-    
+
     def _get_table_column_count(self, token: Dict[str, Any]) -> int:
         """Get the number of columns in a table.
-        
+
         Args:
             token: Table token
-            
+
         Returns:
             Number of columns
         """
@@ -992,11 +992,11 @@ class KivyRenderer:
                         cells = first_item.get('children', [])
                         return len(cells)
         return 1  # Default to 1 column if structure is unclear
-    
-    def _render_table_section(self, section: Dict[str, Any], grid: GridLayout, 
+
+    def _render_table_section(self, section: Dict[str, Any], grid: GridLayout,
                                state: Any, is_head: bool = False) -> None:
         """Render a table section (head or body) into the grid.
-        
+
         Args:
             section: Table head or body token
             grid: GridLayout to add cells to
@@ -1006,10 +1006,10 @@ class KivyRenderer:
         children = section.get('children', [])
         if not children:
             return
-        
+
         # Check if children are table_cell (table_head) or table_row (table_body)
         first_child_type = children[0].get('type', '')
-        
+
         if first_child_type == 'table_cell':
             # table_head: direct table_cell children
             for cell in children:
@@ -1019,11 +1019,11 @@ class KivyRenderer:
             # table_body: table_row children containing table_cell children
             for row in children:
                 self._render_table_row(row, grid, state, is_head)
-    
+
     def _render_table_row(self, row: Dict[str, Any], grid: GridLayout,
                           state: Any, is_head: bool = False) -> None:
         """Render a table row into the grid.
-        
+
         Args:
             row: Table row token
             grid: GridLayout to add cells to
@@ -1034,22 +1034,22 @@ class KivyRenderer:
         for cell in cells:
             cell_widget = self._render_table_cell(cell, state, is_head)
             grid.add_widget(cell_widget)
-    
+
     def _render_table_cell(self, cell: Dict[str, Any], state: Any,
                            is_head: bool = False) -> Label:
         """Render a table cell as a Label.
-        
+
         Args:
             cell: Table cell token
             state: Block state
             is_head: Whether this cell is in the header
-            
+
         Returns:
             Label widget for the cell
         """
         children = cell.get('children', [])
         attrs = cell.get('attrs', {})
-        
+
         # Get alignment from attrs - table cells use their own alignment from markdown
         # but fall back to the renderer's halign if not specified or invalid
         align = attrs.get('align', None)
@@ -1058,10 +1058,10 @@ class KivyRenderer:
         else:
             # Fall back to renderer's halign, but convert 'auto' to 'left' for table cells
             cell_halign = 'left' if self.halign == 'auto' else self.halign
-        
+
         # Render inline content
         text = self._render_inline(children) if children else ''
-        
+
         # Create label with appropriate styling
         label_kwargs = {
             'text': text,
@@ -1093,11 +1093,11 @@ class KivyRenderer:
             'limit_render_to_text_bbox': self.limit_render_to_text_bbox,
             'ellipsis_options': self.ellipsis_options,
         }
-        
+
         # Add max_lines only if set (non-zero)
         if self.max_lines > 0:
             label_kwargs['max_lines'] = self.max_lines
-        
+
         # Add optional font properties if set
         if self.font_family is not None:
             label_kwargs['font_family'] = self.font_family
@@ -1105,80 +1105,80 @@ class KivyRenderer:
             label_kwargs['font_context'] = self.font_context
         if self.font_hinting is not None:
             label_kwargs['font_hinting'] = self.font_hinting
-        
+
         # Add ellipsis_options if non-empty
         if self.ellipsis_options:
             label_kwargs['ellipsis_options'] = self.ellipsis_options
-        
+
         label = Label(**label_kwargs)
-        
+
         # Apply text_size binding based on mode
         self._apply_text_size_binding(label)
-        
+
         # Store alignment as metadata
         label.cell_align = cell_halign
         label.is_header = is_head
-        
+
         # Set font scale metadata for table cells
         label._font_scale = 1.0
-        
+
         return label
-    
+
     def table_head(self, token: Dict[str, Any], state: Any = None) -> None:
         """Handle table_head token (processed by table()).
-        
+
         This method exists for completeness but table_head is typically
         processed as part of the table() method.
-        
+
         Args:
             token: Table head token
             state: Block state
-            
+
         Returns:
             None (processed by parent table)
         """
         return None
-    
+
     def table_body(self, token: Dict[str, Any], state: Any = None) -> None:
         """Handle table_body token (processed by table()).
-        
+
         This method exists for completeness but table_body is typically
         processed as part of the table() method.
-        
+
         Args:
             token: Table body token
             state: Block state
-            
+
         Returns:
             None (processed by parent table)
         """
         return None
-    
+
     def table_row(self, token: Dict[str, Any], state: Any = None) -> None:
         """Handle table_row token (processed by table()).
-        
+
         This method exists for completeness but table_row is typically
         processed as part of the table() method.
-        
+
         Args:
             token: Table row token
             state: Block state
-            
+
         Returns:
             None (processed by parent table)
         """
         return None
-    
+
     def table_cell(self, token: Dict[str, Any], state: Any = None) -> Label:
         """Handle table_cell token directly.
-        
+
         This method can be called directly if needed, but cells are typically
         processed as part of the table() method.
-        
+
         Args:
             token: Table cell token
             state: Block state
-            
+
         Returns:
             Label widget for the cell
         """

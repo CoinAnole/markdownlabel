@@ -10,20 +10,20 @@ from kivy.uix.label import Label
 from kivy.uix.widget import Widget
 from kivy.uix.image import Image
 from kivy.uix.stencilview import StencilView
-from typing import List, Optional, Dict, Set
+from typing import List, Optional, Dict
 
 
 # Touch Simulation Classes
 
 class FakeTouch:
     """Minimal touch simulation for headless testing.
-    
+
     Provides the essential attributes needed by on_touch_down
     without requiring a Kivy window.
     """
     def __init__(self, x: float, y: float):
         """Initialize a fake touch at the given coordinates.
-        
+
         Args:
             x: X coordinate of the touch
             y: Y coordinate of the touch
@@ -103,7 +103,7 @@ def simple_markdown_document(draw):
     """Generate a simple Markdown document with various block elements."""
     elements = []
     num_elements = draw(st.integers(min_value=1, max_value=5))
-    
+
     for _ in range(num_elements):
         element_type = draw(st.sampled_from(['heading', 'paragraph']))
         if element_type == 'heading':
@@ -112,7 +112,7 @@ def simple_markdown_document(draw):
             para = draw(markdown_paragraph())
             if para:  # Only add non-empty paragraphs
                 elements.append(para)
-    
+
     # Filter out empty elements and join with double newlines
     elements = [e for e in elements if e.strip()]
     return '\n\n'.join(elements) if elements else 'Default text'
@@ -151,10 +151,10 @@ unicode_errors_strategy = st.sampled_from(['strict', 'replace', 'ignore'])
 @st.composite
 def heading_token(draw, level=None):
     """Generate a heading token with specified or random level.
-    
+
     Args:
         level: Optional heading level (1-6). If None, a random level is generated.
-        
+
     Returns:
         Dictionary representing a heading token with type 'heading'.
     """
@@ -174,7 +174,7 @@ def heading_token(draw, level=None):
 @st.composite
 def paragraph_token(draw):
     """Generate a paragraph token with text content.
-    
+
     Returns:
         Dictionary representing a paragraph token with type 'paragraph'.
     """
@@ -191,7 +191,7 @@ def paragraph_token(draw):
 @st.composite
 def list_item_token(draw):
     """Generate a list item token.
-    
+
     Returns:
         Dictionary representing a list item token with type 'list_item'.
     """
@@ -211,19 +211,19 @@ def list_item_token(draw):
 @st.composite
 def list_token(draw, ordered=None):
     """Generate a list token (ordered or unordered).
-    
+
     Args:
         ordered: Optional boolean specifying if list is ordered. If None, random.
-        
+
     Returns:
         Dictionary representing a list token with type 'list'.
     """
     if ordered is None:
         ordered = draw(st.booleans())
-    
+
     num_items = draw(st.integers(min_value=1, max_value=5))
     items = [draw(list_item_token()) for _ in range(num_items)]
-    
+
     return {
         'type': 'list',
         'children': items,
@@ -237,7 +237,7 @@ def list_token(draw, ordered=None):
 @st.composite
 def code_block_token(draw):
     """Generate a code block token.
-    
+
     Returns:
         Dictionary representing a code block token with type 'block_code'.
     """
@@ -256,7 +256,7 @@ def code_block_token(draw):
 @st.composite
 def block_quote_token(draw):
     """Generate a block quote token.
-    
+
     Returns:
         Dictionary representing a block quote token with type 'block_quote'.
     """
@@ -276,7 +276,7 @@ def block_quote_token(draw):
 @st.composite
 def image_token(draw):
     """Generate an image token.
-    
+
     Returns:
         Dictionary representing an image token with type 'image'.
     """
@@ -296,11 +296,11 @@ def image_token(draw):
 @st.composite
 def table_cell_token(draw, align=None, is_head=False):
     """Generate a table cell token.
-    
+
     Args:
         align: Optional alignment value ('left', 'center', 'right', or None).
         is_head: Boolean indicating if this is a header cell.
-        
+
     Returns:
         Dictionary representing a table cell token with type 'table_cell'.
     """
@@ -310,7 +310,7 @@ def table_cell_token(draw, align=None, is_head=False):
     )))
     if align is None:
         align = draw(st.sampled_from([None, 'left', 'center', 'right']))
-    
+
     return {
         'type': 'table_cell',
         'children': [{'type': 'text', 'raw': text}] if text else [],
@@ -321,12 +321,12 @@ def table_cell_token(draw, align=None, is_head=False):
 @st.composite
 def table_row_token(draw, num_cols, alignments=None, is_head=False):
     """Generate a table row token with specified number of columns.
-    
+
     Args:
         num_cols: Number of columns in the row.
         alignments: Optional list of alignment values for each column.
         is_head: Boolean indicating if this is a header row.
-        
+
     Returns:
         Dictionary representing a table row token with type 'table_row'.
     """
@@ -335,7 +335,7 @@ def table_row_token(draw, num_cols, alignments=None, is_head=False):
         align = alignments[i] if alignments else None
         cell = draw(table_cell_token(align=align, is_head=is_head))
         cells.append(cell)
-    
+
     return {
         'type': 'table_row',
         'children': cells
@@ -345,11 +345,11 @@ def table_row_token(draw, num_cols, alignments=None, is_head=False):
 @st.composite
 def table_token(draw, num_rows=None, num_cols=None):
     """Generate a table token with specified dimensions.
-    
+
     Args:
         num_rows: Optional number of rows (including header). If None, random (1-5).
         num_cols: Optional number of columns. If None, random (1-5).
-        
+
     Returns:
         Dictionary representing a table token with type 'table'.
     """
@@ -357,20 +357,20 @@ def table_token(draw, num_rows=None, num_cols=None):
         num_rows = draw(st.integers(min_value=1, max_value=5))
     if num_cols is None:
         num_cols = draw(st.integers(min_value=1, max_value=5))
-    
+
     # Generate alignments for columns
     alignments = [draw(st.sampled_from([None, 'left', 'center', 'right']))
                   for _ in range(num_cols)]
-    
+
     # Generate header row
     head_row = draw(table_row_token(num_cols, alignments, is_head=True))
-    
+
     # Generate body rows
     body_rows = []
     for _ in range(num_rows - 1):  # -1 because header is one row
         body_row = draw(table_row_token(num_cols, alignments, is_head=False))
         body_rows.append(body_row)
-    
+
     return {
         'type': 'table',
         'children': [
@@ -390,35 +390,35 @@ def table_token(draw, num_rows=None, num_cols=None):
 
 def find_labels_recursive(widget: Widget, labels: Optional[List[Label]] = None) -> List[Label]:
     """Recursively find all Label widgets in a widget tree.
-    
+
     Args:
         widget: The root widget to search from
         labels: Optional list to accumulate results (used for recursion)
-        
+
     Returns:
         List of all Label widgets found in the widget tree
     """
     if labels is None:
         labels = []
-    
+
     if isinstance(widget, Label):
         labels.append(widget)
-    
+
     if hasattr(widget, 'children'):
         for child in widget.children:
             find_labels_recursive(child, labels)
-    
+
     return labels
 
 
 def colors_equal(c1: List[float], c2: List[float], tolerance: float = 0.001) -> bool:
     """Compare two colors with tolerance for floating point differences.
-    
+
     Args:
         c1: First color as [r, g, b, a] list
         c2: Second color as [r, g, b, a] list
         tolerance: Maximum allowed difference between components
-        
+
     Returns:
         True if colors are equal within tolerance, False otherwise
     """
@@ -429,12 +429,12 @@ def colors_equal(c1: List[float], c2: List[float], tolerance: float = 0.001) -> 
 
 def padding_equal(p1: List[float], p2: List[float], tolerance: float = 0.001) -> bool:
     """Compare two padding values with tolerance for floating point differences.
-    
+
     Args:
         p1: First padding as [left, top, right, bottom] list
         p2: Second padding as [left, top, right, bottom] list
         tolerance: Maximum allowed difference between components
-        
+
     Returns:
         True if padding values are equal within tolerance, False otherwise
     """
@@ -445,12 +445,12 @@ def padding_equal(p1: List[float], p2: List[float], tolerance: float = 0.001) ->
 
 def floats_equal(f1: float, f2: float, tolerance: float = 0.001) -> bool:
     """Compare two float values with tolerance.
-    
+
     Args:
         f1: First float value
         f2: Second float value
         tolerance: Maximum allowed difference
-        
+
     Returns:
         True if values are equal within tolerance, False otherwise
     """
@@ -461,16 +461,16 @@ def floats_equal(f1: float, f2: float, tolerance: float = 0.001) -> bool:
 
 def collect_widget_ids(widget: Widget, exclude_root: bool = False) -> Dict[int, Widget]:
     """Collect Python object ids and references of all widgets in the tree.
-    
+
     This helper function traverses the widget tree and collects a mapping of
     Python object IDs to the widgets themselves. Storing the widget references
     prevents their memory addresses (IDs) from being reused by Python's
     garbage collector during identity comparison tests.
-    
+
     Args:
         widget: Root widget to collect from
         exclude_root: If True, exclude the root widget from the result
-    
+
     Returns:
         Dictionary mapping widget object ids to widget instances
     """
@@ -483,41 +483,41 @@ def collect_widget_ids(widget: Widget, exclude_root: bool = False) -> Dict[int, 
 
 def assert_rebuild_occurred(widget: Widget, ids_before: Dict[int, Widget], exclude_root: bool = True) -> None:
     """Assert that a widget tree rebuild occurred.
-    
+
     Verifies that the widget tree has been rebuilt by comparing widget mappings
     before and after a change. A rebuild means different widget instances.
-    
+
     Args:
         widget: Root widget to check
         ids_before: Dict mapping widget IDs to objects before the change
         exclude_root: If True, exclude the root widget from comparison
-        
+
     Raises:
         AssertionError: If no rebuild occurred (widget mappings are identical)
     """
     ids_after = collect_widget_ids(widget, exclude_root=exclude_root)
-    
+
     # Compare dictionaries - will be unequal if instances differ even if IDs coincide
     assert ids_before != ids_after, \
-        f"Expected rebuild to occur, but widget instances are identical"
+        "Expected rebuild to occur, but widget instances are identical"
 
 
 def assert_no_rebuild(widget: Widget, ids_before: Dict[int, Widget], exclude_root: bool = True) -> None:
     """Assert that no widget tree rebuild occurred.
-    
+
     Verifies that the widget tree was updated in-place without creating new
-    widget instances. 
-    
+    widget instances.
+
     Args:
         widget: Root widget to check
         ids_before: Dict mapping widget IDs to objects before the change
         exclude_root: If True, exclude the root widget from comparison
-        
+
     Raises:
         AssertionError: If a rebuild occurred (widget mappings changed)
     """
     ids_after = collect_widget_ids(widget, exclude_root=exclude_root)
-    
+
     assert ids_before == ids_after, \
         f"Expected no rebuild, but widget instances changed: " \
         f"{len(ids_before)} before, {len(ids_after)} after"
@@ -527,36 +527,36 @@ def assert_no_rebuild(widget: Widget, ids_before: Dict[int, Widget], exclude_roo
 
 def find_images(widget: Widget, images: Optional[List[Image]] = None) -> List[Image]:
     """Recursively find all Image widgets in a widget tree.
-    
+
     Args:
         widget: The root widget to search from
         images: Optional list to accumulate results (used for recursion)
-        
+
     Returns:
         List of all Image widgets found in the widget tree
     """
     if images is None:
         images = []
-    
+
     if isinstance(widget, Image):
         images.append(widget)
-    
+
     if hasattr(widget, 'children'):
         for child in widget.children:
             find_images(child, images)
-    
+
     return images
 
 
 def has_clipping_container(widget: Widget) -> bool:
     """Check if widget contains a clipping container (StencilView).
-    
+
     This helper function searches through the widget tree to determine if
     a StencilView (used for clipping) is present.
-    
+
     Args:
         widget: Widget to check
-        
+
     Returns:
         True if a clipping container is found, False otherwise
     """
@@ -568,14 +568,14 @@ def has_clipping_container(widget: Widget) -> bool:
 
 def is_code_label(label: Label, code_font_name: str = 'RobotoMono-Regular') -> bool:
     """Check if a label is a code label based on its font.
-    
+
     Code labels use a monospace font (typically RobotoMono-Regular) to
     distinguish them from regular text labels.
-    
+
     Args:
         label: Label widget to check
         code_font_name: Expected code font name (default: 'RobotoMono-Regular')
-        
+
     Returns:
         True if this appears to be a code label, False otherwise
     """
@@ -586,70 +586,70 @@ def is_code_label(label: Label, code_font_name: str = 'RobotoMono-Regular') -> b
 
 def find_labels_with_refs(widget: Widget, labels: Optional[List[Label]] = None) -> List[Label]:
     """Recursively find all Label widgets that have refs.
-    
+
     Args:
         widget: The root widget to search from
         labels: Optional list to accumulate results (used for recursion)
-        
+
     Returns:
         List of all Label widgets that have refs in the widget tree
     """
     if labels is None:
         labels = []
-    
+
     if isinstance(widget, Label) and hasattr(widget, 'refs') and widget.refs:
         labels.append(widget)
-    
+
     if hasattr(widget, 'children'):
         for child in widget.children:
             find_labels_with_refs(child, labels)
-    
+
     return labels
 
 
 def find_labels_with_ref_markup(widget: Widget, labels: Optional[List[Label]] = None) -> List[Label]:
     """Recursively find all Label widgets that have ref markup in their text.
-    
+
     Args:
         widget: The root widget to search from
         labels: Optional list to accumulate results (used for recursion)
-        
+
     Returns:
         List of all Label widgets with ref markup in the widget tree
     """
     if labels is None:
         labels = []
-    
+
     if isinstance(widget, Label) and hasattr(widget, 'text'):
         if '[ref=' in widget.text and '[/ref]' in widget.text:
             labels.append(widget)
-    
+
     if hasattr(widget, 'children'):
         for child in widget.children:
             find_labels_with_ref_markup(child, labels)
-    
+
     return labels
 
 
 def get_widget_offset(widget: Widget, root: Widget) -> tuple:
     """Calculate widget's position relative to root widget.
-    
+
     Args:
         widget: Widget to calculate offset for
         root: Root widget to calculate offset relative to
-        
+
     Returns:
         Tuple (offset_x, offset_y) relative to root
     """
     offset_x = 0
     offset_y = 0
     current = widget
-    
+
     while current is not None and current is not root:
         offset_x += current.x
         offset_y += current.y
         current = current.parent
-    
+
     return offset_x, offset_y
 
 
@@ -658,24 +658,24 @@ def get_widget_offset(widget: Widget, root: Widget) -> tuple:
 def simulate_coverage_measurement(temp_dir: str, test_paths: List[str],
                                   source_paths: List[str], coverage_level: str) -> float:
     """Simulate coverage measurement for testing purposes.
-    
+
     In a real implementation, this would run actual coverage measurement.
     For testing, we simulate based on coverage level and number of tests.
-    
+
     Args:
         temp_dir: Temporary directory path
         test_paths: List of test file paths
         source_paths: List of source file paths
         coverage_level: Coverage level ('low', 'medium', 'high')
-        
+
     Returns:
         Simulated coverage percentage (0.0 to 100.0)
     """
     import random
-    
+
     num_tests = len(test_paths)
     num_sources = len(source_paths)
-    
+
     # Base coverage based on level
     if coverage_level == 'low':
         base_coverage = 30.0
@@ -683,14 +683,14 @@ def simulate_coverage_measurement(temp_dir: str, test_paths: List[str],
         base_coverage = 60.0
     else:  # high
         base_coverage = 85.0
-    
+
     # Adjust based on test/source ratio
     test_ratio = num_tests / max(num_sources, 1)
     coverage_adjustment = min(test_ratio * 10, 15)  # Max 15% boost
-    
+
     # Add some variance
     variance = random.uniform(-5, 5)
-    
+
     final_coverage = max(0, min(100, base_coverage + coverage_adjustment + variance))
     return final_coverage
 
@@ -700,11 +700,11 @@ def simulate_coverage_measurement(temp_dir: str, test_paths: List[str],
 @st.composite
 def duplicate_helper_functions(draw):
     """Generate test files with duplicate helper functions.
-    
+
     This strategy generates test files containing helper functions that appear
     in multiple files, either identically or with similar implementations. Used
     for testing duplicate detection and consolidation logic.
-    
+
     Returns:
         Tuple containing:
             - function_name: Name of the duplicated helper function
@@ -719,7 +719,7 @@ def duplicate_helper_functions(draw):
         "assert_colors_equal",
         "setup_test_widget"
     ]))
-    
+
     # Generate function body variations
     body_templates = [
         """    if labels is None:
@@ -729,7 +729,7 @@ def duplicate_helper_functions(draw):
             labels.append(child)
         labels = {func_name}(child, labels)
     return labels""",
-        
+
         """    result = []
     if hasattr(widget, 'children'):
         for child in widget.children:
@@ -737,52 +737,52 @@ def duplicate_helper_functions(draw):
                 result.append(child)
             result.extend({func_name}(child))
     return result""",
-        
+
         """    ids = set()
     ids.add(id(widget))
     for child in getattr(widget, 'children', []):
         ids.update({func_name}(child))
     return ids"""
     ]
-    
+
     # Choose whether to make them identical or similar
     make_identical = draw(st.booleans())
     num_files = draw(st.integers(min_value=2, max_value=4))
-    
+
     files = []
     for i in range(num_files):
         if make_identical:
             body = body_templates[0].format(func_name=function_name)
         else:
             body = draw(st.sampled_from(body_templates)).format(func_name=function_name)
-        
+
         file_content = f'''"""Test module {i}."""
 import pytest
 
 class TestExample{i}:
     """Test class {i}."""
-    
+
     def {function_name}(self, widget, labels=None):
         """Helper function for finding labels."""
 {body}
-    
+
     def test_example_{i}(self):
         """Example test."""
         assert True
 '''
         files.append(file_content)
-    
+
     return function_name, files, make_identical
 
 
 @st.composite
 def rebuild_test_file_strategy(draw):
     """Generate a Python test file with a rebuild test.
-    
+
     This strategy generates test files containing tests with "triggers_rebuild"
     in their names, either with or without actual rebuild-related assertions.
     Used for testing test file parser and name consistency validation.
-    
+
     Returns:
         Tuple containing:
             - test_code: Complete test file content as string
@@ -795,9 +795,9 @@ def rebuild_test_file_strategy(draw):
         "test_text_triggers_rebuild",
         "test_padding_triggers_rebuild"
     ]))
-    
+
     has_rebuild_assertion = draw(st.booleans())
-    
+
     if has_rebuild_assertion:
         # Include rebuild-related assertions
         assertion_code = draw(st.sampled_from([
@@ -805,14 +805,14 @@ def rebuild_test_file_strategy(draw):
             "    label.text = 'new text'\n"
             "    widget_id_after = id(label.children[0])\n"
             "    assert widget_id_before != widget_id_after",
-            
+
             "    ids_before = collect_widget_ids(label)\n"
             "    label.color = [1, 0, 0, 1]\n"
             "    ids_after = collect_widget_ids(label)\n"
             "    assert ids_before != ids_after",
-            
+
             "    assert_rebuild_occurred(label, lambda: setattr(label, 'font_size', 20))",
-            
+
             "    assert_no_rebuild(label, lambda: setattr(label, 'color', [1, 0, 0, 1]))"
         ]))
     else:
@@ -820,24 +820,24 @@ def rebuild_test_file_strategy(draw):
         assertion_code = draw(st.sampled_from([
             "    label.text = 'new text'\n"
             "    assert label.text == 'new text'",
-            
+
             "    label.color = [1, 0, 0, 1]\n"
             "    assert label.color == [1, 0, 0, 1]",
-            
+
             "    label.font_size = 20\n"
             "    assert label.font_size == 20"
         ]))
-    
+
     test_code = f'''"""Test module."""
 import pytest
 
 class TestRebuildBehavior:
     """Test class for rebuild behavior."""
-    
+
     def {test_name}(self):
         """Test that property change triggers rebuild."""
         label = create_label()
 {assertion_code}
 '''
-    
+
     return test_code, test_name, has_rebuild_assertion
