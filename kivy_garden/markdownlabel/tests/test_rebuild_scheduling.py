@@ -63,7 +63,23 @@ class TestBatchedRebuilds:
             f"Expected exactly 1 rebuild after force_rebuild, got {rebuild_count[0]}"
         )
 
-    @given(st.text(min_size=1, max_size=20, alphabet=st.characters(whitelist_categories=["L", "N"], blacklist_characters="#[]&\n\r")), st.floats(min_value=10, max_value=30, allow_nan=False, allow_infinity=False), st.sampled_from(["Roboto", "RobotoMono-Regular"]))
+    @given(
+        st.text(
+            min_size=1,
+            max_size=20,
+            alphabet=st.characters(
+                whitelist_categories=["L", "N"],
+                blacklist_characters="#[]&\n\r",
+            ),
+        ),
+        st.floats(
+            min_value=10,
+            max_value=30,
+            allow_nan=False,
+            allow_infinity=False,
+        ),
+        st.sampled_from(["Roboto", "RobotoMono-Regular"]),
+    )
     # Combination strategy: 2 examples (combination coverage)
     @settings(max_examples=2, deadline=None)
     def test_mixed_property_changes_batch_rebuilds(self, text, font_size, font_name):
@@ -334,5 +350,3 @@ class TestDeferredRebuildScheduling:
         assert label._pending_rebuild is True, (
             "Expected _pending_rebuild to be True after multiple changes"
         )
-
-
