@@ -5,9 +5,6 @@ Tests verify that MarkdownLabel maintains compatibility with Kivy Label API
 for basic properties like font_size aliases and no-op property acceptance.
 """
 
-import importlib
-import os
-import sys
 import pytest
 from hypothesis import given, strategies as st, settings, assume
 
@@ -22,27 +19,27 @@ from .test_utils import simple_markdown_document
 
 class TestFontSizeAliasBidirectionality:
     """Property tests for font_size/base_font_size alias (Property 1)."""
-    
+
     @given(st.floats(min_value=1, max_value=200, allow_nan=False, allow_infinity=False))
     # Complex strategy: 50 examples (adequate coverage)
     @settings(max_examples=50, deadline=None)
     def test_font_size_sets_base_font_size(self, font_size_value):
         """Setting font_size updates base_font_size to the same value."""
         label = MarkdownLabel(font_size=font_size_value)
-        
+
         assert label.base_font_size == font_size_value, \
             f"Expected base_font_size={font_size_value}, got {label.base_font_size}"
-    
+
     @given(st.floats(min_value=1, max_value=200, allow_nan=False, allow_infinity=False))
     # Complex strategy: 50 examples (adequate coverage)
     @settings(max_examples=50, deadline=None)
     def test_base_font_size_returns_via_font_size(self, base_font_size_value):
         """Setting base_font_size is returned when reading font_size."""
         label = MarkdownLabel(base_font_size=base_font_size_value)
-        
+
         assert label.font_size == base_font_size_value, \
             f"Expected font_size={base_font_size_value}, got {label.font_size}"
-    
+
     @given(st.floats(min_value=1, max_value=200, allow_nan=False, allow_infinity=False),
            st.floats(min_value=1, max_value=200, allow_nan=False, allow_infinity=False))
     # Combination strategy: 50 examples (combination coverage)
@@ -51,10 +48,10 @@ class TestFontSizeAliasBidirectionality:
         """Changing font_size after creation updates base_font_size."""
         label = MarkdownLabel(font_size=initial_value)
         label.font_size = new_value
-        
+
         assert label.base_font_size == new_value, \
             f"Expected base_font_size={new_value}, got {label.base_font_size}"
-    
+
     @given(st.floats(min_value=1, max_value=200, allow_nan=False, allow_infinity=False),
            st.floats(min_value=1, max_value=200, allow_nan=False, allow_infinity=False))
     # Combination strategy: 50 examples (combination coverage)
@@ -63,7 +60,7 @@ class TestFontSizeAliasBidirectionality:
         """Changing base_font_size after creation updates font_size."""
         label = MarkdownLabel(base_font_size=initial_value)
         label.base_font_size = new_value
-        
+
         assert label.font_size == new_value, \
             f"Expected font_size={new_value}, got {label.font_size}"
 
@@ -73,12 +70,12 @@ class TestFontSizeAliasBidirectionality:
     def test_bidirectional_equivalence(self, value):
         """font_size and base_font_size are always equivalent."""
         label = MarkdownLabel()
-        
+
         # Set via font_size
         label.font_size = value
         assert label.font_size == label.base_font_size, \
             f"font_size ({label.font_size}) != base_font_size ({label.base_font_size})"
-        
+
         # Set via base_font_size
         label.base_font_size = value + 1
         assert label.font_size == label.base_font_size, \
@@ -92,7 +89,7 @@ class TestFontSizeAliasBidirectionality:
 
 class TestNoOpPropertiesAcceptance:
     """Property tests for no-op properties acceptance (Property 8)."""
-    
+
     @given(st.booleans())
     # Boolean strategy: 2 examples (True/False coverage)
     @settings(max_examples=2, deadline=None)
@@ -101,7 +98,7 @@ class TestNoOpPropertiesAcceptance:
         # Should not raise any exception
         label = MarkdownLabel(text='# Hello World', bold=value)
         assert label.bold == value
-    
+
     @given(st.booleans())
     # Boolean strategy: 2 examples (True/False coverage)
     @settings(max_examples=2, deadline=None)
@@ -109,7 +106,7 @@ class TestNoOpPropertiesAcceptance:
         """Setting italic property does not raise an exception."""
         label = MarkdownLabel(text='# Hello World', italic=value)
         assert label.italic == value
-    
+
     @given(st.booleans())
     # Boolean strategy: 2 examples (True/False coverage)
     @settings(max_examples=2, deadline=None)
@@ -117,7 +114,7 @@ class TestNoOpPropertiesAcceptance:
         """Setting underline property does not raise an exception."""
         label = MarkdownLabel(text='# Hello World', underline=value)
         assert label.underline == value
-    
+
     @given(st.booleans())
     # Boolean strategy: 2 examples (True/False coverage)
     @settings(max_examples=2, deadline=None)
@@ -125,7 +122,7 @@ class TestNoOpPropertiesAcceptance:
         """Setting strikethrough property does not raise an exception."""
         label = MarkdownLabel(text='# Hello World', strikethrough=value)
         assert label.strikethrough == value
-    
+
     @given(st.booleans())
     # Boolean strategy: 2 examples (True/False coverage)
     @settings(max_examples=2, deadline=None)
@@ -133,7 +130,7 @@ class TestNoOpPropertiesAcceptance:
         """Setting markup property does not raise an exception."""
         label = MarkdownLabel(text='# Hello World', markup=value)
         assert label.markup == value
-    
+
     @given(st.booleans(), st.booleans(), st.booleans(), st.booleans(), st.booleans())
     # Small finite strategy: 32 examples (input space size: 32)
     @settings(max_examples=32, deadline=None)
@@ -152,7 +149,7 @@ class TestNoOpPropertiesAcceptance:
         assert label.underline == underline
         assert label.strikethrough == strikethrough
         assert label.markup == markup
-    
+
     @given(st.booleans(), st.booleans(), st.booleans(), st.booleans(), st.booleans(),
            simple_markdown_document())
     # Combination strategy: 50 examples (combination coverage)
@@ -161,11 +158,11 @@ class TestNoOpPropertiesAcceptance:
                                                       strikethrough, markup, markdown_text):
         """No-op properties do not affect the rendered output."""
         assume(markdown_text.strip())
-        
+
         # Create label with default no-op property values
         label_default = MarkdownLabel(text=markdown_text)
         default_child_count = len(label_default.children)
-        
+
         # Create label with various no-op property values
         label_with_props = MarkdownLabel(
             text=markdown_text,
@@ -176,11 +173,11 @@ class TestNoOpPropertiesAcceptance:
             markup=markup
         )
         props_child_count = len(label_with_props.children)
-        
+
         # The number of children should be the same regardless of no-op properties
         assert default_child_count == props_child_count, \
             f"Expected {default_child_count} children, got {props_child_count} with no-op props"
-    
+
     @given(st.booleans())
     # Boolean strategy: 2 examples (True/False coverage)
     @settings(max_examples=2, deadline=None)
@@ -189,7 +186,7 @@ class TestNoOpPropertiesAcceptance:
         label = MarkdownLabel(text='# Hello')
         label.bold = value
         assert label.bold == value
-    
+
     @given(st.booleans())
     # Boolean strategy: 2 examples (True/False coverage)
     @settings(max_examples=2, deadline=None)
@@ -198,7 +195,7 @@ class TestNoOpPropertiesAcceptance:
         label = MarkdownLabel(text='# Hello')
         label.italic = value
         assert label.italic == value
-    
+
     @given(st.booleans())
     # Boolean strategy: 2 examples (True/False coverage)
     @settings(max_examples=2, deadline=None)
@@ -207,7 +204,7 @@ class TestNoOpPropertiesAcceptance:
         label = MarkdownLabel(text='# Hello')
         label.underline = value
         assert label.underline == value
-    
+
     @given(st.booleans())
     # Boolean strategy: 2 examples (True/False coverage)
     @settings(max_examples=2, deadline=None)
@@ -216,7 +213,7 @@ class TestNoOpPropertiesAcceptance:
         label = MarkdownLabel(text='# Hello')
         label.strikethrough = value
         assert label.strikethrough == value
-    
+
     @given(st.booleans())
     # Boolean strategy: 2 examples (True/False coverage)
     @settings(max_examples=2, deadline=None)
@@ -228,15 +225,17 @@ class TestNoOpPropertiesAcceptance:
 
 
 # **Feature: label-compatibility-phase2, Property 1: No-op Property Acceptance and Storage**
-# *For any* no-op property (mipmap, outline_width, outline_color, text_language, base_direction, ellipsis_options), 
-# when set to any valid value, the MarkdownLabel SHALL accept the value without raising an exception 
+# *For any* no-op property (mipmap, outline_width, outline_color, text_language,
+# base_direction, ellipsis_options),
+# when set to any valid value, the MarkdownLabel SHALL accept the value without
+# raising an exception
 # AND return the same value when accessed.
 # **Validates: Requirements 1.1, 1.2, 1.3**
 
 @pytest.mark.test_tests
 class TestNoOpPropertyAcceptanceAndStorage:
     """Property tests for no-op property acceptance and storage (Property 1)."""
-    
+
     @given(st.booleans())
     # Boolean strategy: 2 examples (True/False coverage)
     @settings(max_examples=2, deadline=None)
@@ -244,7 +243,7 @@ class TestNoOpPropertyAcceptanceAndStorage:
         """Setting mipmap property accepts and stores the value."""
         label = MarkdownLabel(text='# Hello World', mipmap=value)
         assert label.mipmap == value
-    
+
     @given(st.floats(min_value=0, max_value=100, allow_nan=False, allow_infinity=False))
     # Complex strategy: 50 examples (adequate coverage)
     @settings(max_examples=50, deadline=None)
@@ -252,7 +251,7 @@ class TestNoOpPropertyAcceptanceAndStorage:
         """Setting outline_width property accepts and stores the value."""
         label = MarkdownLabel(text='# Hello World', outline_width=value)
         assert label.outline_width == value
-    
+
     @given(st.lists(
         st.floats(min_value=0.0, max_value=1.0, allow_nan=False, allow_infinity=False),
         min_size=4, max_size=4
@@ -264,7 +263,7 @@ class TestNoOpPropertyAcceptanceAndStorage:
         label = MarkdownLabel(text='# Hello World', outline_color=value)
         # Compare colors with tolerance for floating point differences
         assert all(abs(a - b) < 0.001 for a, b in zip(label.outline_color, value))
-    
+
     @given(st.one_of(st.none(), st.text(min_size=1, max_size=10, alphabet=st.characters(
         whitelist_categories=['L', 'N'],
         blacklist_characters='\n\r'
@@ -275,13 +274,13 @@ class TestNoOpPropertyAcceptanceAndStorage:
         """Setting text_language property accepts and stores the value."""
         label = MarkdownLabel(text='# Hello World', text_language=value)
         assert label.text_language == value
-    
+
     @pytest.mark.parametrize('value', [None, 'ltr', 'rtl', 'weak_ltr', 'weak_rtl'])
     def test_base_direction_property_accepted_and_stored(self, value):
         """Setting base_direction property accepts and stores the value."""
         label = MarkdownLabel(text='# Hello World', base_direction=value)
         assert label.base_direction == value
-    
+
     @given(st.dictionaries(
         st.text(min_size=1, max_size=10, alphabet=st.characters(
             whitelist_categories=['L', 'N']
@@ -294,7 +293,7 @@ class TestNoOpPropertyAcceptanceAndStorage:
         """Setting ellipsis_options property accepts and stores the value."""
         label = MarkdownLabel(text='# Hello World', ellipsis_options=value)
         assert label.ellipsis_options == value
-    
+
     @given(st.booleans(), st.floats(min_value=0, max_value=10),
            st.lists(st.floats(min_value=0.0, max_value=1.0), min_size=4, max_size=4),
            st.one_of(st.none(), st.text(min_size=1, max_size=5)),
@@ -315,14 +314,14 @@ class TestNoOpPropertyAcceptanceAndStorage:
             base_direction=base_direction,
             ellipsis_options=ellipsis_options
         )
-        
+
         assert label.mipmap == mipmap
         assert label.outline_width == outline_width
         assert all(abs(a - b) < 0.001 for a, b in zip(label.outline_color, outline_color))
         assert label.text_language == text_language
         assert label.base_direction == base_direction
         assert label.ellipsis_options == ellipsis_options
-    
+
     @given(st.booleans())
     # Boolean strategy: 2 examples (True/False coverage)
     @settings(max_examples=2, deadline=None)
@@ -331,7 +330,7 @@ class TestNoOpPropertyAcceptanceAndStorage:
         label = MarkdownLabel(text='# Hello')
         label.mipmap = value
         assert label.mipmap == value
-    
+
     @given(st.floats(min_value=0, max_value=100, allow_nan=False, allow_infinity=False))
     # Complex strategy: 50 examples (adequate coverage)
     @settings(max_examples=50, deadline=None)
@@ -340,7 +339,7 @@ class TestNoOpPropertyAcceptanceAndStorage:
         label = MarkdownLabel(text='# Hello')
         label.outline_width = value
         assert label.outline_width == value
-    
+
     @given(st.lists(
         st.floats(min_value=0.0, max_value=1.0, allow_nan=False, allow_infinity=False),
         min_size=4, max_size=4
@@ -352,7 +351,7 @@ class TestNoOpPropertyAcceptanceAndStorage:
         label = MarkdownLabel(text='# Hello')
         label.outline_color = value
         assert all(abs(a - b) < 0.001 for a, b in zip(label.outline_color, value))
-    
+
     @given(st.one_of(st.none(), st.text(min_size=1, max_size=10, alphabet=st.characters(
         whitelist_categories=['L', 'N'],
         blacklist_characters='\n\r'
@@ -364,14 +363,14 @@ class TestNoOpPropertyAcceptanceAndStorage:
         label = MarkdownLabel(text='# Hello')
         label.text_language = value
         assert label.text_language == value
-    
+
     @pytest.mark.parametrize('value', [None, 'ltr', 'rtl', 'weak_ltr', 'weak_rtl'])
     def test_base_direction_property_change_after_creation(self, value):
         """Changing base_direction property after creation accepts and stores the value."""
         label = MarkdownLabel(text='# Hello')
         label.base_direction = value
         assert label.base_direction == value
-    
+
     @given(st.dictionaries(
         st.text(min_size=1, max_size=10, alphabet=st.characters(
             whitelist_categories=['L', 'N']
@@ -385,7 +384,7 @@ class TestNoOpPropertyAcceptanceAndStorage:
         label = MarkdownLabel(text='# Hello')
         label.ellipsis_options = value
         assert label.ellipsis_options == value
-    
+
     @given(st.booleans(), st.floats(min_value=0, max_value=10),
            st.lists(st.floats(min_value=0.0, max_value=1.0), min_size=4, max_size=4),
            st.one_of(st.none(), st.text(min_size=1, max_size=5)),
@@ -399,11 +398,11 @@ class TestNoOpPropertyAcceptanceAndStorage:
                                                               markdown_text):
         """Advanced no-op properties do not affect the rendered output."""
         assume(markdown_text.strip())
-        
+
         # Create label with default no-op property values
         label_default = MarkdownLabel(text=markdown_text)
         default_child_count = len(label_default.children)
-        
+
         # Create label with various no-op property values
         label_with_props = MarkdownLabel(
             text=markdown_text,
@@ -415,49 +414,46 @@ class TestNoOpPropertyAcceptanceAndStorage:
             ellipsis_options=ellipsis_options
         )
         props_child_count = len(label_with_props.children)
-        
+
         # The number of children should be the same regardless of no-op properties
         assert default_child_count == props_child_count, \
             f"Expected {default_child_count} children, got {props_child_count} with no-op props"
 
 
 # **Feature: test-refactoring, Property 4: Import Functionality**
-# *For any* refactored test module, all imports should resolve successfully 
+# *For any* refactored test module, all imports should resolve successfully
 # and tests should execute without import errors
 # **Validates: Requirements 2.4**
 
 @pytest.mark.test_tests
 class TestImportFunctionality:
     """Property test for import functionality (Property 4)."""
-    
+
     def test_label_compatibility_imports_resolve(self):
         """Label compatibility module imports resolve successfully."""
         try:
-            # Test importing the module
-            import kivy_garden.markdownlabel.tests.test_label_compatibility
-            
             # Test that key classes are accessible
             from kivy_garden.markdownlabel.tests.test_label_compatibility import (
                 TestFontSizeAliasBidirectionality,
                 TestNoOpPropertiesAcceptance,
                 TestNoOpPropertyAcceptanceAndStorage
             )
-            
+
             # Verify classes exist and are classes
             assert TestFontSizeAliasBidirectionality is not None
             assert TestNoOpPropertiesAcceptance is not None
             assert TestNoOpPropertyAcceptanceAndStorage is not None
-            
+
             # Verify they are actually classes
             assert isinstance(TestFontSizeAliasBidirectionality, type)
             assert isinstance(TestNoOpPropertiesAcceptance, type)
             assert isinstance(TestNoOpPropertyAcceptanceAndStorage, type)
-            
+
         except ImportError as e:
             pytest.fail(f"Import failed for test_label_compatibility: {e}")
         except Exception as e:
             pytest.fail(f"Unexpected error importing test_label_compatibility: {e}")
-    
+
     def test_shared_utilities_imports_resolve(self):
         """Shared test utilities imports resolve successfully."""
         try:
@@ -465,49 +461,44 @@ class TestImportFunctionality:
             from kivy_garden.markdownlabel.tests.test_utils import (
                 markdown_heading,
                 markdown_paragraph,
-                markdown_bold,
-                markdown_italic,
-                markdown_link,
                 simple_markdown_document,
                 find_labels_recursive,
                 colors_equal,
-                padding_equal,
-                floats_equal,
                 KIVY_FONTS,
-                color_strategy,
-                text_padding_strategy
             )
-            
+
             # Verify key functions exist
             assert callable(markdown_heading)
             assert callable(markdown_paragraph)
             assert callable(simple_markdown_document)
             assert callable(find_labels_recursive)
             assert callable(colors_equal)
-            
+
             # Verify constants exist
             assert KIVY_FONTS is not None
             assert isinstance(KIVY_FONTS, list)
-            
+
         except ImportError as e:
             pytest.fail(f"Import failed for test_utils: {e}")
         except Exception as e:
             pytest.fail(f"Unexpected error importing test_utils: {e}")
-    
+
     def test_cross_module_imports_work(self):
         """Test modules can import from shared utilities."""
         try:
             # Import the label compatibility module which uses test_utils
-            from kivy_garden.markdownlabel.tests.test_label_compatibility import TestFontSizeAliasBidirectionality
-            
+            from kivy_garden.markdownlabel.tests.test_label_compatibility import (
+                TestFontSizeAliasBidirectionality,
+            )
+
             # Verify that the class can be instantiated (imports worked)
             test_instance = TestFontSizeAliasBidirectionality()
             assert test_instance is not None
-            
+
             # Verify that test methods exist (they use imported strategies)
             assert hasattr(test_instance, 'test_font_size_sets_base_font_size')
             assert callable(test_instance.test_font_size_sets_base_font_size)
-            
+
         except ImportError as e:
             pytest.fail(f"Cross-module import failed: {e}")
         except Exception as e:

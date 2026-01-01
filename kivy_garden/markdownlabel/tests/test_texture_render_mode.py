@@ -11,10 +11,7 @@ for maximum Label compatibility while maintaining proper Markdown functionality.
 """
 
 import pytest
-from hypothesis import given, strategies as st, settings, assume
-
-from kivy.uix.label import Label
-from kivy.uix.image import Image
+from hypothesis import given, strategies as st, settings
 
 from kivy_garden.markdownlabel import MarkdownLabel
 from .test_utils import find_labels_recursive, FakeTouch, find_images
@@ -28,7 +25,7 @@ from .test_utils import find_labels_recursive, FakeTouch, find_images
 @pytest.mark.slow
 class TestTextureRenderModeStructure:
     """Property tests for texture render mode structure (Property 14)."""
-    
+
     @pytest.mark.parametrize('text', [
         'Hello World',
         '# Heading',
@@ -38,7 +35,7 @@ class TestTextureRenderModeStructure:
     ])
     def test_texture_mode_creates_image_widget(self, text):
         """When render_mode='texture', widget tree contains an Image widget.
-        
+
         **Feature: label-compatibility, Property 14: Texture render mode structure**
         **Validates: Requirements 6.1**
         """
@@ -49,14 +46,14 @@ class TestTextureRenderModeStructure:
             size_hint=(None, None)
         )
         label.force_rebuild()
-        
+
         images = find_images(label)
         assert len(images) >= 1, \
             f"Expected at least 1 Image widget in texture mode, found {len(images)}"
-    
+
     def test_texture_mode_with_empty_text_no_image(self):
         """When render_mode='texture' with empty text, no Image widget is created.
-        
+
         **Feature: label-compatibility, Property 14: Texture render mode structure**
         **Validates: Requirements 6.1**
         """
@@ -67,14 +64,14 @@ class TestTextureRenderModeStructure:
             size_hint=(None, None)
         )
         label.force_rebuild()
-        
+
         images = find_images(label)
         assert len(images) == 0, \
             f"Expected no Image widgets with empty text, found {len(images)}"
-    
+
     def test_widgets_mode_no_image_widget(self):
         """When render_mode='widgets', no Image widget is created.
-        
+
         **Feature: label-compatibility, Property 14: Texture render mode structure**
         **Validates: Requirements 6.1**
         """
@@ -85,25 +82,25 @@ class TestTextureRenderModeStructure:
             size_hint=(None, None)
         )
         label.force_rebuild()
-        
+
         images = find_images(label)
         assert len(images) == 0, \
             f"Expected no Image widgets in widgets mode, found {len(images)}"
-    
+
     @pytest.mark.parametrize('render_mode', ['widgets', 'texture', 'auto'])
     def test_render_mode_property_values(self, render_mode):
         """render_mode property accepts valid values.
-        
+
         **Feature: label-compatibility, Property 14: Texture render mode structure**
         **Validates: Requirements 6.1**
         """
         label = MarkdownLabel(text='Hello World', render_mode=render_mode)
         assert label.render_mode == render_mode, \
             f"Expected render_mode={render_mode}, got {label.render_mode}"
-    
+
     def test_default_render_mode_is_widgets(self):
         """Default render_mode is 'widgets'.
-        
+
         **Feature: label-compatibility, Property 14: Texture render mode structure**
         **Validates: Requirements 6.1**
         """
@@ -121,10 +118,10 @@ class TestTextureRenderModeStructure:
 @pytest.mark.slow
 class TestTextureModeLinksHandling:
     """Property tests for texture mode link handling (Property 15)."""
-    
+
     def test_aggregated_refs_populated_in_texture_mode(self):
         """In texture mode, _aggregated_refs is populated with link zones.
-        
+
         **Feature: label-compatibility, Property 15: Texture mode link handling**
         **Validates: Requirements 6.2**
         """
@@ -135,16 +132,16 @@ class TestTextureModeLinksHandling:
             size_hint=(None, None)
         )
         label.force_rebuild()
-        
+
         # Check that aggregated refs were collected
         # Note: The refs may be empty if texture rendering failed or
         # if the link zones couldn't be calculated
         assert hasattr(label, '_aggregated_refs'), \
             "Expected _aggregated_refs attribute"
-    
+
     def test_widgets_mode_no_aggregated_refs(self):
         """In widgets mode, _aggregated_refs is empty (links handled by Labels).
-        
+
         **Feature: label-compatibility, Property 15: Texture mode link handling**
         **Validates: Requirements 6.2**
         """
@@ -155,19 +152,19 @@ class TestTextureModeLinksHandling:
             size_hint=(None, None)
         )
         label.force_rebuild()
-        
+
         # In widgets mode, aggregated refs should be empty
         # (links are handled by individual Label widgets)
         assert label._aggregated_refs == {}, \
             f"Expected empty _aggregated_refs in widgets mode, got {label._aggregated_refs}"
-    
+
     @pytest.mark.parametrize('text,expected_refs', [
         ('[Link](http://example.com)', ['http://example.com']),
         ('[A](http://a.com) and [B](http://b.com)', ['http://a.com', 'http://b.com']),
     ])
     def test_multiple_links_collected(self, text, expected_refs):
         """Multiple links in content are collected in _aggregated_refs.
-        
+
         **Feature: label-compatibility, Property 15: Texture mode link handling**
         **Validates: Requirements 6.2**
         """
@@ -178,7 +175,7 @@ class TestTextureModeLinksHandling:
             size_hint=(None, None)
         )
         label.force_rebuild()
-        
+
         # Check that the expected refs are present
         # Note: refs may not be collected if texture rendering fails
         if label._aggregated_refs:
@@ -197,14 +194,14 @@ class TestTextureModeLinksHandling:
 @pytest.mark.slow
 class TestDeterministicTextureHitTesting:
     """Deterministic tests for texture mode hit-testing without window dependency.
-    
+
     These tests manually inject _aggregated_refs to verify hit-testing logic
     without relying on actual texture rendering.
     """
-    
+
     def test_inside_zone_dispatch(self):
         """Touch inside ref zone dispatches on_ref_press and returns True.
-        
+
         **Feature: headless-ci-testing, Property 1: Touch Inside Ref Zone Dispatches Event**
         **Validates: Requirements 2.1, 2.2**
         """
@@ -216,39 +213,39 @@ class TestDeterministicTextureHitTesting:
             size_hint=(None, None),
             pos=(0, 0)
         )
-        
+
         # Manually set _aggregated_refs with known zones
         # Zone format: (x, y, width, height) in local coordinates
         label._aggregated_refs = {
             'http://example.com': [(10, 10, 50, 20)],
         }
-        
+
         # Track dispatched refs
         dispatched_refs = []
-        
+
         def capture_ref(instance, ref):
             dispatched_refs.append(ref)
-        
+
         # Bind on_ref_press to capture dispatched ref
         label.bind(on_ref_press=capture_ref)
-        
+
         # Create FakeTouch inside the zone
         # Zone is at (10, 10) with size (50, 20), so (25, 15) is inside
         touch = FakeTouch(25, 15)
-        
+
         # Call on_touch_down
         result = label.on_touch_down(touch)
-        
+
         # Assert handler called with correct ref
         assert len(dispatched_refs) == 1, \
             f"Expected 1 dispatch, got {len(dispatched_refs)}"
         assert dispatched_refs[0] == 'http://example.com', \
             f"Expected 'http://example.com', got '{dispatched_refs[0]}'"
-        
+
         # Assert returns True
         assert result is True, \
             f"Expected on_touch_down to return True, got {result}"
-    
+
     @given(
         zone=st.tuples(
             st.floats(min_value=0, max_value=300, allow_nan=False),
@@ -269,7 +266,7 @@ class TestDeterministicTextureHitTesting:
         self, zone, ref_name, touch_offset_x, touch_offset_y
     ):
         """Property test: Touch inside ref zone dispatches on_ref_press.
-        
+
         **Feature: headless-ci-testing, Property 1: Touch Inside Ref Zone Dispatches Event**
         *For any* MarkdownLabel with render_mode='texture' and _aggregated_refs
         containing at least one zone, and *for any* touch point (x, y) that falls
@@ -278,7 +275,7 @@ class TestDeterministicTextureHitTesting:
         **Validates: Requirements 2.1, 2.2**
         """
         zx, zy, zw, zh = zone
-        
+
         # Create MarkdownLabel with render_mode='texture'
         label = MarkdownLabel(
             text='Test content',
@@ -287,38 +284,38 @@ class TestDeterministicTextureHitTesting:
             size_hint=(None, None),
             pos=(0, 0)
         )
-        
+
         # Manually set _aggregated_refs with the generated zone
         label._aggregated_refs = {
             ref_name: [(zx, zy, zw, zh)],
         }
-        
+
         # Track dispatched refs
         dispatched_refs = []
-        
+
         def capture_ref(instance, ref):
             dispatched_refs.append(ref)
-        
+
         label.bind(on_ref_press=capture_ref)
-        
+
         # Calculate touch point inside the zone using offsets
         touch_x = zx + (zw * touch_offset_x)
         touch_y = zy + (zh * touch_offset_y)
-        
+
         touch = FakeTouch(touch_x, touch_y)
         result = label.on_touch_down(touch)
-        
+
         # Assert handler called with correct ref
         assert len(dispatched_refs) == 1, \
             f"Expected 1 dispatch for touch at ({touch_x}, {touch_y}) in zone {zone}"
         assert dispatched_refs[0] == ref_name, \
             f"Expected '{ref_name}', got '{dispatched_refs[0]}'"
         assert result is True, \
-            f"Expected on_touch_down to return True"
-    
+            "Expected on_touch_down to return True"
+
     def test_outside_zone_no_dispatch(self):
         """Touch outside ref zones does not dispatch on_ref_press.
-        
+
         **Feature: headless-ci-testing, Property 2: Touch Outside Ref Zones Does Not Dispatch**
         **Validates: Requirements 2.3, 2.4**
         """
@@ -330,34 +327,34 @@ class TestDeterministicTextureHitTesting:
             size_hint=(None, None),
             pos=(0, 0)
         )
-        
+
         # Manually set _aggregated_refs with known zones
         label._aggregated_refs = {
             'http://example.com': [(10, 10, 50, 20)],
         }
-        
+
         # Track dispatched refs
         dispatched_refs = []
-        
+
         def capture_ref(instance, ref):
             dispatched_refs.append(ref)
-        
+
         label.bind(on_ref_press=capture_ref)
-        
+
         # Create FakeTouch outside the zone
         # Zone is at (10, 10) with size (50, 20), so (100, 100) is outside
         touch = FakeTouch(100, 100)
-        
+
         result = label.on_touch_down(touch)
-        
+
         # Assert no dispatch
         assert len(dispatched_refs) == 0, \
             f"Expected no dispatch, got {len(dispatched_refs)}"
-        
+
         # Assert returns falsy value (super().on_touch_down returns None)
         assert not result, \
             f"Expected on_touch_down to return falsy value, got {result}"
-    
+
     @given(
         zone=st.tuples(
             st.floats(min_value=50, max_value=150, allow_nan=False),
@@ -375,7 +372,7 @@ class TestDeterministicTextureHitTesting:
     @settings(max_examples=50, deadline=None)
     def test_property_outside_zone_no_dispatch(self, zone, ref_name, outside_offset):
         """Property test: Touch outside ref zones does not dispatch.
-        
+
         **Feature: headless-ci-testing, Property 2: Touch Outside Ref Zones Does Not Dispatch**
         *For any* MarkdownLabel with render_mode='texture' and _aggregated_refs
         containing zones, and *for any* touch point (x, y) that falls outside all
@@ -384,7 +381,7 @@ class TestDeterministicTextureHitTesting:
         **Validates: Requirements 2.3, 2.4**
         """
         zx, zy, zw, zh = zone
-        
+
         # Create MarkdownLabel with render_mode='texture'
         label = MarkdownLabel(
             text='Test content',
@@ -393,38 +390,38 @@ class TestDeterministicTextureHitTesting:
             size_hint=(None, None),
             pos=(0, 0)
         )
-        
+
         # Manually set _aggregated_refs with the generated zone
         label._aggregated_refs = {
             ref_name: [(zx, zy, zw, zh)],
         }
-        
+
         # Track dispatched refs
         dispatched_refs = []
-        
+
         def capture_ref(instance, ref):
             dispatched_refs.append(ref)
-        
+
         label.bind(on_ref_press=capture_ref)
-        
+
         # Calculate touch point outside the zone (to the right and above)
         touch_x = zx + zw + outside_offset
         touch_y = zy + zh + outside_offset
-        
+
         touch = FakeTouch(touch_x, touch_y)
         result = label.on_touch_down(touch)
-        
+
         # Assert no dispatch
         assert len(dispatched_refs) == 0, \
             f"Expected no dispatch for touch at ({touch_x}, {touch_y}) outside zone {zone}"
-        
+
         # Assert returns falsy value (super().on_touch_down returns None)
         assert not result, \
-            f"Expected on_touch_down to return falsy value"
-    
+            "Expected on_touch_down to return falsy value"
+
     def test_multiple_zones_first_match(self):
         """Multiple zones: first matching zone triggers dispatch.
-        
+
         **Feature: headless-ci-testing, Property 1: Touch Inside Ref Zone Dispatches Event**
         **Validates: Requirements 2.5**
         """
@@ -436,7 +433,7 @@ class TestDeterministicTextureHitTesting:
             size_hint=(None, None),
             pos=(0, 0)
         )
-        
+
         # Set up multiple overlapping ref zones
         # Zone 1: (10, 10, 100, 50) - larger zone
         # Zone 2: (30, 20, 40, 30) - smaller zone inside zone 1
@@ -444,34 +441,34 @@ class TestDeterministicTextureHitTesting:
             'http://first.com': [(10, 10, 100, 50)],
             'http://second.com': [(30, 20, 40, 30)],
         }
-        
+
         # Track dispatched refs
         dispatched_refs = []
-        
+
         def capture_ref(instance, ref):
             dispatched_refs.append(ref)
-        
+
         label.bind(on_ref_press=capture_ref)
-        
+
         # Touch at (40, 30) - inside both zones
         touch = FakeTouch(40, 30)
         result = label.on_touch_down(touch)
-        
+
         # Assert exactly one dispatch (first matching zone)
         assert len(dispatched_refs) == 1, \
             f"Expected 1 dispatch, got {len(dispatched_refs)}"
-        
+
         # The first zone in iteration order should be dispatched
         # (dict iteration order is insertion order in Python 3.7+)
         assert dispatched_refs[0] == 'http://first.com', \
             f"Expected 'http://first.com' (first zone), got '{dispatched_refs[0]}'"
-        
+
         assert result is True, \
-            f"Expected on_touch_down to return True"
-    
+            "Expected on_touch_down to return True"
+
     def test_multiple_zones_non_overlapping(self):
         """Multiple non-overlapping zones: correct zone triggers dispatch.
-        
+
         **Feature: headless-ci-testing, Property 1: Touch Inside Ref Zone Dispatches Event**
         **Validates: Requirements 2.5**
         """
@@ -483,33 +480,33 @@ class TestDeterministicTextureHitTesting:
             size_hint=(None, None),
             pos=(0, 0)
         )
-        
+
         # Set up multiple non-overlapping ref zones
         label._aggregated_refs = {
             'http://first.com': [(10, 10, 50, 30)],
             'http://second.com': [(100, 10, 50, 30)],
             'http://third.com': [(200, 10, 50, 30)],
         }
-        
+
         # Track dispatched refs
         dispatched_refs = []
-        
+
         def capture_ref(instance, ref):
             dispatched_refs.append(ref)
-        
+
         label.bind(on_ref_press=capture_ref)
-        
+
         # Touch at (120, 20) - inside second zone only
         touch = FakeTouch(120, 20)
         result = label.on_touch_down(touch)
-        
+
         # Assert exactly one dispatch for the correct zone
         assert len(dispatched_refs) == 1, \
             f"Expected 1 dispatch, got {len(dispatched_refs)}"
         assert dispatched_refs[0] == 'http://second.com', \
             f"Expected 'http://second.com', got '{dispatched_refs[0]}'"
         assert result is True, \
-            f"Expected on_touch_down to return True"
+            "Expected on_touch_down to return True"
 
 
 # **Feature: label-compatibility, Property 16: Auto render mode selection**
@@ -527,13 +524,13 @@ class TestDeterministicTextureHitTesting:
 @pytest.mark.slow
 class TestTextureFallbackBranch:
     """Tests for texture mode fallback to widgets mode when rendering fails."""
-    
+
     def test_texture_fallback_to_widgets_mode(self, monkeypatch):
         """When _render_as_texture returns None, fallback to widgets mode.
-        
+
         **Feature: headless-ci-testing, Requirement 6: Texture Fallback Branch**
         **Validates: Requirements 6.1, 6.2**
-        
+
         This test verifies that when texture rendering fails (returns None),
         the MarkdownLabel falls back to widgets-mode rendering, ensuring
         content is always displayed.
@@ -544,7 +541,7 @@ class TestTextureFallbackBranch:
             '_render_as_texture',
             lambda self, content: None
         )
-        
+
         # Create MarkdownLabel with render_mode='texture' and non-empty text
         label = MarkdownLabel(
             text='# Hello World\n\nThis is **bold** text.',
@@ -552,23 +549,23 @@ class TestTextureFallbackBranch:
             size=(400, 300),
             size_hint=(None, None)
         )
-        
+
         # Call force_rebuild() to trigger rendering
         label.force_rebuild()
-        
+
         # Assert no Image widget in tree (texture mode failed)
         images = find_images(label)
         assert len(images) == 0, \
             f"Expected no Image widgets after texture fallback, found {len(images)}"
-        
+
         # Assert at least one Label widget exists (widgets-mode fallback)
         labels = find_labels_recursive(label)
         assert len(labels) >= 1, \
             f"Expected at least 1 Label widget in fallback mode, found {len(labels)}"
-    
+
     def test_texture_fallback_preserves_content(self, monkeypatch):
         """Fallback to widgets mode preserves all content.
-        
+
         **Feature: headless-ci-testing, Requirement 6: Texture Fallback Branch**
         **Validates: Requirements 6.1, 6.2**
         """
@@ -578,7 +575,7 @@ class TestTextureFallbackBranch:
             '_render_as_texture',
             lambda self, content: None
         )
-        
+
         # Create MarkdownLabel with multiple content elements
         label = MarkdownLabel(
             text='# Heading\n\nParagraph text.\n\n- List item',
@@ -586,14 +583,14 @@ class TestTextureFallbackBranch:
             size=(400, 300),
             size_hint=(None, None)
         )
-        
+
         label.force_rebuild()
-        
+
         # Verify content is rendered (at least one Label exists)
         labels = find_labels_recursive(label)
         assert len(labels) >= 1, \
             "Expected content to be rendered in fallback mode"
-        
+
         # Verify no Image widgets (texture mode didn't succeed)
         images = find_images(label)
         assert len(images) == 0, \
@@ -603,10 +600,10 @@ class TestTextureFallbackBranch:
 @pytest.mark.slow
 class TestAutoRenderModeSelection:
     """Property tests for auto render mode selection (Property 16)."""
-    
+
     def test_auto_mode_uses_widgets_by_default(self):
         """Auto mode uses 'widgets' for simple content without constraints.
-        
+
         **Feature: label-compatibility, Property 16: Auto render mode selection**
         **Validates: Requirements 6.4**
         """
@@ -615,14 +612,14 @@ class TestAutoRenderModeSelection:
             render_mode='auto',
             strict_label_mode=False
         )
-        
+
         effective_mode = label._get_effective_render_mode()
         assert effective_mode == 'widgets', \
             f"Expected 'widgets' for simple content, got '{effective_mode}'"
-    
+
     def test_auto_mode_uses_texture_with_strict_mode_and_height(self):
         """Auto mode uses 'texture' when strict_label_mode with height constraints.
-        
+
         **Feature: label-compatibility, Property 16: Auto render mode selection**
         **Validates: Requirements 6.4**
         """
@@ -633,14 +630,14 @@ class TestAutoRenderModeSelection:
             size_hint_y=None,
             height=100
         )
-        
+
         effective_mode = label._get_effective_render_mode()
         assert effective_mode == 'texture', \
             f"Expected 'texture' with strict_label_mode and height constraint, got '{effective_mode}'"
-    
+
     def test_auto_mode_uses_texture_with_text_size_height(self):
         """Auto mode uses 'texture' when strict_label_mode with text_size height.
-        
+
         **Feature: label-compatibility, Property 16: Auto render mode selection**
         **Validates: Requirements 6.4**
         """
@@ -650,14 +647,14 @@ class TestAutoRenderModeSelection:
             strict_label_mode=True,
             text_size=[400, 100]
         )
-        
+
         effective_mode = label._get_effective_render_mode()
         assert effective_mode == 'texture', \
             f"Expected 'texture' with strict_label_mode and text_size height, got '{effective_mode}'"
-    
+
     def test_auto_mode_uses_widgets_without_strict_mode(self):
         """Auto mode uses 'widgets' when strict_label_mode is False.
-        
+
         **Feature: label-compatibility, Property 16: Auto render mode selection**
         **Validates: Requirements 6.4**
         """
@@ -667,11 +664,11 @@ class TestAutoRenderModeSelection:
             strict_label_mode=False,
             text_size=[400, 100]  # Even with height constraint
         )
-        
+
         effective_mode = label._get_effective_render_mode()
         assert effective_mode == 'widgets', \
             f"Expected 'widgets' without strict_label_mode, got '{effective_mode}'"
-    
+
     @pytest.mark.parametrize('strict_mode,size_hint_y,expected', [
         (False, 1, 'widgets'),
         (False, None, 'widgets'),
@@ -680,7 +677,7 @@ class TestAutoRenderModeSelection:
     ])
     def test_auto_mode_selection_combinations(self, strict_mode, size_hint_y, expected):
         """Auto mode selection based on strict_label_mode and size_hint_y.
-        
+
         **Feature: label-compatibility, Property 16: Auto render mode selection**
         **Validates: Requirements 6.4**
         """
@@ -690,14 +687,15 @@ class TestAutoRenderModeSelection:
             strict_label_mode=strict_mode,
             size_hint_y=size_hint_y
         )
-        
+
         effective_mode = label._get_effective_render_mode()
         assert effective_mode == expected, \
-            f"Expected '{expected}' for strict_mode={strict_mode}, size_hint_y={size_hint_y}, got '{effective_mode}'"
-    
+            f"Expected '{expected}' for strict_mode={strict_mode}, " \
+            f"size_hint_y={size_hint_y}, got '{effective_mode}'"
+
     def test_explicit_widgets_mode_overrides_auto_logic(self):
         """Explicit 'widgets' mode is used regardless of constraints.
-        
+
         **Feature: label-compatibility, Property 16: Auto render mode selection**
         **Validates: Requirements 6.4**
         """
@@ -708,14 +706,14 @@ class TestAutoRenderModeSelection:
             size_hint_y=None,
             height=100
         )
-        
+
         effective_mode = label._get_effective_render_mode()
         assert effective_mode == 'widgets', \
             f"Expected 'widgets' when explicitly set, got '{effective_mode}'"
-    
+
     def test_explicit_texture_mode_overrides_auto_logic(self):
         """Explicit 'texture' mode is used regardless of constraints.
-        
+
         **Feature: label-compatibility, Property 16: Auto render mode selection**
         **Validates: Requirements 6.4**
         """
@@ -724,7 +722,7 @@ class TestAutoRenderModeSelection:
             render_mode='texture',
             strict_label_mode=False
         )
-        
+
         effective_mode = label._get_effective_render_mode()
         assert effective_mode == 'texture', \
             f"Expected 'texture' when explicitly set, got '{effective_mode}'"
