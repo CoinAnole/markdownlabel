@@ -15,7 +15,7 @@ The test suite demonstrates strong compliance in meta-tests and test utilities (
 - **Total files reviewed:** 38
 - **Files with critical issues:** 6
 - **Files with major issues:** 10
-- **Files with minor issues:** 13
+- **Files with minor issues:** 10
 - **Files without issues:** 21
 - **Overall compliance:** 55.3%
 
@@ -23,7 +23,7 @@ The test suite demonstrates strong compliance in meta-tests and test utilities (
 
 - **Critical:** 6 issues
 - **Major:** 10 issues
-- **Minor:** 13 issues
+- **Minor:** 10 issues
 - **Suggestions:** 0 issues
 
 ### Issue Breakdown by Chunk
@@ -31,14 +31,14 @@ The test suite demonstrates strong compliance in meta-tests and test utilities (
 | Chunk | Files | Critical | Major | Minor | Total |
 |-------|-------|----------|--------|-------|-------|
 | Chunk 1: Core Functionality | 5 | 0 | 1 | 2 | 3 |
-| Chunk 2: Property Tests | 5 | 3 | 5 | 5 | 13 |
+| Chunk 2: Property Tests | 5 | 3 | 5 | 2 | 10 |
 | Chunk 3: Advanced Features | 5 | 3 | 4 | 2 | 9 |
 | Chunk 4: Behavior Tests | 5 | 0 | 0 | 4 | 4 |
 | Chunk 5: Test Utilities | 5 | 0 | 0 | 0 | 0 |
 | Chunk 6: Meta-Tests Part 2 | 5 | 0 | 0 | 0 | 0 |
 | Chunk 7: Meta-Tests Part 3 | 5 | 0 | 0 | 0 | 0 |
 | Chunk 8: Meta-Tests Part 4 | 3 | 0 | 0 | 0 | 0 |
-| **Total** | **38** | **6** | **10** | **13** | **29** |
+| **Total** | **38** | **6** | **10** | **10** | **26** |
 
 ---
 
@@ -66,16 +66,15 @@ The test suite demonstrates strong compliance in meta-tests and test utilities (
   - [`test_sizing_behavior.py`](kivy_garden/markdownlabel/tests/test_sizing_behavior.py)
 - **Impact:** Reduces test effectiveness and increases execution time. Inconsistent values make it difficult to maintain property-based tests and may lead to insufficient coverage or excessive runtime.
 
-### 3. Non-Standard Pytest Markers
-- **Frequency:** 6 occurrences (Major/Minor)
+### 3. Missing Pytest Markers for Property-Based Tests
+- **Frequency:** 5 occurrences (Major)
 - **Affected files:**
   - [`test_font_properties.py`](kivy_garden/markdownlabel/tests/test_font_properties.py)
   - [`test_color_properties.py`](kivy_garden/markdownlabel/tests/test_color_properties.py)
   - [`test_text_properties.py`](kivy_garden/markdownlabel/tests/test_text_properties.py)
-  - [`test_clipping_behavior.py`](kivy_garden/markdownlabel/tests/test_clipping_behavior.py)
-  - [`test_texture_render_mode.py`](kivy_garden/markdownlabel/tests/test_texture_render_mode.py)
-  - [`test_rtl_alignment.py`](kivy_garden/markdownlabel/tests/test_rtl_alignment.py)
-- **Impact:** Inconsistent marker usage makes it difficult to run specific test categories and reduces test suite organization. Should use standard markers like `@pytest.mark.slow`, `@pytest.mark.integration`, etc.
+  - [`test_padding_properties.py`](kivy_garden/markdownlabel/tests/test_padding_properties.py)
+  - [`test_sizing_behavior.py`](kivy_garden/markdownlabel/tests/test_sizing_behavior.py)
+- **Impact:** Property-based tests lack `@pytest.mark.property` markers, making it impossible to selectively run property-based tests using `pytest -m property` or skip them with `pytest -m "not property"`. This reduces test organization and makes CI/CD pipeline categorization difficult.
 
 ### 4. Testing Private Implementation Details
 - **Frequency:** 2 occurrences (Critical)
@@ -163,13 +162,13 @@ The test suite demonstrates strong compliance in meta-tests and test utilities (
 
 ### Test Types and Markers
 
-1. **Use Standard Pytest Markers**
-   - Replace custom markers with standard pytest markers:
-     - `@pytest.mark.slow` for slow-running tests
-     - `@pytest.mark.integration` for integration tests
-     - `@pytest.mark.unit` for unit tests
-     - `@pytest.mark.property` for property-based tests
-   - This improves test discoverability and allows running specific test categories
+1. **Add Missing Markers to Property-Based Tests**
+    - Add `@pytest.mark.property` markers to all property-based tests that currently lack them
+    - This enables selective test execution:
+      - Run only property-based tests: `pytest -m property`
+      - Skip property-based tests: `pytest -m "not property"`
+    - Improves test categorization in CI/CD pipelines and documents test intent clearly
+    - Affected files: test_font_properties.py, test_color_properties.py, test_text_properties.py, test_padding_properties.py, test_sizing_behavior.py
 
 2. **Mark Meta-Tests Properly**
    - All meta-tests should use `@pytest.mark.meta_test` marker
@@ -277,42 +276,35 @@ The test suite demonstrates strong compliance in meta-tests and test utilities (
    - Estimated effort: 1 hour
 
 6. **Standardize max_examples values** - [`test_sizing_behavior.py`](kivy_garden/markdownlabel/tests/test_sizing_behavior.py)
-   - Review and standardize max_examples values
-   - Estimated effort: 1 hour
-
-7. **Replace non-standard pytest markers** - [`test_font_properties.py`](kivy_garden/markdownlabel/tests/test_font_properties.py)
-   - Replace custom markers with standard pytest markers
-   - Estimated effort: 1 hour
-
-8. **Replace non-standard pytest markers** - [`test_color_properties.py`](kivy_garden/markdownlabel/tests/test_color_properties.py)
-   - Replace custom markers with standard pytest markers
-   - Estimated effort: 1 hour
-
-9. **Replace non-standard pytest markers** - [`test_text_properties.py`](kivy_garden/markdownlabel/tests/test_text_properties.py)
-   - Replace custom markers with standard pytest markers
-   - Estimated effort: 1 hour
-
-10. **Replace non-standard pytest markers** - [`test_padding_properties.py`](kivy_garden/markdownlabel/tests/test_padding_properties.py)
-    - Replace custom markers with standard pytest markers
+    - Review and standardize max_examples values
     - Estimated effort: 1 hour
 
-**Total Phase 2 Estimated Effort:** 10 hours
+7. **Add @pytest.mark.property markers to property-based tests** - [`test_sizing_behavior.py`](kivy_garden/markdownlabel/tests/test_sizing_behavior.py)
+    - Add `@pytest.mark.property` markers to all property-based tests lacking them
+    - Estimated effort: 0.5 hours
+
+8. **Add @pytest.mark.property markers to property-based tests** - [`test_font_properties.py`](kivy_garden/markdownlabel/tests/test_font_properties.py)
+    - Add `@pytest.mark.property` markers to all property-based tests lacking them
+    - Enables selective test execution and improves test categorization
+    - Estimated effort: 0.5 hours
+
+8. **Add @pytest.mark.property markers to property-based tests** - [`test_color_properties.py`](kivy_garden/markdownlabel/tests/test_color_properties.py)
+    - Add `@pytest.mark.property` markers to all property-based tests lacking them
+    - Estimated effort: 0.5 hours
+
+9. **Add @pytest.mark.property markers to property-based tests** - [`test_text_properties.py`](kivy_garden/markdownlabel/tests/test_text_properties.py)
+    - Add `@pytest.mark.property` markers to all property-based tests lacking them
+    - Estimated effort: 0.5 hours
+
+10. **Add @pytest.mark.property markers to property-based tests** - [`test_padding_properties.py`](kivy_garden/markdownlabel/tests/test_padding_properties.py)
+     - Add `@pytest.mark.property` markers to all property-based tests lacking them
+     - Estimated effort: 0.5 hours
+
+**Total Phase 2 Estimated Effort:** 8.5 hours
 
 ### Phase 3: Minor Issues (Medium Priority)
 
-1. **Replace non-standard pytest markers** - [`test_clipping_behavior.py`](kivy_garden/markdownlabel/tests/test_clipping_behavior.py)
-   - Replace custom markers with standard pytest markers
-   - Estimated effort: 0.5 hours
-
-2. **Replace non-standard pytest markers** - [`test_texture_render_mode.py`](kivy_garden/markdownlabel/tests/test_texture_render_mode.py)
-   - Replace custom markers with standard pytest markers
-   - Estimated effort: 0.5 hours
-
-3. **Replace non-standard pytest markers** - [`test_rtl_alignment.py`](kivy_garden/markdownlabel/tests/test_rtl_alignment.py)
-   - Replace custom markers with standard pytest markers
-   - Estimated effort: 0.5 hours
-
-4. **Add complete module docstring** - [`test_clipping_behavior.py`](kivy_garden/markdownlabel/tests/test_clipping_behavior.py)
+1. **Add complete module docstring** - [`test_clipping_behavior.py`](kivy_garden/markdownlabel/tests/test_clipping_behavior.py)
    - Add comprehensive module-level docstring
    - Estimated effort: 0.5 hours
 
@@ -328,7 +320,7 @@ The test suite demonstrates strong compliance in meta-tests and test utilities (
    - Add comprehensive module-level docstring
    - Estimated effort: 0.5 hours
 
-**Total Phase 3 Estimated Effort:** 3.5 hours
+**Total Phase 3 Estimated Effort:** 2 hours
 
 ### Phase 4: Suggestions (Low Priority)
 
@@ -349,7 +341,7 @@ The test suite demonstrates strong compliance in meta-tests and test utilities (
 
 **Total Phase 4 Estimated Effort:** 12 hours
 
-**Total Estimated Effort:** 37.5 hours (approximately 5 work days)
+**Total Estimated Effort:** 36 hours (approximately 4.5 work days)
 
 ---
 
@@ -432,8 +424,8 @@ The meta-test infrastructure is exemplary and should serve as a model for regula
 
 ---
 
-**Report Generated:** 2026-01-02  
-**Review Scope:** Structural compliance with `kivy_garden/markdownlabel/tests/TESTING.md`  
-**Total Files Reviewed:** 38  
-**Total Issues Identified:** 29  
+**Report Generated:** 2026-01-02
+**Review Scope:** Structural compliance with `kivy_garden/markdownlabel/tests/TESTING.md`
+**Total Files Reviewed:** 38
+**Total Issues Identified:** 26
 **Overall Compliance:** 55.3%
