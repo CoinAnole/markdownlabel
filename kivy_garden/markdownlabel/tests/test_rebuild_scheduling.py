@@ -11,6 +11,7 @@ from hypothesis import given, strategies as st, settings
 import pytest
 
 from kivy_garden.markdownlabel import MarkdownLabel
+from kivy_garden.markdownlabel.tests.test_utils import collect_widget_ids
 
 
 @pytest.mark.property
@@ -32,35 +33,33 @@ class TestBatchedRebuilds:
 
         **Feature: label-compatibility, Property 6: Batched rebuilds**
         **Validates: Requirements 3.1, 3.3**
+
+        Verifies batching through observable widget identity:
+        - Widget IDs unchanged after multiple text changes (deferred)
+        - Widget IDs changed after force_rebuild() (single rebuild occurred)
         """
         label = MarkdownLabel(text="Initial text")
+        label.force_rebuild()  # Ensure stable initial state
 
-        # Track rebuild calls by patching _rebuild_widgets
-        rebuild_count = [0]
-        original_rebuild = label._rebuild_widgets
+        ids_before = collect_widget_ids(label, exclude_root=True)
 
-        def counting_rebuild():
-            rebuild_count[0] += 1
-            original_rebuild()
-
-        label._rebuild_widgets = counting_rebuild
-
-        # Make multiple text changes (these should be batched)
+        # Make multiple text changes (these should be batched/deferred)
         for i in range(num_changes):
             label.text = f"Text change {i}"
 
-        # Before force_rebuild, no rebuilds should have happened yet
-        # (they're deferred to next frame)
-        assert rebuild_count[0] == 0, (
-            f"Expected 0 rebuilds before frame tick, got {rebuild_count[0]}"
+        # Before force_rebuild, widgets should be unchanged (rebuild is deferred)
+        ids_during = collect_widget_ids(label, exclude_root=True)
+        assert ids_before == ids_during, (
+            "Expected widgets unchanged before force_rebuild (rebuild should be deferred)"
         )
 
         # Force the rebuild to execute
         label.force_rebuild()
 
-        # Should have exactly 1 rebuild (from force_rebuild)
-        assert rebuild_count[0] == 1, (
-            f"Expected exactly 1 rebuild after force_rebuild, got {rebuild_count[0]}"
+        # After force_rebuild, widgets should have changed (rebuild occurred)
+        ids_after = collect_widget_ids(label, exclude_root=True)
+        assert ids_before != ids_after, (
+            "Expected widgets changed after force_rebuild (rebuild should have occurred)"
         )
 
     @given(
@@ -87,34 +86,35 @@ class TestBatchedRebuilds:
 
         **Feature: label-compatibility, Property 6: Batched rebuilds**
         **Validates: Requirements 3.1, 3.3**
+
+        Verifies batching through observable widget identity:
+        - Widget IDs unchanged after mixed property changes (deferred)
+        - Widget IDs changed after force_rebuild() (single rebuild occurred)
         """
         label = MarkdownLabel(text="Initial")
+        label.force_rebuild()  # Ensure stable initial state
 
-        # Track rebuild calls
-        rebuild_count = [0]
-        original_rebuild = label._rebuild_widgets
+        ids_before = collect_widget_ids(label, exclude_root=True)
 
-        def counting_rebuild():
-            rebuild_count[0] += 1
-            original_rebuild()
-
-        label._rebuild_widgets = counting_rebuild
-
-        # Make multiple structure property changes
+        # Make multiple structure property changes (should be batched/deferred)
         label.text = text
         label.font_name = font_name
         # Note: font_size is a style-only property, doesn't trigger rebuild
 
-        # Before force_rebuild, no rebuilds should have happened
-        assert rebuild_count[0] == 0, (
-            f"Expected 0 rebuilds before frame tick, got {rebuild_count[0]}"
+        # Before force_rebuild, widgets should be unchanged (rebuild is deferred)
+        ids_during = collect_widget_ids(label, exclude_root=True)
+        assert ids_before == ids_during, (
+            "Expected widgets unchanged before force_rebuild (rebuild should be deferred)"
         )
 
         # Force the rebuild
         label.force_rebuild()
 
-        # Should have exactly 1 rebuild
-        assert rebuild_count[0] == 1, f"Expected exactly 1 rebuild, got {rebuild_count[0]}"
+        # After force_rebuild, widgets should have changed (rebuild occurred)
+        ids_after = collect_widget_ids(label, exclude_root=True)
+        assert ids_before != ids_after, (
+            "Expected widgets changed after force_rebuild (rebuild should have occurred)"
+        )
 
 
 @pytest.mark.property

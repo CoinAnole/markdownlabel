@@ -21,13 +21,13 @@ This plan refactors `test_rebuild_scheduling.py` to test observable outcomes rat
     - This test verifies an internal optimization, not observable behavior
     - _Requirements: 1.2, 1.3, 1.4_
 
-- [ ] 2. Rewrite batching tests to use observable outcomes
-  - [ ] 2.1 Rewrite `test_multiple_text_changes_batch_to_single_rebuild`
+- [x] 2. Rewrite batching tests to use observable outcomes
+  - [x] 2.1 Rewrite `test_multiple_text_changes_batch_to_single_rebuild`
     - Replace `_rebuild_widgets` patching with `collect_widget_ids()` comparison
     - Verify widget IDs unchanged after multiple text changes
     - Verify widget IDs changed after `force_rebuild()`
     - _Requirements: 2.1, 2.3, 2.4_
-  - [ ] 2.2 Rewrite `test_mixed_property_changes_batch_rebuilds`
+  - [x] 2.2 Rewrite `test_mixed_property_changes_batch_rebuilds`
     - Replace `_rebuild_widgets` patching with `collect_widget_ids()` comparison
     - Verify widget IDs unchanged after mixed property changes
     - Verify widget IDs changed after `force_rebuild()`
