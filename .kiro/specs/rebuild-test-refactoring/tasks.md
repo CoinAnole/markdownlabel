@@ -6,18 +6,18 @@ This plan refactors `test_rebuild_scheduling.py` to test observable outcomes rat
 
 ## Tasks
 
-- [ ] 1. Remove tests that only verify internal mechanisms
-  - [ ] 1.1 Remove `test_pending_rebuild_flag_prevents_duplicate_scheduling` from `TestBatchedRebuilds`
+- [x] 1. Remove tests that only verify internal mechanisms
+  - [x] 1.1 Remove `test_pending_rebuild_flag_prevents_duplicate_scheduling` from `TestBatchedRebuilds`
     - This test only verifies the `_pending_rebuild` flag behavior
     - The batching behavior it intends to test is covered by other tests
     - _Requirements: 1.1, 1.3, 1.4_
-  - [ ] 1.2 Remove `test_schedule_rebuild_sets_pending_flag` from `TestDeferredRebuildScheduling`
+  - [x] 1.2 Remove `test_schedule_rebuild_sets_pending_flag` from `TestDeferredRebuildScheduling`
     - This test directly calls `_schedule_rebuild()` which is an internal method
     - _Requirements: 1.1, 1.4_
-  - [ ] 1.3 Remove `test_do_rebuild_clears_pending_flag` from `TestDeferredRebuildScheduling`
+  - [x] 1.3 Remove `test_do_rebuild_clears_pending_flag` from `TestDeferredRebuildScheduling`
     - This test directly calls `_do_rebuild()` which is an internal method
     - _Requirements: 1.2, 1.4_
-  - [ ] 1.4 Remove `test_do_rebuild_skips_when_not_pending` from `TestDeferredRebuildScheduling`
+  - [x] 1.4 Remove `test_do_rebuild_skips_when_not_pending` from `TestDeferredRebuildScheduling`
     - This test verifies an internal optimization, not observable behavior
     - _Requirements: 1.2, 1.3, 1.4_
 

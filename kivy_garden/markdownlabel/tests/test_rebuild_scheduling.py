@@ -116,39 +116,6 @@ class TestBatchedRebuilds:
         # Should have exactly 1 rebuild
         assert rebuild_count[0] == 1, f"Expected exactly 1 rebuild, got {rebuild_count[0]}"
 
-    def test_pending_rebuild_flag_prevents_duplicate_scheduling(self):
-        """_pending_rebuild flag prevents duplicate rebuild scheduling.
-
-        **Feature: label-compatibility, Property 6: Batched rebuilds**
-        **Validates: Requirements 3.1, 3.3**
-        """
-        label = MarkdownLabel(text="Initial")
-
-        # Clear any pending state
-        label._pending_rebuild = False
-
-        # Schedule multiple rebuilds
-        label._schedule_rebuild()
-        assert label._pending_rebuild is True, (
-            "Expected _pending_rebuild to be True after first schedule"
-        )
-
-        label._schedule_rebuild()
-        assert label._pending_rebuild is True, (
-            "Expected _pending_rebuild to remain True after second schedule"
-        )
-
-        label._schedule_rebuild()
-        assert label._pending_rebuild is True, (
-            "Expected _pending_rebuild to remain True after third schedule"
-        )
-
-        # Force rebuild clears the flag
-        label.force_rebuild()
-        assert label._pending_rebuild is False, (
-            "Expected _pending_rebuild to be False after force_rebuild"
-        )
-
 
 @pytest.mark.property
 class TestDeferredRebuildScheduling:
@@ -234,73 +201,6 @@ class TestDeferredRebuildScheduling:
         assert hasattr(label, "_rebuild_trigger"), "Expected _rebuild_trigger attribute"
         assert isinstance(label._rebuild_trigger, ClockEvent), (
             f"Expected ClockEvent, got {type(label._rebuild_trigger)}"
-        )
-
-    def test_schedule_rebuild_sets_pending_flag(self):
-        """_schedule_rebuild() sets _pending_rebuild flag.
-
-        **Feature: label-compatibility, Property 7: Deferred rebuild scheduling**
-        **Validates: Requirements 3.2**
-        """
-        label = MarkdownLabel(text="Test")
-
-        # Clear pending state
-        label._pending_rebuild = False
-
-        # Call _schedule_rebuild
-        label._schedule_rebuild()
-
-        # Flag should be set
-        assert label._pending_rebuild is True, (
-            "Expected _pending_rebuild to be True after _schedule_rebuild()"
-        )
-
-    def test_do_rebuild_clears_pending_flag(self):
-        """_do_rebuild() clears _pending_rebuild flag when executing.
-
-        **Feature: label-compatibility, Property 7: Deferred rebuild scheduling**
-        **Validates: Requirements 3.2**
-        """
-        label = MarkdownLabel(text="Test")
-
-        # Set pending state
-        label._pending_rebuild = True
-
-        # Call _do_rebuild (simulating clock callback)
-        label._do_rebuild()
-
-        # Flag should be cleared
-        assert label._pending_rebuild is False, (
-            "Expected _pending_rebuild to be False after _do_rebuild()"
-        )
-
-    def test_do_rebuild_skips_when_not_pending(self):
-        """_do_rebuild() skips rebuild when _pending_rebuild is False.
-
-        **Feature: label-compatibility, Property 7: Deferred rebuild scheduling**
-        **Validates: Requirements 3.2**
-        """
-        label = MarkdownLabel(text="Test")
-
-        # Track rebuild calls
-        rebuild_count = [0]
-        original_rebuild = label._rebuild_widgets
-
-        def counting_rebuild():
-            rebuild_count[0] += 1
-            original_rebuild()
-
-        label._rebuild_widgets = counting_rebuild
-
-        # Ensure not pending
-        label._pending_rebuild = False
-
-        # Call _do_rebuild
-        label._do_rebuild()
-
-        # Should not have called _rebuild_widgets
-        assert rebuild_count[0] == 0, (
-            f"Expected 0 rebuilds when not pending, got {rebuild_count[0]}"
         )
 
     @given(
