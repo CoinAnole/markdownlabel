@@ -6,6 +6,7 @@ forwarded to internal Label widgets and applied appropriately based on
 the widget's disabled state.
 """
 
+import pytest
 from hypothesis import given, settings, assume
 
 from kivy_garden.markdownlabel import MarkdownLabel
@@ -25,6 +26,7 @@ from .test_utils import (
 class TestColorPropertyForwarding:
     """Property tests for color forwarding (Property 3)."""
 
+    @pytest.mark.property
     @given(color_strategy)
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -40,6 +42,7 @@ class TestColorPropertyForwarding:
             assert colors_equal(list(lbl.color), color), \
                 f"Expected color={color}, got {list(lbl.color)}"
 
+    @pytest.mark.property
     @given(color_strategy)
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -55,6 +58,7 @@ class TestColorPropertyForwarding:
             assert colors_equal(list(lbl.color), color), \
                 f"Expected color={color}, got {list(lbl.color)}"
 
+    @pytest.mark.property
     @given(color_strategy)
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -73,6 +77,7 @@ class TestColorPropertyForwarding:
             assert colors_equal(list(lbl.color), code_color), \
                 f"Code label should use light color={code_color}, got {list(lbl.color)}"
 
+    @pytest.mark.property
     @given(color_strategy, color_strategy)
     # Combination strategy: 50 examples (combination coverage)
     @settings(max_examples=50, deadline=None)
@@ -96,6 +101,7 @@ class TestColorPropertyForwarding:
             assert colors_equal(list(lbl.color), color2), \
                 f"After change, expected color={color2}, got {list(lbl.color)}"
 
+    @pytest.mark.property
     @given(color_strategy)
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -112,6 +118,7 @@ class TestColorPropertyForwarding:
             assert colors_equal(list(lbl.color), color), \
                 f"Expected color={color}, got {list(lbl.color)}"
 
+    @pytest.mark.property
     @given(color_strategy)
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -128,6 +135,7 @@ class TestColorPropertyForwarding:
             assert colors_equal(list(lbl.color), color), \
                 f"Expected color={color}, got {list(lbl.color)}"
 
+    @pytest.mark.property
     @given(color_strategy)
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
