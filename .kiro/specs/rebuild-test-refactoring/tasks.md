@@ -54,19 +54,19 @@ This plan refactors `test_rebuild_scheduling.py` to test observable outcomes rat
     - Note that test failure indicates significant architectural change
     - _Requirements: 4.1, 4.2_
 
-- [ ] 5. Checkpoint - Verify refactoring completeness
+- [x] 5. Checkpoint - Verify refactoring completeness
   - Run all tests in `test_rebuild_scheduling.py` to ensure they pass
   - Verify no internal state access except in architectural test
   - Ensure all tests pass, ask the user if questions arise
   - _Requirements: 5.1, 5.2, 5.3, 5.4_
 
-- [ ] 6. Final validation
-  - [ ] 6.1 Run full rebuild-related test suite
+- [x] 6. Final validation
+  - [x] 6.1 Run full rebuild-related test suite
     - Execute `pytest kivy_garden/markdownlabel/tests/test_rebuild_scheduling.py -v`
     - Execute `pytest kivy_garden/markdownlabel/tests/test_rebuild_semantics.py -v`
     - Verify no regressions
     - _Requirements: 5.1, 5.2, 5.3, 5.4_
-  - [ ] 6.2 Verify internal state access is eliminated
+  - [x] 6.2 Verify internal state access is eliminated
     - Grep for `_pending_rebuild`, `_schedule_rebuild`, `_do_rebuild`, `_rebuild_widgets`
     - Only `_rebuild_trigger` should appear (in architectural test)
     - _Requirements: 1.1, 1.2, 1.3, 2.3, 3.3_
