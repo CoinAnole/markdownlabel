@@ -223,7 +223,8 @@ class TestLineHeightPropertyForwarding:
                 f"Expected line_height={line_height}, got {lbl.line_height}"
 
     @given(line_height_strategy, line_height_strategy)
-    # Combination strategy: 20 examples (combination coverage)
+    # Large combination space (continuous values)
+    # Use 20 examples to sample adequately
     @settings(max_examples=20, deadline=None)
     def test_line_height_change_triggers_rebuild(self, lh1, lh2):
         """Changing line_height triggers widget rebuild with new value.
@@ -610,8 +611,9 @@ class TestFontSizeImmediateUpdates:
         st.floats(min_value=10.0, max_value=30.0, allow_nan=False, allow_infinity=False),
         st.floats(min_value=10.0, max_value=30.0, allow_nan=False, allow_infinity=False)
     )
-    # Combination strategy: 6 examples (combination coverage)
-    @settings(max_examples=6, deadline=None)
+    # 6 heading_levels × continuous sizes × continuous sizes
+    # Use 20 examples to sample adequately
+    @settings(max_examples=20, deadline=None)
     def test_heading_font_size_updates_with_scale(self, heading_level, initial_size, new_size):
         """Heading font sizes update immediately with correct scale factors."""
         assume(abs(initial_size - new_size) > 1.0)
@@ -686,8 +688,9 @@ class TestHeadingScalePreservation:
         st.integers(min_value=1, max_value=6),  # Heading levels
         st.floats(min_value=8.0, max_value=50.0, allow_nan=False, allow_infinity=False)
     )
-    # Combination strategy: 6 examples (combination coverage)
-    @settings(max_examples=6, deadline=None)
+    # 6 heading_levels × continuous sizes
+    # Use 20 examples to sample adequately
+    @settings(max_examples=20, deadline=None)
     def test_heading_scale_factors_preserved(self, heading_level, base_size):
         """Heading scale factors are preserved according to HEADING_SIZES."""
         # Create heading markdown
@@ -727,8 +730,9 @@ class TestHeadingScalePreservation:
         ),
         st.floats(min_value=12.0, max_value=24.0, allow_nan=False, allow_infinity=False)
     )
-    # Complex strategy: 6 examples (adequate coverage)
-    @settings(max_examples=6, deadline=None)
+    # Complex heading lists × continuous sizes
+    # Use 20 examples to sample adequately
+    @settings(max_examples=20, deadline=None)
     def test_multiple_headings_preserve_relative_scales(self, heading_levels, base_size):
         """Multiple headings preserve correct relative scale factors."""
         # Create markdown with multiple headings
@@ -774,8 +778,9 @@ class TestHeadingScalePreservation:
         st.floats(min_value=10.0, max_value=20.0, allow_nan=False, allow_infinity=False),
         st.floats(min_value=20.0, max_value=40.0, allow_nan=False, allow_infinity=False)
     )
-    # Complex strategy: 6 examples (adequate coverage)
-    @settings(max_examples=6, deadline=None)
+    # 6 heading_levels × continuous sizes × continuous sizes
+    # Use 20 examples to sample adequately
+    @settings(max_examples=20, deadline=None)
     def test_heading_scale_preserved_after_base_font_size_change(self, heading_level, initial_size, new_size):
         """Heading scale factors are preserved when base_font_size changes."""
         # Create heading
@@ -900,7 +905,8 @@ class TestNoRebuildOnFontSizeChange:
         st.floats(min_value=20.0, max_value=25.0, allow_nan=False, allow_infinity=False),
         st.floats(min_value=30.0, max_value=35.0, allow_nan=False, allow_infinity=False)
     )
-    # Complex strategy: 20 examples (adequate coverage)
+    # Continuous sizes × continuous sizes × continuous sizes
+    # Use 20 examples to sample adequately
     @settings(max_examples=20, deadline=None)
     def test_multiple_font_size_changes_preserve_identities(self, size1, size2, size3):
         """Multiple font size changes preserve widget identities."""

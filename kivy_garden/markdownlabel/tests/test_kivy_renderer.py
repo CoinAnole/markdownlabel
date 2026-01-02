@@ -402,33 +402,27 @@ class TestBlockQuoteStructure:
 class TestThematicBreakRendering:
     """Property tests for thematic break rendering (Property 15)."""
 
-    @given(st.just({'type': 'thematic_break'}))
-    # Small finite strategy: 1 examples (input space size: 1)
-    @settings(max_examples=1, deadline=None)
-    def test_thematic_break_returns_widget(self, token):
+    def test_thematic_break_returns_widget(self):
         """Thematic break tokens produce Widget."""
         renderer = KivyRenderer()
+        token = {'type': 'thematic_break'}
         widget = renderer.thematic_break(token, None)
 
         assert isinstance(widget, Widget), f"Expected Widget, got {type(widget)}"
 
-    @given(st.just({'type': 'thematic_break'}))
-    # Small finite strategy: 1 examples (input space size: 1)
-    @settings(max_examples=1, deadline=None)
-    def test_thematic_break_has_fixed_height(self, token):
+    def test_thematic_break_has_fixed_height(self):
         """Thematic break has fixed height."""
         renderer = KivyRenderer()
+        token = {'type': 'thematic_break'}
         widget = renderer.thematic_break(token, None)
 
         assert widget.size_hint_y is None, "Thematic break should have size_hint_y=None"
         assert widget.height > 0, "Thematic break should have positive height"
 
-    @given(st.just({'type': 'thematic_break'}))
-    # Small finite strategy: 1 examples (input space size: 1)
-    @settings(max_examples=1, deadline=None)
-    def test_thematic_break_has_horizontal_line(self, token):
+    def test_thematic_break_has_horizontal_line(self):
         """Thematic break has horizontal line on canvas."""
         renderer = KivyRenderer()
+        token = {'type': 'thematic_break'}
         widget = renderer.thematic_break(token, None)
 
         # Check that canvas has line instruction

@@ -132,7 +132,8 @@ class TestNoOpPropertiesAcceptance:
         assert label.markup == value
 
     @given(st.booleans(), st.booleans(), st.booleans(), st.booleans(), st.booleans())
-    # Small finite strategy: 32 examples (input space size: 32)
+    # 2 × 2 × 2 × 2 × 2 = 32 combinations
+    # Use 32 examples for full coverage
     @settings(max_examples=32, deadline=None)
     def test_all_noop_properties_together(self, bold, italic, underline, strikethrough, markup):
         """Setting all no-op properties together does not raise an exception."""
