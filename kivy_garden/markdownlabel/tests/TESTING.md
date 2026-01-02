@@ -10,6 +10,7 @@ This document provides comprehensive guidelines for writing, organizing, and mai
 - [Rebuild Contract Testing](#rebuild-contract-testing)
 - [Property-Based Testing](#property-based-testing)
 - [Property-Based Testing Optimization](#property-based-testing-optimization)
+- [When to Use Hypothesis vs. @pytest.mark.parametrize](#when-to-use-hypothesis-vs-pytestmarkparametrize)
 - [Helper Functions](#helper-functions)
 - [Test File Structure](#test-file-structure)
 - [Standardization Tools](#standardization-tools)
@@ -404,6 +405,93 @@ Following these guidelines typically results in:
 - **Small finite tests:** 80-95% time reduction
 - **Medium finite tests:** 50-80% time reduction  
 - **Complex tests:** 0-50% time reduction (may already be appropriate)
+
+### When to Use Hypothesis vs. @pytest.mark.parametrize
+
+Choosing between Hypothesis and `@pytest.mark.parametrize` depends on the **number of dimensions** and the **size of the input space**.
+
+#### Single Dimension: Prefer @pytest.mark.parametrize
+
+For a single finite enumeration (≤10 items), `@pytest.mark.parametrize` is cleaner and guarantees full coverage:
+
+```python
+# ✅ GOOD: Single dimension, small enumeration - use parametrize
+@pytest.mark.parametrize('halign', ['left', 'center', 'right', 'justify'])
+def test_alignment_behavior(halign):
+    label = MarkdownLabel(text='Test', halign=halign)
+    assert label.halign == halign
+```
+
+#### Multiple Dimensions: Beware the Cartesian Product
+
+**CRITICAL:** Multiple `@pytest.mark.parametrize` decorators create a cartesian product of ALL combinations:
+
+```python
+# ⚠️ DANGER: This creates 4 × 5 × 6 = 120 test cases!
+@pytest.mark.parametrize('halign', ['left', 'center', 'right', 'justify'])  # 4
+@pytest.mark.parametrize('direction', ['ltr', 'rtl', 'weak_ltr', 'weak_rtl', None])  # 5
+@pytest.mark.parametrize('heading_level', [1, 2, 3, 4, 5, 6])  # 6
+def test_alignment_with_direction_and_heading(halign, direction, heading_level):
+    ...
+```
+
+Compare this to Hypothesis, which **samples** from the combined space:
+
+```python
+# ✅ BETTER: Hypothesis samples ~20 combinations from the space
+@given(
+    halign=st.sampled_from(['left', 'center', 'right', 'justify']),
+    direction=st.sampled_from(['ltr', 'rtl', 'weak_ltr', 'weak_rtl', None]),
+    heading_level=st.integers(min_value=1, max_value=6)
+)
+# Combination strategy: 20 examples (sampling from 120 combinations)
+@settings(max_examples=20, deadline=None)
+def test_alignment_with_direction_and_heading(halign, direction, heading_level):
+    ...
+```
+
+#### Decision Matrix
+
+| Scenario | Recommendation | Rationale |
+|----------|---------------|-----------|
+| Single enum, ≤10 values | `@pytest.mark.parametrize` | Full coverage, explicit test cases |
+| Single enum, >10 values | Hypothesis `sampled_from` | Avoid excessive test count |
+| 2 enums, product ≤20 | Either approach works | Parametrize gives full coverage |
+| 2+ enums, product >20 | Hypothesis | Sampling avoids test explosion |
+| Infinite/broad space | Hypothesis | Only option for text, floats, etc. |
+| Mixed finite + infinite | Hypothesis | Combine strategies naturally |
+
+#### Hybrid Approach: Parametrize Important Dimension, Sample Others
+
+When one dimension is critical to test exhaustively but others aren't:
+
+```python
+# ✅ HYBRID: Test all alignments, sample directions
+@pytest.mark.parametrize('halign', ['left', 'center', 'right', 'justify'])
+@given(direction=st.sampled_from(['ltr', 'rtl', 'weak_ltr', 'weak_rtl', None]))
+@settings(max_examples=5, deadline=None)
+def test_alignment_with_sampled_direction(halign, direction):
+    ...
+```
+
+#### Boundary Testing for Large Enumerations
+
+For enumerations like heading levels (1-6), consider testing only boundaries:
+
+```python
+# ✅ GOOD: Test boundaries instead of all 6 levels
+@pytest.mark.parametrize('heading_level', [1, 6])  # Min and max only
+@pytest.mark.parametrize('direction', ['ltr', 'rtl'])  # Representative values
+def test_heading_alignment_boundaries(heading_level, direction):
+    ...
+```
+
+#### Summary
+
+- **Single dimension, small set:** Use `@pytest.mark.parametrize`
+- **Multiple dimensions with large product:** Use Hypothesis to sample
+- **Need exhaustive coverage of one dimension:** Use hybrid approach
+- **Infinite spaces:** Always use Hypothesis
 
 ## Helper Functions
 
