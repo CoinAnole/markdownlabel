@@ -33,16 +33,16 @@ This plan refactors `test_rebuild_scheduling.py` to test observable outcomes rat
     - Verify widget IDs changed after `force_rebuild()`
     - _Requirements: 2.2, 2.3, 2.4_
 
-- [ ] 3. Rewrite deferral tests to use observable outcomes
-  - [ ] 3.1 Rewrite `test_text_change_schedules_deferred_rebuild`
+- [x] 3. Rewrite deferral tests to use observable outcomes
+  - [x] 3.1 Rewrite `test_text_change_schedules_deferred_rebuild`
     - Replace `_pending_rebuild` check with widget identity verification
     - Verify children unchanged immediately after `text` property change
     - _Requirements: 3.1, 3.3, 3.4_
-  - [ ] 3.2 Modify `test_font_name_change_schedules_deferred_rebuild`
+  - [x] 3.2 Modify `test_font_name_change_schedules_deferred_rebuild`
     - Remove `_pending_rebuild = False` manipulation
     - Use widget identity check to verify deferral
     - _Requirements: 3.1, 3.3, 3.4_
-  - [ ] 3.3 Rewrite `test_multiple_changes_all_deferred`
+  - [x] 3.3 Rewrite `test_multiple_changes_all_deferred`
     - Replace `_rebuild_widgets` patching and `_pending_rebuild` check
     - Use `collect_widget_ids()` to verify all changes are deferred
     - _Requirements: 3.2, 3.3, 3.4_
