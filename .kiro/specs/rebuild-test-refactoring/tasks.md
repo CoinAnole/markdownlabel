@@ -47,8 +47,8 @@ This plan refactors `test_rebuild_scheduling.py` to test observable outcomes rat
     - Use `collect_widget_ids()` to verify all changes are deferred
     - _Requirements: 3.2, 3.3, 3.4_
 
-- [ ] 4. Update architectural documentation test
-  - [ ] 4.1 Add explanatory docstring to `test_rebuild_trigger_is_clock_trigger`
+- [x] 4. Update architectural documentation test
+  - [x] 4.1 Add explanatory docstring to `test_rebuild_trigger_is_clock_trigger`
     - Explain why this test intentionally accesses internal state
     - Document that this test serves as architectural documentation
     - Note that test failure indicates significant architectural change

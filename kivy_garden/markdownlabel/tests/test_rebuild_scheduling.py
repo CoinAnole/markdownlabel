@@ -214,6 +214,23 @@ class TestDeferredRebuildScheduling:
     def test_rebuild_trigger_is_clock_trigger(self):
         """_rebuild_trigger is a Clock.create_trigger instance.
 
+        **ARCHITECTURAL DOCUMENTATION TEST**
+        
+        This test intentionally accesses internal state (_rebuild_trigger) to document
+        and verify a critical architectural decision: MarkdownLabel uses Kivy's Clock
+        system for deferred rebuilds rather than synchronous rebuilds.
+        
+        Unlike other tests in this module that verify observable behavior, this test
+        serves as architectural documentation. It ensures that the rebuild system
+        continues to use Clock.create_trigger for deferral, which is essential for:
+        - Performance (batching multiple changes)
+        - UI responsiveness (avoiding blocking operations)
+        - Kivy integration (respecting the frame-based update cycle)
+        
+        If this test fails, it indicates a significant architectural change that
+        requires careful review of the rebuild system's design and performance
+        characteristics.
+
         **Feature: label-compatibility, Property 7: Deferred rebuild scheduling**
         **Validates: Requirements 3.2**
         """
