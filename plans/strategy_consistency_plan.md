@@ -73,32 +73,7 @@ These tests use `sampled_from` with a single small enumeration. Converting to pa
 
 ---
 
-### Task 3: DO NOT Convert Multi-Dimensional Tests
-
-**Priority:** N/A (no action needed)
-
-The following tests should **remain as Hypothesis** because their cartesian products are large:
-
-1. **test_rtl_alignment.py** - Most tests combine 2-3 dimensions:
-   - `test_direction_change_updates_heading_alignment`: 6 × 3 × 2 = 36 combinations
-   - `test_explicit_alignment_overrides_rtl_for_headings`: 4 × 2 × 6 = 48 combinations
-   - `test_explicit_alignment_unchanged_by_direction_change`: 4 × 2 × 3 = 24 combinations
-   
-   **Keep Hypothesis with appropriate `max_examples` (10-20).**
-
-2. **test_rebuild_semantics.py** - Tests combining multiple style properties:
-   - `test_style_property_changes_preserve_widget_tree`: Multiple dimensions
-   - `test_style_property_values_propagate_to_descendants`: Multiple dimensions
-   
-   **Keep Hypothesis.**
-
-3. **test_shortening_and_coordinate.py** - Tests with color + alignment combinations:
-   - Keep Hypothesis for multi-dimensional tests
-   - Single-dimension color tests (3 items) could be parametrized
-
----
-
-### Task 4: Optimize max_examples for Multi-Dimensional Tests
+### Task 3: Optimize max_examples for Multi-Dimensional Tests
 
 **Priority:** MEDIUM
 
@@ -125,23 +100,11 @@ def test_direction_change_updates_heading_alignment(...):
 
 ---
 
-### Task 5: Update TESTING.md
-
-**Status:** COMPLETED
-
-The "When to Use Hypothesis vs. @pytest.mark.parametrize" section has been updated with:
-- Decision matrix based on dimensionality
-- Warning about cartesian product explosion
-- Hybrid approach examples
-- Boundary testing suggestions
-
----
-
 ## Implementation Order
 
 1. **Phase 1:** Task 1 (trivial `st.just()` removal) - 3 tests
 2. **Phase 2:** Task 2 (single-dimension conversions) - ~8 tests  
-3. **Phase 3:** Task 4 (optimize multi-dimensional max_examples) - review existing tests
+3. **Phase 3:** Task 3 (optimize multi-dimensional max_examples) - review existing tests
 4. **Phase 4:** Run full test suite, verify timing improvement
 
 ## Expected Impact
