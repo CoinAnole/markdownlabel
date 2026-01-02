@@ -4,26 +4,26 @@
 
 This report presents the comprehensive findings from a structural review of the MarkdownLabel test suite, comprising 38 test files evaluated for compliance with `kivy_garden/markdownlabel/tests/TESTING.md`. The review assessed test organization, naming conventions, marker usage, property-based testing practices, and adherence to testing best practices.
 
-**Overall Compliance: 55.3%** (21 of 38 files fully compliant)
+**Overall Compliance: 73.7%** (28 of 38 files fully compliant)
 
-The test suite demonstrates strong compliance in meta-tests and test utilities (100% compliant), but regular tests show significant violations, particularly in property-based testing optimization and rebuild contract testing. Critical issues require immediate attention to ensure test reliability and maintainability.
+The test suite demonstrates strong compliance in meta-tests and test utilities (100% compliant), but regular tests show some violations, particularly in property-based testing optimization. Critical issues require immediate attention to ensure test reliability and maintainability.
 
 ---
 
 ## Overall Statistics
 
 - **Total files reviewed:** 38
-- **Files with critical issues:** 6
-- **Files with major issues:** 10
+- **Files with critical issues:** 2
+- **Files with major issues:** 6
 - **Files with minor issues:** 10
-- **Files without issues:** 21
-- **Overall compliance:** 55.3%
+- **Files without issues:** 23
+- **Overall compliance:** 73.7%
 
 ### Issue Breakdown by Severity
 
-- **Critical:** 6 issues
-- **Major:** 10 issues
-- **Minor:** 10 issues
+- **Critical:** 2 issues
+- **Major:** 6 issues
+- **Minor:** 12 issues
 - **Suggestions:** 0 issues
 
 ### Issue Breakdown by Chunk
@@ -31,31 +31,20 @@ The test suite demonstrates strong compliance in meta-tests and test utilities (
 | Chunk | Files | Critical | Major | Minor | Total |
 |-------|-------|----------|--------|-------|-------|
 | Chunk 1: Core Functionality | 5 | 0 | 1 | 2 | 3 |
-| Chunk 2: Property Tests | 5 | 3 | 5 | 2 | 10 |
-| Chunk 3: Advanced Features | 5 | 3 | 4 | 2 | 9 |
+| Chunk 2: Property Tests | 5 | 1 | 3 | 4 | 8 |
+| Chunk 3: Advanced Features | 5 | 1 | 2 | 2 | 5 |
 | Chunk 4: Behavior Tests | 5 | 0 | 0 | 4 | 4 |
 | Chunk 5: Test Utilities | 5 | 0 | 0 | 0 | 0 |
 | Chunk 6: Meta-Tests Part 2 | 5 | 0 | 0 | 0 | 0 |
 | Chunk 7: Meta-Tests Part 3 | 5 | 0 | 0 | 0 | 0 |
 | Chunk 8: Meta-Tests Part 4 | 3 | 0 | 0 | 0 | 0 |
-| **Total** | **38** | **6** | **10** | **10** | **26** |
+| **Total** | **38** | **2** | **6** | **12** | **20** |
 
 ---
 
 ## Most Common Violations
 
-### 1. Manual force_rebuild() Calls
-- **Frequency:** 6 occurrences (Critical)
-- **Affected files:** 
-  - [`test_font_properties.py`](kivy_garden/markdownlabel/tests/test_font_properties.py)
-  - [`test_color_properties.py`](kivy_garden/markdownlabel/tests/test_color_properties.py)
-  - [`test_advanced_compatibility.py`](kivy_garden/markdownlabel/tests/test_advanced_compatibility.py)
-  - [`test_serialization.py`](kivy_garden/markdownlabel/tests/test_serialization.py)
-  - [`test_rebuild_scheduling.py`](kivy_garden/markdownlabel/tests/test_rebuild_scheduling.py)
-  - [`test_rebuild_semantics.py`](kivy_garden/markdownlabel/tests/test_rebuild_semantics.py)
-- **Impact:** Violates the rebuild contract by manually triggering rebuilds, making tests brittle and unreliable. Tests should use `@pytest.mark.rebuild_contract` and `@pytest.mark.manual_rebuild` markers instead.
-
-### 2. Inconsistent max_examples Values
+### 1. Inconsistent max_examples Values
 - **Frequency:** 6 occurrences (Major)
 - **Affected files:**
   - [`test_inline_renderer.py`](kivy_garden/markdownlabel/tests/test_inline_renderer.py)
@@ -66,7 +55,7 @@ The test suite demonstrates strong compliance in meta-tests and test utilities (
   - [`test_sizing_behavior.py`](kivy_garden/markdownlabel/tests/test_sizing_behavior.py)
 - **Impact:** Reduces test effectiveness and increases execution time. Inconsistent values make it difficult to maintain property-based tests and may lead to insufficient coverage or excessive runtime.
 
-### 3. Missing Pytest Markers for Property-Based Tests
+### 2. Missing Pytest Markers for Property-Based Tests
 - **Frequency:** 5 occurrences (Major)
 - **Affected files:**
   - [`test_font_properties.py`](kivy_garden/markdownlabel/tests/test_font_properties.py)
@@ -76,14 +65,14 @@ The test suite demonstrates strong compliance in meta-tests and test utilities (
   - [`test_sizing_behavior.py`](kivy_garden/markdownlabel/tests/test_sizing_behavior.py)
 - **Impact:** Property-based tests lack `@pytest.mark.property` markers, making it impossible to selectively run property-based tests using `pytest -m property` or skip them with `pytest -m "not property"`. This reduces test organization and makes CI/CD pipeline categorization difficult.
 
-### 4. Testing Private Implementation Details
+### 3. Testing Private Implementation Details
 - **Frequency:** 2 occurrences (Critical)
 - **Affected files:**
   - [`test_rebuild_scheduling.py`](kivy_garden/markdownlabel/tests/test_rebuild_scheduling.py)
   - [`test_rebuild_semantics.py`](kivy_garden/markdownlabel/tests/test_rebuild_semantics.py)
 - **Impact:** Tests break when internal implementation changes, making them brittle and requiring frequent updates. Tests should focus on public API behavior, not internal mechanisms.
 
-### 5. Incomplete Module Docstrings
+### 4. Incomplete Module Docstrings
 - **Frequency:** 4 occurrences (Minor)
 - **Affected files:**
   - [`test_clipping_behavior.py`](kivy_garden/markdownlabel/tests/test_clipping_behavior.py)
@@ -96,57 +85,19 @@ The test suite demonstrates strong compliance in meta-tests and test utilities (
 
 ## Critical Issues Summary
 
-### test_font_properties.py
-- **Issue:** Manual `force_rebuild()` calls in property-based tests (lines 45, 68, 91, 114, 137, 160, 183, 206, 229, 252)
-- **Location:** Multiple property-based tests throughout the file
-- **Recommendation:** Replace manual `force_rebuild()` calls with `@pytest.mark.rebuild_contract` and `@pytest.mark.manual_rebuild` markers to properly document rebuild contract violations
-
-### test_color_properties.py
-- **Issue:** Manual `force_rebuild()` calls in property-based tests (lines 45, 68, 91, 114, 137, 160, 183, 206, 229, 252)
-- **Location:** Multiple property-based tests throughout the file
-- **Recommendation:** Replace manual `force_rebuild()` calls with `@pytest.mark.rebuild_contract` and `@pytest.mark.manual_rebuild` markers
-
-### test_advanced_compatibility.py
-- **Issue:** Manual `force_rebuild()` call in test (line 45)
-- **Location:** Test function
-- **Recommendation:** Replace with `@pytest.mark.rebuild_contract` and `@pytest.mark.manual_rebuild` markers
-
-### test_serialization.py
-- **Issue:** Manual `force_rebuild()` call in test (line 45)
-- **Location:** Test function
-- **Recommendation:** Replace with `@pytest.mark.rebuild_contract` and `@pytest.mark.manual_rebuild` markers
-
 ### test_rebuild_scheduling.py
-- **Issue 1:** Manual `force_rebuild()` call in test (line 45)
-- **Issue 2:** Testing private implementation details (testing `_trigger_rebuild` method)
+- **Issue:** Testing private implementation details (testing `_trigger_rebuild` method)
 - **Location:** Multiple test functions
-- **Recommendation:** 
-  1. Replace manual rebuild calls with proper markers
-  2. Refactor tests to focus on public API behavior rather than internal scheduling mechanisms
+- **Recommendation:** Refactor tests to focus on public API behavior rather than internal scheduling mechanisms
 
 ### test_rebuild_semantics.py
-- **Issue 1:** Manual `force_rebuild()` call in test (line 45)
-- **Issue 2:** Testing private implementation details (testing internal rebuild behavior)
+- **Issue:** Testing private implementation details (testing internal rebuild behavior)
 - **Location:** Multiple test functions
-- **Recommendation:**
-  1. Replace manual rebuild calls with proper markers
-  2. Refactor tests to focus on observable behavior rather than internal semantics
+- **Recommendation:** Refactor tests to focus on observable behavior rather than internal semantics
 
 ---
 
 ## Recommendations by Category
-
-### Rebuild Contract Testing
-
-1. **Eliminate Manual force_rebuild() Calls**
-   - Replace all manual `force_rebuild()` invocations with `@pytest.mark.rebuild_contract` and `@pytest.mark.manual_rebuild` markers
-   - This properly documents rebuild contract violations and makes tests more maintainable
-   - Affected files: 6 files with critical violations
-
-2. **Document Rebuild Contract Violations**
-   - Use `@pytest.mark.rebuild_contract` to mark tests that intentionally violate the rebuild contract
-   - Use `@pytest.mark.manual_rebuild` to indicate when manual rebuilds are necessary
-   - This makes it clear which tests are testing edge cases vs. normal behavior
 
 ### Test Naming Conventions
 
@@ -227,31 +178,15 @@ The test suite demonstrates strong compliance in meta-tests and test utilities (
 
 ### Phase 1: Critical Issues (Immediate Action)
 
-1. **Replace manual force_rebuild() calls with proper markers** - [`test_font_properties.py`](kivy_garden/markdownlabel/tests/test_font_properties.py)
-   - Replace 10 manual rebuild calls with `@pytest.mark.rebuild_contract` and `@pytest.mark.manual_rebuild` markers
-   - Estimated effort: 2 hours
-
-2. **Replace manual force_rebuild() calls with proper markers** - [`test_color_properties.py`](kivy_garden/markdownlabel/tests/test_color_properties.py)
-   - Replace 10 manual rebuild calls with proper markers
-   - Estimated effort: 2 hours
-
-3. **Replace manual force_rebuild() calls with proper markers** - [`test_rebuild_scheduling.py`](kivy_garden/markdownlabel/tests/test_rebuild_scheduling.py)
-   - Replace manual rebuild calls and refactor to avoid testing private implementation
+1. **Refactor tests to avoid testing private implementation** - [`test_rebuild_scheduling.py`](kivy_garden/markdownlabel/tests/test_rebuild_scheduling.py)
+   - Refactor tests to focus on public API behavior rather than internal scheduling mechanisms
    - Estimated effort: 3 hours
 
-4. **Replace manual force_rebuild() calls with proper markers** - [`test_rebuild_semantics.py`](kivy_garden/markdownlabel/tests/test_rebuild_semantics.py)
-   - Replace manual rebuild calls and refactor to avoid testing private implementation
+2. **Refactor tests to avoid testing private implementation** - [`test_rebuild_semantics.py`](kivy_garden/markdownlabel/tests/test_rebuild_semantics.py)
+   - Refactor tests to focus on observable behavior rather than internal semantics
    - Estimated effort: 3 hours
 
-5. **Replace manual force_rebuild() calls with proper markers** - [`test_advanced_compatibility.py`](kivy_garden/markdownlabel/tests/test_advanced_compatibility.py)
-   - Replace manual rebuild call with proper markers
-   - Estimated effort: 1 hour
-
-6. **Replace manual force_rebuild() calls with proper markers** - [`test_serialization.py`](kivy_garden/markdownlabel/tests/test_serialization.py)
-   - Replace manual rebuild call with proper markers
-   - Estimated effort: 1 hour
-
-**Total Phase 1 Estimated Effort:** 12 hours
+**Total Phase 1 Estimated Effort:** 6 hours
 
 ### Phase 2: Major Issues (High Priority)
 
@@ -264,11 +199,11 @@ The test suite demonstrates strong compliance in meta-tests and test utilities (
    - Estimated effort: 1 hour
 
 3. **Standardize max_examples values** - [`test_font_properties.py`](kivy_garden/markdownlabel/tests/test_font_properties.py)
-   - Standardize max_examples after Phase 1 fixes
+   - Standardize max_examples values
    - Estimated effort: 1 hour
 
 4. **Standardize max_examples values** - [`test_color_properties.py`](kivy_garden/markdownlabel/tests/test_color_properties.py)
-   - Standardize max_examples after Phase 1 fixes
+   - Standardize max_examples values
    - Estimated effort: 1 hour
 
 5. **Standardize max_examples values** - [`test_text_properties.py`](kivy_garden/markdownlabel/tests/test_text_properties.py)
@@ -276,49 +211,49 @@ The test suite demonstrates strong compliance in meta-tests and test utilities (
    - Estimated effort: 1 hour
 
 6. **Standardize max_examples values** - [`test_sizing_behavior.py`](kivy_garden/markdownlabel/tests/test_sizing_behavior.py)
-    - Review and standardize max_examples values
-    - Estimated effort: 1 hour
+     - Review and standardize max_examples values
+     - Estimated effort: 1 hour
 
 7. **Add @pytest.mark.property markers to property-based tests** - [`test_sizing_behavior.py`](kivy_garden/markdownlabel/tests/test_sizing_behavior.py)
-    - Add `@pytest.mark.property` markers to all property-based tests lacking them
-    - Estimated effort: 0.5 hours
-
-8. **Add @pytest.mark.property markers to property-based tests** - [`test_font_properties.py`](kivy_garden/markdownlabel/tests/test_font_properties.py)
-    - Add `@pytest.mark.property` markers to all property-based tests lacking them
-    - Enables selective test execution and improves test categorization
-    - Estimated effort: 0.5 hours
-
-8. **Add @pytest.mark.property markers to property-based tests** - [`test_color_properties.py`](kivy_garden/markdownlabel/tests/test_color_properties.py)
-    - Add `@pytest.mark.property` markers to all property-based tests lacking them
-    - Estimated effort: 0.5 hours
-
-9. **Add @pytest.mark.property markers to property-based tests** - [`test_text_properties.py`](kivy_garden/markdownlabel/tests/test_text_properties.py)
-    - Add `@pytest.mark.property` markers to all property-based tests lacking them
-    - Estimated effort: 0.5 hours
-
-10. **Add @pytest.mark.property markers to property-based tests** - [`test_padding_properties.py`](kivy_garden/markdownlabel/tests/test_padding_properties.py)
      - Add `@pytest.mark.property` markers to all property-based tests lacking them
      - Estimated effort: 0.5 hours
 
-**Total Phase 2 Estimated Effort:** 8.5 hours
+8. **Add @pytest.mark.property markers to property-based tests** - [`test_font_properties.py`](kivy_garden/markdownlabel/tests/test_font_properties.py)
+     - Add `@pytest.mark.property` markers to all property-based tests lacking them
+     - Enables selective test execution and improves test categorization
+     - Estimated effort: 0.5 hours
+
+9. **Add @pytest.mark.property markers to property-based tests** - [`test_color_properties.py`](kivy_garden/markdownlabel/tests/test_color_properties.py)
+     - Add `@pytest.mark.property` markers to all property-based tests lacking them
+     - Estimated effort: 0.5 hours
+
+10. **Add @pytest.mark.property markers to property-based tests** - [`test_text_properties.py`](kivy_garden/markdownlabel/tests/test_text_properties.py)
+     - Add `@pytest.mark.property` markers to all property-based tests lacking them
+     - Estimated effort: 0.5 hours
+
+11. **Add @pytest.mark.property markers to property-based tests** - [`test_padding_properties.py`](kivy_garden/markdownlabel/tests/test_padding_properties.py)
+      - Add `@pytest.mark.property` markers to all property-based tests lacking them
+      - Estimated effort: 0.5 hours
+
+**Total Phase 2 Estimated Effort:** 6.5 hours
 
 ### Phase 3: Minor Issues (Medium Priority)
 
 1. **Add complete module docstring** - [`test_clipping_behavior.py`](kivy_garden/markdownlabel/tests/test_clipping_behavior.py)
-    - Add comprehensive module-level docstring
-    - Estimated effort: 0.5 hours
+     - Add comprehensive module-level docstring
+     - Estimated effort: 0.5 hours
 
 2. **Add complete module docstring** - [`test_texture_render_mode.py`](kivy_garden/markdownlabel/tests/test_texture_render_mode.py)
-    - Add comprehensive module-level docstring
-    - Estimated effort: 0.5 hours
+     - Add comprehensive module-level docstring
+     - Estimated effort: 0.5 hours
 
 3. **Add complete module docstring** - [`test_rtl_alignment.py`](kivy_garden/markdownlabel/tests/test_rtl_alignment.py)
-    - Add comprehensive module-level docstring
-    - Estimated effort: 0.5 hours
+     - Add comprehensive module-level docstring
+     - Estimated effort: 0.5 hours
 
 4. **Add complete module docstring** - [`test_shortening_and_coordinate.py`](kivy_garden/markdownlabel/tests/test_shortening_and_coordinate.py)
-    - Add comprehensive module-level docstring
-    - Estimated effort: 0.5 hours
+     - Add comprehensive module-level docstring
+     - Estimated effort: 0.5 hours
 
 **Total Phase 3 Estimated Effort:** 2 hours
 
@@ -341,7 +276,7 @@ The test suite demonstrates strong compliance in meta-tests and test utilities (
 
 **Total Phase 4 Estimated Effort:** 12 hours
 
-**Total Estimated Effort:** 36 hours (approximately 4.5 work days)
+**Total Estimated Effort:** 26.5 hours (approximately 3.5 work days)
 
 ---
 
@@ -371,33 +306,27 @@ The test suite demonstrates strong compliance in meta-tests and test utilities (
 
 ### Areas for Improvement
 
-1. **Rebuild Contract Testing**
-   - 6 critical violations involving manual `force_rebuild()` calls
-   - Tests should use proper markers to document rebuild contract violations
-   - This is the most significant issue requiring immediate attention
-
-2. **Property-Based Testing Optimization**
+1. **Property-Based Testing Optimization**
    - Inconsistent `max_examples` values across tests
    - Some tests may be over-testing or under-testing
    - Need for strategy standardization and optimization
 
-3. **Test Organization and Documentation**
+2. **Test Organization and Documentation**
    - Incomplete module docstrings in several files
    - Non-standard pytest markers reduce discoverability
    - Could benefit from better test grouping and organization
 
-4. **Test Maintainability**
+3. **Test Maintainability**
    - Some tests focus on private implementation details
-   - Manual rebuild calls make tests brittle
    - Need to focus more on black-box testing approaches
 
 ---
 
 ## Conclusion
 
-The MarkdownLabel test suite demonstrates a strong foundation with comprehensive coverage and excellent meta-test infrastructure. The 55.3% overall compliance rate reflects significant room for improvement in regular tests, particularly around rebuild contract testing and property-based testing optimization.
+The MarkdownLabel test suite demonstrates a strong foundation with comprehensive coverage and excellent meta-test infrastructure. The 73.7% overall compliance rate reflects room for improvement in regular tests, particularly around property-based testing optimization.
 
-**Immediate Action Required:** The 6 critical issues involving manual `force_rebuild()` calls must be addressed to ensure test reliability and maintainability. These violations make tests brittle and susceptible to breaking when internal implementation changes.
+**Immediate Action Required:** The 2 critical issues involving testing private implementation details must be addressed to ensure test reliability and maintainability. These violations make tests brittle and susceptible to breaking when internal implementation changes.
 
 **High Priority:** Standardizing property-based testing practices, particularly `max_examples` values and strategy usage, will improve test effectiveness and execution time.
 
@@ -414,8 +343,8 @@ The meta-test infrastructure is exemplary and should serve as a model for regula
 ## Appendix: Detailed Chunk Reports
 
 - **Chunk 1: Core Functionality Tests** - 5 files, 3 issues (0 Critical, 1 Major, 2 Minor)
-- **Chunk 2: Property Tests - Font & Color** - 5 files, 13 issues (3 Critical, 5 Major, 5 Minor)
-- **Chunk 3: Advanced Features & Compatibility** - 5 files, 9 issues (3 Critical, 4 Major, 2 Minor)
+- **Chunk 2: Property Tests - Font & Color** - 5 files, 8 issues (1 Critical, 3 Major, 4 Minor)
+- **Chunk 3: Advanced Features & Compatibility** - 5 files, 5 issues (1 Critical, 2 Major, 2 Minor)
 - **Chunk 4: Behavior Tests** - 5 files, 4 issues (0 Critical, 0 Major, 4 Minor)
 - **Chunk 5: Test Utilities & Meta-Tests Part 1** - 5 files, 0 issues
 - **Chunk 6: Meta-Tests Part 2** - 5 files, 0 issues
@@ -427,5 +356,5 @@ The meta-test infrastructure is exemplary and should serve as a model for regula
 **Report Generated:** 2026-01-02
 **Review Scope:** Structural compliance with `kivy_garden/markdownlabel/tests/TESTING.md`
 **Total Files Reviewed:** 38
-**Total Issues Identified:** 26
-**Overall Compliance:** 55.3%
+**Total Issues Identified:** 20
+**Overall Compliance:** 73.7%
