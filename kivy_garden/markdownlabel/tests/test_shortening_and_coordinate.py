@@ -1,12 +1,19 @@
 """
 Property-based tests for text shortening and coordinate translation features.
 
-This module contains tests for:
-- Text shortening property forwarding (shorten, shorten_from, split_str, max_lines, ellipsis_options)
-- Coordinate translation for refs and anchors
+This module contains tests for label compatibility features including text shortening
+property forwarding and coordinate translation for refs and anchors, covering:
 
-These tests verify that MarkdownLabel correctly implements text shortening
-properties and coordinate translation while maintaining proper Markdown rendering.
+- Text shortening property forwarding (shorten, shorten_from, split_str, max_lines, ellipsis_options)
+  to all child Labels across different markdown structures (paragraphs, headings, lists, tables)
+- Coordinate translation for refs (link bounding boxes) and anchors from child Labels
+  to MarkdownLabel's local coordinate space
+- Deterministic coordinate translation tests with injected geometry for headless CI environments
+- Property-based tests using Hypothesis for universal behavior verification
+
+These tests verify that MarkdownLabel correctly implements text shortening properties
+and coordinate translation while maintaining proper Markdown rendering, ensuring that
+links and anchors are properly positioned in the widget tree.
 """
 
 import pytest

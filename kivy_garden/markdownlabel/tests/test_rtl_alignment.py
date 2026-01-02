@@ -1,8 +1,9 @@
 """
 Property-based tests for RTL-aware auto alignment in MarkdownLabel.
 
-Tests verify that the MarkdownLabel correctly handles RTL text direction
-and auto alignment behavior.
+This module contains tests for RTL alignment behavior in MarkdownLabel,
+including auto alignment respecting base_direction, direction change updates,
+and explicit alignment overriding auto behavior.
 """
 
 import pytest
