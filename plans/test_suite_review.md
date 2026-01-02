@@ -305,20 +305,20 @@ The test suite demonstrates strong compliance in meta-tests and test utilities (
 ### Phase 3: Minor Issues (Medium Priority)
 
 1. **Add complete module docstring** - [`test_clipping_behavior.py`](kivy_garden/markdownlabel/tests/test_clipping_behavior.py)
-   - Add comprehensive module-level docstring
-   - Estimated effort: 0.5 hours
+    - Add comprehensive module-level docstring
+    - Estimated effort: 0.5 hours
 
-5. **Add complete module docstring** - [`test_texture_render_mode.py`](kivy_garden/markdownlabel/tests/test_texture_render_mode.py)
-   - Add comprehensive module-level docstring
-   - Estimated effort: 0.5 hours
+2. **Add complete module docstring** - [`test_texture_render_mode.py`](kivy_garden/markdownlabel/tests/test_texture_render_mode.py)
+    - Add comprehensive module-level docstring
+    - Estimated effort: 0.5 hours
 
-6. **Add complete module docstring** - [`test_rtl_alignment.py`](kivy_garden/markdownlabel/tests/test_rtl_alignment.py)
-   - Add comprehensive module-level docstring
-   - Estimated effort: 0.5 hours
+3. **Add complete module docstring** - [`test_rtl_alignment.py`](kivy_garden/markdownlabel/tests/test_rtl_alignment.py)
+    - Add comprehensive module-level docstring
+    - Estimated effort: 0.5 hours
 
-7. **Add complete module docstring** - [`test_shortening_and_coordinate.py`](kivy_garden/markdownlabel/tests/test_shortening_and_coordinate.py)
-   - Add comprehensive module-level docstring
-   - Estimated effort: 0.5 hours
+4. **Add complete module docstring** - [`test_shortening_and_coordinate.py`](kivy_garden/markdownlabel/tests/test_shortening_and_coordinate.py)
+    - Add comprehensive module-level docstring
+    - Estimated effort: 0.5 hours
 
 **Total Phase 3 Estimated Effort:** 2 hours
 
