@@ -4,24 +4,24 @@
 
 This report presents the comprehensive findings from a structural review of the MarkdownLabel test suite, comprising 38 test files evaluated for compliance with `kivy_garden/markdownlabel/tests/TESTING.md`. The review assessed test organization, naming conventions, marker usage, property-based testing practices, and adherence to testing best practices.
 
-**Overall Compliance: 73.7%** (28 of 38 files fully compliant)
+**Overall Compliance: 78.9%** (30 of 38 files fully compliant)
 
-The test suite demonstrates strong compliance in meta-tests and test utilities (100% compliant), but regular tests show some violations, particularly in property-based testing optimization. Critical issues require immediate attention to ensure test reliability and maintainability.
+The test suite demonstrates strong compliance in meta-tests and test utilities (100% compliant), but regular tests show some violations, particularly in property-based testing optimization.
 
 ---
 
 ## Overall Statistics
 
 - **Total files reviewed:** 38
-- **Files with critical issues:** 2
+- **Files with critical issues:** 0
 - **Files with major issues:** 6
 - **Files with minor issues:** 10
-- **Files without issues:** 23
-- **Overall compliance:** 73.7%
+- **Files without issues:** 25
+- **Overall compliance:** 78.9%
 
 ### Issue Breakdown by Severity
 
-- **Critical:** 2 issues
+- **Critical:** 0 issues
 - **Major:** 6 issues
 - **Minor:** 12 issues
 - **Suggestions:** 0 issues
@@ -31,14 +31,14 @@ The test suite demonstrates strong compliance in meta-tests and test utilities (
 | Chunk | Files | Critical | Major | Minor | Total |
 |-------|-------|----------|--------|-------|-------|
 | Chunk 1: Core Functionality | 5 | 0 | 1 | 2 | 3 |
-| Chunk 2: Property Tests | 5 | 1 | 3 | 4 | 8 |
-| Chunk 3: Advanced Features | 5 | 1 | 2 | 2 | 5 |
+| Chunk 2: Property Tests | 5 | 0 | 3 | 4 | 7 |
+| Chunk 3: Advanced Features | 5 | 0 | 2 | 2 | 4 |
 | Chunk 4: Behavior Tests | 5 | 0 | 0 | 4 | 4 |
 | Chunk 5: Test Utilities | 5 | 0 | 0 | 0 | 0 |
 | Chunk 6: Meta-Tests Part 2 | 5 | 0 | 0 | 0 | 0 |
 | Chunk 7: Meta-Tests Part 3 | 5 | 0 | 0 | 0 | 0 |
 | Chunk 8: Meta-Tests Part 4 | 3 | 0 | 0 | 0 | 0 |
-| **Total** | **38** | **2** | **6** | **12** | **20** |
+| **Total** | **38** | **0** | **6** | **12** | **18** |
 
 ---
 
@@ -65,13 +65,6 @@ The test suite demonstrates strong compliance in meta-tests and test utilities (
   - [`test_sizing_behavior.py`](kivy_garden/markdownlabel/tests/test_sizing_behavior.py)
 - **Impact:** Property-based tests lack `@pytest.mark.property` markers, making it impossible to selectively run property-based tests using `pytest -m property` or skip them with `pytest -m "not property"`. This reduces test organization and makes CI/CD pipeline categorization difficult.
 
-### 3. Testing Private Implementation Details
-- **Frequency:** 2 occurrences (Critical)
-- **Affected files:**
-  - [`test_rebuild_scheduling.py`](kivy_garden/markdownlabel/tests/test_rebuild_scheduling.py)
-  - [`test_rebuild_semantics.py`](kivy_garden/markdownlabel/tests/test_rebuild_semantics.py)
-- **Impact:** Tests break when internal implementation changes, making them brittle and requiring frequent updates. Tests should focus on public API behavior, not internal mechanisms.
-
 ### 4. Incomplete Module Docstrings
 - **Frequency:** 4 occurrences (Minor)
 - **Affected files:**
@@ -80,20 +73,6 @@ The test suite demonstrates strong compliance in meta-tests and test utilities (
   - [`test_rtl_alignment.py`](kivy_garden/markdownlabel/tests/test_rtl_alignment.py)
   - [`test_shortening_and_coordinate.py`](kivy_garden/markdownlabel/tests/test_shortening_and_coordinate.py)
 - **Impact:** Reduces test documentation quality and makes it harder for developers to understand test purposes and coverage.
-
----
-
-## Critical Issues Summary
-
-### test_rebuild_scheduling.py
-- **Issue:** Testing private implementation details (testing `_trigger_rebuild` method)
-- **Location:** Multiple test functions
-- **Recommendation:** Refactor tests to focus on public API behavior rather than internal scheduling mechanisms
-
-### test_rebuild_semantics.py
-- **Issue:** Testing private implementation details (testing internal rebuild behavior)
-- **Location:** Multiple test functions
-- **Recommendation:** Refactor tests to focus on observable behavior rather than internal semantics
 
 ---
 
@@ -162,11 +141,6 @@ The test suite demonstrates strong compliance in meta-tests and test utilities (
    - Include overview of what is tested and key testing approaches
    - Reference relevant documentation or specifications
 
-2. **Avoid Testing Private Implementation**
-   - Refactor tests to focus on public API behavior
-   - Use black-box testing approaches where possible
-   - This makes tests more resilient to implementation changes
-
 3. **Document Test Intent**
    - Use clear comments to explain complex test scenarios
    - Document why certain edge cases are being tested
@@ -176,19 +150,7 @@ The test suite demonstrates strong compliance in meta-tests and test utilities (
 
 ## Prioritized Action Plan
 
-### Phase 1: Critical Issues (Immediate Action)
-
-1. **Refactor tests to avoid testing private implementation** - [`test_rebuild_scheduling.py`](kivy_garden/markdownlabel/tests/test_rebuild_scheduling.py)
-   - Refactor tests to focus on public API behavior rather than internal scheduling mechanisms
-   - Estimated effort: 3 hours
-
-2. **Refactor tests to avoid testing private implementation** - [`test_rebuild_semantics.py`](kivy_garden/markdownlabel/tests/test_rebuild_semantics.py)
-   - Refactor tests to focus on observable behavior rather than internal semantics
-   - Estimated effort: 3 hours
-
-**Total Phase 1 Estimated Effort:** 6 hours
-
-### Phase 2: Major Issues (High Priority)
+### Phase 1: Major Issues (High Priority)
 
 1. **Standardize max_examples values** - [`test_inline_renderer.py`](kivy_garden/markdownlabel/tests/test_inline_renderer.py)
    - Review and standardize max_examples across all property-based tests
@@ -235,9 +197,9 @@ The test suite demonstrates strong compliance in meta-tests and test utilities (
       - Add `@pytest.mark.property` markers to all property-based tests lacking them
       - Estimated effort: 0.5 hours
 
-**Total Phase 2 Estimated Effort:** 6.5 hours
+**Total Phase 1 Estimated Effort:** 6.5 hours
 
-### Phase 3: Minor Issues (Medium Priority)
+### Phase 2: Minor Issues (Medium Priority)
 
 1. **Add complete module docstring** - [`test_clipping_behavior.py`](kivy_garden/markdownlabel/tests/test_clipping_behavior.py)
      - Add comprehensive module-level docstring
@@ -255,9 +217,9 @@ The test suite demonstrates strong compliance in meta-tests and test utilities (
      - Add comprehensive module-level docstring
      - Estimated effort: 0.5 hours
 
-**Total Phase 3 Estimated Effort:** 2 hours
+**Total Phase 2 Estimated Effort:** 2 hours
 
-### Phase 4: Suggestions (Low Priority)
+### Phase 3: Suggestions (Low Priority)
 
 1. **Extract shared Hypothesis strategies to conftest.py**
    - Identify common strategies across test files
@@ -274,9 +236,9 @@ The test suite demonstrates strong compliance in meta-tests and test utilities (
    - Prioritize adding tests for critical functionality
    - Estimated effort: 6 hours
 
-**Total Phase 4 Estimated Effort:** 12 hours
+**Total Phase 3 Estimated Effort:** 12 hours
 
-**Total Estimated Effort:** 26.5 hours (approximately 3.5 work days)
+**Total Estimated Effort:** 20.5 hours (approximately 2.5 work days)
 
 ---
 
@@ -316,35 +278,29 @@ The test suite demonstrates strong compliance in meta-tests and test utilities (
    - Non-standard pytest markers reduce discoverability
    - Could benefit from better test grouping and organization
 
-3. **Test Maintainability**
-   - Some tests focus on private implementation details
-   - Need to focus more on black-box testing approaches
-
 ---
 
 ## Conclusion
 
-The MarkdownLabel test suite demonstrates a strong foundation with comprehensive coverage and excellent meta-test infrastructure. The 73.7% overall compliance rate reflects room for improvement in regular tests, particularly around property-based testing optimization.
-
-**Immediate Action Required:** The 2 critical issues involving testing private implementation details must be addressed to ensure test reliability and maintainability. These violations make tests brittle and susceptible to breaking when internal implementation changes.
+The MarkdownLabel test suite demonstrates a strong foundation with comprehensive coverage and excellent meta-test infrastructure. The 78.9% overall compliance rate reflects room for improvement in regular tests, particularly around property-based testing optimization.
 
 **High Priority:** Standardizing property-based testing practices, particularly `max_examples` values and strategy usage, will improve test effectiveness and execution time.
 
 **Medium Priority:** Improving test organization through standard markers and complete documentation will enhance test suite maintainability and developer experience.
 
-**Long-term:** Extracting shared strategies and focusing on black-box testing approaches will create a more robust and maintainable test suite.
+**Long-term:** Extracting shared strategies will create a more robust and maintainable test suite.
 
 The meta-test infrastructure is exemplary and should serve as a model for regular test organization. By addressing the identified issues systematically, the test suite can achieve higher compliance and better serve its purpose of ensuring code quality and reliability.
 
-**Recommendation:** Prioritize Phase 1 (Critical Issues) immediately, followed by Phase 2 (Major Issues) within the next sprint. Phases 3 and 4 can be addressed as part of ongoing test maintenance and improvement efforts.
+**Recommendation:** Prioritize Phase 1 (Major Issues) within the next sprint. Phases 2 and 3 can be addressed as part of ongoing test maintenance and improvement efforts.
 
 ---
 
 ## Appendix: Detailed Chunk Reports
 
 - **Chunk 1: Core Functionality Tests** - 5 files, 3 issues (0 Critical, 1 Major, 2 Minor)
-- **Chunk 2: Property Tests - Font & Color** - 5 files, 8 issues (1 Critical, 3 Major, 4 Minor)
-- **Chunk 3: Advanced Features & Compatibility** - 5 files, 5 issues (1 Critical, 2 Major, 2 Minor)
+- **Chunk 2: Property Tests - Font & Color** - 5 files, 7 issues (0 Critical, 3 Major, 4 Minor)
+- **Chunk 3: Advanced Features & Compatibility** - 5 files, 4 issues (0 Critical, 2 Major, 2 Minor)
 - **Chunk 4: Behavior Tests** - 5 files, 4 issues (0 Critical, 0 Major, 4 Minor)
 - **Chunk 5: Test Utilities & Meta-Tests Part 1** - 5 files, 0 issues
 - **Chunk 6: Meta-Tests Part 2** - 5 files, 0 issues
@@ -356,5 +312,5 @@ The meta-test infrastructure is exemplary and should serve as a model for regula
 **Report Generated:** 2026-01-02
 **Review Scope:** Structural compliance with `kivy_garden/markdownlabel/tests/TESTING.md`
 **Total Files Reviewed:** 38
-**Total Issues Identified:** 20
-**Overall Compliance:** 73.7%
+**Total Issues Identified:** 18
+**Overall Compliance:** 78.9%
