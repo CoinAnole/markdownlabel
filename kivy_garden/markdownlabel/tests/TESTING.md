@@ -8,6 +8,7 @@ This document provides comprehensive guidelines for writing, organizing, and mai
 - [Test Naming Conventions](#test-naming-conventions)
 - [Test Types and Markers](#test-types-and-markers)
 - [Rebuild Contract Testing](#rebuild-contract-testing)
+  - [Using `force_rebuild()` in Tests](#using-force_rebuild-in-tests)
 - [Property-Based Testing](#property-based-testing)
 - [Property-Based Testing Optimization](#property-based-testing-optimization)
 - [When to Use Hypothesis vs. @pytest.mark.parametrize](#when-to-use-hypothesis-vs-pytestmarkparametrize)
@@ -271,6 +272,106 @@ def assert_rebuild_occurred(widget, change_func):
     
 def assert_no_rebuild(widget, change_func):
     """Assert that a change function does NOT trigger a rebuild."""
+```
+
+### Using `force_rebuild()` in Tests
+
+MarkdownLabel uses **deferred rebuilds** via `Clock.create_trigger` for performance optimization. This means property changes don't rebuild the widget tree synchronously — they schedule a rebuild for the next frame.
+
+For testing, this creates a challenge: tests need deterministic, synchronous behavior to verify rebuild outcomes immediately.
+
+#### The `force_rebuild()` Method
+
+`force_rebuild()` is a **public API method** specifically designed for scenarios requiring immediate synchronous updates, including testing:
+
+```python
+def force_rebuild(self):
+    """Force an immediate synchronous rebuild.
+    
+    This is useful in scenarios where:
+    - You need to query widget properties immediately after changes
+    - You're performing measurements that depend on the rebuilt tree
+    - You need deterministic timing for testing
+    """
+```
+
+#### When to Use `force_rebuild()` in Tests
+
+Use `force_rebuild()` when testing structure property changes that trigger deferred rebuilds:
+
+```python
+def test_font_name_change_triggers_rebuild(self):
+    """Test that changing font_name triggers widget rebuild."""
+    label = MarkdownLabel(text='Hello World', font_name='Roboto')
+    
+    # Collect widget IDs before change
+    ids_before = collect_widget_ids(label)
+    
+    # Change structure property (schedules deferred rebuild)
+    label.font_name = 'Roboto-Bold'
+    
+    # Force immediate rebuild for deterministic testing
+    label.force_rebuild()
+    
+    # Now we can verify the rebuild occurred
+    ids_after = collect_widget_ids(label)
+    assert ids_before != ids_after, "Widget tree should rebuild"
+    
+    # Verify the new value is applied
+    labels = find_labels_recursive(label)
+    assert all(l.font_name == 'Roboto-Bold' for l in labels)
+```
+
+#### When NOT to Use `force_rebuild()`
+
+Don't use `force_rebuild()` when:
+
+1. **Testing style-only properties** — These update widgets in place without rebuilding, so no `force_rebuild()` is needed:
+   ```python
+   def test_color_updates_immediately(self):
+       label = MarkdownLabel(text='Hello')
+       label.color = [1, 0, 0, 1]  # Style-only, updates immediately
+       # No force_rebuild() needed
+       labels = find_labels_recursive(label)
+       assert all(l.color == [1, 0, 0, 1] for l in labels)
+   ```
+
+2. **Testing the deferred rebuild mechanism itself** — When verifying that rebuilds are properly deferred, check `_pending_rebuild` before calling `force_rebuild()`:
+   ```python
+   def test_text_change_schedules_deferred_rebuild(self):
+       label = MarkdownLabel(text='Initial')
+       label.text = 'Changed'
+       
+       # Verify rebuild is pending (deferred, not immediate)
+       assert label._pending_rebuild is True
+       
+       # Now force it to verify the rebuild works
+       label.force_rebuild()
+       assert label._pending_rebuild is False
+   ```
+
+#### Common Pattern for Rebuild Tests
+
+```python
+# 1. Create widget with initial state
+label = MarkdownLabel(text='Test', property=initial_value)
+
+# 2. Capture widget IDs before change
+ids_before = collect_widget_ids(label)
+
+# 3. Change the property (schedules deferred rebuild)
+label.property = new_value
+
+# 4. Force immediate rebuild for test determinism
+label.force_rebuild()
+
+# 5. Capture widget IDs after change
+ids_after = collect_widget_ids(label)
+
+# 6. Assert rebuild occurred (or didn't, for style-only properties)
+assert ids_before != ids_after  # For structure properties
+# OR
+assert ids_before == ids_after  # For style-only properties
 ```
 
 ## Property-Based Testing
