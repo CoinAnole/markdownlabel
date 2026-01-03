@@ -27,9 +27,10 @@ from .test_utils import (
     find_labels_recursive,
     find_labels_with_refs,
     find_labels_with_ref_markup,
-    get_widget_offset
+    get_widget_offset,
+    st_alphanumeric_text,
+    st_rgba_color
 )
-from .conftest import st_alphanumeric_text, st_rgba_color
 
 
 # **Feature: label-compatibility, Property 4: Text Shortening Property Forwarding**

@@ -12,9 +12,12 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label import Label
 
 from kivy_garden.markdownlabel import MarkdownLabel
-from .conftest import st_alphanumeric_text
 from .test_utils import (
-    markdown_heading, markdown_paragraph, markdown_link, simple_markdown_document
+    markdown_heading,
+    markdown_paragraph,
+    markdown_link,
+    simple_markdown_document,
+    st_alphanumeric_text
 )
 
 

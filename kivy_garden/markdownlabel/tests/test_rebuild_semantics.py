@@ -15,10 +15,15 @@ from hypothesis import given, strategies as st, settings, assume
 
 from kivy_garden.markdownlabel import MarkdownLabel
 from .test_utils import (
-    simple_markdown_document, find_labels_recursive,
-    colors_equal, floats_equal, collect_widget_ids
+    simple_markdown_document,
+    find_labels_recursive,
+    colors_equal,
+    floats_equal,
+    collect_widget_ids,
+    st_font_size,
+    st_font_name,
+    st_rgba_color
 )
-from .conftest import st_font_size, st_font_name, st_rgba_color
 
 
 # Style Properties for Testing
