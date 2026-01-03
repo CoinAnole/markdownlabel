@@ -9,6 +9,7 @@ import pytest
 from hypothesis import given, strategies as st, settings, assume
 
 from kivy_garden.markdownlabel import MarkdownLabel
+from .conftest import st_alphanumeric_text, st_rgba_color
 from .test_utils import simple_markdown_document
 
 
@@ -132,7 +133,8 @@ class TestNoOpPropertiesAcceptance:
         assert label.markup == value
 
     @given(st.booleans(), st.booleans(), st.booleans(), st.booleans(), st.booleans())
-    # Small finite strategy: 32 examples (input space size: 32)
+    # 2 × 2 × 2 × 2 × 2 = 32 combinations
+    # Use 32 examples for full coverage
     @settings(max_examples=32, deadline=None)
     def test_all_noop_properties_together(self, bold, italic, underline, strikethrough, markup):
         """Setting all no-op properties together does not raise an exception."""
@@ -251,10 +253,7 @@ class TestNoOpPropertyAcceptanceAndStorage:
         label = MarkdownLabel(text='# Hello World', outline_width=value)
         assert label.outline_width == value
 
-    @given(st.lists(
-        st.floats(min_value=0.0, max_value=1.0, allow_nan=False, allow_infinity=False),
-        min_size=4, max_size=4
-    ))
+    @given(st_rgba_color())
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_outline_color_property_accepted_and_stored(self, value):
@@ -263,10 +262,7 @@ class TestNoOpPropertyAcceptanceAndStorage:
         # Compare colors with tolerance for floating point differences
         assert all(abs(a - b) < 0.001 for a, b in zip(label.outline_color, value))
 
-    @given(st.one_of(st.none(), st.text(min_size=1, max_size=10, alphabet=st.characters(
-        whitelist_categories=['L', 'N'],
-        blacklist_characters='\n\r'
-    ))))
+    @given(st.one_of(st.none(), st_alphanumeric_text(min_size=1, max_size=10)))
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_text_language_property_accepted_and_stored(self, value):
@@ -281,9 +277,7 @@ class TestNoOpPropertyAcceptanceAndStorage:
         assert label.base_direction == value
 
     @given(st.dictionaries(
-        st.text(min_size=1, max_size=10, alphabet=st.characters(
-            whitelist_categories=['L', 'N']
-        )),
+        st_alphanumeric_text(min_size=1, max_size=10),
         st.one_of(st.booleans(), st.integers(), st.text(max_size=20))
     ))
     # Complex strategy: 20 examples (adequate coverage)
@@ -294,7 +288,7 @@ class TestNoOpPropertyAcceptanceAndStorage:
         assert label.ellipsis_options == value
 
     @given(st.booleans(), st.floats(min_value=0, max_value=10),
-           st.lists(st.floats(min_value=0.0, max_value=1.0), min_size=4, max_size=4),
+           st_rgba_color(),
            st.one_of(st.none(), st.text(min_size=1, max_size=5)),
            st.sampled_from([None, 'ltr', 'rtl', 'weak_ltr', 'weak_rtl']),
            st.dictionaries(st.text(min_size=1, max_size=5), st.booleans(), max_size=3))
@@ -339,10 +333,7 @@ class TestNoOpPropertyAcceptanceAndStorage:
         label.outline_width = value
         assert label.outline_width == value
 
-    @given(st.lists(
-        st.floats(min_value=0.0, max_value=1.0, allow_nan=False, allow_infinity=False),
-        min_size=4, max_size=4
-    ))
+    @given(st_rgba_color())
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_outline_color_property_change_after_creation(self, value):
@@ -351,10 +342,7 @@ class TestNoOpPropertyAcceptanceAndStorage:
         label.outline_color = value
         assert all(abs(a - b) < 0.001 for a, b in zip(label.outline_color, value))
 
-    @given(st.one_of(st.none(), st.text(min_size=1, max_size=10, alphabet=st.characters(
-        whitelist_categories=['L', 'N'],
-        blacklist_characters='\n\r'
-    ))))
+    @given(st.one_of(st.none(), st_alphanumeric_text(min_size=1, max_size=10)))
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_text_language_property_change_after_creation(self, value):
@@ -371,9 +359,7 @@ class TestNoOpPropertyAcceptanceAndStorage:
         assert label.base_direction == value
 
     @given(st.dictionaries(
-        st.text(min_size=1, max_size=10, alphabet=st.characters(
-            whitelist_categories=['L', 'N']
-        )),
+        st_alphanumeric_text(min_size=1, max_size=10),
         st.one_of(st.booleans(), st.integers(), st.text(max_size=20))
     ))
     # Complex strategy: 20 examples (adequate coverage)
@@ -385,7 +371,7 @@ class TestNoOpPropertyAcceptanceAndStorage:
         assert label.ellipsis_options == value
 
     @given(st.booleans(), st.floats(min_value=0, max_value=10),
-           st.lists(st.floats(min_value=0.0, max_value=1.0), min_size=4, max_size=4),
+           st_rgba_color(),
            st.one_of(st.none(), st.text(min_size=1, max_size=5)),
            st.sampled_from([None, 'ltr', 'rtl', 'weak_ltr', 'weak_rtl']),
            st.dictionaries(st.text(min_size=1, max_size=5), st.booleans(), max_size=3),

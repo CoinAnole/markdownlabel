@@ -5,6 +5,7 @@ Tests verify that padding-related properties (padding, text_padding, label_paddi
 work correctly and are properly forwarded to child widgets.
 """
 
+import pytest
 from hypothesis import given, strategies as st, settings, assume
 
 from kivy_garden.markdownlabel import MarkdownLabel
@@ -27,6 +28,7 @@ from .test_utils import (
 class TestPaddingApplication:
     """Property tests for padding application (Property 7)."""
 
+    @pytest.mark.property
     @given(padding_single)
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -44,6 +46,7 @@ class TestPaddingApplication:
             assert abs(actual - exp) < 0.001, \
                 f"Padding[{i}]: expected {exp}, got {actual}"
 
+    @pytest.mark.property
     @given(padding_two)
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -62,6 +65,7 @@ class TestPaddingApplication:
             assert abs(actual - exp) < 0.001, \
                 f"Padding[{i}]: expected {exp}, got {actual}"
 
+    @pytest.mark.property
     @given(padding_four)
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -76,6 +80,7 @@ class TestPaddingApplication:
             assert abs(actual - exp) < 0.001, \
                 f"Padding[{i}]: expected {exp}, got {actual}"
 
+    @pytest.mark.property
     @given(padding_four)
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -90,6 +95,7 @@ class TestPaddingApplication:
             assert abs(actual - exp) < 0.001, \
                 f"Padding[{i}]: expected {exp}, got {actual}"
 
+    @pytest.mark.property
     @given(padding_four, padding_four)
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -132,6 +138,7 @@ class TestPaddingApplication:
 class TestPaddingForwarding:
     """Property tests for padding forwarding (Property 4)."""
 
+    @pytest.mark.property
     @given(text_padding_strategy)
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -147,6 +154,7 @@ class TestPaddingForwarding:
             assert padding_equal(list(lbl.padding), padding), \
                 f"Expected padding={padding}, got {list(lbl.padding)}"
 
+    @pytest.mark.property
     @given(text_padding_strategy)
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -162,6 +170,7 @@ class TestPaddingForwarding:
             assert padding_equal(list(lbl.padding), padding), \
                 f"Expected padding={padding}, got {list(lbl.padding)}"
 
+    @pytest.mark.property
     @given(text_padding_strategy)
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -178,6 +187,7 @@ class TestPaddingForwarding:
             assert padding_equal(list(lbl.padding), padding), \
                 f"Expected padding={padding}, got {list(lbl.padding)}"
 
+    @pytest.mark.property
     @given(text_padding_strategy)
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -194,6 +204,7 @@ class TestPaddingForwarding:
             assert padding_equal(list(lbl.padding), padding), \
                 f"Expected padding={padding}, got {list(lbl.padding)}"
 
+    @pytest.mark.property
     @given(text_padding_strategy)
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -224,6 +235,7 @@ Regular paragraph
             assert padding_equal(list(lbl.padding), padding), \
                 f"Expected padding={padding}, got {list(lbl.padding)}"
 
+    @pytest.mark.property
     @given(text_padding_strategy, text_padding_strategy)
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -275,6 +287,7 @@ Regular paragraph
 class TestPaddingDynamicUpdates:
     """Property tests for text_padding dynamic updates (Property 5)."""
 
+    @pytest.mark.property
     @given(text_padding_strategy, text_padding_strategy)
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -306,6 +319,7 @@ class TestPaddingDynamicUpdates:
             assert padding_equal(list(lbl.padding), new_padding), \
                 f"After update, expected padding={new_padding}, got {list(lbl.padding)}"
 
+    @pytest.mark.property
     @given(text_padding_strategy, text_padding_strategy)
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -350,6 +364,7 @@ Paragraph with text.
             assert padding_equal(list(lbl.padding), new_padding), \
                 f"After update, expected padding={new_padding}, got {list(lbl.padding)}"
 
+    @pytest.mark.property
     @given(st.integers(min_value=1, max_value=5))
     # Small finite strategy: 5 examples (input space size: 5)
     @settings(max_examples=5, deadline=None)
@@ -377,6 +392,7 @@ Paragraph with text.
 class TestPaddingWithNestedStructures:
     """Property tests for padding with nested structures (Property 6)."""
 
+    @pytest.mark.property
     @given(text_padding_strategy)
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -404,6 +420,7 @@ class TestPaddingWithNestedStructures:
             assert padding_equal(list(lbl.padding), padding), \
                 f"Expected padding={padding}, got {list(lbl.padding)}"
 
+    @pytest.mark.property
     @given(text_padding_strategy)
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -431,6 +448,7 @@ class TestPaddingWithNestedStructures:
             assert padding_equal(list(lbl.padding), padding), \
                 f"Expected padding={padding}, got {list(lbl.padding)}"
 
+    @pytest.mark.property
     @given(text_padding_strategy)
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -457,6 +475,7 @@ class TestPaddingWithNestedStructures:
             assert padding_equal(list(lbl.padding), padding), \
                 f"Expected padding={padding}, got {list(lbl.padding)}"
 
+    @pytest.mark.property
     @given(text_padding_strategy)
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -499,6 +518,7 @@ Final paragraph.
             assert padding_equal(list(lbl.padding), padding), \
                 f"Expected padding={padding}, got {list(lbl.padding)}"
 
+    @pytest.mark.property
     @given(text_padding_strategy)
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -534,6 +554,7 @@ Final paragraph.
 class TestTextPaddingAppliesToChildLabels:
     """Property tests for text_padding applies to child Labels (Property 8)."""
 
+    @pytest.mark.property
     @given(text_padding_strategy)
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -549,6 +570,7 @@ class TestTextPaddingAppliesToChildLabels:
             assert padding_equal(list(lbl.padding), padding), \
                 f"Expected padding={padding}, got {list(lbl.padding)}"
 
+    @pytest.mark.property
     @given(text_padding_strategy)
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -564,6 +586,7 @@ class TestTextPaddingAppliesToChildLabels:
             assert padding_equal(list(lbl.padding), padding), \
                 f"Expected padding={padding}, got {list(lbl.padding)}"
 
+    @pytest.mark.property
     @given(text_padding_strategy)
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -580,6 +603,7 @@ class TestTextPaddingAppliesToChildLabels:
             assert padding_equal(list(lbl.padding), padding), \
                 f"Expected padding={padding}, got {list(lbl.padding)}"
 
+    @pytest.mark.property
     @given(text_padding_strategy)
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -605,6 +629,7 @@ class TestTextPaddingAppliesToChildLabels:
 class TestPaddingAppliesToContainer:
     """Property tests for padding applies to container (Property 9)."""
 
+    @pytest.mark.property
     @given(text_padding_strategy)
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -625,6 +650,7 @@ class TestPaddingAppliesToContainer:
             assert padding_equal(list(lbl.padding), [0, 0, 0, 0]), \
                 f"Expected child Label padding=[0, 0, 0, 0], got {list(lbl.padding)}"
 
+    @pytest.mark.property
     @given(text_padding_strategy, text_padding_strategy)
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -650,6 +676,7 @@ class TestPaddingAppliesToContainer:
             assert padding_equal(list(lbl.padding), text_padding), \
                 f"Expected child Label padding={text_padding}, got {list(lbl.padding)}"
 
+    @pytest.mark.property
     @given(text_padding_strategy)
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -683,6 +710,7 @@ class TestPaddingAppliesToContainer:
 class TestLabelPaddingAliasSynchronization:
     """Property tests for label_padding alias synchronization (Property 10)."""
 
+    @pytest.mark.property
     @given(text_padding_strategy)
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -697,6 +725,7 @@ class TestLabelPaddingAliasSynchronization:
         assert padding_equal(list(label.text_padding), padding), \
             f"Expected text_padding={padding}, got {list(label.text_padding)}"
 
+    @pytest.mark.property
     @given(text_padding_strategy)
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -708,6 +737,7 @@ class TestLabelPaddingAliasSynchronization:
         assert padding_equal(list(label.label_padding), padding), \
             f"Expected label_padding={padding}, got {list(label.label_padding)}"
 
+    @pytest.mark.property
     @given(text_padding_strategy)
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -722,6 +752,7 @@ class TestLabelPaddingAliasSynchronization:
         assert padding_equal(list(label.label_padding), padding), \
             f"Expected label_padding={padding}, got {list(label.label_padding)}"
 
+    @pytest.mark.property
     @given(text_padding_strategy, text_padding_strategy)
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)

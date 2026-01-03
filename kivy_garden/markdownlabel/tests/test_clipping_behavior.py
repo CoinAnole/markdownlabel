@@ -1,9 +1,11 @@
 """
 Clipping behavior tests for MarkdownLabel.
 
-This module focuses on verifying that MarkdownLabel:
-- wraps content in a clipping container when height-constrained
-- does not clip content when unconstrained
+This module contains tests for content clipping behavior in MarkdownLabel,
+including verification that content is wrapped in a StencilView clipping container
+when height-constrained and that content expands naturally when unconstrained.
+Tests cover both property-based testing with Hypothesis and unit tests for
+specific clipping scenarios.
 """
 
 

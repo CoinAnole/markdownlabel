@@ -12,6 +12,7 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label import Label
 
 from kivy_garden.markdownlabel import MarkdownLabel
+from .conftest import st_alphanumeric_text
 from .test_utils import (
     markdown_heading, markdown_paragraph, markdown_link, simple_markdown_document
 )
@@ -227,10 +228,7 @@ class TestMarkdownLinkRendering:
             f"Expected to find [ref=...][/ref] markup in children for: {link_markdown!r}"
 
     @pytest.mark.needs_window
-    @given(st.text(min_size=1, max_size=20, alphabet=st.characters(
-        whitelist_categories=['L', 'N'],
-        blacklist_characters='[]()&\n\r'
-    )))
+    @given(st_alphanumeric_text(min_size=1, max_size=20))
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_link_url_in_ref_tag(self, link_text):

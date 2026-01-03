@@ -118,11 +118,10 @@ def simple_markdown_document(draw):
     return '\n\n'.join(elements) if elements else 'Default text'
 
 
-# Strategy for generating valid RGBA colors
-color_strategy = st.lists(
-    st.floats(min_value=0.0, max_value=1.0, allow_nan=False, allow_infinity=False),
-    min_size=4, max_size=4
-)
+# Strategy for generating valid RGBA colors (from conftest)
+from .conftest import st_rgba_color
+# Convert tuples to lists for backward compatibility
+color_strategy = st_rgba_color().map(list)
 
 # Strategy for generating valid padding values
 text_padding_strategy = st.lists(
