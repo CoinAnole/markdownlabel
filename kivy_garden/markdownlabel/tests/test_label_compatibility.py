@@ -9,8 +9,11 @@ import pytest
 from hypothesis import given, strategies as st, settings, assume
 
 from kivy_garden.markdownlabel import MarkdownLabel
-from .conftest import st_alphanumeric_text, st_rgba_color
-from .test_utils import simple_markdown_document
+from .test_utils import (
+    simple_markdown_document,
+    st_alphanumeric_text,
+    st_rgba_color
+)
 
 
 # **Feature: label-compatibility, Property 1: font_size/base_font_size Alias Bidirectionality**

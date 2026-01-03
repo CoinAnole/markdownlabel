@@ -17,9 +17,10 @@ from .test_utils import (
     simple_markdown_document,
     find_labels_recursive,
     floats_equal,
-    collect_widget_ids
+    collect_widget_ids,
+    st_alphanumeric_text,
+    st_font_size
 )
-from .conftest import st_alphanumeric_text, st_font_size
 
 
 # Strategy for generating valid line_height values

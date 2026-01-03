@@ -10,10 +10,11 @@ import pytest
 from hypothesis import given, strategies as st, settings, assume
 
 from kivy_garden.markdownlabel import MarkdownLabel
-from .conftest import st_font_size, st_rgba_color
 from .test_utils import (
     find_labels_recursive,
-    collect_widget_ids
+    collect_widget_ids,
+    st_font_size,
+    st_rgba_color
 )
 
 

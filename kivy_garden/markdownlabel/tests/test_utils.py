@@ -39,6 +39,70 @@ KIVY_FONTS = ['Roboto', 'Roboto-Bold', 'Roboto-Italic', 'RobotoMono-Regular']
 
 # Hypothesis Strategies
 
+def st_alphanumeric_text(min_size=1, max_size=30):
+    """Strategy for generating alphanumeric text without markdown characters.
+
+    Args:
+        min_size: Minimum text length (default: 1)
+        max_size: Maximum text length (default: 30)
+
+    Returns:
+        Strategy that generates text with only letters and numbers,
+        excluding markdown special characters (#[]&\n\r).
+    """
+    return st.text(
+        min_size=min_size,
+        max_size=max_size,
+        alphabet=st.characters(
+            whitelist_categories=['L', 'N'],
+            blacklist_characters='#[]&\n\r'
+        )
+    )
+
+
+def st_font_size(min_value=8, max_value=48):
+    """Strategy for generating font size floats.
+
+    Args:
+        min_value: Minimum font size (default: 8)
+        max_value: Maximum font size (default: 48)
+
+    Returns:
+        Strategy that generates floats in the specified range.
+    """
+    return st.floats(min_value=min_value, max_value=max_value,
+                     allow_nan=False, allow_infinity=False)
+
+
+def st_font_name(fonts=None):
+    """Strategy for generating font names.
+
+    Args:
+        fonts: List of font names to sample from. If None, uses default fonts.
+
+    Returns:
+        Strategy that samples from font names.
+    """
+    if fonts is None:
+        fonts = ['Roboto', 'RobotoMono-Regular', 'Roboto-Bold']
+    return st.sampled_from(fonts)
+
+
+def st_rgba_color():
+    """Strategy for generating RGBA color tuples.
+
+    Returns:
+        Strategy that generates 4-tuples of floats in the range [0, 1],
+        representing red, green, blue, and alpha channels.
+    """
+    return st.tuples(
+        st.floats(min_value=0, max_value=1, allow_nan=False, allow_infinity=False),
+        st.floats(min_value=0, max_value=1, allow_nan=False, allow_infinity=False),
+        st.floats(min_value=0, max_value=1, allow_nan=False, allow_infinity=False),
+        st.floats(min_value=0, max_value=1, allow_nan=False, allow_infinity=False)
+    )
+
+
 @st.composite
 def markdown_heading(draw):
     """Generate a Markdown heading."""
@@ -118,8 +182,7 @@ def simple_markdown_document(draw):
     return '\n\n'.join(elements) if elements else 'Default text'
 
 
-# Strategy for generating valid RGBA colors (from conftest)
-from .conftest import st_rgba_color
+# Strategy for generating valid RGBA colors
 # Convert tuples to lists for backward compatibility
 color_strategy = st_rgba_color().map(list)
 
