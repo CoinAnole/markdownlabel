@@ -312,6 +312,109 @@ class TestMarkdownRoundTripSerialization:
         assert ast1 == ast2, \
             f"AST mismatch after round-trip:\nOriginal: {ast1}\nAfter: {ast2}"
 
+    def test_table_alignment_round_trip(self):
+        """Table with alignment round-trips correctly."""
+        markdown = '| Left | Center | Right |\n| :--- | :---: | ---: |\n| 1 | 2 | 3 |'
+
+        label = MarkdownLabel(text=markdown)
+        ast1 = self._normalize_ast(label.get_ast())
+
+        serialized = label.to_markdown()
+
+        # Verify markers are present in serialized output
+        assert ':---' in serialized
+        assert ':---:' in serialized
+        assert '---:' in serialized
+
+        label2 = MarkdownLabel(text=serialized)
+        ast2 = self._normalize_ast(label2.get_ast())
+
+        assert ast1 == ast2, \
+            f"AST mismatch after round-trip:\nOriginal: {ast1}\nAfter: {ast2}"
+
+    def test_inline_code_serialization(self):
+        """Inline code serialization."""
+        markdown = 'Text with `code` included.'
+        
+        label = MarkdownLabel(text=markdown)
+        ast1 = self._normalize_ast(label.get_ast())
+
+        serialized = label.to_markdown()
+        assert '`code`' in serialized
+
+        label2 = MarkdownLabel(text=serialized)
+        ast2 = self._normalize_ast(label2.get_ast())
+
+        assert ast1 == ast2
+
+    def test_strikethrough_serialization(self):
+        """Strikethrough serialization."""
+        markdown = 'Text with ~~strikethrough~~ included.'
+        
+        label = MarkdownLabel(text=markdown)
+        ast1 = self._normalize_ast(label.get_ast())
+
+        serialized = label.to_markdown()
+        assert '~~strikethrough~~' in serialized
+
+        label2 = MarkdownLabel(text=serialized)
+        ast2 = self._normalize_ast(label2.get_ast())
+
+        assert ast1 == ast2
+
+    def test_image_serialization(self):
+        """Image serialization."""
+        markdown = '![Alt text](http://example.com/image.png)'
+        
+        label = MarkdownLabel(text=markdown)
+        ast1 = self._normalize_ast(label.get_ast())
+
+        serialized = label.to_markdown()
+        assert '![Alt text](http://example.com/image.png)' in serialized
+
+        label2 = MarkdownLabel(text=serialized)
+        ast2 = self._normalize_ast(label2.get_ast())
+
+        assert ast1 == ast2
+
+    def test_softbreak_serialization(self):
+        """Softbreak serialization."""
+        # A parseable softbreak usually requires a newline in the input that doesn't trigger a paragraph break
+        markdown = 'Line 1\nLine 2'
+        
+        label = MarkdownLabel(text=markdown)
+        ast1 = self._normalize_ast(label.get_ast())
+
+        serialized = label.to_markdown()
+        
+        # Softbreak is typically serialized as a space or newline depending on implementation; 
+        # serializer implementation shows it returns ' '
+        # Original input 'Line 1\nLine 2' parses to text 'Line 1', softbreak, text 'Line 2'
+        
+        label2 = MarkdownLabel(text=serialized)
+        ast2 = self._normalize_ast(label2.get_ast())
+
+        # Note: mistune might normalize softbreaks, so exact round trip of whitespace 
+        # isn't always guaranteed, but semantic content should match.
+        # Check if ASTs are equivalent structure-wise
+        assert ast1 == ast2
+
+    def test_hard_linebreak_serialization(self):
+        """Hard linebreak serialization."""
+        # Hard linebreak is two spaces at end of line
+        markdown = 'Line 1  \nLine 2'
+        
+        label = MarkdownLabel(text=markdown)
+        ast1 = self._normalize_ast(label.get_ast())
+
+        serialized = label.to_markdown()
+        assert '  \n' in serialized or '\\\n' in serialized # Check for standard hard break indicators
+
+        label2 = MarkdownLabel(text=serialized)
+        ast2 = self._normalize_ast(label2.get_ast())
+
+        assert ast1 == ast2
+
 
 class TestCodeBlockSerialization:
     """Tests for code block serialization edge cases."""
