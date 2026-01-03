@@ -29,6 +29,7 @@ from .test_utils import (
     find_labels_with_ref_markup,
     get_widget_offset
 )
+from .conftest import st_alphanumeric_text, st_rgba_color
 
 
 # **Feature: label-compatibility, Property 4: Text Shortening Property Forwarding**
@@ -208,7 +209,7 @@ class TestShorteningPropertyForwarding:
                 f"Expected max_lines={max_lines_value}, got {lbl.max_lines}"
 
     @given(st.fixed_dictionaries({
-        'markup_color': st.sampled_from([[1, 0, 0, 1], [0, 1, 0, 1], [0, 0, 1, 1]])
+        'markup_color': st_rgba_color()
     }))
     # Small finite strategy: 3 examples (input space size: 3)
     @settings(max_examples=3, deadline=None)
@@ -224,7 +225,7 @@ class TestShorteningPropertyForwarding:
                 f"Expected ellipsis_options={ellipsis_opts}, got {lbl.ellipsis_options}"
 
     @given(st.fixed_dictionaries({
-        'markup_color': st.sampled_from([[1, 0, 0, 1], [0, 1, 0, 1], [0, 0, 1, 1]])
+        'markup_color': st_rgba_color()
     }))
     # Small finite strategy: 3 examples (input space size: 3)
     @settings(max_examples=3, deadline=None)
@@ -240,7 +241,7 @@ class TestShorteningPropertyForwarding:
                 f"Expected ellipsis_options={ellipsis_opts}, got {lbl.ellipsis_options}"
 
     @given(st.fixed_dictionaries({
-        'markup_color': st.sampled_from([[1, 0, 0, 1], [0, 1, 0, 1], [0, 0, 1, 1]])
+        'markup_color': st_rgba_color()
     }))
     # Small finite strategy: 3 examples (input space size: 3)
     @settings(max_examples=3, deadline=None)
@@ -257,7 +258,7 @@ class TestShorteningPropertyForwarding:
                 f"Expected ellipsis_options={ellipsis_opts}, got {lbl.ellipsis_options}"
 
     @given(st.fixed_dictionaries({
-        'markup_color': st.sampled_from([[1, 0, 0, 1], [0, 1, 0, 1], [0, 0, 1, 1]])
+        'markup_color': st_rgba_color()
     }))
     # Small finite strategy: 3 examples (input space size: 3)
     @settings(max_examples=3, deadline=None)
@@ -365,10 +366,7 @@ Paragraph text
 class TestCoordinateTranslation:
     """Property tests for coordinate translation of refs and anchors (Property 5)."""
 
-    @given(st.text(min_size=1, max_size=20, alphabet=st.characters(
-        whitelist_categories=['L', 'N'],
-        blacklist_characters='[]()&\n\r'
-    )))
+    @given(st_alphanumeric_text(min_size=1, max_size=20))
     # Combination strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_link_produces_ref_markup_for_translation(self, link_text):
@@ -400,10 +398,7 @@ class TestCoordinateTranslation:
             f"Expected [ref={url}] in Label markup"
 
     @given(st.lists(
-        st.text(min_size=1, max_size=10, alphabet=st.characters(
-            whitelist_categories=['L', 'N'],
-            blacklist_characters='[]()&\n\r'
-        )),
+        st_alphanumeric_text(min_size=1, max_size=10),
         min_size=2, max_size=4
     ))
     # Complex strategy: 20 examples (adequate coverage)
@@ -570,13 +565,8 @@ class TestCoordinateTranslation:
                    for lbl in labels_with_markup)
         assert found, "Expected ref markup for blockquote link"
 
-    @given(st.text(min_size=1, max_size=10, alphabet=st.characters(
-        whitelist_categories=['L', 'N'],
-        blacklist_characters='[]()&\n\r'
-    )), st.text(min_size=1, max_size=10, alphabet=st.characters(
-        whitelist_categories=['L', 'N'],
-        blacklist_characters='[]()&\n\r'
-    )))
+    @given(st_alphanumeric_text(min_size=1, max_size=10),
+           st_alphanumeric_text(min_size=1, max_size=10))
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_ref_markup_updates_when_text_changes(self, link_text1, link_text2):

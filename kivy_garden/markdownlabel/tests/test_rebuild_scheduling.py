@@ -12,6 +12,11 @@ import pytest
 
 from kivy_garden.markdownlabel import MarkdownLabel
 from kivy_garden.markdownlabel.tests.test_utils import collect_widget_ids
+from kivy_garden.markdownlabel.tests.conftest import (
+    st_alphanumeric_text,
+    st_font_size,
+    st_font_name,
+)
 
 
 @pytest.mark.property
@@ -63,21 +68,9 @@ class TestBatchedRebuilds:
         )
 
     @given(
-        st.text(
-            min_size=1,
-            max_size=20,
-            alphabet=st.characters(
-                whitelist_categories=["L", "N"],
-                blacklist_characters="#[]&\n\r",
-            ),
-        ),
-        st.floats(
-            min_value=10,
-            max_value=30,
-            allow_nan=False,
-            allow_infinity=False,
-        ),
-        st.sampled_from(["Roboto", "RobotoMono-Regular"]),
+        st_alphanumeric_text(min_size=1, max_size=20),
+        st_font_size(min_value=10, max_value=30),
+        st_font_name(fonts=["Roboto", "RobotoMono-Regular"]),
     )
     # Combination strategy: 2 examples (combination coverage)
     @settings(max_examples=2, deadline=None)
@@ -129,14 +122,7 @@ class TestDeferredRebuildScheduling:
     """
 
     @given(
-        st.text(
-            min_size=1,
-            max_size=50,
-            alphabet=st.characters(
-                whitelist_categories=["L", "N"],
-                blacklist_characters="#[]&\n\r",
-            ),
-        )
+        st_alphanumeric_text(min_size=1, max_size=50)
     )
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -246,14 +232,7 @@ class TestDeferredRebuildScheduling:
 
     @given(
         st.lists(
-            st.text(
-                min_size=1,
-                max_size=20,
-                alphabet=st.characters(
-                    whitelist_categories=["L", "N"],
-                    blacklist_characters="#[]&\n\r",
-                ),
-            ),
+            st_alphanumeric_text(min_size=1, max_size=20),
             min_size=2,
             max_size=5,
         )

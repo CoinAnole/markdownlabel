@@ -19,6 +19,7 @@ from .test_utils import (
     floats_equal,
     collect_widget_ids
 )
+from .conftest import st_alphanumeric_text, st_font_size
 
 
 # Strategy for generating valid line_height values
@@ -355,10 +356,7 @@ class TestAdvancedFontPropertyForwarding:
         return [lbl for lbl in all_labels if lbl not in code_labels]
 
     @pytest.mark.property
-    @given(st.text(min_size=1, max_size=30, alphabet=st.characters(
-        whitelist_categories=['L', 'N'],
-        blacklist_characters='[]&\n\r'
-    )))
+    @given(st_alphanumeric_text(min_size=1, max_size=30))
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_font_family_excluded_from_code_blocks(self, font_family_value):
@@ -380,10 +378,7 @@ class TestAdvancedFontPropertyForwarding:
                 f"Code block should not have font_family, got {lbl.font_family!r}"
 
     @pytest.mark.property
-    @given(st.text(min_size=1, max_size=30, alphabet=st.characters(
-        whitelist_categories=['L', 'N'],
-        blacklist_characters='[]&\n\r'
-    )))
+    @given(st_alphanumeric_text(min_size=1, max_size=30))
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_font_family_forwarded_to_non_code_labels(self, font_family_value):
@@ -406,10 +401,7 @@ class TestAdvancedFontPropertyForwarding:
                 f"Expected font_family={font_family_value!r}, got {lbl.font_family!r}"
 
     @pytest.mark.property
-    @given(st.text(min_size=1, max_size=30, alphabet=st.characters(
-        whitelist_categories=['L', 'N'],
-        blacklist_characters='[]&\n\r'
-    )))
+    @given(st_alphanumeric_text(min_size=1, max_size=30))
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_font_context_forwarded_to_all_labels_including_code(self, font_context_value):
@@ -432,10 +424,7 @@ class TestAdvancedFontPropertyForwarding:
                 f"Expected font_context={font_context_value!r}, got {lbl.font_context!r}"
 
     @pytest.mark.property
-    @given(st.text(min_size=0, max_size=50, alphabet=st.characters(
-        whitelist_categories=['L', 'N', 'P'],
-        blacklist_characters='[]&\n\r'
-    )))
+    @given(st_alphanumeric_text(min_size=0, max_size=50))
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_font_features_forwarded_to_all_labels_including_code(self, font_features_value):
@@ -502,14 +491,8 @@ class TestAdvancedFontPropertyForwarding:
                 f"Expected font_kerning={font_kerning_value}, got {lbl.font_kerning}"
 
     @pytest.mark.property
-    @given(st.text(min_size=1, max_size=20, alphabet=st.characters(
-        whitelist_categories=['L', 'N'],
-        blacklist_characters='[]&\n\r'
-    )),
-        st.text(min_size=1, max_size=20, alphabet=st.characters(
-            whitelist_categories=['L', 'N'],
-            blacklist_characters='[]&\n\r'
-        )),
+    @given(st_alphanumeric_text(min_size=1, max_size=20),
+        st_alphanumeric_text(min_size=1, max_size=20),
         st.sampled_from([None, 'normal', 'light', 'mono']),
         st.booleans())
     # Combination strategy: 20 examples (combination coverage)
@@ -572,8 +555,8 @@ class TestFontSizeImmediateUpdates:
     @pytest.mark.property
     @given(
         simple_markdown_document(),
-        st.floats(min_value=8.0, max_value=50.0, allow_nan=False, allow_infinity=False),
-        st.floats(min_value=8.0, max_value=50.0, allow_nan=False, allow_infinity=False)
+        st_font_size(min_value=8, max_value=50),
+        st_font_size(min_value=8, max_value=50)
     )
     # Combination strategy: 20 examples (combination coverage)
     @settings(max_examples=20, deadline=None)
@@ -622,8 +605,8 @@ class TestFontSizeImmediateUpdates:
     @pytest.mark.property
     @given(
         st.integers(min_value=1, max_value=6),  # Heading levels
-        st.floats(min_value=10.0, max_value=30.0, allow_nan=False, allow_infinity=False),
-        st.floats(min_value=10.0, max_value=30.0, allow_nan=False, allow_infinity=False)
+        st_font_size(min_value=10, max_value=30),
+        st_font_size(min_value=10, max_value=30)
     )
     # Combination strategy: 20 examples (combination coverage)
     @settings(max_examples=20, deadline=None)
@@ -663,7 +646,7 @@ class TestFontSizeImmediateUpdates:
 
     @pytest.mark.property
     @given(
-        st.floats(min_value=10.0, max_value=30.0, allow_nan=False, allow_infinity=False)
+        st_font_size(min_value=10, max_value=30)
     )
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -701,7 +684,7 @@ class TestHeadingScalePreservation:
     @pytest.mark.property
     @given(
         st.integers(min_value=1, max_value=6),  # Heading levels
-        st.floats(min_value=8.0, max_value=50.0, allow_nan=False, allow_infinity=False)
+        st_font_size(min_value=8, max_value=50)
     )
     # Combination strategy: 20 examples (combination coverage)
     @settings(max_examples=20, deadline=None)
@@ -743,7 +726,7 @@ class TestHeadingScalePreservation:
             max_size=6,
             unique=True
         ),
-        st.floats(min_value=12.0, max_value=24.0, allow_nan=False, allow_infinity=False)
+        st_font_size(min_value=12, max_value=24)
     )
     # Combination strategy: 20 examples (combination coverage)
     @settings(max_examples=20, deadline=None)
@@ -790,8 +773,8 @@ class TestHeadingScalePreservation:
     @pytest.mark.property
     @given(
         st.integers(min_value=1, max_value=6),
-        st.floats(min_value=10.0, max_value=20.0, allow_nan=False, allow_infinity=False),
-        st.floats(min_value=20.0, max_value=40.0, allow_nan=False, allow_infinity=False)
+        st_font_size(min_value=10, max_value=20),
+        st_font_size(min_value=20, max_value=40)
     )
     # Combination strategy: 20 examples (combination coverage)
     @settings(max_examples=20, deadline=None)
@@ -845,8 +828,8 @@ class TestNoRebuildOnFontSizeChange:
     @pytest.mark.property
     @given(
         simple_markdown_document(),
-        st.floats(min_value=10.0, max_value=20.0, allow_nan=False, allow_infinity=False),
-        st.floats(min_value=20.0, max_value=40.0, allow_nan=False, allow_infinity=False)
+        st_font_size(min_value=10, max_value=20),
+        st_font_size(min_value=20, max_value=40)
     )
     # Combination strategy: 20 examples (combination coverage)
     @settings(max_examples=20, deadline=None)
@@ -876,8 +859,8 @@ class TestNoRebuildOnFontSizeChange:
     @pytest.mark.property
     @given(
         st.integers(min_value=1, max_value=6),
-        st.floats(min_value=12.0, max_value=18.0, allow_nan=False, allow_infinity=False),
-        st.floats(min_value=20.0, max_value=30.0, allow_nan=False, allow_infinity=False)
+        st_font_size(min_value=12, max_value=18),
+        st_font_size(min_value=20, max_value=30)
     )
     # Small finite strategy: 6 examples (input space size: 6)
     @settings(max_examples=6, deadline=None)
@@ -918,9 +901,9 @@ class TestNoRebuildOnFontSizeChange:
 
     @pytest.mark.property
     @given(
-        st.floats(min_value=10.0, max_value=15.0, allow_nan=False, allow_infinity=False),
-        st.floats(min_value=20.0, max_value=25.0, allow_nan=False, allow_infinity=False),
-        st.floats(min_value=30.0, max_value=35.0, allow_nan=False, allow_infinity=False)
+        st_font_size(min_value=10, max_value=15),
+        st_font_size(min_value=20, max_value=25),
+        st_font_size(min_value=30, max_value=35)
     )
     # Combination strategy: 20 examples (combination coverage)
     @settings(max_examples=20, deadline=None)
@@ -948,7 +931,7 @@ class TestNoRebuildOnFontSizeChange:
 
     @pytest.mark.property
     @given(
-        st.floats(min_value=12.0, max_value=24.0, allow_nan=False, allow_infinity=False)
+        st_font_size(min_value=12, max_value=24)
     )
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
