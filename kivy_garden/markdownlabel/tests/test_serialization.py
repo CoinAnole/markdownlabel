@@ -42,6 +42,11 @@ class TestMarkdownRoundTripSerialization:
                 normalized.append(token)
                 continue
 
+            # Convert softbreak to space for round-trip comparison
+            if token.get('type') == 'softbreak':
+                normalized.append({'type': 'text', 'raw': ' '})
+                continue
+
             # Skip blank_line tokens as they're formatting artifacts
             if token.get('type') == 'blank_line':
                 continue
