@@ -10,6 +10,7 @@ import pytest
 from hypothesis import given, strategies as st, settings, assume
 
 from kivy_garden.markdownlabel import MarkdownLabel
+from .conftest import st_font_size, st_rgba_color
 from .test_utils import (
     find_labels_recursive,
     collect_widget_ids
@@ -25,8 +26,8 @@ class TestStyleOnlyPropertyUpdates:
     changes trigger a full rebuild.
     """
 
-    @given(st.floats(min_value=10, max_value=50, allow_nan=False, allow_infinity=False),
-           st.floats(min_value=10, max_value=50, allow_nan=False, allow_infinity=False))
+    @given(st_font_size(min_value=10, max_value=50),
+           st_font_size(min_value=10, max_value=50))
     # Combination strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_font_size_change_preserves_widget_tree(self, initial_size, new_size):
@@ -54,12 +55,7 @@ class TestStyleOnlyPropertyUpdates:
         assert ids_before == ids_after, \
             f"Widget tree changed after font_size update. Before: {len(ids_before)}, After: {len(ids_after)}"
 
-    @given(st.tuples(
-        st.floats(min_value=0, max_value=1, allow_nan=False, allow_infinity=False),
-        st.floats(min_value=0, max_value=1, allow_nan=False, allow_infinity=False),
-        st.floats(min_value=0, max_value=1, allow_nan=False, allow_infinity=False),
-        st.floats(min_value=0, max_value=1, allow_nan=False, allow_infinity=False)
-    ))
+    @given(st_rgba_color())
     # Combination strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_color_change_preserves_widget_tree(self, new_color):
@@ -85,12 +81,7 @@ class TestStyleOnlyPropertyUpdates:
         assert ids_before == ids_after, \
             "Widget tree changed after color update"
 
-    @given(st.tuples(
-        st.floats(min_value=0, max_value=1, allow_nan=False, allow_infinity=False),
-        st.floats(min_value=0, max_value=1, allow_nan=False, allow_infinity=False),
-        st.floats(min_value=0, max_value=1, allow_nan=False, allow_infinity=False),
-        st.floats(min_value=0, max_value=1, allow_nan=False, allow_infinity=False)
-    ))
+    @given(st_rgba_color())
     # Combination strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_color_change_updates_descendant_labels(self, new_color):
@@ -333,13 +324,8 @@ class TestStyleOnlyPropertyUpdates:
             "Widget tree should be rebuilt after font_name change"
 
     @given(
-        st.floats(min_value=10, max_value=30, allow_nan=False, allow_infinity=False),
-        st.tuples(
-            st.floats(min_value=0, max_value=1, allow_nan=False, allow_infinity=False),
-            st.floats(min_value=0, max_value=1, allow_nan=False, allow_infinity=False),
-            st.floats(min_value=0, max_value=1, allow_nan=False, allow_infinity=False),
-            st.floats(min_value=0, max_value=1, allow_nan=False, allow_infinity=False)
-        ),
+        st_font_size(min_value=10, max_value=30),
+        st_rgba_color(),
         st.sampled_from(['left', 'center', 'right']),
         st.sampled_from(['top', 'middle', 'bottom']),
         st.floats(min_value=0.8, max_value=2.0, allow_nan=False, allow_infinity=False)
@@ -375,18 +361,8 @@ class TestStyleOnlyPropertyUpdates:
             "Widget tree changed after multiple style updates"
 
     @given(
-        st.tuples(
-            st.floats(min_value=0, max_value=1, allow_nan=False, allow_infinity=False),
-            st.floats(min_value=0, max_value=1, allow_nan=False, allow_infinity=False),
-            st.floats(min_value=0, max_value=1, allow_nan=False, allow_infinity=False),
-            st.floats(min_value=0, max_value=1, allow_nan=False, allow_infinity=False)
-        ),
-        st.tuples(
-            st.floats(min_value=0, max_value=1, allow_nan=False, allow_infinity=False),
-            st.floats(min_value=0, max_value=1, allow_nan=False, allow_infinity=False),
-            st.floats(min_value=0, max_value=1, allow_nan=False, allow_infinity=False),
-            st.floats(min_value=0, max_value=1, allow_nan=False, allow_infinity=False)
-        )
+        st_rgba_color(),
+        st_rgba_color()
     )
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)

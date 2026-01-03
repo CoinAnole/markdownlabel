@@ -1,13 +1,22 @@
 """
 Property-based tests for texture render mode in MarkdownLabel.
 
-This module contains tests for the texture render mode feature including:
-- Texture render mode structure (Property 14)
-- Texture mode link handling (Property 15)
-- Auto render mode selection (Property 16)
+This module contains tests for the texture render mode feature, including:
+- Texture render mode structure (Property 14): Image widget creation and
+  render_mode property behavior
+- Texture mode link handling (Property 15): Link zone aggregation and
+  on_ref_press event dispatching
+- Deterministic texture hit-testing: Touch event handling within and outside
+  link zones
+- Texture fallback branch: Fallback to widgets mode when texture rendering
+  fails
+- Auto render mode selection (Property 16): Automatic selection between widgets
+  and texture modes based on content complexity and layout constraints
 
-These tests verify that MarkdownLabel correctly implements texture rendering
-for maximum Label compatibility while maintaining proper Markdown functionality.
+These tests use a combination of property-based testing with Hypothesis and
+deterministic tests to verify that MarkdownLabel correctly implements texture
+rendering for maximum Label compatibility while maintaining proper Markdown
+functionality.
 """
 
 import pytest

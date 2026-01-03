@@ -1,8 +1,9 @@
 """
 Property-based tests for RTL-aware auto alignment in MarkdownLabel.
 
-Tests verify that the MarkdownLabel correctly handles RTL text direction
-and auto alignment behavior.
+This module contains tests for RTL alignment behavior in MarkdownLabel,
+including auto alignment respecting base_direction, direction change updates,
+and explicit alignment overriding auto behavior.
 """
 
 import pytest
@@ -73,8 +74,9 @@ class TestAutoAlignmentRespectsDirection:
         st.sampled_from(['rtl', 'weak_rtl']),
         st.integers(min_value=1, max_value=6)
     )
-    # Small finite strategy: 2 examples (input space size: 2)
-    @settings(max_examples=2, deadline=None)
+    # 2 directions × 6 heading_levels = 12 combinations
+    # Use 12 examples for full coverage
+    @settings(max_examples=12, deadline=None)
     def test_auto_alignment_rtl_applies_to_headings(self, base_direction, heading_level):
         """Auto alignment with RTL direction applies to heading Labels.
 
@@ -102,8 +104,9 @@ class TestAutoAlignmentRespectsDirection:
         st.sampled_from(['ltr', 'weak_ltr', None]),
         st.integers(min_value=1, max_value=6)
     )
-    # Small finite strategy: 3 examples (input space size: 3)
-    @settings(max_examples=3, deadline=None)
+    # 3 directions × 6 heading_levels = 18 combinations
+    # Use 18 examples for full coverage
+    @settings(max_examples=18, deadline=None)
     def test_auto_alignment_ltr_applies_to_headings(self, base_direction, heading_level):
         """Auto alignment with LTR direction applies to heading Labels.
 
@@ -197,8 +200,9 @@ class TestDirectionChangeUpdatesAlignment:
         st.sampled_from(['ltr', 'weak_ltr', None]),
         st.sampled_from(['rtl', 'weak_rtl'])
     )
-    # Small finite strategy: 3 examples (input space size: 3)
-    @settings(max_examples=3, deadline=None)
+    # 3 initial_directions × 2 new_directions = 6 combinations
+    # Use 6 examples for full coverage
+    @settings(max_examples=6, deadline=None)
     def test_direction_change_ltr_to_rtl_updates_alignment(self, initial_direction, new_direction):
         """Changing base_direction from LTR to RTL updates alignment.
 
@@ -234,8 +238,9 @@ class TestDirectionChangeUpdatesAlignment:
         st.sampled_from(['rtl', 'weak_rtl']),
         st.sampled_from(['ltr', 'weak_ltr', None])
     )
-    # Small finite strategy: 2 examples (input space size: 2)
-    @settings(max_examples=2, deadline=None)
+    # 2 initial_directions × 3 new_directions = 6 combinations
+    # Use 6 examples for full coverage
+    @settings(max_examples=6, deadline=None)
     def test_direction_change_rtl_to_ltr_updates_alignment(self, initial_direction, new_direction):
         """Changing base_direction from RTL to LTR updates alignment.
 
@@ -272,8 +277,9 @@ class TestDirectionChangeUpdatesAlignment:
         st.sampled_from(['ltr', 'weak_ltr', None]),
         st.sampled_from(['rtl', 'weak_rtl'])
     )
-    # Small finite strategy: 6 examples (input space size: 6)
-    @settings(max_examples=6, deadline=None)
+    # 6 heading_levels × 3 initial_directions × 2 new_directions = 36 combinations
+    # Use 20 examples to sample adequately without exhaustive testing
+    @settings(max_examples=20, deadline=None)
     def test_direction_change_updates_heading_alignment(
         self, heading_level, initial_direction, new_direction
     ):
@@ -314,8 +320,9 @@ class TestDirectionChangeUpdatesAlignment:
         st.sampled_from(['ltr', 'weak_ltr', None]),
         st.sampled_from(['rtl', 'weak_rtl'])
     )
-    # Small finite strategy: 3 examples (input space size: 3)
-    @settings(max_examples=3, deadline=None)
+    # 3 initial_directions × 2 new_directions = 6 combinations
+    # Use 6 examples for full coverage
+    @settings(max_examples=6, deadline=None)
     def test_direction_change_preserves_widget_identities(self, initial_direction, new_direction):
         """Direction change preserves widget identities (no rebuild).
 
@@ -348,8 +355,9 @@ class TestDirectionChangeUpdatesAlignment:
         st.sampled_from(['ltr', 'weak_ltr', None]),
         st.sampled_from(['rtl', 'weak_rtl'])
     )
-    # Small finite strategy: 3 examples (input space size: 3)
-    @settings(max_examples=3, deadline=None)
+    # 3 initial_directions × 2 new_directions = 6 combinations
+    # Use 6 examples for full coverage
+    @settings(max_examples=6, deadline=None)
     def test_direction_change_mixed_content_updates_alignment(self, initial_direction, new_direction):
         """Direction change updates alignment for mixed content types.
 
@@ -402,8 +410,9 @@ class TestExplicitAlignmentOverridesAuto:
         st.sampled_from(['left', 'center', 'right', 'justify']),
         st.sampled_from(['rtl', 'weak_rtl', 'ltr', 'weak_ltr', None])
     )
-    # Small finite strategy: 3 examples (input space size: 3)
-    @settings(max_examples=3, deadline=None)
+    # 4 alignments × 5 directions = 20 combinations
+    # Use 20 examples for full coverage
+    @settings(max_examples=20, deadline=None)
     def test_explicit_alignment_overrides_base_direction(self, explicit_halign, base_direction):
         """Explicit halign overrides base_direction for all content.
 
@@ -432,8 +441,9 @@ class TestExplicitAlignmentOverridesAuto:
         st.sampled_from(['rtl', 'weak_rtl']),
         st.integers(min_value=1, max_value=6)
     )
-    # Small finite strategy: 4 examples (input space size: 4)
-    @settings(max_examples=4, deadline=None)
+    # 4 alignments × 2 directions × 6 heading_levels = 48 combinations
+    # Use 20 examples to sample adequately without exhaustive testing
+    @settings(max_examples=20, deadline=None)
     def test_explicit_alignment_overrides_rtl_for_headings(
         self, explicit_halign, base_direction, heading_level
     ):
@@ -464,8 +474,9 @@ class TestExplicitAlignmentOverridesAuto:
         st.sampled_from(['left', 'center', 'right', 'justify']),
         st.sampled_from(['rtl', 'weak_rtl', 'ltr', 'weak_ltr', None])
     )
-    # Small finite strategy: 4 examples (input space size: 4)
-    @settings(max_examples=4, deadline=None)
+    # 4 alignments × 5 directions = 20 combinations
+    # Use 20 examples for full coverage
+    @settings(max_examples=20, deadline=None)
     def test_explicit_alignment_overrides_direction_for_mixed_content(self, explicit_halign, base_direction):
         """Explicit halign overrides base_direction for mixed content types.
 
@@ -498,8 +509,9 @@ class TestExplicitAlignmentOverridesAuto:
         st.sampled_from(['rtl', 'weak_rtl']),
         st.sampled_from(['ltr', 'weak_ltr', None])
     )
-    # Small finite strategy: 4 examples (input space size: 4)
-    @settings(max_examples=4, deadline=None)
+    # 4 alignments × 2 initial_directions × 3 new_directions = 24 combinations
+    # Use 20 examples to sample adequately without exhaustive testing
+    @settings(max_examples=20, deadline=None)
     def test_explicit_alignment_unchanged_by_direction_change(
         self, explicit_halign, initial_direction, new_direction
     ):
@@ -537,8 +549,9 @@ class TestExplicitAlignmentOverridesAuto:
         st.sampled_from(['left', 'center', 'right', 'justify']),
         st.sampled_from(['rtl', 'weak_rtl', 'ltr', 'weak_ltr', None])
     )
-    # Small finite strategy: 3 examples (input space size: 3)
-    @settings(max_examples=3, deadline=None)
+    # 4 alignments × 5 directions = 20 combinations
+    # Use 20 examples for full coverage
+    @settings(max_examples=20, deadline=None)
     def test_explicit_alignment_stored_correctly_on_widget(self, explicit_halign, base_direction):
         """Explicit halign is stored correctly on MarkdownLabel widget.
 

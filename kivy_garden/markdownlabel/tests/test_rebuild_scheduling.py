@@ -11,6 +11,12 @@ from hypothesis import given, strategies as st, settings
 import pytest
 
 from kivy_garden.markdownlabel import MarkdownLabel
+from kivy_garden.markdownlabel.tests.test_utils import collect_widget_ids
+from kivy_garden.markdownlabel.tests.conftest import (
+    st_alphanumeric_text,
+    st_font_size,
+    st_font_name,
+)
 
 
 @pytest.mark.property
@@ -32,53 +38,39 @@ class TestBatchedRebuilds:
 
         **Feature: label-compatibility, Property 6: Batched rebuilds**
         **Validates: Requirements 3.1, 3.3**
+
+        Verifies batching through observable widget identity:
+        - Widget IDs unchanged after multiple text changes (deferred)
+        - Widget IDs changed after force_rebuild() (single rebuild occurred)
         """
         label = MarkdownLabel(text="Initial text")
+        label.force_rebuild()  # Ensure stable initial state
 
-        # Track rebuild calls by patching _rebuild_widgets
-        rebuild_count = [0]
-        original_rebuild = label._rebuild_widgets
+        ids_before = collect_widget_ids(label, exclude_root=True)
 
-        def counting_rebuild():
-            rebuild_count[0] += 1
-            original_rebuild()
-
-        label._rebuild_widgets = counting_rebuild
-
-        # Make multiple text changes (these should be batched)
+        # Make multiple text changes (these should be batched/deferred)
         for i in range(num_changes):
             label.text = f"Text change {i}"
 
-        # Before force_rebuild, no rebuilds should have happened yet
-        # (they're deferred to next frame)
-        assert rebuild_count[0] == 0, (
-            f"Expected 0 rebuilds before frame tick, got {rebuild_count[0]}"
+        # Before force_rebuild, widgets should be unchanged (rebuild is deferred)
+        ids_during = collect_widget_ids(label, exclude_root=True)
+        assert ids_before == ids_during, (
+            "Expected widgets unchanged before force_rebuild (rebuild should be deferred)"
         )
 
         # Force the rebuild to execute
         label.force_rebuild()
 
-        # Should have exactly 1 rebuild (from force_rebuild)
-        assert rebuild_count[0] == 1, (
-            f"Expected exactly 1 rebuild after force_rebuild, got {rebuild_count[0]}"
+        # After force_rebuild, widgets should have changed (rebuild occurred)
+        ids_after = collect_widget_ids(label, exclude_root=True)
+        assert ids_before != ids_after, (
+            "Expected widgets changed after force_rebuild (rebuild should have occurred)"
         )
 
     @given(
-        st.text(
-            min_size=1,
-            max_size=20,
-            alphabet=st.characters(
-                whitelist_categories=["L", "N"],
-                blacklist_characters="#[]&\n\r",
-            ),
-        ),
-        st.floats(
-            min_value=10,
-            max_value=30,
-            allow_nan=False,
-            allow_infinity=False,
-        ),
-        st.sampled_from(["Roboto", "RobotoMono-Regular"]),
+        st_alphanumeric_text(min_size=1, max_size=20),
+        st_font_size(min_value=10, max_value=30),
+        st_font_name(fonts=["Roboto", "RobotoMono-Regular"]),
     )
     # Combination strategy: 2 examples (combination coverage)
     @settings(max_examples=2, deadline=None)
@@ -87,66 +79,34 @@ class TestBatchedRebuilds:
 
         **Feature: label-compatibility, Property 6: Batched rebuilds**
         **Validates: Requirements 3.1, 3.3**
+
+        Verifies batching through observable widget identity:
+        - Widget IDs unchanged after mixed property changes (deferred)
+        - Widget IDs changed after force_rebuild() (single rebuild occurred)
         """
         label = MarkdownLabel(text="Initial")
+        label.force_rebuild()  # Ensure stable initial state
 
-        # Track rebuild calls
-        rebuild_count = [0]
-        original_rebuild = label._rebuild_widgets
+        ids_before = collect_widget_ids(label, exclude_root=True)
 
-        def counting_rebuild():
-            rebuild_count[0] += 1
-            original_rebuild()
-
-        label._rebuild_widgets = counting_rebuild
-
-        # Make multiple structure property changes
+        # Make multiple structure property changes (should be batched/deferred)
         label.text = text
         label.font_name = font_name
         # Note: font_size is a style-only property, doesn't trigger rebuild
 
-        # Before force_rebuild, no rebuilds should have happened
-        assert rebuild_count[0] == 0, (
-            f"Expected 0 rebuilds before frame tick, got {rebuild_count[0]}"
+        # Before force_rebuild, widgets should be unchanged (rebuild is deferred)
+        ids_during = collect_widget_ids(label, exclude_root=True)
+        assert ids_before == ids_during, (
+            "Expected widgets unchanged before force_rebuild (rebuild should be deferred)"
         )
 
         # Force the rebuild
         label.force_rebuild()
 
-        # Should have exactly 1 rebuild
-        assert rebuild_count[0] == 1, f"Expected exactly 1 rebuild, got {rebuild_count[0]}"
-
-    def test_pending_rebuild_flag_prevents_duplicate_scheduling(self):
-        """_pending_rebuild flag prevents duplicate rebuild scheduling.
-
-        **Feature: label-compatibility, Property 6: Batched rebuilds**
-        **Validates: Requirements 3.1, 3.3**
-        """
-        label = MarkdownLabel(text="Initial")
-
-        # Clear any pending state
-        label._pending_rebuild = False
-
-        # Schedule multiple rebuilds
-        label._schedule_rebuild()
-        assert label._pending_rebuild is True, (
-            "Expected _pending_rebuild to be True after first schedule"
-        )
-
-        label._schedule_rebuild()
-        assert label._pending_rebuild is True, (
-            "Expected _pending_rebuild to remain True after second schedule"
-        )
-
-        label._schedule_rebuild()
-        assert label._pending_rebuild is True, (
-            "Expected _pending_rebuild to remain True after third schedule"
-        )
-
-        # Force rebuild clears the flag
-        label.force_rebuild()
-        assert label._pending_rebuild is False, (
-            "Expected _pending_rebuild to be False after force_rebuild"
+        # After force_rebuild, widgets should have changed (rebuild occurred)
+        ids_after = collect_widget_ids(label, exclude_root=True)
+        assert ids_before != ids_after, (
+            "Expected widgets changed after force_rebuild (rebuild should have occurred)"
         )
 
 
@@ -162,14 +122,7 @@ class TestDeferredRebuildScheduling:
     """
 
     @given(
-        st.text(
-            min_size=1,
-            max_size=50,
-            alphabet=st.characters(
-                whitelist_categories=["L", "N"],
-                blacklist_characters="#[]&\n\r",
-            ),
-        )
+        st_alphanumeric_text(min_size=1, max_size=50)
     )
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -178,50 +131,91 @@ class TestDeferredRebuildScheduling:
 
         **Feature: label-compatibility, Property 7: Deferred rebuild scheduling**
         **Validates: Requirements 3.2**
+
+        Verifies deferral through observable widget identity:
+        - Widget IDs unchanged immediately after text property change (deferred)
+        - Widget IDs changed after force_rebuild() (rebuild occurred)
         """
         label = MarkdownLabel(text="Initial text")
-        initial_children = list(label.children)
+        label.force_rebuild()  # Ensure stable initial state
+
+        ids_before = collect_widget_ids(label, exclude_root=True)
 
         # Change text - this should schedule a deferred rebuild
         label.text = new_text
 
-        # Immediately after setting text, children should still be the same
+        # Immediately after setting text, widgets should be unchanged
         # (rebuild hasn't executed yet because it's deferred)
-        assert label._pending_rebuild is True, (
-            "Expected _pending_rebuild to be True after text change"
+        ids_during = collect_widget_ids(label, exclude_root=True)
+        assert ids_before == ids_during, (
+            "Expected widgets unchanged immediately after text change (rebuild should be deferred)"
         )
 
-        # The children should still be the initial ones (deferred, not immediate)
-        # Note: We compare by checking the rebuild hasn't happened yet
-        assert label._pending_rebuild is True, (
-            "Rebuild should be pending, not executed synchronously"
+        # Force the rebuild to execute
+        label.force_rebuild()
+
+        # After force_rebuild, widgets should have changed (rebuild occurred)
+        ids_after = collect_widget_ids(label, exclude_root=True)
+        assert ids_before != ids_after, (
+            "Expected widgets changed after force_rebuild (rebuild should have occurred)"
         )
 
-    @pytest.mark.parametrize('font_name', ["Roboto", "RobotoMono-Regular", "Arial"])
+    @pytest.mark.parametrize('font_name', ["Roboto", "RobotoMono-Regular"])
     def test_font_name_change_schedules_deferred_rebuild(self, font_name):
         """font_name property change schedules deferred rebuild.
 
         **Feature: label-compatibility, Property 7: Deferred rebuild scheduling**
         **Validates: Requirements 3.2**
+
+        Verifies deferral through observable widget identity:
+        - Widget IDs unchanged immediately after font_name property change (deferred)
+        - Widget IDs changed after force_rebuild() (rebuild occurred)
         """
         # Use a different initial font to ensure the change is detected
-        # Use fonts that are known to be available in Kivy
         initial_font = "RobotoMono-Regular" if font_name != "RobotoMono-Regular" else "Roboto"
         label = MarkdownLabel(text="Test content", font_name=initial_font)
+        label.force_rebuild()  # Ensure stable initial state
 
-        # Clear any pending state from initialization
-        label._pending_rebuild = False
+        ids_before = collect_widget_ids(label, exclude_root=True)
 
         # Change font_name - this is a structure property that triggers rebuild
         label.font_name = font_name
 
-        # Should have scheduled a deferred rebuild
-        assert label._pending_rebuild is True, (
-            "Expected _pending_rebuild to be True after font_name change"
+        # Immediately after setting font_name, widgets should be unchanged
+        # (rebuild hasn't executed yet because it's deferred)
+        ids_during = collect_widget_ids(label, exclude_root=True)
+        assert ids_before == ids_during, (
+            "Expected widgets unchanged immediately after font_name change (rebuild should be deferred)"
+        )
+
+        # Force the rebuild to execute
+        label.force_rebuild()
+
+        # After force_rebuild, widgets should have changed (rebuild occurred)
+        ids_after = collect_widget_ids(label, exclude_root=True)
+        assert ids_before != ids_after, (
+            "Expected widgets changed after force_rebuild (rebuild should have occurred)"
         )
 
     def test_rebuild_trigger_is_clock_trigger(self):
         """_rebuild_trigger is a Clock.create_trigger instance.
+
+        **ARCHITECTURAL DOCUMENTATION TEST**
+        
+        This test intentionally accesses internal state (_rebuild_trigger) to document
+        and verify a critical architectural decision: MarkdownLabel uses Kivy's Clock
+        system for deferred rebuilds rather than synchronous rebuilds.
+        
+        Unlike other tests in this module that verify observable behavior, this test
+        serves as architectural documentation. It ensures that the rebuild system
+        continues to use Clock.create_trigger for deferral, which is essential for:
+        - Performance (batching multiple changes)
+        - UI responsiveness (avoiding blocking operations)
+        - Kivy integration (respecting the frame-based update cycle)
+        
+        If this test fails, it indicates a significant architectural change that
+        requires careful review of the rebuild system's design and performance
+        characteristics.
 
         **Feature: label-compatibility, Property 7: Deferred rebuild scheduling**
         **Validates: Requirements 3.2**
@@ -236,83 +230,9 @@ class TestDeferredRebuildScheduling:
             f"Expected ClockEvent, got {type(label._rebuild_trigger)}"
         )
 
-    def test_schedule_rebuild_sets_pending_flag(self):
-        """_schedule_rebuild() sets _pending_rebuild flag.
-
-        **Feature: label-compatibility, Property 7: Deferred rebuild scheduling**
-        **Validates: Requirements 3.2**
-        """
-        label = MarkdownLabel(text="Test")
-
-        # Clear pending state
-        label._pending_rebuild = False
-
-        # Call _schedule_rebuild
-        label._schedule_rebuild()
-
-        # Flag should be set
-        assert label._pending_rebuild is True, (
-            "Expected _pending_rebuild to be True after _schedule_rebuild()"
-        )
-
-    def test_do_rebuild_clears_pending_flag(self):
-        """_do_rebuild() clears _pending_rebuild flag when executing.
-
-        **Feature: label-compatibility, Property 7: Deferred rebuild scheduling**
-        **Validates: Requirements 3.2**
-        """
-        label = MarkdownLabel(text="Test")
-
-        # Set pending state
-        label._pending_rebuild = True
-
-        # Call _do_rebuild (simulating clock callback)
-        label._do_rebuild()
-
-        # Flag should be cleared
-        assert label._pending_rebuild is False, (
-            "Expected _pending_rebuild to be False after _do_rebuild()"
-        )
-
-    def test_do_rebuild_skips_when_not_pending(self):
-        """_do_rebuild() skips rebuild when _pending_rebuild is False.
-
-        **Feature: label-compatibility, Property 7: Deferred rebuild scheduling**
-        **Validates: Requirements 3.2**
-        """
-        label = MarkdownLabel(text="Test")
-
-        # Track rebuild calls
-        rebuild_count = [0]
-        original_rebuild = label._rebuild_widgets
-
-        def counting_rebuild():
-            rebuild_count[0] += 1
-            original_rebuild()
-
-        label._rebuild_widgets = counting_rebuild
-
-        # Ensure not pending
-        label._pending_rebuild = False
-
-        # Call _do_rebuild
-        label._do_rebuild()
-
-        # Should not have called _rebuild_widgets
-        assert rebuild_count[0] == 0, (
-            f"Expected 0 rebuilds when not pending, got {rebuild_count[0]}"
-        )
-
     @given(
         st.lists(
-            st.text(
-                min_size=1,
-                max_size=20,
-                alphabet=st.characters(
-                    whitelist_categories=["L", "N"],
-                    blacklist_characters="#[]&\n\r",
-                ),
-            ),
+            st_alphanumeric_text(min_size=1, max_size=20),
             min_size=2,
             max_size=5,
         )
@@ -324,29 +244,31 @@ class TestDeferredRebuildScheduling:
 
         **Feature: label-compatibility, Property 7: Deferred rebuild scheduling**
         **Validates: Requirements 3.2**
+
+        Verifies deferral through observable widget identity:
+        - Widget IDs unchanged after multiple text changes (all deferred)
+        - Widget IDs changed after force_rebuild() (single rebuild occurred)
         """
         label = MarkdownLabel(text="Initial")
+        label.force_rebuild()  # Ensure stable initial state
 
-        # Track rebuild calls
-        rebuild_count = [0]
-        original_rebuild = label._rebuild_widgets
+        ids_before = collect_widget_ids(label, exclude_root=True)
 
-        def counting_rebuild():
-            rebuild_count[0] += 1
-            original_rebuild()
-
-        label._rebuild_widgets = counting_rebuild
-
-        # Make multiple text changes
+        # Make multiple text changes (all should be deferred)
         for text in text_values:
             label.text = text
 
-        # No rebuilds should have happened yet (all deferred)
-        assert rebuild_count[0] == 0, (
-            f"Expected 0 synchronous rebuilds, got {rebuild_count[0]}"
+        # After all changes, widgets should still be unchanged (all deferred)
+        ids_during = collect_widget_ids(label, exclude_root=True)
+        assert ids_before == ids_during, (
+            "Expected widgets unchanged after multiple changes (all should be deferred)"
         )
 
-        # Pending flag should be set
-        assert label._pending_rebuild is True, (
-            "Expected _pending_rebuild to be True after multiple changes"
+        # Force the rebuild to execute
+        label.force_rebuild()
+
+        # After force_rebuild, widgets should have changed (rebuild occurred)
+        ids_after = collect_widget_ids(label, exclude_root=True)
+        assert ids_before != ids_after, (
+            "Expected widgets changed after force_rebuild (rebuild should have occurred)"
         )

@@ -18,6 +18,7 @@ from .test_utils import (
     simple_markdown_document, find_labels_recursive,
     colors_equal, floats_equal, collect_widget_ids
 )
+from .conftest import st_font_size, st_font_name, st_rgba_color
 
 
 # Style Properties for Testing
@@ -273,31 +274,12 @@ class TestStylePropertyIdentityPreservationPBT:
 
     @given(
         markdown_text=simple_markdown_document(),
-        base_font_size=st.floats(min_value=8, max_value=48, allow_nan=False,
-                                  allow_infinity=False),
-        color=st.tuples(
-            st.floats(min_value=0, max_value=1, allow_nan=False,
-                      allow_infinity=False),
-            st.floats(min_value=0, max_value=1, allow_nan=False,
-                      allow_infinity=False),
-            st.floats(min_value=0, max_value=1, allow_nan=False,
-                      allow_infinity=False),
-            st.floats(min_value=0, max_value=1, allow_nan=False,
-                      allow_infinity=False)
-        ),
+        base_font_size=st_font_size(),
+        color=st_rgba_color(),
         halign=st.sampled_from(['left', 'center', 'right', 'justify']),
         valign=st.sampled_from(['bottom', 'middle', 'top']),
         disabled=st.booleans(),
-        disabled_color=st.tuples(
-            st.floats(min_value=0, max_value=1, allow_nan=False,
-                      allow_infinity=False),
-            st.floats(min_value=0, max_value=1, allow_nan=False,
-                      allow_infinity=False),
-            st.floats(min_value=0, max_value=1, allow_nan=False,
-                      allow_infinity=False),
-            st.floats(min_value=0, max_value=1, allow_nan=False,
-                      allow_infinity=False)
-        ),
+        disabled_color=st_rgba_color(),
         base_direction=st.sampled_from([None, 'ltr', 'rtl', 'weak_ltr', 'weak_rtl']),
         line_height=st.floats(min_value=0.5, max_value=3.0, allow_nan=False,
                                allow_infinity=False)
@@ -493,16 +475,7 @@ class TestStylePropertyPropagationPBT:
 
     @given(
         markdown_text=simple_markdown_document(),
-        color=st.tuples(
-            st.floats(min_value=0, max_value=1, allow_nan=False,
-                      allow_infinity=False),
-            st.floats(min_value=0, max_value=1, allow_nan=False,
-                      allow_infinity=False),
-            st.floats(min_value=0, max_value=1, allow_nan=False,
-                      allow_infinity=False),
-            st.floats(min_value=0, max_value=1, allow_nan=False,
-                      allow_infinity=False)
-        ),
+        color=st_rgba_color(),
         halign=st.sampled_from(['left', 'center', 'right', 'justify']),
         valign=st.sampled_from(['bottom', 'middle', 'top']),
         line_height=st.floats(min_value=0.5, max_value=3.0, allow_nan=False,
@@ -807,7 +780,7 @@ class TestStructurePropertyRebuildPBT:
 
     @given(
         markdown_text=simple_markdown_document(),
-        font_name=st.sampled_from(['Roboto', 'RobotoMono-Regular', 'Roboto-Bold'])
+        font_name=st_font_name()
     )
     # Small finite strategy: 3 examples (input space size: 3)
     @settings(max_examples=3, deadline=None)
@@ -912,18 +885,8 @@ class TestRootIDPreservationPBT:
     @given(
         markdown_text=simple_markdown_document(),
         # Style properties
-        base_font_size=st.floats(min_value=8, max_value=48, allow_nan=False,
-                                  allow_infinity=False),
-        color=st.tuples(
-            st.floats(min_value=0, max_value=1, allow_nan=False,
-                      allow_infinity=False),
-            st.floats(min_value=0, max_value=1, allow_nan=False,
-                      allow_infinity=False),
-            st.floats(min_value=0, max_value=1, allow_nan=False,
-                      allow_infinity=False),
-            st.floats(min_value=0, max_value=1, allow_nan=False,
-                      allow_infinity=False)
-        ),
+        base_font_size=st_font_size(),
+        color=st_rgba_color(),
         halign=st.sampled_from(['left', 'center', 'right', 'justify']),
         valign=st.sampled_from(['bottom', 'middle', 'top']),
         line_height=st.floats(min_value=0.5, max_value=3.0, allow_nan=False,
@@ -971,7 +934,7 @@ class TestRootIDPreservationPBT:
     @given(
         initial_text=simple_markdown_document(),
         new_text=simple_markdown_document(),
-        font_name=st.sampled_from(['Roboto', 'RobotoMono-Regular', 'Roboto-Bold']),
+        font_name=st_font_name(),
         link_style=st.sampled_from(['unstyled', 'styled']),
         strict_label_mode=st.booleans(),
         render_mode=st.sampled_from(['widgets', 'auto'])
@@ -1018,19 +981,9 @@ class TestRootIDPreservationPBT:
     @given(
         markdown_text=simple_markdown_document(),
         # Mix of style and structure properties
-        base_font_size=st.floats(min_value=8, max_value=48, allow_nan=False,
-                                  allow_infinity=False),
-        color=st.tuples(
-            st.floats(min_value=0, max_value=1, allow_nan=False,
-                      allow_infinity=False),
-            st.floats(min_value=0, max_value=1, allow_nan=False,
-                      allow_infinity=False),
-            st.floats(min_value=0, max_value=1, allow_nan=False,
-                      allow_infinity=False),
-            st.floats(min_value=0, max_value=1, allow_nan=False,
-                      allow_infinity=False)
-        ),
-        font_name=st.sampled_from(['Roboto', 'RobotoMono-Regular', 'Roboto-Bold']),
+        base_font_size=st_font_size(),
+        color=st_rgba_color(),
+        font_name=st_font_name(),
         link_style=st.sampled_from(['unstyled', 'styled'])
     )
     # Combination strategy: 50 examples (combination coverage)

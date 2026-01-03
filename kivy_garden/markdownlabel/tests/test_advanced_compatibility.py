@@ -175,7 +175,8 @@ class TestAdvancedFontPropertiesForwarding:
                 f"Expected font_blended={font_blended}, got {lbl.font_blended}"
 
     @given(st.booleans(), st.booleans())
-    # Combination strategy: 4 examples (combination coverage)
+    # 2 × 2 = 4 combinations
+    # Use 4 examples for full coverage
     @settings(max_examples=4, deadline=None)
     def test_font_kerning_change_triggers_rebuild(self, kerning1, kerning2):
         """Changing font_kerning triggers widget rebuild with new value.
@@ -210,7 +211,8 @@ class TestAdvancedFontPropertiesForwarding:
                 f"After change, expected font_kerning={kerning2}, got {lbl.font_kerning}"
 
     @given(st.booleans(), st.booleans())
-    # Combination strategy: 4 examples (combination coverage)
+    # 2 × 2 = 4 combinations
+    # Use 4 examples for full coverage
     @settings(max_examples=4, deadline=None)
     def test_font_blended_change_triggers_rebuild(self, blended1, blended2):
         """Changing font_blended triggers widget rebuild with new value.
@@ -552,7 +554,8 @@ class TestReactiveRebuildOnPropertyChange:
     """Property tests for reactive rebuild on property change (Property 14)."""
 
     @given(rebuild_font_names, rebuild_font_names)
-    # Combination strategy: 9 examples (combination coverage)
+    # 3 font_names × 3 font_names = 9 combinations
+    # Use 9 examples for full coverage
     @settings(max_examples=9, deadline=None)
     def test_font_name_triggers_rebuild(self, font1, font2):
         """Changing font_name after initial rendering rebuilds widgets with new font.
@@ -592,7 +595,8 @@ class TestReactiveRebuildOnPropertyChange:
                 f"After change, expected font_name={font2}, got {lbl.font_name}"
 
     @given(rebuild_colors, rebuild_colors)
-    # Combination strategy: 20 examples (combination coverage)
+    # Large combination space (continuous values)
+    # Use 20 examples to sample adequately
     @settings(max_examples=20, deadline=None)
     def test_color_updates_value(self, color1, color2):
         """Changing color after initial rendering updates color without rebuilding widgets.
@@ -632,7 +636,8 @@ class TestReactiveRebuildOnPropertyChange:
                 f"After change, expected color={color2}, got {list(lbl.color)}"
 
     @given(rebuild_line_heights, rebuild_line_heights)
-    # Combination strategy: 20 examples (combination coverage)
+    # Large combination space (continuous values)
+    # Use 20 examples to sample adequately
     @settings(max_examples=20, deadline=None)
     def test_line_height_updates_value(self, lh1, lh2):
         """Changing line_height after initial rendering updates value without rebuilding widgets.
@@ -672,7 +677,8 @@ class TestReactiveRebuildOnPropertyChange:
                 f"After change, expected line_height={lh2}, got {lbl.line_height}"
 
     @given(rebuild_text_size_widths, rebuild_text_size_widths)
-    # Combination strategy: 20 examples (combination coverage)
+    # Large combination space (continuous values)
+    # Use 20 examples to sample adequately
     @settings(max_examples=20, deadline=None)
     def test_text_size_updates_value(self, width1, width2):
         """Changing text_size after initial rendering updates value without rebuilding widgets.
@@ -709,7 +715,8 @@ class TestReactiveRebuildOnPropertyChange:
         assert len(labels_after) >= 1, "Expected at least one Label after update"
 
     @given(rebuild_font_names, rebuild_colors, rebuild_line_heights)
-    # Combination strategy: 20 examples (combination coverage)
+    # 3 font_names × continuous colors × continuous line_heights
+    # Use 20 examples to sample adequately
     @settings(max_examples=20, deadline=None)
     def test_multiple_property_changes_rebuild_correctly(self, font_name, color, line_height):
         """Multiple property changes each trigger rebuilds with correct values.
@@ -837,7 +844,8 @@ class TestReactiveRebuildOnPropertyChange:
                 f"After change, expected unicode_errors={errors2}, got {lbl.unicode_errors}"
 
     @given(st.booleans(), st.booleans())
-    # Combination strategy: 4 examples (combination coverage)
+    # 2 × 2 = 4 combinations
+    # Use 4 examples for full coverage
     @settings(max_examples=4, deadline=None)
     def test_strip_updates_value(self, strip1, strip2):
         """Changing strip after initial rendering triggers rebuild with new value.
@@ -867,7 +875,8 @@ class TestReactiveRebuildOnPropertyChange:
                 f"After change, expected strip={strip2}, got {lbl.strip}"
 
     @given(st.booleans(), st.booleans())
-    # Combination strategy: 4 examples (combination coverage)
+    # 2 × 2 = 4 combinations
+    # Use 4 examples for full coverage
     @settings(max_examples=4, deadline=None)
     def test_disabled_change_triggers_rebuild(self, disabled1, disabled2):
         """Changing disabled after initial rendering triggers widget rebuild.
@@ -909,7 +918,8 @@ class TestReactiveRebuildOnPropertyChange:
                 f"After change, expected color={expected_color2}, got {list(lbl.color)}"
 
     @given(simple_markdown_document(), rebuild_font_names, rebuild_font_names)
-    # Combination strategy: 20 examples (combination coverage)
+    # Complex markdown × 3 font_names × 3 font_names
+    # Use 20 examples to sample adequately
     @settings(max_examples=20, deadline=None)
     def test_rebuild_preserves_content_structure(self, markdown_text, font1, font2):
         """Rebuilding widgets preserves the content structure.
@@ -936,7 +946,8 @@ class TestReactiveRebuildOnPropertyChange:
             f"Expected {children_before} children after rebuild, got {children_after}"
 
     @given(st.booleans(), st.booleans())
-    # Combination strategy: 4 examples (combination coverage)
+    # 2 × 2 = 4 combinations
+    # Use 4 examples for full coverage
     @settings(max_examples=4, deadline=None)
     def test_font_kerning_updates_value(self, kerning1, kerning2):
         """Changing font_kerning after initial rendering triggers rebuild with new value.
@@ -966,7 +977,8 @@ class TestReactiveRebuildOnPropertyChange:
                 f"After change, expected font_kerning={kerning2}, got {lbl.font_kerning}"
 
     @given(st.booleans(), st.booleans())
-    # Combination strategy: 4 examples (combination coverage)
+    # 2 × 2 = 4 combinations
+    # Use 4 examples for full coverage
     @settings(max_examples=4, deadline=None)
     def test_font_blended_updates_value(self, blended1, blended2):
         """Changing font_blended after initial rendering triggers rebuild with new value.

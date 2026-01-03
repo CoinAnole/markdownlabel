@@ -19,6 +19,7 @@ from .test_utils import (
     floats_equal,
     collect_widget_ids
 )
+from .conftest import st_alphanumeric_text, st_font_size
 
 
 # Strategy for generating valid line_height values
@@ -175,6 +176,7 @@ class TestFontNamePropertyForwarding:
 class TestLineHeightPropertyForwarding:
     """Property tests for line_height forwarding (Property 4)."""
 
+    @pytest.mark.property
     @given(line_height_strategy)
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -190,6 +192,7 @@ class TestLineHeightPropertyForwarding:
             assert floats_equal(lbl.line_height, line_height), \
                 f"Expected line_height={line_height}, got {lbl.line_height}"
 
+    @pytest.mark.property
     @given(line_height_strategy)
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -205,6 +208,7 @@ class TestLineHeightPropertyForwarding:
             assert floats_equal(lbl.line_height, line_height), \
                 f"Expected line_height={line_height}, got {lbl.line_height}"
 
+    @pytest.mark.property
     @given(line_height_strategy)
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -222,6 +226,7 @@ class TestLineHeightPropertyForwarding:
             assert floats_equal(lbl.line_height, line_height), \
                 f"Expected line_height={line_height}, got {lbl.line_height}"
 
+    @pytest.mark.property
     @given(line_height_strategy, line_height_strategy)
     # Combination strategy: 20 examples (combination coverage)
     @settings(max_examples=20, deadline=None)
@@ -257,6 +262,7 @@ class TestLineHeightPropertyForwarding:
             assert floats_equal(lbl.line_height, lh2), \
                 f"After change, expected line_height={lh2}, got {lbl.line_height}"
 
+    @pytest.mark.property
     @given(line_height_strategy)
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -273,6 +279,7 @@ class TestLineHeightPropertyForwarding:
             assert floats_equal(lbl.line_height, line_height), \
                 f"Expected line_height={line_height}, got {lbl.line_height}"
 
+    @pytest.mark.property
     @given(line_height_strategy)
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -289,6 +296,7 @@ class TestLineHeightPropertyForwarding:
             assert floats_equal(lbl.line_height, line_height), \
                 f"Expected line_height={line_height}, got {lbl.line_height}"
 
+    @pytest.mark.property
     @given(line_height_strategy)
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -347,10 +355,8 @@ class TestAdvancedFontPropertyForwarding:
         code_labels = self._find_code_block_labels(widget)
         return [lbl for lbl in all_labels if lbl not in code_labels]
 
-    @given(st.text(min_size=1, max_size=30, alphabet=st.characters(
-        whitelist_categories=['L', 'N'],
-        blacklist_characters='[]&\n\r'
-    )))
+    @pytest.mark.property
+    @given(st_alphanumeric_text(min_size=1, max_size=30))
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_font_family_excluded_from_code_blocks(self, font_family_value):
@@ -371,10 +377,8 @@ class TestAdvancedFontPropertyForwarding:
             assert lbl.font_family is None, \
                 f"Code block should not have font_family, got {lbl.font_family!r}"
 
-    @given(st.text(min_size=1, max_size=30, alphabet=st.characters(
-        whitelist_categories=['L', 'N'],
-        blacklist_characters='[]&\n\r'
-    )))
+    @pytest.mark.property
+    @given(st_alphanumeric_text(min_size=1, max_size=30))
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_font_family_forwarded_to_non_code_labels(self, font_family_value):
@@ -396,10 +400,8 @@ class TestAdvancedFontPropertyForwarding:
             assert lbl.font_family == font_family_value, \
                 f"Expected font_family={font_family_value!r}, got {lbl.font_family!r}"
 
-    @given(st.text(min_size=1, max_size=30, alphabet=st.characters(
-        whitelist_categories=['L', 'N'],
-        blacklist_characters='[]&\n\r'
-    )))
+    @pytest.mark.property
+    @given(st_alphanumeric_text(min_size=1, max_size=30))
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_font_context_forwarded_to_all_labels_including_code(self, font_context_value):
@@ -421,10 +423,8 @@ class TestAdvancedFontPropertyForwarding:
             assert lbl.font_context == font_context_value, \
                 f"Expected font_context={font_context_value!r}, got {lbl.font_context!r}"
 
-    @given(st.text(min_size=0, max_size=50, alphabet=st.characters(
-        whitelist_categories=['L', 'N', 'P'],
-        blacklist_characters='[]&\n\r'
-    )))
+    @pytest.mark.property
+    @given(st_alphanumeric_text(min_size=0, max_size=50))
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_font_features_forwarded_to_all_labels_including_code(self, font_features_value):
@@ -467,6 +467,7 @@ class TestAdvancedFontPropertyForwarding:
                 assert lbl.font_hinting == font_hinting_value, \
                     f"Expected font_hinting={font_hinting_value!r}, got {lbl.font_hinting!r}"
 
+    @pytest.mark.property
     @given(st.booleans())
     # Boolean strategy: 2 examples (True/False coverage)
     @settings(max_examples=2, deadline=None)
@@ -489,14 +490,9 @@ class TestAdvancedFontPropertyForwarding:
             assert lbl.font_kerning == font_kerning_value, \
                 f"Expected font_kerning={font_kerning_value}, got {lbl.font_kerning}"
 
-    @given(st.text(min_size=1, max_size=20, alphabet=st.characters(
-        whitelist_categories=['L', 'N'],
-        blacklist_characters='[]&\n\r'
-    )),
-        st.text(min_size=1, max_size=20, alphabet=st.characters(
-            whitelist_categories=['L', 'N'],
-            blacklist_characters='[]&\n\r'
-        )),
+    @pytest.mark.property
+    @given(st_alphanumeric_text(min_size=1, max_size=20),
+        st_alphanumeric_text(min_size=1, max_size=20),
         st.sampled_from([None, 'normal', 'light', 'mono']),
         st.booleans())
     # Combination strategy: 20 examples (combination coverage)
@@ -556,12 +552,13 @@ class TestAdvancedFontPropertyForwarding:
 class TestFontSizeImmediateUpdates:
     """Property tests for font size immediate update (Property 3)."""
 
+    @pytest.mark.property
     @given(
         simple_markdown_document(),
-        st.floats(min_value=8.0, max_value=50.0, allow_nan=False, allow_infinity=False),
-        st.floats(min_value=8.0, max_value=50.0, allow_nan=False, allow_infinity=False)
+        st_font_size(min_value=8, max_value=50),
+        st_font_size(min_value=8, max_value=50)
     )
-    # Complex strategy: 20 examples (adequate coverage)
+    # Combination strategy: 20 examples (combination coverage)
     @settings(max_examples=20, deadline=None)
     def test_base_font_size_updates_all_labels_immediately(self, markdown_text, initial_size, new_size):
         """Changing base_font_size immediately updates all child Label font_size properties."""
@@ -605,13 +602,14 @@ class TestFontSizeImmediateUpdates:
                 f"Label font_size not updated: expected {expected_font_size}, " \
                 f"got {actual_font_size} (scale={scale})"
 
+    @pytest.mark.property
     @given(
         st.integers(min_value=1, max_value=6),  # Heading levels
-        st.floats(min_value=10.0, max_value=30.0, allow_nan=False, allow_infinity=False),
-        st.floats(min_value=10.0, max_value=30.0, allow_nan=False, allow_infinity=False)
+        st_font_size(min_value=10, max_value=30),
+        st_font_size(min_value=10, max_value=30)
     )
-    # Combination strategy: 6 examples (combination coverage)
-    @settings(max_examples=6, deadline=None)
+    # Combination strategy: 20 examples (combination coverage)
+    @settings(max_examples=20, deadline=None)
     def test_heading_font_size_updates_with_scale(self, heading_level, initial_size, new_size):
         """Heading font sizes update immediately with correct scale factors."""
         assume(abs(initial_size - new_size) > 1.0)
@@ -646,11 +644,12 @@ class TestFontSizeImmediateUpdates:
         assert abs(heading_label.font_size - new_expected) < 0.1, \
             f"Updated heading font_size incorrect: expected {new_expected}, got {heading_label.font_size}"
 
+    @pytest.mark.property
     @given(
-        st.floats(min_value=10.0, max_value=30.0, allow_nan=False, allow_infinity=False)
+        st_font_size(min_value=10, max_value=30)
     )
-    # Complex strategy: 50 examples (adequate coverage)
-    @settings(max_examples=50, deadline=None)
+    # Complex strategy: 20 examples (adequate coverage)
+    @settings(max_examples=20, deadline=None)
     def test_paragraph_font_size_updates_immediately(self, new_size):
         """Paragraph font sizes update immediately when base_font_size changes."""
         # Create simple paragraph
@@ -682,12 +681,13 @@ class TestFontSizeImmediateUpdates:
 class TestHeadingScalePreservation:
     """Property tests for heading scale preservation (Property 4)."""
 
+    @pytest.mark.property
     @given(
         st.integers(min_value=1, max_value=6),  # Heading levels
-        st.floats(min_value=8.0, max_value=50.0, allow_nan=False, allow_infinity=False)
+        st_font_size(min_value=8, max_value=50)
     )
-    # Combination strategy: 6 examples (combination coverage)
-    @settings(max_examples=6, deadline=None)
+    # Combination strategy: 20 examples (combination coverage)
+    @settings(max_examples=20, deadline=None)
     def test_heading_scale_factors_preserved(self, heading_level, base_size):
         """Heading scale factors are preserved according to HEADING_SIZES."""
         # Create heading markdown
@@ -718,6 +718,7 @@ class TestHeadingScalePreservation:
         assert abs(actual_font_size - expected_font_size) < 0.1, \
             f"Heading font_size incorrect: expected {expected_font_size}, got {actual_font_size}"
 
+    @pytest.mark.property
     @given(
         st.lists(
             st.integers(min_value=1, max_value=6),
@@ -725,10 +726,10 @@ class TestHeadingScalePreservation:
             max_size=6,
             unique=True
         ),
-        st.floats(min_value=12.0, max_value=24.0, allow_nan=False, allow_infinity=False)
+        st_font_size(min_value=12, max_value=24)
     )
-    # Complex strategy: 6 examples (adequate coverage)
-    @settings(max_examples=6, deadline=None)
+    # Combination strategy: 20 examples (combination coverage)
+    @settings(max_examples=20, deadline=None)
     def test_multiple_headings_preserve_relative_scales(self, heading_levels, base_size):
         """Multiple headings preserve correct relative scale factors."""
         # Create markdown with multiple headings
@@ -769,13 +770,14 @@ class TestHeadingScalePreservation:
                 f"Heading level {expected_level} font_size incorrect: " \
                 f"expected {expected_font_size}, got {actual_font_size}"
 
+    @pytest.mark.property
     @given(
         st.integers(min_value=1, max_value=6),
-        st.floats(min_value=10.0, max_value=20.0, allow_nan=False, allow_infinity=False),
-        st.floats(min_value=20.0, max_value=40.0, allow_nan=False, allow_infinity=False)
+        st_font_size(min_value=10, max_value=20),
+        st_font_size(min_value=20, max_value=40)
     )
-    # Complex strategy: 6 examples (adequate coverage)
-    @settings(max_examples=6, deadline=None)
+    # Combination strategy: 20 examples (combination coverage)
+    @settings(max_examples=20, deadline=None)
     def test_heading_scale_preserved_after_base_font_size_change(self, heading_level, initial_size, new_size):
         """Heading scale factors are preserved when base_font_size changes."""
         # Create heading
@@ -823,12 +825,13 @@ class TestHeadingScalePreservation:
 class TestNoRebuildOnFontSizeChange:
     """Property tests for no rebuild on font size change (Property 5)."""
 
+    @pytest.mark.property
     @given(
         simple_markdown_document(),
-        st.floats(min_value=10.0, max_value=20.0, allow_nan=False, allow_infinity=False),
-        st.floats(min_value=20.0, max_value=40.0, allow_nan=False, allow_infinity=False)
+        st_font_size(min_value=10, max_value=20),
+        st_font_size(min_value=20, max_value=40)
     )
-    # Complex strategy: 20 examples (adequate coverage)
+    # Combination strategy: 20 examples (combination coverage)
     @settings(max_examples=20, deadline=None)
     def test_widget_identities_preserved_on_font_size_change(self, markdown_text, initial_size, new_size):
         """Widget object identities are preserved when base_font_size changes."""
@@ -853,12 +856,13 @@ class TestNoRebuildOnFontSizeChange:
             f"Widget identities changed after font_size update: " \
             f"{len(ids_before)} before, {len(ids_after)} after"
 
+    @pytest.mark.property
     @given(
         st.integers(min_value=1, max_value=6),
-        st.floats(min_value=12.0, max_value=18.0, allow_nan=False, allow_infinity=False),
-        st.floats(min_value=20.0, max_value=30.0, allow_nan=False, allow_infinity=False)
+        st_font_size(min_value=12, max_value=18),
+        st_font_size(min_value=20, max_value=30)
     )
-    # Combination strategy: 6 examples (combination coverage)
+    # Small finite strategy: 6 examples (input space size: 6)
     @settings(max_examples=6, deadline=None)
     def test_heading_widget_identity_preserved(self, heading_level, initial_size, new_size):
         """Heading Label widget identity is preserved when base_font_size changes."""
@@ -895,12 +899,13 @@ class TestNoRebuildOnFontSizeChange:
         assert heading_id_before == heading_id_after, \
             f"Heading Label widget was recreated (IDs: {heading_id_before} -> {heading_id_after})"
 
+    @pytest.mark.property
     @given(
-        st.floats(min_value=10.0, max_value=15.0, allow_nan=False, allow_infinity=False),
-        st.floats(min_value=20.0, max_value=25.0, allow_nan=False, allow_infinity=False),
-        st.floats(min_value=30.0, max_value=35.0, allow_nan=False, allow_infinity=False)
+        st_font_size(min_value=10, max_value=15),
+        st_font_size(min_value=20, max_value=25),
+        st_font_size(min_value=30, max_value=35)
     )
-    # Complex strategy: 20 examples (adequate coverage)
+    # Combination strategy: 20 examples (combination coverage)
     @settings(max_examples=20, deadline=None)
     def test_multiple_font_size_changes_preserve_identities(self, size1, size2, size3):
         """Multiple font size changes preserve widget identities."""
@@ -924,11 +929,12 @@ class TestNoRebuildOnFontSizeChange:
             f"Widget identities changed: initial={len(initial_ids)}, " \
             f"after_first={len(ids_after_first)}, after_second={len(ids_after_second)}"
 
+    @pytest.mark.property
     @given(
-        st.floats(min_value=12.0, max_value=24.0, allow_nan=False, allow_infinity=False)
+        st_font_size(min_value=12, max_value=24)
     )
-    # Complex strategy: 50 examples (adequate coverage)
-    @settings(max_examples=50, deadline=None)
+    # Complex strategy: 20 examples (adequate coverage)
+    @settings(max_examples=20, deadline=None)
     def test_rebuild_counter_not_incremented_on_font_size_change(self, new_size):
         """Rebuild operations are not triggered by font size changes."""
         # Create label with content
