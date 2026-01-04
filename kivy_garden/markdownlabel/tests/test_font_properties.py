@@ -226,9 +226,7 @@ class TestLineHeightPropertyForwarding:
     # Combination strategy: 20 examples (combination coverage)
     @settings(max_examples=20, deadline=None)
     def test_line_height_change_triggers_rebuild(self, lh1, lh2):
-        """Changing line_height triggers widget rebuild with new value.
-
-        """
+        """Changing line_height triggers widget rebuild with new value."""
         assume(not floats_equal(lh1, lh2))
 
         label = MarkdownLabel(text='Hello World', line_height=lh1)

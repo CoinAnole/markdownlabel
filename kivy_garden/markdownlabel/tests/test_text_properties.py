@@ -433,9 +433,7 @@ class TestUnicodeErrorsForwarding:
     # Use 9 examples for full coverage
     @settings(max_examples=9, deadline=None)
     def test_unicode_errors_change_triggers_rebuild(self, errors1, errors2):
-        """Changing unicode_errors triggers widget rebuild with new value.
-
-        """
+        """Changing unicode_errors triggers widget rebuild with new value."""
         assume(errors1 != errors2)
 
         label = MarkdownLabel(text='Hello World', unicode_errors=errors1)
@@ -577,9 +575,7 @@ class TestStripForwarding:
     # Use 4 examples for full coverage
     @settings(max_examples=4, deadline=None)
     def test_strip_change_triggers_rebuild(self, strip1, strip2):
-        """Changing strip triggers widget rebuild with new value.
-
-        """
+        """Changing strip triggers widget rebuild with new value."""
         assume(strip1 != strip2)
 
         label = MarkdownLabel(text='Hello World', strip=strip1)

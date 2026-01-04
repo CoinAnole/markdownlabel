@@ -165,9 +165,7 @@ class TestAdvancedFontPropertiesForwarding:
     # Use 4 examples for full coverage
     @settings(max_examples=4, deadline=None)
     def test_font_kerning_change_triggers_rebuild(self, kerning1, kerning2):
-        """Changing font_kerning triggers widget rebuild with new value.
-
-        """
+        """Changing font_kerning triggers widget rebuild with new value."""
         assume(kerning1 != kerning2)
 
         label = MarkdownLabel(text='Hello World', font_kerning=kerning1)
@@ -199,9 +197,7 @@ class TestAdvancedFontPropertiesForwarding:
     # Use 4 examples for full coverage
     @settings(max_examples=4, deadline=None)
     def test_font_blended_change_triggers_rebuild(self, blended1, blended2):
-        """Changing font_blended triggers widget rebuild with new value.
-
-        """
+        """Changing font_blended triggers widget rebuild with new value."""
         assume(blended1 != blended2)
 
         label = MarkdownLabel(text='Hello World', font_blended=blended1)
