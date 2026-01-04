@@ -13,10 +13,8 @@ from pathlib import Path
 import pytest
 
 
-# **Feature: test-refactoring, Property 12: Test Discovery Performance**
 # *For any* test discovery operation, the time to discover all tests should not
 # increase significantly compared to the original structure
-# **Validates: Requirements 6.4, 6.5**
 
 @pytest.mark.test_tests
 class TestDiscoveryPerformance:
@@ -25,8 +23,6 @@ class TestDiscoveryPerformance:
     def test_fast_test_discovery_baseline(self):
         """Test that test discovery works correctly for the refactored structure.
 
-        **Feature: test-refactoring, Property 12: Test Discovery Performance**
-        **Validates: Requirements 6.4, 6.5**
         """
         import subprocess
 
@@ -73,8 +69,6 @@ class TestDiscoveryPerformance:
     def test_individual_module_discovery_functionality(self, module_name):
         """Test that individual modules can be discovered correctly.
 
-        **Feature: test-refactoring, Property 12: Test Discovery Performance**
-        **Validates: Requirements 6.4, 6.5**
         """
         import subprocess
 
@@ -108,8 +102,6 @@ class TestDiscoveryPerformance:
     def test_discovery_startup_functionality(self):
         """Test that discovery startup works correctly for refactored structure.
 
-        **Feature: test-refactoring, Property 12: Test Discovery Performance**
-        **Validates: Requirements 6.4, 6.5**
         """
         import subprocess
 
@@ -141,11 +133,9 @@ class TestDiscoveryPerformance:
             f"Discovery output doesn't contain expected patterns. Output: {result.stdout}"
 
 
-# **Feature: test-suite-refactoring, Property 5: Rebuild Contract Enforcement**
 # *For any* test that claims to test rebuild behavior, the test SHALL verify both
 # that the rebuild occurred (or didn't occur as appropriate) AND that the resulting
 # state is correct.
-# **Validates: Requirements 4.1, 4.2, 4.4**
 
 @pytest.mark.test_tests
 class TestRebuildContractEnforcement:
@@ -203,8 +193,6 @@ class TestRebuildContractEnforcement:
     def test_rebuild_contract_enforcement(self):
         """Test that all tests claiming to test rebuilds actually verify rebuilds.
 
-        **Feature: test-suite-refactoring, Property 5: Rebuild Contract Enforcement**
-        **Validates: Requirements 4.1, 4.2, 4.4**
         """
         test_dir = Path(__file__).parent
         violations = []
@@ -257,8 +245,6 @@ class TestRebuildContractEnforcement:
     def test_rebuild_verification_patterns_work(self):
         """Test that our rebuild verification detection patterns work correctly.
 
-        **Feature: test-suite-refactoring, Property 5: Rebuild Contract Enforcement**
-        **Validates: Requirements 4.1, 4.2, 4.4**
         """
         # Test cases with rebuild verification
         valid_rebuild_tests = [

@@ -73,11 +73,9 @@ def link_token(draw):
     }
 
 
-# **Feature: markdown-label, Property 4: Inline Formatting Conversion**
 # *For any* Markdown text containing inline formatting (bold, italic, code, strikethrough),
 # the rendered Kivy markup SHALL contain the corresponding tags:
 # **text** → [b]text[/b], *text* → [i]text[/i], `code` → [font=monospace]code[/font], ~~text~~ → [s]text[/s]
-# **Validates: Requirements 3.2, 3.3, 3.4, 3.5**
 
 class TestInlineFormattingConversion:
     """Property tests for inline formatting conversion (Property 4)."""
@@ -164,10 +162,8 @@ class TestInlineFormattingConversion:
         assert '[/color]' in result, f"Link should close color styling, got: {result}"
 
 
-# **Feature: markdown-label, Property 19: Special Character Escaping**
 # *For any* Markdown text containing Kivy markup special characters ([, ], &),
 # the rendered Label text SHALL properly escape them (&bl;, &br;, &amp;) to prevent markup injection.
-# **Validates: Requirements 13.3**
 
 class TestSpecialCharacterEscaping:
     """Property tests for special character escaping (Property 19)."""
@@ -395,11 +391,9 @@ class TestURLMarkupSafety:
             assert ']' not in escaped_url, f"Escaped URL should not contain ]: {escaped_url}"
 
 
-# **Feature: test-improvements, Property 6: URL markup safety**
 # *For any* URL containing Kivy markup characters (], [, or markup patterns),
 # the InlineRenderer SHALL escape or quote the URL to prevent markup injection
 # while preserving link functionality.
-# **Validates: Requirements 4.1, 4.2, 4.4**
 
 class TestURLMarkupSafetyProperty:
     """Property test for URL markup safety (Property 6)."""
@@ -419,7 +413,6 @@ class TestURLMarkupSafetyProperty:
     @settings(max_examples=20, deadline=None)
     def test_urls_with_brackets_are_safe(self, full_url):
         """URLs containing brackets should be safely escaped."""
-        # **Feature: test-improvements, Property 6: URL markup safety**
         renderer = InlineRenderer()
 
         token = {
@@ -655,10 +648,8 @@ class TestHTMLSecurity:
                 assert '&amp;' in result, f"Should handle & characters: {result}"
 
 
-# **Feature: test-improvements, Property 9: HTML content escaping**
 # *For any* inline HTML content, the InlineRenderer SHALL escape HTML tags to render them as plain text
 # without introducing exploitable Kivy markup.
-# **Validates: Requirements 6.1, 6.2, 6.4**
 
 class TestHTMLContentEscapingProperty:
     """Property test for HTML content escaping (Property 9)."""
@@ -687,7 +678,6 @@ class TestHTMLContentEscapingProperty:
     @settings(max_examples=20, deadline=None)
     def test_html_content_is_escaped(self, html_content):
         """HTML content should be escaped to prevent markup injection."""
-        # **Feature: test-improvements, Property 9: HTML content escaping**
         renderer = InlineRenderer()
 
         token = {'type': 'inline_html', 'raw': html_content}
@@ -774,7 +764,6 @@ class TestHTMLContentEscapingProperty:
     @settings(max_examples=20, deadline=None)
     def test_arbitrary_html_content_safety(self, content):
         """Any arbitrary content in HTML tags should be safely escaped."""
-        # **Feature: test-improvements, Property 9: HTML content escaping**
 
         # Wrap content in various HTML tag patterns
         html_patterns = [

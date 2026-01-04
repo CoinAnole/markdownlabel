@@ -13,10 +13,8 @@ import os
 from kivy_garden.markdownlabel.tests.modules.duplicate_detector import DuplicateDetector
 
 
-# **Feature: test-suite-refactoring, Property 9: Code Duplication Minimization**
 # *For any* test file, the amount of duplicated code (identical function implementations,
 # repeated setup patterns) SHALL be below a reasonable threshold.
-# **Validates: Requirements 5.4**
 
 
 @st.composite

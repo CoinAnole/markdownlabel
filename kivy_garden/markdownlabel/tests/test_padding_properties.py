@@ -20,10 +20,8 @@ from .test_utils import (
 )
 
 
-# **Feature: label-compatibility, Property 7: Padding Application**
 # *For any* MarkdownLabel with padding set to value P, the padding SHALL be
 # normalized and stored correctly according to Kivy's VariableListProperty rules.
-# **Validates: Requirements 2.1**
 
 class TestPaddingApplication:
     """Property tests for padding application (Property 7)."""
@@ -130,10 +128,8 @@ class TestPaddingApplication:
                 f"Default padding[{i}]: expected {exp}, got {actual}"
 
 
-# **Feature: label-compatibility, Property 4: Padding Forwarding**
 # *For any* MarkdownLabel with `text_padding` set to value P, all child Labels that display
 # text content SHALL have their `padding` property equal to P.
-# **Validates: Requirements 2.1, 2.2**
 
 class TestPaddingForwarding:
     """Property tests for padding forwarding (Property 4)."""
@@ -279,10 +275,8 @@ Regular paragraph
                 f"Expected default padding=[0, 0, 0, 0], got {list(lbl.padding)}"
 
 
-# **Feature: label-compatibility, Property 5: Text Padding Dynamic Updates**
 # *For any* MarkdownLabel, when `text_padding` is changed from value A to value B, all child Labels
 # SHALL be updated to reflect the new padding value B.
-# **Validates: Requirements 2.3**
 
 class TestPaddingDynamicUpdates:
     """Property tests for text_padding dynamic updates (Property 5)."""
@@ -383,11 +377,9 @@ Paragraph with text.
                     f"Update {i}: expected padding={new_padding}, got {list(lbl.padding)}"
 
 
-# **Feature: label-compatibility, Property 6: Padding with Nested Structures**
 # *For any* MarkdownLabel containing nested structures (lists, tables, block quotes), all text-containing
 # Labels within those structures SHALL have the `padding` property applied without
 # breaking the layout structure.
-# **Validates: Requirements 2.4**
 
 class TestPaddingWithNestedStructures:
     """Property tests for padding with nested structures (Property 6)."""
@@ -546,10 +538,8 @@ Final paragraph.
             assert lbl.parent is not None, "Label should have a parent widget"
 
 
-# **Feature: label-compatibility, Property 8: text_padding applies to child Labels**
 # *For any* MarkdownLabel with text_padding set to value P, all child Label widgets
 # SHALL have their padding property set to P.
-# **Validates: Requirements 4.1**
 
 class TestTextPaddingAppliesToChildLabels:
     """Property tests for text_padding applies to child Labels (Property 8)."""
@@ -621,10 +611,8 @@ class TestTextPaddingAppliesToChildLabels:
                 f"Expected padding={padding}, got {list(lbl.padding)}"
 
 
-# **Feature: label-compatibility, Property 9: padding applies to container**
 # *For any* MarkdownLabel with padding set to value P, the BoxLayout container (self)
 # SHALL have padding P, and child Label widgets SHALL NOT have their padding affected by this property.
-# **Validates: Requirements 4.2**
 
 class TestPaddingAppliesToContainer:
     """Property tests for padding applies to container (Property 9)."""
@@ -703,9 +691,7 @@ class TestPaddingAppliesToContainer:
                 f"Expected child Label padding unchanged={initial_child_padding}, got {list(lbl.padding)}"
 
 
-# **Feature: label-compatibility, Property 10: label_padding alias synchronization**
 # *For any* value V assigned to label_padding, text_padding SHALL equal V, and vice versa.
-# **Validates: Requirements 4.4**
 
 class TestLabelPaddingAliasSynchronization:
     """Property tests for label_padding alias synchronization (Property 10)."""

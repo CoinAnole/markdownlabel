@@ -21,10 +21,8 @@ class TestCommentFormatValidation:
         """Set up test fixtures."""
         self.validator = CommentFormatValidator()
 
-    # **Feature: test-comment-standardization, Property 1: Comment Format Compliance**
     # *For any* property-based test with max_examples settings, the associated comment
     # SHALL follow the standardized format pattern "# [Strategy Type] strategy: [N] examples ([Rationale])"
-    # **Validates: Requirements 1.2, 3.1, 3.5**
 
     @pytest.mark.property
     @given(
@@ -213,11 +211,9 @@ class TestCustomValueDocumentation:
         """Set up test fixtures."""
         self.analyzer = CommentAnalyzer()
 
-    # **Feature: test-comment-standardization, Property 2: Custom Value Documentation**
     # *For any* property-based test using custom max_examples values (not in
     # standard set {2, 5, 10, 20, 50, 100}),
     # there SHALL exist a comment explaining the rationale
-    # **Validates: Requirements 1.1, 4.5**
 
     @pytest.mark.property
     @given(
@@ -372,11 +368,9 @@ class TestStrategyTypeConsistency:
         self.mapper = StrategyTypeMapper()
         self.analyzer = CodeAnalyzer()
 
-    # **Feature: test-comment-standardization, Property 3: Strategy Type Consistency**
     # *For any* strategy type classification, all comments documenting that
     # strategy type
     # SHALL use consistent terminology across all test files
-    # **Validates: Requirements 1.3, 2.1, 3.2, 4.2**
 
     @pytest.mark.property
     @given(
@@ -540,11 +534,9 @@ class TestMachineReadableFormat:
         self.analyzer = CommentAnalyzer()
         self.validator = CommentFormatValidator()
 
-    # **Feature: test-comment-standardization, Property 8: Machine-Readable Format**
     # *For any* standardized comment, automated parsing tools SHALL be able to
     # extract
     # strategy type, example count, and rationale information
-    # **Validates: Requirements 4.1, 4.3**
 
     @pytest.mark.property
     @given(

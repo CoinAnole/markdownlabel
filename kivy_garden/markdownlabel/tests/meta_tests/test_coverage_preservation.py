@@ -13,10 +13,8 @@ import os
 # Import test_utils for helper functions
 from kivy_garden.markdownlabel.tests.test_utils import simulate_coverage_measurement
 
-# **Feature: test-suite-refactoring, Property 10: Coverage Preservation**
 # *For any* refactoring operation on the test suite, the overall test coverage
 # SHALL not decrease.
-# **Validates: Requirements 5.5**
 
 
 @st.composite

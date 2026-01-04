@@ -20,11 +20,9 @@ from .test_utils import (
 )
 
 
-# **Feature: label-compatibility, Property 11: Advanced Font Properties Forwarding**
 # *For any* font advanced property (font_family, font_context, font_features, font_hinting,
 # font_kerning, font_blended), when set on MarkdownLabel, all applicable child Labels
 # SHALL have the same property value.
-# **Validates: Requirements 11.1, 11.2, 11.3, 11.4, 11.5, 11.6**
 
 @pytest.mark.property
 class TestAdvancedFontPropertiesForwarding:
@@ -39,8 +37,6 @@ class TestAdvancedFontPropertiesForwarding:
     def test_font_family_forwarded_to_labels(self, font_family_value):
         """font_family is forwarded to all internal Labels.
 
-        **Feature: label-compatibility, Property 11: Advanced Font Properties Forwarding**
-        **Validates: Requirements 11.1**
         """
         label = MarkdownLabel(text='Hello World', font_family=font_family_value)
 
@@ -60,8 +56,6 @@ class TestAdvancedFontPropertiesForwarding:
     def test_font_context_forwarded_to_labels(self, font_context_value):
         """font_context is forwarded to all internal Labels.
 
-        **Feature: label-compatibility, Property 11: Advanced Font Properties Forwarding**
-        **Validates: Requirements 11.2**
         """
         label = MarkdownLabel(text='Hello World', font_context=font_context_value)
 
@@ -81,8 +75,6 @@ class TestAdvancedFontPropertiesForwarding:
     def test_font_features_forwarded_to_labels(self, font_features_value):
         """font_features is forwarded to all internal Labels.
 
-        **Feature: label-compatibility, Property 11: Advanced Font Properties Forwarding**
-        **Validates: Requirements 11.3**
         """
         label = MarkdownLabel(text='Hello World', font_features=font_features_value)
 
@@ -97,8 +89,6 @@ class TestAdvancedFontPropertiesForwarding:
     def test_font_hinting_forwarded_to_labels(self, font_hinting_value):
         """font_hinting is forwarded to all internal Labels.
 
-        **Feature: label-compatibility, Property 11: Advanced Font Properties Forwarding**
-        **Validates: Requirements 11.4**
         """
         label = MarkdownLabel(text='Hello World', font_hinting=font_hinting_value)
 
@@ -117,8 +107,6 @@ class TestAdvancedFontPropertiesForwarding:
     def test_font_kerning_forwarded_to_labels(self, font_kerning_value):
         """font_kerning is forwarded to all internal Labels.
 
-        **Feature: label-compatibility, Property 11: Advanced Font Properties Forwarding**
-        **Validates: Requirements 11.5**
         """
         label = MarkdownLabel(text='Hello World', font_kerning=font_kerning_value)
 
@@ -135,8 +123,6 @@ class TestAdvancedFontPropertiesForwarding:
     def test_font_blended_forwarded_to_labels(self, font_blended_value):
         """font_blended is forwarded to all internal Labels.
 
-        **Feature: label-compatibility, Property 11: Advanced Font Properties Forwarding**
-        **Validates: Requirements 11.6**
         """
         label = MarkdownLabel(text='Hello World', font_blended=font_blended_value)
 
@@ -181,8 +167,6 @@ class TestAdvancedFontPropertiesForwarding:
     def test_font_kerning_change_triggers_rebuild(self, kerning1, kerning2):
         """Changing font_kerning triggers widget rebuild with new value.
 
-        **Feature: label-compatibility, Property 11: Advanced Font Properties Forwarding**
-        **Validates: Requirements 11.5**
         """
         assume(kerning1 != kerning2)
 
@@ -217,8 +201,6 @@ class TestAdvancedFontPropertiesForwarding:
     def test_font_blended_change_triggers_rebuild(self, blended1, blended2):
         """Changing font_blended triggers widget rebuild with new value.
 
-        **Feature: label-compatibility, Property 11: Advanced Font Properties Forwarding**
-        **Validates: Requirements 11.6**
         """
         assume(blended1 != blended2)
 
@@ -289,10 +271,8 @@ class TestAdvancedFontPropertiesForwarding:
             f"Default font_context should be None, got {label.font_context!r}"
 
 
-# **Feature: label-compatibility, Property 12: disabled_color Application**
 # *For any* MarkdownLabel with `disabled=True` and any `disabled_color` value,
 # all internal Labels SHALL use `disabled_color` instead of `color`.
-# **Validates: Requirements 12.1, 12.2**
 
 @pytest.mark.property
 class TestDisabledColorApplication:
@@ -307,8 +287,6 @@ class TestDisabledColorApplication:
     def test_disabled_color_stored_correctly(self, disabled_color):
         """disabled_color property stores the value correctly.
 
-        **Feature: label-compatibility, Property 12: disabled_color Application**
-        **Validates: Requirements 12.1**
         """
         label = MarkdownLabel(text='Hello World', disabled_color=disabled_color)
 
@@ -324,8 +302,6 @@ class TestDisabledColorApplication:
     def test_disabled_color_applied_when_disabled(self, disabled_color):
         """When disabled=True, internal Labels use disabled_color instead of color.
 
-        **Feature: label-compatibility, Property 12: disabled_color Application**
-        **Validates: Requirements 12.1, 12.2**
         """
         regular_color = [1, 0, 0, 1]  # Red
 
@@ -355,8 +331,6 @@ class TestDisabledColorApplication:
     def test_regular_color_applied_when_not_disabled(self, regular_color):
         """When disabled=False, internal Labels use regular color.
 
-        **Feature: label-compatibility, Property 12: disabled_color Application**
-        **Validates: Requirements 12.1, 12.2**
         """
         disabled_color = [0.5, 0.5, 0.5, 0.3]  # Gray semi-transparent
 
@@ -383,8 +357,6 @@ class TestDisabledColorApplication:
     def test_disabled_state_determines_color(self, disabled):
         """disabled property determines which color is used.
 
-        **Feature: label-compatibility, Property 12: disabled_color Application**
-        **Validates: Requirements 12.1, 12.2**
         """
         regular_color = [1, 0, 0, 1]  # Red
         disabled_color = [0.5, 0.5, 0.5, 0.3]  # Gray semi-transparent
@@ -411,8 +383,6 @@ class TestDisabledColorApplication:
     def test_disabled_change_triggers_rebuild(self):
         """Changing disabled property triggers widget rebuild.
 
-        **Feature: label-compatibility, Property 12: disabled_color Application**
-        **Validates: Requirements 12.1, 12.2**
         """
         regular_color = [1, 0, 0, 1]  # Red
         disabled_color = [0.5, 0.5, 0.5, 0.3]  # Gray semi-transparent
@@ -530,10 +500,8 @@ class TestDisabledColorApplication:
             f"Default disabled should be False, got {label.disabled}"
 
 
-# **Feature: label-compatibility, Property 14: Reactive Rebuild on Property Change**
 # *For any* forwarding property change after initial rendering, the widget tree
 # SHALL be rebuilt with the new property value applied to all relevant internal Labels.
-# **Validates: Requirements 1.2, 3.3, 4.2, 9.3**
 
 # Strategy for generating valid property values
 # Small finite strategy: 3 examples (input space size: 3)
@@ -563,8 +531,6 @@ class TestReactiveRebuildOnPropertyChange:
         Validates: Requirement 1.2 - WHEN `font_name` changes after initial rendering
         THEN the MarkdownLabel SHALL rebuild widgets with the new font applied.
 
-        **Feature: label-compatibility, Property 14: Reactive Rebuild on Property Change**
-        **Validates: Requirements 1.2**
         """
         assume(font1 != font2)
 
@@ -604,8 +570,6 @@ class TestReactiveRebuildOnPropertyChange:
         Validates: Requirement 3.3 - WHEN `color` changes after initial rendering
         THEN the MarkdownLabel SHALL update color on existing widgets without rebuild.
 
-        **Feature: label-compatibility, Property 14: Reactive Rebuild on Property Change**
-        **Validates: Requirements 3.3**
         """
         assume(not colors_equal(color1, color2))
 
@@ -645,8 +609,6 @@ class TestReactiveRebuildOnPropertyChange:
         Validates: Requirement 4.2 - WHEN `line_height` changes after initial rendering
         THEN the MarkdownLabel SHALL update line_height on existing widgets without rebuild.
 
-        **Feature: label-compatibility, Property 14: Reactive Rebuild on Property Change**
-        **Validates: Requirements 4.2**
         """
         assume(not floats_equal(lh1, lh2))
 
@@ -686,8 +648,6 @@ class TestReactiveRebuildOnPropertyChange:
         Validates: Requirement 9.3 - WHEN `text_size` width changes
         THEN the MarkdownLabel SHALL update text_size on existing widgets without rebuild.
 
-        **Feature: label-compatibility, Property 14: Reactive Rebuild on Property Change**
-        **Validates: Requirements 9.3**
         """
         assume(abs(width1 - width2) > 1)  # Ensure they're different
 
@@ -721,8 +681,6 @@ class TestReactiveRebuildOnPropertyChange:
     def test_multiple_property_changes_rebuild_correctly(self, font_name, color, line_height):
         """Multiple property changes each trigger rebuilds with correct values.
 
-        **Feature: label-compatibility, Property 14: Reactive Rebuild on Property Change**
-        **Validates: Requirements 1.2, 3.3, 4.2**
         """
         label = MarkdownLabel(text='# Heading\n\nParagraph text')
 
@@ -759,8 +717,6 @@ class TestReactiveRebuildOnPropertyChange:
     def test_halign_updates_value(self, halign1, halign2):
         """Changing halign after initial rendering updates value on existing widgets.
 
-        **Feature: label-compatibility, Property 14: Reactive Rebuild on Property Change**
-        **Validates: Requirements 1.2**
         """
 
         label = MarkdownLabel(text='Hello World', halign=halign1)
@@ -790,8 +746,6 @@ class TestReactiveRebuildOnPropertyChange:
     def test_valign_updates_value(self, valign1, valign2):
         """Changing valign after initial rendering updates value on existing widgets.
 
-        **Feature: label-compatibility, Property 14: Reactive Rebuild on Property Change**
-        **Validates: Requirements 1.2**
         """
 
         label = MarkdownLabel(text='Hello World', valign=valign1)
@@ -820,8 +774,6 @@ class TestReactiveRebuildOnPropertyChange:
     def test_unicode_errors_updates_value(self, errors1, errors2):
         """Changing unicode_errors after initial rendering triggers rebuild with new value.
 
-        **Feature: label-compatibility, Property 14: Reactive Rebuild on Property Change**
-        **Validates: Requirements 1.2**
         """
 
         label = MarkdownLabel(text='Hello World', unicode_errors=errors1)
@@ -850,8 +802,6 @@ class TestReactiveRebuildOnPropertyChange:
     def test_strip_updates_value(self, strip1, strip2):
         """Changing strip after initial rendering triggers rebuild with new value.
 
-        **Feature: label-compatibility, Property 14: Reactive Rebuild on Property Change**
-        **Validates: Requirements 1.2**
         """
         assume(strip1 != strip2)
 
@@ -881,8 +831,6 @@ class TestReactiveRebuildOnPropertyChange:
     def test_disabled_change_triggers_rebuild(self, disabled1, disabled2):
         """Changing disabled after initial rendering triggers widget rebuild.
 
-        **Feature: label-compatibility, Property 14: Reactive Rebuild on Property Change**
-        **Validates: Requirements 12.1, 12.2**
         """
         assume(disabled1 != disabled2)
 
@@ -924,8 +872,6 @@ class TestReactiveRebuildOnPropertyChange:
     def test_rebuild_preserves_content_structure(self, markdown_text, font1, font2):
         """Rebuilding widgets preserves the content structure.
 
-        **Feature: label-compatibility, Property 14: Reactive Rebuild on Property Change**
-        **Validates: Requirements 1.2**
         """
         assume(markdown_text.strip())
         assume(font1 != font2)
@@ -952,8 +898,6 @@ class TestReactiveRebuildOnPropertyChange:
     def test_font_kerning_updates_value(self, kerning1, kerning2):
         """Changing font_kerning after initial rendering triggers rebuild with new value.
 
-        **Feature: label-compatibility, Property 14: Reactive Rebuild on Property Change**
-        **Validates: Requirements 11.5**
         """
         assume(kerning1 != kerning2)
 
@@ -983,8 +927,6 @@ class TestReactiveRebuildOnPropertyChange:
     def test_font_blended_updates_value(self, blended1, blended2):
         """Changing font_blended after initial rendering triggers rebuild with new value.
 
-        **Feature: label-compatibility, Property 14: Reactive Rebuild on Property Change**
-        **Validates: Requirements 11.6**
         """
         assume(blended1 != blended2)
 

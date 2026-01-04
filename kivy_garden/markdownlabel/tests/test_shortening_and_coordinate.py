@@ -33,10 +33,8 @@ from .test_utils import (
 )
 
 
-# **Feature: label-compatibility, Property 4: Text Shortening Property Forwarding**
 # *For any* MarkdownLabel with shortening properties (shorten, shorten_from, split_str,
 # max_lines, ellipsis_options), all child Labels SHALL have the same property values.
-# **Validates: Requirements 4.1, 4.2, 4.3, 4.4, 4.5**
 
 class TestShorteningPropertyForwarding:
     """Property tests for shortening property forwarding (Property 4)."""
@@ -352,11 +350,9 @@ Paragraph text
                 f"After change, expected shorten={shorten2}, got {lbl.shorten}"
 
 
-# **Feature: label-compatibility-phase2, Property 5: Coordinate Translation for refs and anchors**
 # *For any* MarkdownLabel containing links (refs) or anchors, the `refs` and `anchors`
 # properties SHALL return coordinates translated to MarkdownLabel's local coordinate space
 # (not child Label's coordinate space).
-# **Validates: Requirements 5.1, 5.2, 5.3**
 #
 # Note: In Kivy, the `refs` dictionary on a Label is only populated after the texture
 # is rendered. In headless test environments, refs may be empty. These tests verify:
@@ -661,14 +657,12 @@ class TestCoordinateTranslation:
         assert translated_pos[1] == y + offset_y
 
 
-# **Feature: headless-ci-testing, Property 3: Refs Coordinate Translation Math**
 # *For any* MarkdownLabel containing a child Label with known `refs`, `pos`, `size`,
 # and `texture_size`, the aggregated `refs` property SHALL return bounding boxes
 # translated according to the formula:
 # - `base_x = parent_offset_x + (label.center_x - tex_w / 2.0)`
 # - `base_y = parent_offset_y + (label.center_y + tex_h / 2.0)`
 # - `translated_box = [base_x + x1, base_y - y1, base_x + x2, base_y - y2]`
-# **Validates: Requirements 3.1, 3.3, 3.4**
 
 
 @pytest.mark.slow
@@ -963,7 +957,6 @@ class TestDeterministicRefsTranslation:
         - `translated_box = [base_x + x1, base_y - y1, base_x + x2, base_y - y2]`
 
         **Property 3: Refs Coordinate Translation Math**
-        **Validates: Requirements 3.1, 3.3, 3.4**
         """
         # Create MarkdownLabel
         md_label = MarkdownLabel(text='Test')
@@ -1018,14 +1011,12 @@ class TestDeterministicRefsTranslation:
             assert abs(expected - actual) < 0.001, \
                 f"Box coord {i}: expected {expected}, got {actual}"
 
-# **Feature: headless-ci-testing, Property 4: Anchors Coordinate Translation Math**
 # *For any* MarkdownLabel containing a child Label with known `anchors`, `pos`, `size`,
 # and `texture_size`, the aggregated `anchors` property SHALL return positions
 # translated according to the formula:
 # - `base_x = parent_offset_x + (label.center_x - tex_w / 2.0)`
 # - `base_y = parent_offset_y + (label.center_y + tex_h / 2.0)`
 # - `translated_anchor = (base_x + ax, base_y - ay)`
-# **Validates: Requirements 3.2, 3.3, 3.4**
 
 
 @pytest.mark.slow
@@ -1283,7 +1274,6 @@ class TestDeterministicAnchorsTranslation:
         st.floats(min_value=0, max_value=100, allow_nan=False, allow_infinity=False),
         st.floats(min_value=0, max_value=50, allow_nan=False, allow_infinity=False),
     )
-    # **Feature: headless-ci-testing, Property 4: Anchors Coordinate Translation Math**
     # Complex strategy with 10 float parameters: 100 examples for adequate coverage
     @settings(max_examples=100, deadline=None)
     def test_property_anchors_coordinate_translation_math(
@@ -1300,7 +1290,6 @@ class TestDeterministicAnchorsTranslation:
         - `translated_anchor = (base_x + ax, base_y - ay)`
 
         **Property 4: Anchors Coordinate Translation Math**
-        **Validates: Requirements 3.2, 3.3, 3.4**
         """
         # Create MarkdownLabel
         md_label = MarkdownLabel(text='Test')

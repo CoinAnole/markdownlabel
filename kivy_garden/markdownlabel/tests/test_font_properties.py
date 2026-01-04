@@ -27,11 +27,9 @@ from .test_utils import (
 line_height_strategy = st.floats(min_value=0.5, max_value=3.0, allow_nan=False, allow_infinity=False)
 
 
-# **Feature: label-compatibility, Property 2: font_name Forwarding**
 # *For any* Markdown text and any font_name value, all internal Labels SHALL have
 # `font_name` set to the specified value, except code blocks which preserve their
 # code_font_name setting.
-# **Validates: Requirements 2.1**
 
 class TestFontNamePropertyForwarding:
     """Property tests for font_name forwarding (Property 2)."""
@@ -113,8 +111,6 @@ class TestFontNamePropertyForwarding:
     def test_font_name_property_forwarding_triggers_rebuild(self, font1, font2):
         """Changing font_name triggers widget rebuild with new font.
 
-        **Feature: label-compatibility, Property 2: font_name Forwarding**
-        **Validates: Requirements 2.1**
         """
         label = MarkdownLabel(text='Hello World', font_name=font1)
 
@@ -169,10 +165,8 @@ class TestFontNamePropertyForwarding:
                 f"Expected font_name={font_name}, got {lbl.font_name}"
 
 
-# **Feature: label-compatibility, Property 4: line_height Forwarding**
 # *For any* Markdown text and any line_height value, all internal Labels SHALL have
 # `line_height` set to the specified value.
-# **Validates: Requirements 4.1**
 
 class TestLineHeightPropertyForwarding:
     """Property tests for line_height forwarding (Property 4)."""
@@ -234,8 +228,6 @@ class TestLineHeightPropertyForwarding:
     def test_line_height_change_triggers_rebuild(self, lh1, lh2):
         """Changing line_height triggers widget rebuild with new value.
 
-        **Feature: label-compatibility, Property 4: line_height Forwarding**
-        **Validates: Requirements 4.1**
         """
         assume(not floats_equal(lh1, lh2))
 
@@ -316,11 +308,9 @@ class TestLineHeightPropertyForwarding:
                 f"Expected line_height={line_height}, got {lbl.line_height}"
 
 
-# **Feature: label-compatibility-phase2, Property 6: Font Advanced Property Forwarding**
 # *For any* font advanced properties (font_family, font_context, font_features,
 # font_hinting, font_kerning), all Labels SHALL receive these properties EXCEPT
 # font_family which is excluded from code blocks to preserve monospace appearance.
-# **Validates: Requirements 6.1, 6.2, 6.3, 6.4, 6.5**
 
 class TestAdvancedFontPropertyForwarding:
     """Property tests for font advanced property forwarding (Property 6).
@@ -363,8 +353,6 @@ class TestAdvancedFontPropertyForwarding:
     def test_font_family_excluded_from_code_blocks(self, font_family_value):
         """font_family is NOT forwarded to code block Labels.
 
-        **Feature: label-compatibility-phase2, Property 6: Font Advanced Property Forwarding**
-        **Validates: Requirements 6.1**
         """
         # Create markdown with both regular text and code block
         markdown = 'Regular paragraph\n\n```python\ncode here\n```'
@@ -385,8 +373,6 @@ class TestAdvancedFontPropertyForwarding:
     def test_font_family_forwarded_to_non_code_labels(self, font_family_value):
         """font_family IS forwarded to non-code block Labels.
 
-        **Feature: label-compatibility-phase2, Property 6: Font Advanced Property Forwarding**
-        **Validates: Requirements 6.1**
         """
         # Create markdown with both regular text and code block
         markdown = 'Regular paragraph\n\n```python\ncode here\n```'
@@ -408,8 +394,6 @@ class TestAdvancedFontPropertyForwarding:
     def test_font_context_forwarded_to_all_labels_including_code(self, font_context_value):
         """font_context IS forwarded to ALL Labels including code blocks.
 
-        **Feature: label-compatibility-phase2, Property 6: Font Advanced Property Forwarding**
-        **Validates: Requirements 6.2**
         """
         # Create markdown with both regular text and code block
         markdown = 'Regular paragraph\n\n```python\ncode here\n```'
@@ -431,8 +415,6 @@ class TestAdvancedFontPropertyForwarding:
     def test_font_features_forwarded_to_all_labels_including_code(self, font_features_value):
         """font_features IS forwarded to ALL Labels including code blocks.
 
-        **Feature: label-compatibility-phase2, Property 6: Font Advanced Property Forwarding**
-        **Validates: Requirements 6.3**
         """
         # Create markdown with both regular text and code block
         markdown = 'Regular paragraph\n\n```python\ncode here\n```'
@@ -451,8 +433,6 @@ class TestAdvancedFontPropertyForwarding:
     def test_font_hinting_forwarded_to_all_labels_including_code(self, font_hinting_value):
         """font_hinting IS forwarded to ALL Labels including code blocks.
 
-        **Feature: label-compatibility-phase2, Property 6: Font Advanced Property Forwarding**
-        **Validates: Requirements 6.4**
         """
         # Create markdown with both regular text and code block
         markdown = 'Regular paragraph\n\n```python\ncode here\n```'
@@ -475,8 +455,6 @@ class TestAdvancedFontPropertyForwarding:
     def test_font_kerning_forwarded_to_all_labels_including_code(self, font_kerning_value):
         """font_kerning IS forwarded to ALL Labels including code blocks.
 
-        **Feature: label-compatibility-phase2, Property 6: Font Advanced Property Forwarding**
-        **Validates: Requirements 6.5**
         """
         # Create markdown with both regular text and code block
         markdown = 'Regular paragraph\n\n```python\ncode here\n```'
@@ -502,8 +480,6 @@ class TestAdvancedFontPropertyForwarding:
                                                        font_hinting, font_kerning):
         """Combined font properties are correctly forwarded with code block exclusion.
 
-        **Feature: label-compatibility-phase2, Property 6: Font Advanced Property Forwarding**
-        **Validates: Requirements 6.1, 6.2, 6.3, 6.4, 6.5**
         """
         # Create markdown with both regular text and code block
         markdown = '# Heading\n\nParagraph\n\n```python\ncode\n```'
@@ -544,11 +520,9 @@ class TestAdvancedFontPropertyForwarding:
                 f"Code label: Expected font_kerning={font_kerning}, got {lbl.font_kerning}"
 
 
-# **Feature: label-compatibility, Property 3: Font size immediate update**
 # *For any* MarkdownLabel with rendered content, when base_font_size is modified,
 # all child Label font_size properties SHALL be updated immediately to reflect
 # the new base size multiplied by their respective scale factors.
-# **Validates: Requirements 2.1**
 
 class TestFontSizeImmediateUpdates:
     """Property tests for font size immediate update (Property 3)."""
@@ -673,11 +647,9 @@ class TestFontSizeImmediateUpdates:
             f"Paragraph font_size not updated: expected {new_size}, got {paragraph_label.font_size}"
 
 
-# **Feature: label-compatibility, Property 4: Heading scale preservation**
 # *For any* MarkdownLabel with headings (h1-h6) and any base_font_size value,
 # each heading Label's font_size SHALL equal `base_font_size * HEADING_SIZES[level]`
 # where HEADING_SIZES is {1: 2.5, 2: 2.0, 3: 1.75, 4: 1.5, 5: 1.25, 6: 1.0}.
-# **Validates: Requirements 2.2, 2.4**
 
 class TestHeadingScalePreservation:
     """Property tests for heading scale preservation (Property 4)."""
@@ -817,11 +789,9 @@ class TestHeadingScalePreservation:
             f"expected {new_expected_font_size}, got {heading_label.font_size}"
 
 
-# **Feature: label-compatibility, Property 5: No rebuild on font size change**
 # *For any* MarkdownLabel with rendered content, when base_font_size is modified,
 # the child widget object identities SHALL remain unchanged (same Python object ids),
 # indicating no rebuild occurred.
-# **Validates: Requirements 2.3**
 
 class TestNoRebuildOnFontSizeChange:
     """Property tests for no rebuild on font size change (Property 5)."""

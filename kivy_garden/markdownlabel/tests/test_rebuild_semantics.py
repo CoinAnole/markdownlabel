@@ -6,8 +6,6 @@ property changes and widget tree rebuilding for structure property changes.
 These tests are designed to run in headless CI environments without requiring
 a Kivy window.
 
-**Feature: headless-ci-testing**
-**Validates: Requirements 4.1, 4.2, 4.4, 5.1, 5.2, 5.4**
 """
 
 import pytest
@@ -85,14 +83,11 @@ class TestStylePropertyIdentityPreservation:
     color, halign, valign, disabled, disabled_color, base_direction, line_height)
     preserves all widget object IDs in the subtree.
 
-    **Feature: headless-ci-testing**
-    **Validates: Requirements 4.1**
     """
 
     def test_base_font_size_preserves_widget_tree(self):
         """Changing base_font_size preserves widget tree.
 
-        **Validates: Requirements 4.1**
         """
         label = MarkdownLabel(text='# Heading\n\nParagraph text', base_font_size=15)
 
@@ -110,7 +105,6 @@ class TestStylePropertyIdentityPreservation:
     def test_color_preserves_widget_tree(self):
         """Changing color preserves widget tree.
 
-        **Validates: Requirements 4.1**
         """
         label = MarkdownLabel(text='# Heading\n\nParagraph text', color=[1, 1, 1, 1])
 
@@ -128,7 +122,6 @@ class TestStylePropertyIdentityPreservation:
     def test_halign_preserves_widget_tree(self):
         """Changing halign preserves widget tree.
 
-        **Validates: Requirements 4.1**
         """
         label = MarkdownLabel(text='# Heading\n\nParagraph text', halign='left')
 
@@ -146,7 +139,6 @@ class TestStylePropertyIdentityPreservation:
     def test_valign_preserves_widget_tree(self):
         """Changing valign preserves widget tree.
 
-        **Validates: Requirements 4.1**
         """
         label = MarkdownLabel(text='# Heading\n\nParagraph text', valign='bottom')
 
@@ -164,7 +156,6 @@ class TestStylePropertyIdentityPreservation:
     def test_disabled_preserves_widget_tree(self):
         """Changing disabled preserves widget tree.
 
-        **Validates: Requirements 4.1**
         """
         label = MarkdownLabel(text='# Heading\n\nParagraph text', disabled=False)
 
@@ -182,7 +173,6 @@ class TestStylePropertyIdentityPreservation:
     def test_disabled_color_preserves_widget_tree(self):
         """Changing disabled_color preserves widget tree.
 
-        **Validates: Requirements 4.1**
         """
         label = MarkdownLabel(
             text='# Heading\n\nParagraph text',
@@ -203,7 +193,6 @@ class TestStylePropertyIdentityPreservation:
     def test_base_direction_preserves_widget_tree(self):
         """Changing base_direction preserves widget tree.
 
-        **Validates: Requirements 4.1**
         """
         label = MarkdownLabel(text='# Heading\n\nParagraph text', base_direction=None)
 
@@ -221,7 +210,6 @@ class TestStylePropertyIdentityPreservation:
     def test_line_height_preserves_widget_tree(self):
         """Changing line_height preserves widget tree.
 
-        **Validates: Requirements 4.1**
         """
         label = MarkdownLabel(text='# Heading\n\nParagraph text', line_height=1.0)
 
@@ -239,7 +227,6 @@ class TestStylePropertyIdentityPreservation:
     def test_multiple_style_properties_preserve_widget_tree(self):
         """Changing multiple style properties preserves widget tree.
 
-        **Validates: Requirements 4.1**
         """
         label = MarkdownLabel(
             text='# Heading\n\nParagraph text',
@@ -271,10 +258,6 @@ class TestStylePropertyIdentityPreservation:
 @pytest.mark.slow
 class TestStylePropertyIdentityPreservationPBT:
     """Property-based tests for style property identity preservation.
-
-    **Feature: headless-ci-testing, Property 5: Style Property Changes Preserve
-    Widget Identities**
-    **Validates: Requirements 4.1**
     """
 
     @given(
@@ -303,9 +286,7 @@ class TestStylePropertyIdentityPreservationPBT:
         widget object IDs in the subtree (the set of IDs before equals the set
         of IDs after).
 
-        **Feature: headless-ci-testing, Property 5: Style Property Changes
         Preserve Widget Tree**
-        **Validates: Requirements 4.1**
         """
         # Ensure we have non-empty content
         assume(markdown_text and markdown_text.strip())
@@ -345,14 +326,11 @@ class TestStylePropertyPropagation:
     These tests verify that style property values are correctly propagated
     to all descendant Label widgets after property changes.
 
-    **Feature: headless-ci-testing**
-    **Validates: Requirements 4.4**
     """
 
     def test_color_propagates_to_descendants(self):
         """Color value propagates to all descendant Labels.
 
-        **Validates: Requirements 4.4**
         """
         label = MarkdownLabel(text='# Heading\n\nParagraph text', color=[1, 1, 1, 1])
 
@@ -371,7 +349,6 @@ class TestStylePropertyPropagation:
     def test_halign_propagates_to_descendants(self):
         """Halign value propagates to all descendant Labels.
 
-        **Validates: Requirements 4.4**
         """
         label = MarkdownLabel(text='# Heading\n\nParagraph text', halign='left')
 
@@ -390,7 +367,6 @@ class TestStylePropertyPropagation:
     def test_valign_propagates_to_descendants(self):
         """Valign value propagates to all descendant Labels.
 
-        **Validates: Requirements 4.4**
         """
         label = MarkdownLabel(text='# Heading\n\nParagraph text', valign='bottom')
 
@@ -409,7 +385,6 @@ class TestStylePropertyPropagation:
     def test_line_height_propagates_to_descendants(self):
         """Line_height value propagates to all descendant Labels.
 
-        **Validates: Requirements 4.4**
         """
         label = MarkdownLabel(text='# Heading\n\nParagraph text', line_height=1.0)
 
@@ -428,7 +403,6 @@ class TestStylePropertyPropagation:
     def test_disabled_color_propagates_when_disabled(self):
         """Disabled_color propagates to descendants when disabled is True.
 
-        **Validates: Requirements 4.4**
         """
         label = MarkdownLabel(
             text='# Heading\n\nParagraph text',
@@ -452,7 +426,6 @@ class TestStylePropertyPropagation:
     def test_base_direction_propagates_to_descendants(self):
         """Base_direction value propagates to all descendant Labels.
 
-        **Validates: Requirements 4.4**
         """
         label = MarkdownLabel(text='# Heading\n\nParagraph text', base_direction=None)
 
@@ -473,9 +446,7 @@ class TestStylePropertyPropagation:
 class TestStylePropertyPropagationPBT:
     """Property-based tests for style property propagation to descendants.
 
-    **Feature: headless-ci-testing, Property 6: Style Property Values Propagate
     to Descendants**
-    **Validates: Requirements 4.4**
     """
 
     @given(
@@ -498,9 +469,7 @@ class TestStylePropertyPropagationPBT:
         property value, all descendant Label widgets SHALL have that property
         value after the change.
 
-        **Feature: headless-ci-testing, Property 6: Style Property Values
         Propagate to Descendants**
-        **Validates: Requirements 4.4**
         """
         # Ensure we have non-empty content
         assume(markdown_text and markdown_text.strip())
@@ -563,14 +532,11 @@ class TestStructurePropertyRebuild:
     tree with new widget instances, while the root MarkdownLabel ID remains
     unchanged.
 
-    **Feature: headless-ci-testing**
-    **Validates: Requirements 5.1, 5.4**
     """
 
     def test_text_change_triggers_rebuild(self):
         """Changing text triggers widget rebuild with new widget instances.
 
-        **Validates: Requirements 5.1, 5.4**
         """
         label = MarkdownLabel(text='# Initial Heading\n\nInitial paragraph')
         root_id_before = id(label)
@@ -596,7 +562,6 @@ class TestStructurePropertyRebuild:
     def test_font_name_change_triggers_rebuild(self):
         """Changing font_name triggers widget rebuild with new widget instances.
 
-        **Validates: Requirements 5.1, 5.4**
         """
         label = MarkdownLabel(text='# Heading\n\nParagraph', font_name='Roboto')
         root_id_before = id(label)
@@ -622,7 +587,6 @@ class TestStructurePropertyRebuild:
     def test_text_size_change_triggers_rebuild(self):
         """Changing text_size triggers widget rebuild with new widget instances.
 
-        **Validates: Requirements 5.1, 5.4**
         """
         label = MarkdownLabel(text='# Heading\n\nParagraph', text_size=[None, None])
         root_id_before = id(label)
@@ -648,7 +612,6 @@ class TestStructurePropertyRebuild:
     def test_link_style_change_triggers_rebuild(self):
         """Changing link_style triggers widget rebuild with new widget instances.
 
-        **Validates: Requirements 5.1, 5.4**
         """
         label = MarkdownLabel(
             text='# Heading\n\n[Link](http://example.com)',
@@ -677,7 +640,6 @@ class TestStructurePropertyRebuild:
     def test_strict_label_mode_change_triggers_rebuild(self):
         """Changing strict_label_mode triggers widget rebuild.
 
-        **Validates: Requirements 5.1, 5.4**
         """
         label = MarkdownLabel(text='# Heading\n\nParagraph', strict_label_mode=False)
         root_id_before = id(label)
@@ -703,7 +665,6 @@ class TestStructurePropertyRebuild:
     def test_render_mode_change_triggers_rebuild(self):
         """Changing render_mode triggers widget rebuild.
 
-        **Validates: Requirements 5.1, 5.4**
         """
         label = MarkdownLabel(text='# Heading\n\nParagraph', render_mode='widgets')
         root_id_before = id(label)
@@ -731,9 +692,7 @@ class TestStructurePropertyRebuild:
 class TestStructurePropertyRebuildPBT:
     """Property-based tests for structure property rebuild behavior.
 
-    **Feature: headless-ci-testing, Property 7: Structure Property Changes
     Rebuild Widget Tree**
-    **Validates: Requirements 5.1**
     """
 
     @given(
@@ -750,9 +709,7 @@ class TestStructurePropertyRebuildPBT:
         SHALL result in different widget object IDs for children (excluding
         the root MarkdownLabel).
 
-        **Feature: headless-ci-testing, Property 7: Structure Property Changes
         Trigger Rebuild**
-        **Validates: Requirements 5.1**
         """
         # Ensure we have different non-empty content
         assume(initial_text and initial_text.strip())
@@ -790,15 +747,10 @@ class TestStructurePropertyRebuildPBT:
     # Small finite strategy: 3 examples (input space size: 3)
     @settings(max_examples=3, deadline=None)
     def test_font_name_change_triggers_rebuild_pbt(self, markdown_text, font_name):
-        """Property 7: Structure Property Changes Trigger Rebuild (font_name).
-
+        """
         *For any* MarkdownLabel with non-empty content, and *for any* structure
         property (font_name), changing that property and calling force_rebuild()
         SHALL result in different widget object IDs for children.
-
-        **Feature: headless-ci-testing, Property 7: Structure Property Changes
-        Trigger Rebuild**
-        **Validates: Requirements 5.1**
         """
         # Ensure we have non-empty content
         assume(markdown_text and markdown_text.strip())
@@ -837,15 +789,10 @@ class TestStructurePropertyRebuildPBT:
     # Small finite strategy: 2 examples (input space size: 2)
     @settings(max_examples=2, deadline=None)
     def test_link_style_change_triggers_rebuild_pbt(self, markdown_text, link_style):
-        """Property 7: Structure Property Changes Trigger Rebuild (link_style).
-
+        """
         *For any* MarkdownLabel with non-empty content, and *for any* structure
         property (link_style), changing that property and calling force_rebuild()
         SHALL result in different widget object IDs for children.
-
-        **Feature: headless-ci-testing, Property 7: Structure Property Changes
-        Trigger Rebuild**
-        **Validates: Requirements 5.1**
         """
         # Ensure we have non-empty content
         assume(markdown_text and markdown_text.strip())
@@ -882,9 +829,6 @@ class TestStructurePropertyRebuildPBT:
 class TestRootIDPreservationPBT:
     """Property-based tests for root widget ID preservation.
 
-    **Feature: headless-ci-testing, Property 8: Root Widget ID Preserved
-    Across Property Changes**
-    **Validates: Requirements 5.4**
     """
 
     @given(
@@ -909,9 +853,6 @@ class TestRootIDPreservationPBT:
         *For any* MarkdownLabel, and *for any* style property change, the root
         MarkdownLabel's object ID SHALL remain unchanged.
 
-        **Feature: headless-ci-testing, Property 8: Root Widget ID Preserved
-        Across Property Changes**
-        **Validates: Requirements 5.4**
         """
         # Ensure we have non-empty content
         assume(markdown_text and markdown_text.strip())
@@ -954,10 +895,6 @@ class TestRootIDPreservationPBT:
 
         *For any* MarkdownLabel, and *for any* structure property change, the root
         MarkdownLabel's object ID SHALL remain unchanged.
-
-        **Feature: headless-ci-testing, Property 8: Root Widget ID Preserved
-        Across Property Changes**
-        **Validates: Requirements 5.4**
         """
         # Ensure we have non-empty content
         assume(initial_text and initial_text.strip())
@@ -1000,10 +937,6 @@ class TestRootIDPreservationPBT:
 
         *For any* MarkdownLabel, and *for any* combination of style and structure
         property changes, the root MarkdownLabel's object ID SHALL remain unchanged.
-
-        **Feature: headless-ci-testing, Property 8: Root Widget ID Preserved
-        Across Property Changes**
-        **Validates: Requirements 5.4**
         """
         # Ensure we have non-empty content
         assume(markdown_text and markdown_text.strip())

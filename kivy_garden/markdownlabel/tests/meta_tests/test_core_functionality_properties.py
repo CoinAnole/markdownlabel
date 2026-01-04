@@ -11,11 +11,9 @@ import pytest
 from typing import List
 
 
-# **Feature: test-improvements, Property 1: No timing assertions in tests**
 # *For any* test file in the test suite, the file SHALL NOT contain timing assertions
 # with lower bounds (>= X seconds) or upper bounds (<= Y seconds) that can cause
 # flakiness across different machine speeds.
-# **Validates: Requirements 1.1, 1.2**
 
 @pytest.mark.test_tests
 class TestNoTimingAssertions:
@@ -70,8 +68,6 @@ class TestNoTimingAssertions:
     def test_no_timing_assertions_in_test_files(self, module_name):
         """Test files should not contain timing assertions.
 
-        **Feature: test-improvements, Property 1: No timing assertions in tests**
-        **Validates: Requirements 1.1, 1.2**
         """
         module_path = Path(f'kivy_garden/markdownlabel/tests/{module_name}')
         if not module_path.exists():
@@ -84,11 +80,9 @@ class TestNoTimingAssertions:
             f"Timing assertions cause flakiness and should be replaced with functional checks."
 
 
-# **Feature: test-improvements, Property 2: Subprocess pytest uses stable configuration**
 # *For any* test that calls pytest as a subprocess, the call SHALL include
 # PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 in the environment and SHALL verify return codes
 # and collection counts instead of execution timing.
-# **Validates: Requirements 1.3, 1.4**
 
 @pytest.mark.test_tests
 class TestSubprocessPytestConfiguration:
@@ -166,8 +160,6 @@ class TestSubprocessPytestConfiguration:
     def test_subprocess_pytest_uses_stable_configuration(self, module_name):
         """Subprocess pytest calls should use stable configuration.
 
-        **Feature: test-improvements, Property 2: Subprocess pytest uses stable configuration**
-        **Validates: Requirements 1.3, 1.4**
         """
         module_path = Path(f'kivy_garden/markdownlabel/tests/{module_name}')
         if not module_path.exists():
@@ -180,11 +172,9 @@ class TestSubprocessPytestConfiguration:
             f"All subprocess pytest calls should use PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 and check return codes."
 
 
-# **Feature: test-improvements, Property 3: No silent-pass file existence checks**
 # *For any* test that checks file existence, the test SHALL use assert statements
 # that fail loudly (assert Path(...).exists()) instead of conditional logic that
 # can silently pass.
-# **Validates: Requirements 2.1**
 
 @pytest.mark.test_tests
 class TestNoSilentPassFileChecks:
@@ -237,8 +227,6 @@ class TestNoSilentPassFileChecks:
     def test_no_silent_pass_file_existence_checks(self, module_name):
         """Test files should not contain silent-pass file existence checks.
 
-        **Feature: test-improvements, Property 3: No silent-pass file existence checks**
-        **Validates: Requirements 2.1**
         """
         module_path = Path(f'kivy_garden/markdownlabel/tests/{module_name}')
         if not module_path.exists():
@@ -251,10 +239,8 @@ class TestNoSilentPassFileChecks:
             f"Use 'assert Path(...).exists()' instead of 'if os.path.exists(...):' to fail loudly."
 
 
-# **Feature: test-improvements, Property 4: No broad exception handling**
 # *For any* test file, the file SHALL NOT contain broad exception handling patterns
 # (except Exception: pass or except:) that can mask real failures.
-# **Validates: Requirements 2.2, 2.4**
 
 @pytest.mark.test_tests
 class TestNoBroadExceptionHandling:
@@ -305,8 +291,6 @@ class TestNoBroadExceptionHandling:
     def test_no_broad_exception_handling(self, module_name):
         """Test files should not contain broad exception handling.
 
-        **Feature: test-improvements, Property 4: No broad exception handling**
-        **Validates: Requirements 2.2, 2.4**
         """
         module_path = Path(f'kivy_garden/markdownlabel/tests/{module_name}')
         if not module_path.exists():
@@ -323,10 +307,8 @@ class TestNoBroadExceptionHandling:
             f"Use specific exception handling or let exceptions propagate to avoid masking failures."
 
 
-# **Feature: test-improvements, Property 5: Fixed-list property tests converted**
 # *For any* property-based test that uses st.sampled_from with a fixed list of values,
 # the test SHALL be converted to pytest.mark.parametrize with descriptive parameter names.
-# **Validates: Requirements 3.1, 3.4**
 
 @pytest.mark.test_tests
 class TestFixedListPropertyTestsConverted:
@@ -435,8 +417,6 @@ class TestFixedListPropertyTestsConverted:
     def test_fixed_list_property_tests_converted_to_parametrized(self, module_name):
         """Fixed-list property tests should be converted to parametrized tests.
 
-        **Feature: test-improvements, Property 5: Fixed-list property tests converted**
-        **Validates: Requirements 3.1, 3.4**
         """
         module_path = Path(f'kivy_garden/markdownlabel/tests/{module_name}')
         if not module_path.exists():
@@ -471,8 +451,6 @@ class TestFixedListPropertyTestsConverted:
     def test_conversion_progress_tracking(self):
         """Track overall progress of fixed-list to parametrized conversion.
 
-        **Feature: test-improvements, Property 5: Fixed-list property tests converted**
-        **Validates: Requirements 3.1, 3.4**
         """
         test_dir = Path('kivy_garden/markdownlabel/tests')
         if not test_dir.exists():
@@ -507,10 +485,8 @@ class TestFixedListPropertyTestsConverted:
         assert True, "Conversion progress tracking completed"
 
 
-# **Feature: test-improvements, Property 10: Performance tests marked**
 # *For any* genuinely performance-intensive test, the test SHALL be marked with
 # @pytest.mark.slow.
-# **Validates: Requirements 7.1, 7.3**
 
 @pytest.mark.test_tests
 class TestPerformanceTestsMarked:
@@ -575,8 +551,6 @@ class TestPerformanceTestsMarked:
     def test_performance_tests_properly_marked(self):
         """Performance tests should be properly marked with @pytest.mark.slow.
 
-        **Feature: test-improvements, Property 10: Performance tests marked**
-        **Validates: Requirements 7.1, 7.3**
         """
         # Check the performance test file specifically
         performance_file = Path('kivy_garden/markdownlabel/tests/test_performance.py')
@@ -611,8 +585,6 @@ class TestPerformanceTestsMarked:
     def test_performance_indicators_are_marked(self, module_name):
         """Tests with performance indicators should be properly marked.
 
-        **Feature: test-improvements, Property 10: Performance tests marked**
-        **Validates: Requirements 7.1, 7.3**
         """
         module_path = Path(f'kivy_garden/markdownlabel/tests/{module_name}')
         if not module_path.exists():
@@ -630,11 +602,9 @@ class TestPerformanceTestsMarked:
                     f"Performance-intensive tests should be marked with @pytest.mark.slow"
 
 
-# **Feature: test-improvements, Property 11: No duplicate environment setup**
 # *For any* test file (except conftest.py), the file SHALL NOT contain KIVY_NO_ARGS
 # or KIVY_NO_CONSOLELOG environment variable setup, relying instead on centralized
 # conftest.py configuration.
-# **Validates: Requirements 8.1, 8.4**
 
 @pytest.mark.test_tests
 class TestNoDuplicateEnvironmentSetup:
@@ -696,8 +666,6 @@ class TestNoDuplicateEnvironmentSetup:
     def test_no_duplicate_environment_setup(self, module_name):
         """Test files should not contain duplicate environment setup.
 
-        **Feature: test-improvements, Property 11: No duplicate environment setup**
-        **Validates: Requirements 8.1, 8.4**
         """
         module_path = Path(f'kivy_garden/markdownlabel/tests/{module_name}')
         if not module_path.exists():
@@ -717,8 +685,6 @@ class TestNoDuplicateEnvironmentSetup:
     def test_conftest_has_centralized_setup(self):
         """conftest.py should contain the centralized environment setup.
 
-        **Feature: test-improvements, Property 11: No duplicate environment setup**
-        **Validates: Requirements 8.1, 8.4**
         """
         conftest_path = Path('kivy_garden/markdownlabel/tests/conftest.py')
 

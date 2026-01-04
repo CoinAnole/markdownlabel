@@ -18,11 +18,9 @@ from kivy_garden.markdownlabel.tests.modules.duplicate_detector import (
 from kivy_garden.markdownlabel.tests.test_utils import duplicate_helper_functions
 
 
-# **Feature: test-suite-refactoring, Property 3: Helper Function Consolidation**
 # *For any* helper function that appears in multiple test files with identical
 # or similar implementations, the function SHALL be defined once in `test_utils.py`
 # and imported by other files.
-# **Validates: Requirements 2.1, 2.2, 2.3**
 
 
 @pytest.mark.test_tests

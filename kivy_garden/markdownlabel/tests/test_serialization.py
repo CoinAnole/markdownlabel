@@ -557,7 +557,6 @@ class TestCodeFenceCollisionProperty:
         SHALL choose a fence length longer than any backtick sequence in the content
         to prevent fence collision.
 
-        **Validates: Requirements 5.1, 5.2**
         """
         # Create a code block token
         token = {
@@ -627,7 +626,6 @@ class TestCodeFenceCollisionProperty:
         For any code block, serializing and then parsing the result SHALL produce
         valid Markdown that preserves the original content exactly.
 
-        **Validates: Requirements 5.3, 5.4**
         """
         # Skip problematic characters that might interfere with parsing
         assume('\x00' not in code_content)

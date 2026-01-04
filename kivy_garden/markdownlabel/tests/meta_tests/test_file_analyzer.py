@@ -471,7 +471,6 @@ class TestToolIntegrationCompatibility:
 
         For any standardized comment format, existing optimization and analysis tools
         SHALL be able to reference and utilize the comment information.
-        **Validates: Requirements 4.4, 5.4**
         """
         # Generate test file content with or without standardized comment
         comment_line = ""

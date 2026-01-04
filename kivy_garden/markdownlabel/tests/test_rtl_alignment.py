@@ -13,11 +13,9 @@ from kivy_garden.markdownlabel import MarkdownLabel
 from .test_utils import find_labels_recursive, collect_widget_ids
 
 
-# **Feature: label-compatibility, Property 11: Auto alignment respects direction**
 # *For any* MarkdownLabel with halign='auto', when base_direction is 'rtl' or 'weak_rtl',
 # all child Labels SHALL have halign='right'; when base_direction is 'ltr', 'weak_ltr',
 # or None, all child Labels SHALL have halign='left'.
-# **Validates: Requirements 5.1, 5.2**
 
 class TestAutoAlignmentRespectsDirection:
     """Property tests for auto alignment respecting direction (Property 11)."""
@@ -28,8 +26,6 @@ class TestAutoAlignmentRespectsDirection:
     def test_auto_alignment_rtl_directions_use_right(self, base_direction):
         """Auto alignment uses 'right' for RTL base directions.
 
-        **Feature: label-compatibility, Property 11: Auto alignment respects direction**
-        **Validates: Requirements 5.1, 5.2**
         """
         label = MarkdownLabel(
             text='Hello World',
@@ -51,8 +47,6 @@ class TestAutoAlignmentRespectsDirection:
     def test_auto_alignment_ltr_directions_use_left(self, base_direction):
         """Auto alignment uses 'left' for LTR base directions and None.
 
-        **Feature: label-compatibility, Property 11: Auto alignment respects direction**
-        **Validates: Requirements 5.1, 5.2**
         """
         label = MarkdownLabel(
             text='Hello World',
@@ -80,8 +74,6 @@ class TestAutoAlignmentRespectsDirection:
     def test_auto_alignment_rtl_applies_to_headings(self, base_direction, heading_level):
         """Auto alignment with RTL direction applies to heading Labels.
 
-        **Feature: label-compatibility, Property 11: Auto alignment respects direction**
-        **Validates: Requirements 5.1, 5.2**
         """
         heading_text = '#' * heading_level + ' Test Heading'
         label = MarkdownLabel(
@@ -110,8 +102,6 @@ class TestAutoAlignmentRespectsDirection:
     def test_auto_alignment_ltr_applies_to_headings(self, base_direction, heading_level):
         """Auto alignment with LTR direction applies to heading Labels.
 
-        **Feature: label-compatibility, Property 11: Auto alignment respects direction**
-        **Validates: Requirements 5.1, 5.2**
         """
         heading_text = '#' * heading_level + ' Test Heading'
         label = MarkdownLabel(
@@ -134,8 +124,6 @@ class TestAutoAlignmentRespectsDirection:
     def test_auto_alignment_rtl_applies_to_mixed_content(self, base_direction):
         """Auto alignment with RTL direction applies to mixed content types.
 
-        **Feature: label-compatibility, Property 11: Auto alignment respects direction**
-        **Validates: Requirements 5.1, 5.2**
         """
         markdown_text = '# Heading\n\nParagraph text\n\n- List item'
         label = MarkdownLabel(
@@ -162,8 +150,6 @@ class TestAutoAlignmentRespectsDirection:
     def test_auto_alignment_ltr_applies_to_mixed_content(self, base_direction):
         """Auto alignment with LTR direction applies to mixed content types.
 
-        **Feature: label-compatibility, Property 11: Auto alignment respects direction**
-        **Validates: Requirements 5.1, 5.2**
         """
         markdown_text = '# Heading\n\nParagraph text\n\n- List item'
         label = MarkdownLabel(
@@ -185,11 +171,9 @@ class TestAutoAlignmentRespectsDirection:
                 f"base_direction={base_direction}, got {lbl.halign}"
 
 
-# **Feature: label-compatibility, Property 12: Direction change updates alignment**
 # *For any* MarkdownLabel with halign='auto' and rendered content, when base_direction
 # changes, all child Label widgets SHALL have their halign updated to reflect the new
 # effective alignment.
-# **Validates: Requirements 5.3**
 
 class TestDirectionChangeUpdatesAlignment:
     """Property tests for direction change updating alignment (Property 12)."""
@@ -206,8 +190,6 @@ class TestDirectionChangeUpdatesAlignment:
     def test_direction_change_ltr_to_rtl_updates_alignment(self, initial_direction, new_direction):
         """Changing base_direction from LTR to RTL updates alignment.
 
-        **Feature: label-compatibility, Property 12: Direction change updates alignment**
-        **Validates: Requirements 5.3**
         """
         label = MarkdownLabel(
             text='Hello World',
@@ -244,8 +226,6 @@ class TestDirectionChangeUpdatesAlignment:
     def test_direction_change_rtl_to_ltr_updates_alignment(self, initial_direction, new_direction):
         """Changing base_direction from RTL to LTR updates alignment.
 
-        **Feature: label-compatibility, Property 12: Direction change updates alignment**
-        **Validates: Requirements 5.3**
         """
         label = MarkdownLabel(
             text='Hello World',
@@ -285,8 +265,6 @@ class TestDirectionChangeUpdatesAlignment:
     ):
         """Direction change updates heading alignment.
 
-        **Feature: label-compatibility, Property 12: Direction change updates alignment**
-        **Validates: Requirements 5.3**
         """
         heading_text = '#' * heading_level + ' Test Heading'
         label = MarkdownLabel(
@@ -326,8 +304,6 @@ class TestDirectionChangeUpdatesAlignment:
     def test_direction_change_preserves_widget_identities(self, initial_direction, new_direction):
         """Direction change preserves widget identities (no rebuild).
 
-        **Feature: label-compatibility, Property 12: Direction change updates alignment**
-        **Validates: Requirements 5.3**
         """
         label = MarkdownLabel(
             text='Hello World',
@@ -361,8 +337,6 @@ class TestDirectionChangeUpdatesAlignment:
     def test_direction_change_mixed_content_updates_alignment(self, initial_direction, new_direction):
         """Direction change updates alignment for mixed content types.
 
-        **Feature: label-compatibility, Property 12: Direction change updates alignment**
-        **Validates: Requirements 5.3**
         """
         markdown_text = '# Heading\n\nParagraph text\n\n- List item'
         label = MarkdownLabel(
@@ -396,10 +370,8 @@ class TestDirectionChangeUpdatesAlignment:
                 f"base_direction={new_direction}, got {lbl.halign}"
 
 
-# **Feature: label-compatibility, Property 13: Explicit alignment overrides auto**
 # *For any* MarkdownLabel with halign explicitly set to 'left', 'center', 'right',
 # or 'justify', all child Labels SHALL use that alignment regardless of base_direction value.
-# **Validates: Requirements 5.4**
 
 class TestExplicitAlignmentOverridesAuto:
     """Property tests for explicit alignment overriding auto (Property 13)."""
@@ -416,8 +388,6 @@ class TestExplicitAlignmentOverridesAuto:
     def test_explicit_alignment_overrides_base_direction(self, explicit_halign, base_direction):
         """Explicit halign overrides base_direction for all content.
 
-        **Feature: label-compatibility, Property 13: Explicit alignment overrides auto**
-        **Validates: Requirements 5.4**
         """
         label = MarkdownLabel(
             text='Hello World',
@@ -449,8 +419,6 @@ class TestExplicitAlignmentOverridesAuto:
     ):
         """Explicit halign overrides RTL base_direction for headings.
 
-        **Feature: label-compatibility, Property 13: Explicit alignment overrides auto**
-        **Validates: Requirements 5.4**
         """
         heading_text = '#' * heading_level + ' Test Heading'
         label = MarkdownLabel(
@@ -480,8 +448,6 @@ class TestExplicitAlignmentOverridesAuto:
     def test_explicit_alignment_overrides_direction_for_mixed_content(self, explicit_halign, base_direction):
         """Explicit halign overrides base_direction for mixed content types.
 
-        **Feature: label-compatibility, Property 13: Explicit alignment overrides auto**
-        **Validates: Requirements 5.4**
         """
         markdown_text = '# Heading\n\nParagraph text\n\n- List item'
         label = MarkdownLabel(
@@ -517,8 +483,6 @@ class TestExplicitAlignmentOverridesAuto:
     ):
         """Explicit halign remains unchanged when base_direction changes.
 
-        **Feature: label-compatibility, Property 13: Explicit alignment overrides auto**
-        **Validates: Requirements 5.4**
         """
         label = MarkdownLabel(
             text='Hello World',
@@ -555,8 +519,6 @@ class TestExplicitAlignmentOverridesAuto:
     def test_explicit_alignment_stored_correctly_on_widget(self, explicit_halign, base_direction):
         """Explicit halign is stored correctly on MarkdownLabel widget.
 
-        **Feature: label-compatibility, Property 13: Explicit alignment overrides auto**
-        **Validates: Requirements 5.4**
         """
         label = MarkdownLabel(
             text='Hello World',

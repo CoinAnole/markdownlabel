@@ -35,8 +35,6 @@ class TestHelperFunctionAvailability:
     def test_widget_traversal_helpers_available(self, markdown_text):
         """For any markdown content, widget traversal helpers should be available and functional.
 
-        **Feature: test-suite-refactoring, Property 7: Helper Function Availability**
-        **Validates: Requirements 2.4, 4.3**
         """
         # Create a MarkdownLabel with content
         label = MarkdownLabel(text=markdown_text)
@@ -61,8 +59,6 @@ class TestHelperFunctionAvailability:
     def test_comparison_helpers_available(self, color1, color2):
         """For any color values, comparison helpers should be available and functional.
 
-        **Feature: test-suite-refactoring, Property 7: Helper Function Availability**
-        **Validates: Requirements 2.4, 4.3**
         """
         # Test colors_equal is available and works
         result = colors_equal(color1, color2)
@@ -77,8 +73,6 @@ class TestHelperFunctionAvailability:
     def test_padding_comparison_helpers_available(self, padding1, padding2):
         """For any padding values, padding comparison helpers should be available and functional.
 
-        **Feature: test-suite-refactoring, Property 7: Helper Function Availability**
-        **Validates: Requirements 2.4, 4.3**
         """
         # Test padding_equal is available and works
         result = padding_equal(padding1, padding2)
@@ -94,8 +88,6 @@ class TestHelperFunctionAvailability:
     def test_float_comparison_helpers_available(self, float1, float2):
         """For any float values, float comparison helpers should be available and functional.
 
-        **Feature: test-suite-refactoring, Property 7: Helper Function Availability**
-        **Validates: Requirements 2.4, 4.3**
         """
         # Test floats_equal is available and works
         result = floats_equal(float1, float2)
@@ -110,8 +102,6 @@ class TestHelperFunctionAvailability:
     def test_rebuild_detection_helpers_available(self, markdown_text):
         """For any markdown content, rebuild detection helpers should be available and functional.
 
-        **Feature: test-suite-refactoring, Property 7: Helper Function Availability**
-        **Validates: Requirements 2.4, 4.3**
         """
         # Create a MarkdownLabel with content
         label = MarkdownLabel(text=markdown_text)
@@ -133,8 +123,6 @@ class TestHelperFunctionAvailability:
     def test_touch_simulation_helpers_available(self):
         """Touch simulation helpers should be available and functional.
 
-        **Feature: test-suite-refactoring, Property 7: Helper Function Availability**
-        **Validates: Requirements 2.4, 4.3**
         """
         # Test FakeTouch is available and works
         touch = FakeTouch(100, 200)
@@ -148,8 +136,6 @@ class TestHelperFunctionAvailability:
     def test_color_strategy_available(self, color):
         """color_strategy is available and generates valid colors.
 
-        **Feature: test-suite-refactoring, Property 7: Helper Function Availability**
-        **Validates: Requirements 2.4, 4.3**
         """
         assert isinstance(color, list)
         assert len(color) == 4
@@ -161,8 +147,6 @@ class TestHelperFunctionAvailability:
     def test_text_padding_strategy_available(self, padding):
         """text_padding_strategy is available and generates valid padding.
 
-        **Feature: test-suite-refactoring, Property 7: Helper Function Availability**
-        **Validates: Requirements 2.4, 4.3**
         """
         assert isinstance(padding, list)
         assert len(padding) == 4
@@ -174,8 +158,6 @@ class TestHelperFunctionAvailability:
     def test_simple_markdown_document_strategy_available(self, doc):
         """simple_markdown_document strategy is available and generates valid documents.
 
-        **Feature: test-suite-refactoring, Property 7: Helper Function Availability**
-        **Validates: Requirements 2.4, 4.3**
         """
         assert isinstance(doc, str)
         assert len(doc) > 0
@@ -188,8 +170,6 @@ class TestHelperFunctionConsolidation:
     def test_no_duplicate_find_labels_recursive_implementations(self):
         """For any test file, there should be no duplicate _find_labels_recursive implementations.
 
-        **Feature: test-suite-refactoring, Property 3: Helper Function Consolidation**
-        **Validates: Requirements 2.1, 2.2, 2.3**
         """
         import ast
         from pathlib import Path
@@ -221,8 +201,6 @@ class TestHelperFunctionConsolidation:
     def test_no_duplicate_collect_widget_ids_implementations(self):
         """For any test file, there should be no duplicate collect_widget_ids implementations.
 
-        **Feature: test-suite-refactoring, Property 3: Helper Function Consolidation**
-        **Validates: Requirements 2.1, 2.2, 2.3**
         """
         import ast
         from pathlib import Path
@@ -254,8 +232,6 @@ class TestHelperFunctionConsolidation:
     def test_all_test_files_import_from_test_utils(self):
         """For any test file using helper functions, it should import them from test_utils.
 
-        **Feature: test-suite-refactoring, Property 3: Helper Function Consolidation**
-        **Validates: Requirements 2.1, 2.2, 2.3**
         """
         import ast
         from pathlib import Path

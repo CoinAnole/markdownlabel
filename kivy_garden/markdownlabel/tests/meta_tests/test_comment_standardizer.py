@@ -28,10 +28,8 @@ class TestBooleanStrategyDocumentation:
         self.standardizer = CommentStandardizer()
         self.validator = CommentFormatValidator()
 
-    # **Feature: test-comment-standardization, Property 4: Boolean Strategy Documentation**
     # *For any* property-based test using boolean strategies, the comment SHALL reference
     # True/False coverage in the rationale
-    # **Validates: Requirements 2.3**
 
     @pytest.mark.property
     @given(
@@ -305,10 +303,8 @@ class TestFiniteStrategyDocumentation:
         self.standardizer = CommentStandardizer()
         self.validator = CommentFormatValidator()
 
-    # **Feature: test-comment-standardization, Property 5: Finite Strategy Documentation**
     # *For any* property-based test using finite strategies, the comment SHALL reference
     # input space size in the rationale
-    # **Validates: Requirements 2.4**
 
     @pytest.mark.property
     @given(
@@ -601,10 +597,8 @@ class TestPerformanceRationaleDocumentation:
         self.generator = PerformanceCommentGenerator()
         self.PerformanceReason = PerformanceReason  # Make accessible to test methods
 
-    # **Feature: test-comment-standardization, Property 6: Performance Rationale Documentation**
     # *For any* property-based test with reduced max_examples for performance reasons,
     # the comment SHALL explain the performance rationale
-    # **Validates: Requirements 2.2, 3.3, 5.2**
 
     @pytest.mark.property
     @given(
@@ -910,7 +904,6 @@ class TestCommentStandardizationIntegration:
     def test_end_to_end_standardization_workflow(self):
         """Test complete workflow: analyze -> standardize -> validate.
 
-        **Validates: Requirements 3.4, 4.4**
         """
         # Create a test file with various comment issues
         test_content = '''
@@ -978,7 +971,6 @@ def test_already_documented(text):
     def test_batch_standardization_workflow(self):
         """Test batch processing of multiple files.
 
-        **Validates: Requirements 3.4, 4.4**
         """
         # Create multiple test files
         test_files = []
@@ -1032,7 +1024,6 @@ def test_file_{i}_function(value):
     def test_backup_and_rollback_functionality(self):
         """Test backup creation and rollback capability.
 
-        **Validates: Requirements 3.4**
         """
         # Backup functionality no longer exercised in tests.
         assert True
@@ -1040,7 +1031,6 @@ def test_file_{i}_function(value):
     def test_standardization_tool_integration_compatibility(self):
         """Test integration with existing optimization tools.
 
-        **Validates: Requirements 4.4, 5.4**
         """
         # Create a file with standardized comments
         test_content = '''
@@ -1109,7 +1099,6 @@ def test_complex_example(text):
     def test_error_handling_and_recovery(self):
         """Test error handling in standardization workflow.
 
-        **Validates: Requirements 3.4**
         """
         # Test with invalid Python file
         invalid_content = '''

@@ -16,10 +16,8 @@ from .test_utils import (
 )
 
 
-# **Feature: label-compatibility, Property 1: font_size/base_font_size Alias Bidirectionality**
 # *For any* numeric value V, setting `font_size` to V SHALL result in `base_font_size`
 # equaling V, and setting `base_font_size` to V SHALL result in `font_size` returning V.
-# **Validates: Requirements 2.1, 2.2**
 
 class TestFontSizeAliasBidirectionality:
     """Property tests for font_size/base_font_size alias (Property 1)."""
@@ -86,10 +84,8 @@ class TestFontSizeAliasBidirectionality:
             f"font_size ({label.font_size}) != base_font_size ({label.base_font_size})"
 
 
-# **Feature: markdown-label, Property 8: No-op Properties Acceptance**
 # *For any* no-op property (bold, italic, underline, strikethrough, markup), when set to any
 # valid value, the MarkdownLabel SHALL accept the value without raising an exception.
-# **Validates: Requirements 8.1, 8.2, 8.3, 8.4, 8.5, 8.6**
 
 class TestNoOpPropertiesAcceptance:
     """Property tests for no-op properties acceptance (Property 8)."""
@@ -229,13 +225,11 @@ class TestNoOpPropertiesAcceptance:
         assert label.markup == value
 
 
-# **Feature: label-compatibility-phase2, Property 1: No-op Property Acceptance and Storage**
 # *For any* no-op property (mipmap, outline_width, outline_color, text_language,
 # base_direction, ellipsis_options),
 # when set to any valid value, the MarkdownLabel SHALL accept the value without
 # raising an exception
 # AND return the same value when accessed.
-# **Validates: Requirements 1.1, 1.2, 1.3**
 
 class TestNoOpPropertyAcceptanceAndStorage:
     """Property tests for no-op property acceptance and storage (Property 1)."""
@@ -408,10 +402,8 @@ class TestNoOpPropertyAcceptanceAndStorage:
             f"Expected {default_child_count} children, got {props_child_count} with no-op props"
 
 
-# **Feature: test-refactoring, Property 4: Import Functionality**
 # *For any* refactored test module, all imports should resolve successfully
 # and tests should execute without import errors
-# **Validates: Requirements 2.4**
 
 class TestImportFunctionality:
     """Property test for import functionality (Property 4)."""
