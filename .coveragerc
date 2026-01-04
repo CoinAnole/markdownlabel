@@ -1,12 +1,12 @@
 [run]
-source = kivy_garden/markdownlabel/
-include = 
-    kivy_garden/markdownlabel/__init__.py
-    kivy_garden/markdownlabel/inline_renderer.py
-    kivy_garden/markdownlabel/kivy_renderer.py
-    kivy_garden/markdownlabel/markdown_serializer.py
+branch = True
 
 [report]
+include = 
+    */kivy_garden/markdownlabel/__init__.py
+    */kivy_garden/markdownlabel/inline_renderer.py
+    */kivy_garden/markdownlabel/kivy_renderer.py
+    */kivy_garden/markdownlabel/markdown_serializer.py
 exclude_lines =
     pragma: no cover
     def __repr__
