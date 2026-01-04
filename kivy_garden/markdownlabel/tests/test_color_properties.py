@@ -17,14 +17,12 @@ from .test_utils import (
 )
 
 
-# **Feature: label-compatibility, Property 3: Color Forwarding**
 # *For any* Markdown text and any color value, all internal Labels SHALL have
 # `color` set to the specified value, except for code blocks which preserve
 # their light color.
-# **Validates: Requirements 3.1**
 
 class TestColorPropertyForwarding:
-    """Property tests for color forwarding (Property 3)."""
+    """Property tests for color forwarding."""
 
     @pytest.mark.property
     @given(color_strategy)

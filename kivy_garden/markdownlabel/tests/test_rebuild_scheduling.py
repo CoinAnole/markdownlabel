@@ -21,10 +21,8 @@ from kivy_garden.markdownlabel.tests.test_utils import (
 
 @pytest.mark.property
 class TestBatchedRebuilds:
-    """Property tests for batched rebuilds (Property 6).
+    """Property tests for batched rebuilds.
 
-    **Feature: label-compatibility, Property 6: Batched rebuilds**
-    **Validates: Requirements 3.1, 3.3**
 
     Tests verify that multiple property changes within the same frame
     result in at most one rebuild operation.
@@ -36,8 +34,6 @@ class TestBatchedRebuilds:
     def test_multiple_text_changes_batch_to_single_rebuild(self, num_changes):
         """Multiple text changes within same frame batch to single rebuild.
 
-        **Feature: label-compatibility, Property 6: Batched rebuilds**
-        **Validates: Requirements 3.1, 3.3**
 
         Verifies batching through observable widget identity:
         - Widget IDs unchanged after multiple text changes (deferred)
@@ -77,8 +73,6 @@ class TestBatchedRebuilds:
     def test_mixed_property_changes_batch_rebuilds(self, text, font_size, font_name):
         """Mixed structure property changes batch into single rebuild.
 
-        **Feature: label-compatibility, Property 6: Batched rebuilds**
-        **Validates: Requirements 3.1, 3.3**
 
         Verifies batching through observable widget identity:
         - Widget IDs unchanged after mixed property changes (deferred)
@@ -112,10 +106,8 @@ class TestBatchedRebuilds:
 
 @pytest.mark.property
 class TestDeferredRebuildScheduling:
-    """Property tests for deferred rebuild scheduling (Property 7).
+    """Property tests for deferred rebuild scheduling.
 
-    **Feature: label-compatibility, Property 7: Deferred rebuild scheduling**
-    **Validates: Requirements 3.2**
 
     Tests verify that property changes trigger deferred rebuilds via
     Clock.create_trigger rather than synchronous rebuilds.
@@ -129,8 +121,6 @@ class TestDeferredRebuildScheduling:
     def test_text_change_schedules_deferred_rebuild(self, new_text):
         """Text property change schedules deferred rebuild, not synchronous.
 
-        **Feature: label-compatibility, Property 7: Deferred rebuild scheduling**
-        **Validates: Requirements 3.2**
 
         Verifies deferral through observable widget identity:
         - Widget IDs unchanged immediately after text property change (deferred)
@@ -164,8 +154,6 @@ class TestDeferredRebuildScheduling:
     def test_font_name_change_schedules_deferred_rebuild(self, font_name):
         """font_name property change schedules deferred rebuild.
 
-        **Feature: label-compatibility, Property 7: Deferred rebuild scheduling**
-        **Validates: Requirements 3.2**
 
         Verifies deferral through observable widget identity:
         - Widget IDs unchanged immediately after font_name property change (deferred)
@@ -217,8 +205,6 @@ class TestDeferredRebuildScheduling:
         requires careful review of the rebuild system's design and performance
         characteristics.
 
-        **Feature: label-compatibility, Property 7: Deferred rebuild scheduling**
-        **Validates: Requirements 3.2**
         """
         from kivy.clock import ClockEvent
 
@@ -242,8 +228,6 @@ class TestDeferredRebuildScheduling:
     def test_multiple_changes_all_deferred(self, text_values):
         """Multiple property changes are all deferred until next frame.
 
-        **Feature: label-compatibility, Property 7: Deferred rebuild scheduling**
-        **Validates: Requirements 3.2**
 
         Verifies deferral through observable widget identity:
         - Widget IDs unchanged after multiple text changes (all deferred)

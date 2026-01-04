@@ -13,10 +13,8 @@ import os
 # Import test_utils for helper functions
 from kivy_garden.markdownlabel.tests.test_utils import simulate_coverage_measurement
 
-# **Feature: test-suite-refactoring, Property 10: Coverage Preservation**
 # *For any* refactoring operation on the test suite, the overall test coverage
 # SHALL not decrease.
-# **Validates: Requirements 5.5**
 
 
 @st.composite
@@ -179,7 +177,7 @@ class TestHigh{i}:
 
 @pytest.mark.test_tests
 class TestCoveragePreservation:
-    """Property tests for coverage preservation (Property 10)."""
+    """Property tests for coverage preservation."""
 
     @given(_test_suite_with_coverage())
     # Complex strategy: 10 examples (adequate coverage for different scenarios)
@@ -260,7 +258,7 @@ def helper_function(value):
                 temp_dir, after_test_paths, source_paths, coverage_level
             )
 
-            # Property 10: Coverage should not decrease
+            # Coverage should not decrease
             assert after_coverage >= before_coverage, \
                 f"Coverage decreased after refactoring: {before_coverage:.1f}% -> {after_coverage:.1f}%"
 
@@ -344,7 +342,7 @@ def consolidated_helper(value):
             with open(utils_path, 'w') as f:
                 f.write(utils_content)
 
-            # Property 10: Test count should not decrease significantly
+            # Test count should not decrease significantly
             # Allow small decrease due to consolidation, but not major loss
             min_acceptable_tests = max(1, int(before_test_count * 0.8))  # Allow 20% decrease
 
@@ -466,7 +464,7 @@ class TestCalculator:
         variance = random.uniform(-2.0, 2.0)
         measured_coverage = initial_coverage + variance
 
-        # Property 10: Small measurement variance should be acceptable
+        # Small measurement variance should be acceptable
         tolerance = 2.0
 
         if abs(variance) <= tolerance:

@@ -20,7 +20,7 @@ from .test_utils import (
 
 @pytest.mark.slow
 class TestStyleOnlyPropertyUpdates:
-    """Property tests for efficient style updates (Property 7).
+    """Property tests for efficient style updates.
 
     Tests verify that style-only property changes update descendant widgets
     in place without rebuilding the widget tree, while structure property
@@ -32,11 +32,7 @@ class TestStyleOnlyPropertyUpdates:
     # Combination strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_font_size_change_preserves_widget_tree(self, initial_size, new_size):
-        """Changing font_size preserves widget tree structure (widget identities).
-
-        **Feature: label-compatibility-phase2, Property 7: Efficient Style Updates**
-        **Validates: Requirements 7.1**
-        """
+        """Changing font_size preserves widget tree structure (widget identities)."""
         assume(initial_size != new_size)
 
         # Create label with some content
@@ -60,11 +56,7 @@ class TestStyleOnlyPropertyUpdates:
     # Combination strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_color_change_preserves_widget_tree(self, new_color):
-        """Changing color preserves widget tree structure (widget identities).
-
-        **Feature: label-compatibility-phase2, Property 7: Efficient Style Updates**
-        **Validates: Requirements 7.1**
-        """
+        """Changing color preserves widget tree structure (widget identities)."""
         # Create label with some content
         markdown = 'Simple paragraph text.'
         label = MarkdownLabel(text=markdown, color=[1, 1, 1, 1])
@@ -86,11 +78,7 @@ class TestStyleOnlyPropertyUpdates:
     # Combination strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_color_change_updates_descendant_labels(self, new_color):
-        """Changing color updates all descendant Label widgets.
-
-        **Feature: label-compatibility-phase2, Property 7: Efficient Style Updates**
-        **Validates: Requirements 7.1**
-        """
+        """Changing color updates all descendant Label widgets."""
         # Create label with some content
         markdown = '# Heading\n\nParagraph text.'
         label = MarkdownLabel(text=markdown, color=[1, 1, 1, 1])
@@ -109,11 +97,7 @@ class TestStyleOnlyPropertyUpdates:
 
     @pytest.mark.parametrize('new_halign', ['left', 'center', 'right', 'justify'])
     def test_halign_change_preserves_widget_tree(self, new_halign):
-        """Changing halign preserves widget tree structure (widget identities).
-
-        **Feature: label-compatibility-phase2, Property 7: Efficient Style Updates**
-        **Validates: Requirements 7.1**
-        """
+        """Changing halign preserves widget tree structure (widget identities)."""
         # Create label with some content
         markdown = 'Paragraph text for alignment test.'
         label = MarkdownLabel(text=markdown, halign='left')
@@ -133,11 +117,7 @@ class TestStyleOnlyPropertyUpdates:
 
     @pytest.mark.parametrize('new_halign', ['left', 'center', 'right', 'justify'])
     def test_halign_change_updates_descendant_labels(self, new_halign):
-        """Changing halign updates all descendant Label widgets.
-
-        **Feature: label-compatibility-phase2, Property 7: Efficient Style Updates**
-        **Validates: Requirements 7.1**
-        """
+        """Changing halign updates all descendant Label widgets."""
         # Create label with some content
         markdown = '# Heading\n\nParagraph text.'
         label = MarkdownLabel(text=markdown, halign='left')
@@ -155,11 +135,7 @@ class TestStyleOnlyPropertyUpdates:
 
     @pytest.mark.parametrize('new_valign', ['top', 'middle', 'bottom'])
     def test_valign_change_preserves_widget_tree(self, new_valign):
-        """Changing valign preserves widget tree structure (widget identities).
-
-        **Feature: label-compatibility-phase2, Property 7: Efficient Style Updates**
-        **Validates: Requirements 7.1**
-        """
+        """Changing valign preserves widget tree structure (widget identities)."""
         # Create label with some content
         markdown = 'Paragraph text for valign test.'
         label = MarkdownLabel(text=markdown, valign='top')
@@ -179,11 +155,7 @@ class TestStyleOnlyPropertyUpdates:
 
     @pytest.mark.parametrize('new_valign', ['top', 'middle', 'bottom'])
     def test_valign_change_updates_descendant_labels(self, new_valign):
-        """Changing valign updates all descendant Label widgets.
-
-        **Feature: label-compatibility-phase2, Property 7: Efficient Style Updates**
-        **Validates: Requirements 7.1**
-        """
+        """Changing valign updates all descendant Label widgets."""
         # Create label with some content
         markdown = '# Heading\n\nParagraph text.'
         label = MarkdownLabel(text=markdown, valign='top')
@@ -203,11 +175,7 @@ class TestStyleOnlyPropertyUpdates:
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_line_height_change_preserves_widget_tree(self, new_line_height):
-        """Changing line_height preserves widget tree structure (widget identities).
-
-        **Feature: label-compatibility-phase2, Property 7: Efficient Style Updates**
-        **Validates: Requirements 7.1**
-        """
+        """Changing line_height preserves widget tree structure (widget identities)."""
         # Create label with some content
         markdown = 'Paragraph text for line height test.'
         label = MarkdownLabel(text=markdown, line_height=1.0)
@@ -229,11 +197,7 @@ class TestStyleOnlyPropertyUpdates:
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_line_height_change_updates_descendant_labels(self, new_line_height):
-        """Changing line_height updates all descendant Label widgets.
-
-        **Feature: label-compatibility-phase2, Property 7: Efficient Style Updates**
-        **Validates: Requirements 7.1**
-        """
+        """Changing line_height updates all descendant Label widgets."""
         # Create label with some content
         markdown = '# Heading\n\nParagraph text.'
         label = MarkdownLabel(text=markdown, line_height=1.0)
@@ -253,11 +217,7 @@ class TestStyleOnlyPropertyUpdates:
     # Boolean strategy: 2 examples (True/False coverage)
     @settings(max_examples=2, deadline=None)
     def test_disabled_change_preserves_widget_tree(self, new_disabled):
-        """Changing disabled preserves widget tree structure (widget identities).
-
-        **Feature: label-compatibility-phase2, Property 7: Efficient Style Updates**
-        **Validates: Requirements 7.1**
-        """
+        """Changing disabled preserves widget tree structure (widget identities)."""
         # Create label with some content
         markdown = 'Paragraph text for disabled test.'
         label = MarkdownLabel(text=markdown, disabled=False)
@@ -276,11 +236,7 @@ class TestStyleOnlyPropertyUpdates:
             "Widget tree changed after disabled update"
 
     def test_text_structure_property_rebuilds_tree(self):
-        """Changing text (structure property) rebuilds the widget tree.
-
-        **Feature: label-compatibility-phase2, Property 7: Efficient Style Updates**
-        **Validates: Requirements 7.2**
-        """
+        """Changing text (structure property) rebuilds the widget tree."""
         # Create label with some content
         markdown1 = 'First paragraph.'
         label = MarkdownLabel(text=markdown1)
@@ -301,11 +257,7 @@ class TestStyleOnlyPropertyUpdates:
             "Widget tree should be rebuilt after text change"
 
     def test_font_name_structure_property_rebuilds_tree(self):
-        """Changing font_name (structure property) rebuilds the widget tree.
-
-        **Feature: label-compatibility-phase2, Property 7: Structure Property Rebuilds**
-        **Validates: Requirements 7.3**
-        """
+        """Changing font_name (structure property) rebuilds the widget tree."""
         # Create label with some content
         markdown = 'Paragraph text.'
         label = MarkdownLabel(text=markdown, font_name='Roboto')
@@ -335,11 +287,7 @@ class TestStyleOnlyPropertyUpdates:
     @settings(max_examples=20, deadline=None)
     def test_multiple_style_changes_preserve_widget_tree(self, font_size, color,
                                                           halign, valign, line_height):
-        """Multiple style-only property changes preserve widget tree structure.
-
-        **Feature: label-compatibility-phase2, Property 7: Efficient Style Updates**
-        **Validates: Requirements 7.1**
-        """
+        """Multiple style-only property changes preserve widget tree structure."""
         # Create label with some content
         markdown = '# Heading\n\nParagraph text here.'
         label = MarkdownLabel(text=markdown)
@@ -368,11 +316,7 @@ class TestStyleOnlyPropertyUpdates:
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_disabled_color_switching(self, normal_color, disabled_color):
-        """Disabled state correctly switches between color and disabled_color.
-
-        **Feature: label-compatibility-phase2, Property 7: Efficient Style Updates**
-        **Validates: Requirements 7.1**
-        """
+        """Disabled state correctly switches between color and disabled_color."""
         # Create label with some content
         markdown = 'Paragraph text.'
         label = MarkdownLabel(

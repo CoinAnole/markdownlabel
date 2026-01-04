@@ -7,13 +7,11 @@ These tests validate that texture sizing tests are properly organized and groupe
 import pytest
 
 
-# **Feature: test-refactoring, Property 9: Logical Test Grouping**
 # *For any* two test classes that test the same feature area, they should be located in the same module
-# **Validates: Requirements 1.4, 4.3, 4.4**
 
 @pytest.mark.test_tests
 class TestTextureSizingTestGrouping:
-    """Property tests for texture sizing test grouping (Property 9)."""
+    """Property tests for texture sizing test grouping."""
 
     def test_texture_sizing_classes_grouped_together(self):
         """All texture sizing test classes are grouped in the same module."""

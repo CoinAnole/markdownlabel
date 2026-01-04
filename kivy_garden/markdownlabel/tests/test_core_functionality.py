@@ -21,14 +21,12 @@ from .test_utils import (
 )
 
 
-# **Feature: markdown-label, Property 1: Widget Tree Generation**
 # *For any* valid Markdown text, when parsed and rendered by MarkdownLabel,
 # the resulting widget tree SHALL contain at least one child widget for each
 # block-level element in the AST.
-# **Validates: Requirements 1.1**
 
 class TestMarkdownToWidgetTreeGeneration:
-    """Property tests for widget tree generation (Property 1)."""
+    """Property tests for widget tree generation."""
 
     @pytest.mark.needs_window
     @given(simple_markdown_document())
@@ -99,14 +97,12 @@ class TestMarkdownToWidgetTreeGeneration:
             f"Expected 0 children for empty text, got {len(label.children)}"
 
 
-# **Feature: markdown-label, Property 2: Reactive Text Updates**
 # *For any* two different Markdown texts, when the `text` property is changed
 # from the first to the second, the widget tree SHALL reflect the structure
 # of the second text, not the first.
-# **Validates: Requirements 1.2**
 
 class TestMarkdownTextPropertyUpdates:
-    """Property tests for reactive text updates (Property 2)."""
+    """Property tests for reactive text updates."""
 
     @pytest.mark.needs_window
     @given(markdown_heading(), markdown_paragraph())
@@ -199,13 +195,11 @@ class TestMarkdownTextPropertyUpdates:
             assert label.text == text2
 
 
-# **Feature: markdown-label, Property 12: Link Ref Markup**
 # *For any* Markdown link [text](url), the rendered Kivy markup SHALL contain
 # [ref=url]text[/ref].
-# **Validates: Requirements 7.1**
 
 class TestMarkdownLinkRendering:
-    """Property tests for link ref markup (Property 12)."""
+    """Property tests for link ref markup."""
 
     @pytest.mark.needs_window
     @given(markdown_link())
@@ -275,13 +269,11 @@ class TestMarkdownLinkRendering:
         assert found, f"Expected [ref={url}] in markup"
 
 
-# **Feature: markdown-label, Property 18: Deep Nesting Stability**
 # *For any* Markdown with nesting depth up to 10 levels (nested lists, quotes),
 # the MarkdownLabel SHALL render without raising exceptions or causing stack overflow.
-# **Validates: Requirements 13.1**
 
 class TestMarkdownNestingStability:
-    """Property tests for deep nesting stability (Property 18)."""
+    """Property tests for deep nesting stability."""
 
     @pytest.mark.needs_window
     @given(st.integers(min_value=1, max_value=15))

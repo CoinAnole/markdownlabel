@@ -17,7 +17,7 @@ from .test_utils import has_clipping_container
 
 
 class TestContentClippingWhenHeightConstrained:
-    """Property tests for content clipping when height-constrained (Property 1)."""
+    """Property tests for content clipping when height-constrained."""
 
     @pytest.mark.property
     @given(
@@ -139,7 +139,7 @@ class TestContentClippingWhenHeightConstrained:
 
 
 class TestNoClippingWhenUnconstrained:
-    """Property tests for no clipping when unconstrained (Property 2)."""
+    """Property tests for no clipping when unconstrained."""
 
     @pytest.mark.property
     @given(

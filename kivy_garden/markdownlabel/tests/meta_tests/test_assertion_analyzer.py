@@ -102,8 +102,7 @@ def test_property_triggers_rebuild(self):
     @settings(max_examples=30, deadline=None)
     def test_value_change_test_naming_property(self, test_name_suffix):
         """
-        **Property 2: Value Change Test Naming**
-        **Validates: Requirements 1.2**
+        **Value Change Test Naming**
 
         For any test method that only asserts value changes without verifying
         rebuild behavior, the test name SHALL use patterns like "updates_value"

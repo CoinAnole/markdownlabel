@@ -18,7 +18,7 @@ from .test_utils import (
 
 
 class TestTextSizeForwarding:
-    """Property tests for text_size forwarding (Property 9)."""
+    """Property tests for text_size forwarding."""
 
     @pytest.mark.property
     @given(st.floats(min_value=50, max_value=1000, allow_nan=False, allow_infinity=False))
@@ -94,14 +94,12 @@ class TestTextSizeForwarding:
         assert len(labels) >= 1, "Expected at least one Label"
 
 
-# **Feature: label-compatibility, Property 1: text_size Height Forwarding**
 # *For any* MarkdownLabel with `text_size[1]` set to a non-None numeric value H,
 # all child Labels SHALL have their `text_size[1]` equal to H, and their `valign`
 # property SHALL match the MarkdownLabel's `valign` value.
-# **Validates: Requirements 1.1, 1.2**
 
 class TestTextSizeHeightForwarding:
-    """Property tests for text_size height forwarding (Property 1)."""
+    """Property tests for text_size height forwarding."""
 
     @pytest.mark.property
     @given(st.floats(min_value=50, max_value=500, allow_nan=False, allow_infinity=False))
@@ -190,13 +188,11 @@ class TestTextSizeHeightForwarding:
                 f"Expected text_size[1]={height}, got {lbl.text_size[1]}"
 
 
-# **Feature: label-compatibility, Property 2: text_size Height None Backward Compatibility**
 # *For any* MarkdownLabel with `text_size[1]` set to None, all child Labels SHALL
 # have their `text_size[1]` equal to None, maintaining the existing auto-sizing behavior.
-# **Validates: Requirements 1.3**
 
 class TestTextSizeHeightNoneBackwardCompatibility:
-    """Property tests for text_size height None backward compatibility (Property 2)."""
+    """Property tests for text_size height None backward compatibility."""
 
     @pytest.mark.property
     @given(simple_markdown_document())
@@ -249,13 +245,11 @@ class TestTextSizeHeightNoneBackwardCompatibility:
                     f"Expected default text_size[1]=None, got {lbl.text_size[1]}"
 
 
-# **Feature: label-compatibility, Property 3: text_size Dynamic Updates**
 # *For any* MarkdownLabel, when `text_size` is changed from value A to value B,
 # all child Labels SHALL be updated to reflect the new `text_size` value B.
-# **Validates: Requirements 1.4**
 
 class TestTextSizeDynamicUpdates:
-    """Property tests for text_size dynamic updates (Property 3)."""
+    """Property tests for text_size dynamic updates."""
 
     @pytest.mark.property
     @given(st.floats(min_value=50, max_value=300, allow_nan=False, allow_infinity=False),
@@ -333,13 +327,11 @@ class TestTextSizeDynamicUpdates:
                 f"After change from None: Expected text_size[1]={height}, got {lbl.text_size[1]}"
 
 
-# **Feature: label-compatibility, Property 10: unicode_errors Forwarding**
 # *For any* unicode_errors value in ['strict', 'replace', 'ignore'], all internal
 # Labels SHALL have `unicode_errors` set to that value.
-# **Validates: Requirements 10.1, 10.2**
 
 class TestUnicodeErrorsForwarding:
-    """Property tests for unicode_errors forwarding (Property 10)."""
+    """Property tests for unicode_errors forwarding."""
 
     @pytest.mark.property
     @given(unicode_errors_strategy)
@@ -441,11 +433,7 @@ class TestUnicodeErrorsForwarding:
     # Use 9 examples for full coverage
     @settings(max_examples=9, deadline=None)
     def test_unicode_errors_change_triggers_rebuild(self, errors1, errors2):
-        """Changing unicode_errors triggers widget rebuild with new value.
-
-        **Feature: label-compatibility, Property 10: unicode_errors Forwarding**
-        **Validates: Requirements 10.1, 10.2**
-        """
+        """Changing unicode_errors triggers widget rebuild with new value."""
         assume(errors1 != errors2)
 
         label = MarkdownLabel(text='Hello World', unicode_errors=errors1)
@@ -481,13 +469,11 @@ class TestUnicodeErrorsForwarding:
             f"Default unicode_errors should be 'replace', got {label.unicode_errors}"
 
 
-# **Feature: label-compatibility, Property 13: strip Forwarding**
 # *For any* Markdown text and any strip boolean value, all internal Labels
 # SHALL have `strip` set to that value.
-# **Validates: Requirements 14.1**
 
 class TestStripForwarding:
-    """Property tests for strip forwarding (Property 13)."""
+    """Property tests for strip forwarding."""
 
     @pytest.mark.property
     @given(st.booleans())
@@ -589,11 +575,7 @@ class TestStripForwarding:
     # Use 4 examples for full coverage
     @settings(max_examples=4, deadline=None)
     def test_strip_change_triggers_rebuild(self, strip1, strip2):
-        """Changing strip triggers widget rebuild with new value.
-
-        **Feature: label-compatibility, Property 13: strip Forwarding**
-        **Validates: Requirements 14.1**
-        """
+        """Changing strip triggers widget rebuild with new value."""
         assume(strip1 != strip2)
 
         label = MarkdownLabel(text='Hello World', strip=strip1)

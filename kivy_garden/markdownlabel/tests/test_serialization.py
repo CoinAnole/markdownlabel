@@ -22,7 +22,7 @@ from .test_utils import (
 
 
 class TestMarkdownRoundTripSerialization:
-    """Property tests for round-trip serialization (Property 17)."""
+    """Property tests for round-trip serialization."""
 
     def _normalize_ast(self, tokens):
         """Normalize AST for comparison by removing non-semantic fields.
@@ -40,6 +40,11 @@ class TestMarkdownRoundTripSerialization:
         for token in tokens:
             if not isinstance(token, dict):
                 normalized.append(token)
+                continue
+
+            # Convert softbreak to space for round-trip comparison
+            if token.get('type') == 'softbreak':
+                normalized.append({'type': 'text', 'raw': ' '})
                 continue
 
             # Skip blank_line tokens as they're formatting artifacts
@@ -312,6 +317,109 @@ class TestMarkdownRoundTripSerialization:
         assert ast1 == ast2, \
             f"AST mismatch after round-trip:\nOriginal: {ast1}\nAfter: {ast2}"
 
+    def test_table_alignment_round_trip(self):
+        """Table with alignment round-trips correctly."""
+        markdown = '| Left | Center | Right |\n| :--- | :---: | ---: |\n| 1 | 2 | 3 |'
+
+        label = MarkdownLabel(text=markdown)
+        ast1 = self._normalize_ast(label.get_ast())
+
+        serialized = label.to_markdown()
+
+        # Verify markers are present in serialized output
+        assert ':---' in serialized
+        assert ':---:' in serialized
+        assert '---:' in serialized
+
+        label2 = MarkdownLabel(text=serialized)
+        ast2 = self._normalize_ast(label2.get_ast())
+
+        assert ast1 == ast2, \
+            f"AST mismatch after round-trip:\nOriginal: {ast1}\nAfter: {ast2}"
+
+    def test_inline_code_serialization(self):
+        """Inline code serialization."""
+        markdown = 'Text with `code` included.'
+
+        label = MarkdownLabel(text=markdown)
+        ast1 = self._normalize_ast(label.get_ast())
+
+        serialized = label.to_markdown()
+        assert '`code`' in serialized
+
+        label2 = MarkdownLabel(text=serialized)
+        ast2 = self._normalize_ast(label2.get_ast())
+
+        assert ast1 == ast2
+
+    def test_strikethrough_serialization(self):
+        """Strikethrough serialization."""
+        markdown = 'Text with ~~strikethrough~~ included.'
+
+        label = MarkdownLabel(text=markdown)
+        ast1 = self._normalize_ast(label.get_ast())
+
+        serialized = label.to_markdown()
+        assert '~~strikethrough~~' in serialized
+
+        label2 = MarkdownLabel(text=serialized)
+        ast2 = self._normalize_ast(label2.get_ast())
+
+        assert ast1 == ast2
+
+    def test_image_serialization(self):
+        """Image serialization."""
+        markdown = '![Alt text](http://example.com/image.png)'
+
+        label = MarkdownLabel(text=markdown)
+        ast1 = self._normalize_ast(label.get_ast())
+
+        serialized = label.to_markdown()
+        assert '![Alt text](http://example.com/image.png)' in serialized
+
+        label2 = MarkdownLabel(text=serialized)
+        ast2 = self._normalize_ast(label2.get_ast())
+
+        assert ast1 == ast2
+
+    def test_softbreak_serialization(self):
+        """Softbreak serialization."""
+        # A parseable softbreak usually requires a newline in the input that doesn't trigger a paragraph break
+        markdown = 'Line 1\nLine 2'
+
+        label = MarkdownLabel(text=markdown)
+        ast1 = self._normalize_ast(label.get_ast())
+
+        serialized = label.to_markdown()
+
+        # Softbreak is typically serialized as a space or newline depending on implementation;
+        # serializer implementation shows it returns ' '
+        # Original input 'Line 1\nLine 2' parses to text 'Line 1', softbreak, text 'Line 2'
+
+        label2 = MarkdownLabel(text=serialized)
+        ast2 = self._normalize_ast(label2.get_ast())
+
+        # Note: mistune might normalize softbreaks, so exact round trip of whitespace
+        # isn't always guaranteed, but semantic content should match.
+        # Check if ASTs are equivalent structure-wise
+        assert ast1 == ast2
+
+    def test_hard_linebreak_serialization(self):
+        """Hard linebreak serialization."""
+        # Hard linebreak is two spaces at end of line
+        markdown = 'Line 1  \nLine 2'
+
+        label = MarkdownLabel(text=markdown)
+        ast1 = self._normalize_ast(label.get_ast())
+
+        serialized = label.to_markdown()
+        assert '  \n' in serialized or '\\\n' in serialized  # Check for standard hard break indicators
+
+        label2 = MarkdownLabel(text=serialized)
+        ast2 = self._normalize_ast(label2.get_ast())
+
+        assert ast1 == ast2
+
 
 class TestCodeBlockSerialization:
     """Tests for code block serialization edge cases."""
@@ -443,13 +551,12 @@ class TestCodeFenceCollisionProperty:
     # Complex strategy: 30 examples (adequate coverage)
     @settings(max_examples=30, deadline=None)
     def test_fence_collision_handling_property(self, code_content):
-        """**Feature: test-improvements, Property 7: Code fence collision handling**
+        """**Feature: test-improvements, Code fence collision handling**
 
         For any code content that contains backticks, the MarkdownSerializer
         SHALL choose a fence length longer than any backtick sequence in the content
         to prevent fence collision.
 
-        **Validates: Requirements 5.1, 5.2**
         """
         # Create a code block token
         token = {
@@ -514,12 +621,11 @@ class TestCodeFenceCollisionProperty:
     # Combination strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_code_serialization_round_trip_property(self, code_content, language):
-        """**Feature: test-improvements, Property 8: Code serialization round-trip**
+        """**Feature: test-improvements, Code serialization round-trip**
 
         For any code block, serializing and then parsing the result SHALL produce
         valid Markdown that preserves the original content exactly.
 
-        **Validates: Requirements 5.3, 5.4**
         """
         # Skip problematic characters that might interfere with parsing
         assume('\x00' not in code_content)
@@ -570,3 +676,71 @@ class TestCodeFenceCollisionProperty:
             f"Original: {original_lang!r}\n"
             f"Round-trip: {round_trip_lang!r}"
         )
+
+
+class TestMarkdownSerializerEdgeCases:
+    """Tests for MarkdownSerializer edge cases and coverage."""
+
+    def test_serialize_unknown_token(self):
+        """Test that unknown token types return empty string."""
+        serializer = MarkdownSerializer()
+        # Token with unknown type
+        token = {'type': 'unknown_thing', 'raw': 'content'}
+        # _serialize_token returns '' for unknown
+        assert serializer._serialize_token(token) == ''
+
+    def test_serialize_inline_unknown(self):
+        """Test that unknown inline tokens fall back to raw content."""
+        serializer = MarkdownSerializer()
+        # Inline token with unknown type
+        token = {'type': 'weird_inline', 'raw': 'content'}
+        # serialize_inline falls back to raw
+        assert serializer.serialize_inline([token]) == 'content'
+
+    def test_blank_line(self):
+        """Test that blank_line tokens return None."""
+        serializer = MarkdownSerializer()
+        token = {'type': 'blank_line'}
+        assert serializer.blank_line(token) is None
+
+    def test_table_edge_cases(self):
+        """Test table serialization with empty children."""
+        serializer = MarkdownSerializer()
+        # Table with empty children
+        token = {'type': 'table', 'children': []}
+        assert serializer.table(token) == ''
+
+    def test_serialize_list_item_unknown_child(self):
+        """Test list item serialization with unknown child type."""
+        serializer = MarkdownSerializer()
+        # List item with unknown child type
+        item_token = {
+            'type': 'list_item',
+            'children': [{'type': 'unknown_block', 'raw': 'ignore me'}]
+        }
+        # It calls _serialize_token which returns '' so result is empty string
+        assert serializer._serialize_list_item(item_token) == ''
+
+    def test_serialize_list_item_known_child_returns_empty(self):
+        """Test list item serialization with child that serializes to empty."""
+        serializer = MarkdownSerializer()
+        # List item with a child that serializes to empty (e.g. blank_line)
+        item_token = {
+            'type': 'list_item',
+            'children': [{'type': 'blank_line'}]
+        }
+        assert serializer._serialize_list_item(item_token) == ''
+
+    def test_block_code_no_newline(self):
+        """Test block code serialization without trailing newline."""
+        serializer = MarkdownSerializer()
+        token = {'type': 'block_code', 'raw': 'code without newline'}
+        result = serializer.block_code(token)
+        assert result == '```\ncode without newline\n```'
+
+    def test_block_code_with_newline(self):
+        """Test block code serialization with trailing newline."""
+        serializer = MarkdownSerializer()
+        token = {'type': 'block_code', 'raw': 'code with newline\n'}
+        result = serializer.block_code(token)
+        assert result == '```\ncode with newline\n```'

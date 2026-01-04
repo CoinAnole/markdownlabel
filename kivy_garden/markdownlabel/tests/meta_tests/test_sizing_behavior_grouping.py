@@ -7,13 +7,11 @@ These tests validate that sizing behavior tests are properly organized and group
 import pytest
 
 
-# **Feature: test-refactoring, Property 9: Logical Test Grouping**
 # *For any* two test classes that test the same feature area, they should be located in the same module
-# **Validates: Requirements 1.4, 4.3, 4.4**
 
 @pytest.mark.test_tests
 class TestLogicalTestGrouping:
-    """Property tests for logical test grouping (Property 9)."""
+    """Property tests for logical test grouping."""
 
     def test_sizing_behavior_classes_grouped_together(self):
         """All sizing behavior test classes are grouped in the same module."""
