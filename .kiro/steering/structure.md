@@ -23,7 +23,6 @@ kivy_garden/
         ├── test_import.py                # Import and basic functionality tests
         ├── test_inline_renderer.py       # Inline markdown rendering tests
         ├── test_kivy_renderer.py         # Block-level rendering tests
-        ├── test_kivy_renderer_coverage.py # Additional coverage for KivyRenderer edge cases
         ├── test_core_functionality.py    # Core markdown parsing and rendering
         ├── test_label_compatibility.py   # Basic label property forwarding
         ├── test_font_properties.py       # Font-related property forwarding
@@ -51,8 +50,6 @@ kivy_garden/
         │   ├── test_core_functionality_properties.py # Core functionality property tests
         │   ├── test_coverage_preservation.py
         │   ├── test_documentation_compliance.py
-        │   ├── test_duplicate_detector_coverage.py
-        │   ├── test_duplicate_detector.py
         │   ├── test_file_analyzer.py
         │   ├── test_helper_availability.py
         │   ├── test_naming_convention_validator.py
