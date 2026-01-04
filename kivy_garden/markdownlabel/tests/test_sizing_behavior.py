@@ -18,7 +18,7 @@ from .test_utils import (
 # and its height SHALL equal or exceed the sum of its children's heights.
 
 class TestAutoSizingBehavior:
-    """Property tests for auto-sizing behavior (Property 16)."""
+    """Property tests for auto-sizing behavior."""
 
     @pytest.mark.property
     @given(simple_markdown_document())
@@ -81,7 +81,7 @@ class TestAutoSizingBehavior:
 # `size_hint_y=None` AND its height SHALL be bound to `minimum_height`.
 
 class TestAutoSizeHeightTrueBehavior:
-    """Property tests for auto_size_height True behavior (Property 7)."""
+    """Property tests for auto_size_height True behavior."""
 
     @pytest.mark.property
     @given(simple_markdown_document())
@@ -147,7 +147,7 @@ class TestAutoSizeHeightTrueBehavior:
 # be bound to `minimum_height`.
 
 class TestAutoSizeHeightFalseBehavior:
-    """Property tests for auto_size_height False behavior (Property 8)."""
+    """Property tests for auto_size_height False behavior."""
 
     @pytest.mark.property
     @given(simple_markdown_document())
@@ -205,7 +205,7 @@ class TestAutoSizeHeightFalseBehavior:
 # SHALL be set to None.
 
 class TestAutoSizeHeightDynamicToggling:
-    """Property tests for auto_size_height dynamic toggling (Property 9)."""
+    """Property tests for auto_size_height dynamic toggling."""
 
     @pytest.mark.property
     @given(simple_markdown_document())
@@ -318,7 +318,7 @@ class TestAutoSizeHeightDynamicToggling:
 # `auto_size_height` settings.
 
 class TestStrictLabelModeSizingBehavior:
-    """Property tests for strict label mode sizing behavior (Property 2)."""
+    """Property tests for strict label mode sizing behavior."""
 
     @pytest.mark.property
     @given(simple_markdown_document())

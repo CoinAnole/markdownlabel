@@ -32,7 +32,7 @@ line_height_strategy = st.floats(min_value=0.5, max_value=3.0, allow_nan=False, 
 # code_font_name setting.
 
 class TestFontNamePropertyForwarding:
-    """Property tests for font_name forwarding (Property 2)."""
+    """Property tests for font_name forwarding."""
 
     @pytest.mark.parametrize('font_name', KIVY_FONTS)
     def test_font_name_applied_to_paragraph(self, font_name):
@@ -169,7 +169,7 @@ class TestFontNamePropertyForwarding:
 # `line_height` set to the specified value.
 
 class TestLineHeightPropertyForwarding:
-    """Property tests for line_height forwarding (Property 4)."""
+    """Property tests for line_height forwarding."""
 
     @pytest.mark.property
     @given(line_height_strategy)
@@ -313,7 +313,7 @@ class TestLineHeightPropertyForwarding:
 # font_family which is excluded from code blocks to preserve monospace appearance.
 
 class TestAdvancedFontPropertyForwarding:
-    """Property tests for font advanced property forwarding (Property 6).
+    """Property tests for font advanced property forwarding.
 
     This test class verifies that font advanced properties are correctly
     forwarded to child Labels, with the special case that font_family
@@ -525,7 +525,7 @@ class TestAdvancedFontPropertyForwarding:
 # the new base size multiplied by their respective scale factors.
 
 class TestFontSizeImmediateUpdates:
-    """Property tests for font size immediate update (Property 3)."""
+    """Property tests for font size immediate update."""
 
     @pytest.mark.property
     @given(
@@ -652,7 +652,7 @@ class TestFontSizeImmediateUpdates:
 # where HEADING_SIZES is {1: 2.5, 2: 2.0, 3: 1.75, 4: 1.5, 5: 1.25, 6: 1.0}.
 
 class TestHeadingScalePreservation:
-    """Property tests for heading scale preservation (Property 4)."""
+    """Property tests for heading scale preservation."""
 
     @pytest.mark.property
     @given(
@@ -794,7 +794,7 @@ class TestHeadingScalePreservation:
 # indicating no rebuild occurred.
 
 class TestNoRebuildOnFontSizeChange:
-    """Property tests for no rebuild on font size change (Property 5)."""
+    """Property tests for no rebuild on font size change."""
 
     @pytest.mark.property
     @given(

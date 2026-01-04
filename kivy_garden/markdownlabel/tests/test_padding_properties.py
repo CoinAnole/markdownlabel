@@ -24,7 +24,7 @@ from .test_utils import (
 # normalized and stored correctly according to Kivy's VariableListProperty rules.
 
 class TestPaddingApplication:
-    """Property tests for padding application (Property 7)."""
+    """Property tests for padding application."""
 
     @pytest.mark.property
     @given(padding_single)
@@ -132,7 +132,7 @@ class TestPaddingApplication:
 # text content SHALL have their `padding` property equal to P.
 
 class TestPaddingForwarding:
-    """Property tests for padding forwarding (Property 4)."""
+    """Property tests for padding forwarding."""
 
     @pytest.mark.property
     @given(text_padding_strategy)
@@ -279,7 +279,7 @@ Regular paragraph
 # SHALL be updated to reflect the new padding value B.
 
 class TestPaddingDynamicUpdates:
-    """Property tests for text_padding dynamic updates (Property 5)."""
+    """Property tests for text_padding dynamic updates."""
 
     @pytest.mark.property
     @given(text_padding_strategy, text_padding_strategy)
@@ -382,7 +382,7 @@ Paragraph with text.
 # breaking the layout structure.
 
 class TestPaddingWithNestedStructures:
-    """Property tests for padding with nested structures (Property 6)."""
+    """Property tests for padding with nested structures."""
 
     @pytest.mark.property
     @given(text_padding_strategy)
@@ -542,7 +542,7 @@ Final paragraph.
 # SHALL have their padding property set to P.
 
 class TestTextPaddingAppliesToChildLabels:
-    """Property tests for text_padding applies to child Labels (Property 8)."""
+    """Property tests for text_padding applies to child Labels."""
 
     @pytest.mark.property
     @given(text_padding_strategy)
@@ -615,7 +615,7 @@ class TestTextPaddingAppliesToChildLabels:
 # SHALL have padding P, and child Label widgets SHALL NOT have their padding affected by this property.
 
 class TestPaddingAppliesToContainer:
-    """Property tests for padding applies to container (Property 9)."""
+    """Property tests for padding applies to container."""
 
     @pytest.mark.property
     @given(text_padding_strategy)
@@ -694,7 +694,7 @@ class TestPaddingAppliesToContainer:
 # *For any* value V assigned to label_padding, text_padding SHALL equal V, and vice versa.
 
 class TestLabelPaddingAliasSynchronization:
-    """Property tests for label_padding alias synchronization (Property 10)."""
+    """Property tests for label_padding alias synchronization."""
 
     @pytest.mark.property
     @given(text_padding_strategy)

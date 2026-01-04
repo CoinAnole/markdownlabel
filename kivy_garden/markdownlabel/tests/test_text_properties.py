@@ -18,7 +18,7 @@ from .test_utils import (
 
 
 class TestTextSizeForwarding:
-    """Property tests for text_size forwarding (Property 9)."""
+    """Property tests for text_size forwarding."""
 
     @pytest.mark.property
     @given(st.floats(min_value=50, max_value=1000, allow_nan=False, allow_infinity=False))
@@ -99,7 +99,7 @@ class TestTextSizeForwarding:
 # property SHALL match the MarkdownLabel's `valign` value.
 
 class TestTextSizeHeightForwarding:
-    """Property tests for text_size height forwarding (Property 1)."""
+    """Property tests for text_size height forwarding."""
 
     @pytest.mark.property
     @given(st.floats(min_value=50, max_value=500, allow_nan=False, allow_infinity=False))
@@ -192,7 +192,7 @@ class TestTextSizeHeightForwarding:
 # have their `text_size[1]` equal to None, maintaining the existing auto-sizing behavior.
 
 class TestTextSizeHeightNoneBackwardCompatibility:
-    """Property tests for text_size height None backward compatibility (Property 2)."""
+    """Property tests for text_size height None backward compatibility."""
 
     @pytest.mark.property
     @given(simple_markdown_document())
@@ -249,7 +249,7 @@ class TestTextSizeHeightNoneBackwardCompatibility:
 # all child Labels SHALL be updated to reflect the new `text_size` value B.
 
 class TestTextSizeDynamicUpdates:
-    """Property tests for text_size dynamic updates (Property 3)."""
+    """Property tests for text_size dynamic updates."""
 
     @pytest.mark.property
     @given(st.floats(min_value=50, max_value=300, allow_nan=False, allow_infinity=False),
@@ -331,7 +331,7 @@ class TestTextSizeDynamicUpdates:
 # Labels SHALL have `unicode_errors` set to that value.
 
 class TestUnicodeErrorsForwarding:
-    """Property tests for unicode_errors forwarding (Property 10)."""
+    """Property tests for unicode_errors forwarding."""
 
     @pytest.mark.property
     @given(unicode_errors_strategy)
@@ -475,7 +475,7 @@ class TestUnicodeErrorsForwarding:
 # SHALL have `strip` set to that value.
 
 class TestStripForwarding:
-    """Property tests for strip forwarding (Property 13)."""
+    """Property tests for strip forwarding."""
 
     @pytest.mark.property
     @given(st.booleans())

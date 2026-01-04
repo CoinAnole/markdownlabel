@@ -14,7 +14,7 @@ from kivy_garden.markdownlabel.tests.modules.strategy_analyzer import (
 
 @pytest.mark.property
 class TestStrategyClassification:
-    """Property tests for strategy classification (Property 1)."""
+    """Property tests for strategy classification."""
 
     def setup_method(self):
         """Set up test fixtures."""
@@ -99,7 +99,7 @@ class TestStrategyClassification:
 
 @pytest.mark.property
 class TestMaxExamplesCalculation:
-    """Property tests for max_examples calculation (Property 2)."""
+    """Property tests for max_examples calculation."""
 
     def setup_method(self):
         """Set up test fixtures."""
@@ -186,7 +186,7 @@ class TestMaxExamplesCalculation:
 
 @pytest.mark.property
 class TestCombinationStrategies:
-    """Property tests for combination strategy handling (Property 3)."""
+    """Property tests for combination strategy handling."""
 
     def setup_method(self):
         """Set up test fixtures."""
@@ -307,7 +307,7 @@ class TestCombinationStrategies:
 
 @pytest.mark.test_tests
 class TestOverTestingDetection:
-    """Property tests for over-testing detection (Property 7)."""
+    """Property tests for over-testing detection."""
 
     def setup_method(self):
         """Set up test fixtures."""

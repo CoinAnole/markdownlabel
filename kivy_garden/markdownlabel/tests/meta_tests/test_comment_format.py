@@ -15,7 +15,7 @@ from kivy_garden.markdownlabel.tests.modules.strategy_analyzer import StrategyTy
 
 @pytest.mark.test_tests
 class TestCommentFormatValidation:
-    """Property tests for comment format validation (Property 1)."""
+    """Property tests for comment format validation."""
 
     def setup_method(self):
         """Set up test fixtures."""
@@ -205,7 +205,7 @@ class TestCommentPatternModel:
 
 @pytest.mark.test_tests
 class TestCustomValueDocumentation:
-    """Property tests for custom value documentation (Property 2)."""
+    """Property tests for custom value documentation."""
 
     def setup_method(self):
         """Set up test fixtures."""
@@ -361,7 +361,7 @@ def test_wrong_format(data):
 
 @pytest.mark.test_tests
 class TestStrategyTypeConsistency:
-    """Property tests for strategy type consistency (Property 3)."""
+    """Property tests for strategy type consistency."""
 
     def setup_method(self):
         """Set up test fixtures."""
@@ -527,7 +527,7 @@ class TestStrategyTypeConsistency:
 
 @pytest.mark.test_tests
 class TestMachineReadableFormat:
-    """Property tests for machine-readable format (Property 8)."""
+    """Property tests for machine-readable format."""
 
     def setup_method(self):
         """Set up test fixtures."""

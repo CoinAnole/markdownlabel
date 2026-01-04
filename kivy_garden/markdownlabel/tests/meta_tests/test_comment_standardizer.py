@@ -21,7 +21,7 @@ from kivy_garden.markdownlabel.tests.modules.optimization_detector import (
 
 @pytest.mark.test_tests
 class TestBooleanStrategyDocumentation:
-    """Property tests for boolean strategy documentation (Property 4)."""
+    """Property tests for boolean strategy documentation."""
 
     def setup_method(self):
         """Set up test fixtures."""
@@ -296,7 +296,7 @@ def test_boolean_integration(flag):
 
 @pytest.mark.test_tests
 class TestFiniteStrategyDocumentation:
-    """Property tests for finite strategy documentation (Property 5)."""
+    """Property tests for finite strategy documentation."""
 
     def setup_method(self):
         """Set up test fixtures."""
@@ -585,7 +585,7 @@ def test_already_standardized(flag):
 
 @pytest.mark.test_tests
 class TestPerformanceRationaleDocumentation:
-    """Property tests for performance rationale documentation (Property 6)."""
+    """Property tests for performance rationale documentation."""
 
     def setup_method(self):
         """Set up test fixtures."""

@@ -18,7 +18,7 @@ from .test_utils import find_labels_recursive, collect_widget_ids
 # or None, all child Labels SHALL have halign='left'.
 
 class TestAutoAlignmentRespectsDirection:
-    """Property tests for auto alignment respecting direction (Property 11)."""
+    """Property tests for auto alignment respecting direction."""
 
     @pytest.mark.unit
     @pytest.mark.needs_window
@@ -176,7 +176,7 @@ class TestAutoAlignmentRespectsDirection:
 # effective alignment.
 
 class TestDirectionChangeUpdatesAlignment:
-    """Property tests for direction change updating alignment (Property 12)."""
+    """Property tests for direction change updating alignment."""
 
     @pytest.mark.property
     @pytest.mark.needs_window
@@ -374,7 +374,7 @@ class TestDirectionChangeUpdatesAlignment:
 # or 'justify', all child Labels SHALL use that alignment regardless of base_direction value.
 
 class TestExplicitAlignmentOverridesAuto:
-    """Property tests for explicit alignment overriding auto (Property 13)."""
+    """Property tests for explicit alignment overriding auto."""
 
     @pytest.mark.property
     @pytest.mark.needs_window

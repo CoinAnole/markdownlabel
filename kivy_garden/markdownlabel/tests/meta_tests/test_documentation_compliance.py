@@ -16,7 +16,7 @@ class TestDocumentationCompliance:
     """Test documentation compliance for max_examples values."""
 
     def test_custom_values_are_documented(self):
-        """**Feature: test-performance-optimization, Property 6: Custom values are documented**
+        """**Feature: test-performance-optimization, Custom values are documented**
 
         For any property test using custom max_examples values that deviate from
         standard patterns, the rationale SHALL be documented in test comments.

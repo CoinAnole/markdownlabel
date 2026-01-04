@@ -18,7 +18,7 @@ import pytest
 
 @pytest.mark.test_tests
 class TestDiscoveryPerformance:
-    """Property tests for test discovery performance (Property 12)."""
+    """Property tests for test discovery performance."""
 
     def test_fast_test_discovery_baseline(self):
         """Test that test discovery works correctly for the refactored structure.
@@ -139,7 +139,7 @@ class TestDiscoveryPerformance:
 
 @pytest.mark.test_tests
 class TestRebuildContractEnforcement:
-    """Property tests for rebuild contract enforcement (Property 5)."""
+    """Property tests for rebuild contract enforcement."""
 
     def _has_rebuild_verification(self, test_content):
         """Check if test content actually verifies that a rebuild occurred."""

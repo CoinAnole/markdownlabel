@@ -37,7 +37,7 @@ from .test_utils import (
 # max_lines, ellipsis_options), all child Labels SHALL have the same property values.
 
 class TestShorteningPropertyForwarding:
-    """Property tests for shortening property forwarding (Property 4)."""
+    """Property tests for shortening property forwarding."""
 
     @given(st.booleans())
     # Boolean strategy: 2 examples (True/False coverage)
@@ -361,7 +361,7 @@ Paragraph text
 # 3. Empty refs/anchors are handled correctly
 
 class TestCoordinateTranslation:
-    """Property tests for coordinate translation of refs and anchors (Property 5)."""
+    """Property tests for coordinate translation of refs and anchors."""
 
     @given(st_alphanumeric_text(min_size=1, max_size=20))
     # Combination strategy: 20 examples (adequate coverage)
@@ -956,7 +956,7 @@ class TestDeterministicRefsTranslation:
         - `base_y = parent_offset_y + (label.center_y + tex_h / 2.0)`
         - `translated_box = [base_x + x1, base_y - y1, base_x + x2, base_y - y2]`
 
-        **Property 3: Refs Coordinate Translation Math**
+        **Refs Coordinate Translation Math**
         """
         # Create MarkdownLabel
         md_label = MarkdownLabel(text='Test')
@@ -1289,7 +1289,7 @@ class TestDeterministicAnchorsTranslation:
         - `base_y = parent_offset_y + (label.center_y + tex_h / 2.0)`
         - `translated_anchor = (base_x + ax, base_y - ay)`
 
-        **Property 4: Anchors Coordinate Translation Math**
+        **Anchors Coordinate Translation Math**
         """
         # Create MarkdownLabel
         md_label = MarkdownLabel(text='Test')

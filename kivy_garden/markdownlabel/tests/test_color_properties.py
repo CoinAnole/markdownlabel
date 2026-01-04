@@ -22,7 +22,7 @@ from .test_utils import (
 # their light color.
 
 class TestColorPropertyForwarding:
-    """Property tests for color forwarding (Property 3)."""
+    """Property tests for color forwarding."""
 
     @pytest.mark.property
     @given(color_strategy)

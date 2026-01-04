@@ -25,7 +25,7 @@ from kivy_garden.markdownlabel.tests.test_utils import duplicate_helper_function
 
 @pytest.mark.test_tests
 class TestHelperFunctionConsolidation:
-    """Property tests for helper function consolidation (Property 3)."""
+    """Property tests for helper function consolidation."""
 
     @given(duplicate_helper_functions())
     # Complex strategy: 20 examples (adequate coverage)
@@ -49,7 +49,7 @@ class TestHelperFunctionConsolidation:
             detector = DuplicateDetector(similarity_threshold=0.7)
             report = detector.analyze_directory(temp_dir)
 
-            # Property 3: Should detect duplicates when functions appear in multiple files
+            # Should detect duplicates when functions appear in multiple files
             if len(file_contents) > 1:
                 # Should find at least one duplicate group
                 assert len(report.duplicate_groups) >= 1, \

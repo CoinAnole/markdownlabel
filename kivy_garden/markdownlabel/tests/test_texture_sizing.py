@@ -26,7 +26,7 @@ from .test_utils import (
 # 5. Widget types that have explicit heights (thematic_break, blank_line, AsyncImage)
 
 class TestComprehensiveTextureSizeCalculation:
-    """Property tests for comprehensive texture_size calculation (Property 3)."""
+    """Property tests for comprehensive texture_size calculation."""
 
     @given(simple_markdown_document())
     # Complex strategy: 20 examples (adequate coverage)

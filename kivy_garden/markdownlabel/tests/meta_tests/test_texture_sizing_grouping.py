@@ -11,7 +11,7 @@ import pytest
 
 @pytest.mark.test_tests
 class TestTextureSizingTestGrouping:
-    """Property tests for texture sizing test grouping (Property 9)."""
+    """Property tests for texture sizing test grouping."""
 
     def test_texture_sizing_classes_grouped_together(self):
         """All texture sizing test classes are grouped in the same module."""

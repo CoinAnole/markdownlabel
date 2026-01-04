@@ -20,7 +20,7 @@ from .test_utils import (
 
 @pytest.mark.slow
 class TestStyleOnlyPropertyUpdates:
-    """Property tests for efficient style updates (Property 7).
+    """Property tests for efficient style updates.
 
     Tests verify that style-only property changes update descendant widgets
     in place without rebuilding the widget tree, while structure property

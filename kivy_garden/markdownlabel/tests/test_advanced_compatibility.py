@@ -26,7 +26,7 @@ from .test_utils import (
 
 @pytest.mark.property
 class TestAdvancedFontPropertiesForwarding:
-    """Property tests for advanced font properties forwarding (Property 11)."""
+    """Property tests for advanced font properties forwarding."""
 
     @given(st.text(min_size=1, max_size=30, alphabet=st.characters(
         whitelist_categories=['L', 'N'],
@@ -276,7 +276,7 @@ class TestAdvancedFontPropertiesForwarding:
 
 @pytest.mark.property
 class TestDisabledColorApplication:
-    """Property tests for disabled_color application (Property 12)."""
+    """Property tests for disabled_color application."""
 
     @given(st.lists(
         st.floats(min_value=0, max_value=1, allow_nan=False, allow_infinity=False),
@@ -519,7 +519,7 @@ rebuild_text_size_widths = st.floats(min_value=50, max_value=1000, allow_nan=Fal
 
 @pytest.mark.property
 class TestReactiveRebuildOnPropertyChange:
-    """Property tests for reactive rebuild on property change (Property 14)."""
+    """Property tests for reactive rebuild on property change."""
 
     @given(rebuild_font_names, rebuild_font_names)
     # 3 font_names × 3 font_names = 9 combinations

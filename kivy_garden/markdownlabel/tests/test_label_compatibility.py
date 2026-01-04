@@ -20,7 +20,7 @@ from .test_utils import (
 # equaling V, and setting `base_font_size` to V SHALL result in `font_size` returning V.
 
 class TestFontSizeAliasBidirectionality:
-    """Property tests for font_size/base_font_size alias (Property 1)."""
+    """Property tests for font_size/base_font_size alias."""
 
     @given(st.floats(min_value=1, max_value=200, allow_nan=False, allow_infinity=False))
     # Complex strategy: 50 examples (adequate coverage)
@@ -88,7 +88,7 @@ class TestFontSizeAliasBidirectionality:
 # valid value, the MarkdownLabel SHALL accept the value without raising an exception.
 
 class TestNoOpPropertiesAcceptance:
-    """Property tests for no-op properties acceptance (Property 8)."""
+    """Property tests for no-op properties acceptance."""
 
     @given(st.booleans())
     # Boolean strategy: 2 examples (True/False coverage)
@@ -232,7 +232,7 @@ class TestNoOpPropertiesAcceptance:
 # AND return the same value when accessed.
 
 class TestNoOpPropertyAcceptanceAndStorage:
-    """Property tests for no-op property acceptance and storage (Property 1)."""
+    """Property tests for no-op property acceptance and storage."""
 
     @given(st.booleans())
     # Boolean strategy: 2 examples (True/False coverage)
@@ -406,7 +406,7 @@ class TestNoOpPropertyAcceptanceAndStorage:
 # and tests should execute without import errors
 
 class TestImportFunctionality:
-    """Property test for import functionality (Property 4)."""
+    """Property test for import functionality."""
 
     def test_label_compatibility_imports_resolve(self):
         """Label compatibility module imports resolve successfully."""

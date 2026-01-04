@@ -278,15 +278,13 @@ class TestStylePropertyIdentityPreservationPBT:
         self, markdown_text, base_font_size, color, halign, valign,
         disabled, disabled_color, base_direction, line_height
     ):
-        """Property 5: Style Property Changes Preserve Widget Tree.
+        """Style Property Changes Preserve Widget Tree.
 
         *For any* MarkdownLabel with non-empty content, and *for any* style-only
         property (base_font_size, color, halign, valign, disabled, disabled_color,
         base_direction, line_height), changing that property SHALL preserve all
         widget object IDs in the subtree (the set of IDs before equals the set
         of IDs after).
-
-        Preserve Widget Tree**
         """
         # Ensure we have non-empty content
         assume(markdown_text and markdown_text.strip())
@@ -463,13 +461,11 @@ class TestStylePropertyPropagationPBT:
     def test_style_property_values_propagate_to_descendants(
         self, markdown_text, color, halign, valign, line_height, base_direction
     ):
-        """Property 6: Style Property Values Propagate to Descendants.
+        """Style Property Values Propagate to Descendants.
 
         *For any* MarkdownLabel with non-empty content, and *for any* style-only
         property value, all descendant Label widgets SHALL have that property
         value after the change.
-
-        Propagate to Descendants**
         """
         # Ensure we have non-empty content
         assume(markdown_text and markdown_text.strip())
@@ -702,14 +698,12 @@ class TestStructurePropertyRebuildPBT:
     # Combination strategy: 50 examples (performance optimized)
     @settings(max_examples=50, deadline=None)
     def test_text_change_triggers_rebuild_pbt(self, initial_text, new_text):
-        """Property 7: Structure Property Changes Trigger Rebuild (text).
+        """Structure Property Changes Trigger Rebuild (text).
 
         *For any* MarkdownLabel with non-empty content, and *for any* structure
         property (text), changing that property and calling force_rebuild()
         SHALL result in different widget object IDs for children (excluding
         the root MarkdownLabel).
-
-        Trigger Rebuild**
         """
         # Ensure we have different non-empty content
         assume(initial_text and initial_text.strip())
@@ -848,11 +842,10 @@ class TestRootIDPreservationPBT:
         self, markdown_text, base_font_size, color, halign, valign,
         line_height, disabled
     ):
-        """Property 8: Root Widget ID Preserved Across Style Property Changes.
+        """Root Widget ID Preserved Across Style Property Changes.
 
         *For any* MarkdownLabel, and *for any* style property change, the root
         MarkdownLabel's object ID SHALL remain unchanged.
-
         """
         # Ensure we have non-empty content
         assume(markdown_text and markdown_text.strip())
@@ -891,7 +884,7 @@ class TestRootIDPreservationPBT:
         self, initial_text, new_text, font_name, link_style,
         strict_label_mode, render_mode
     ):
-        """Property 8: Root Widget ID Preserved Across Structure Property Changes.
+        """Root Widget ID Preserved Across Structure Property Changes.
 
         *For any* MarkdownLabel, and *for any* structure property change, the root
         MarkdownLabel's object ID SHALL remain unchanged.
@@ -933,7 +926,7 @@ class TestRootIDPreservationPBT:
     def test_root_id_preserved_across_mixed_property_changes(
         self, markdown_text, base_font_size, color, font_name, link_style
     ):
-        """Property 8: Root Widget ID Preserved Across Mixed Property Changes.
+        """Root Widget ID Preserved Across Mixed Property Changes.
 
         *For any* MarkdownLabel, and *for any* combination of style and structure
         property changes, the root MarkdownLabel's object ID SHALL remain unchanged.

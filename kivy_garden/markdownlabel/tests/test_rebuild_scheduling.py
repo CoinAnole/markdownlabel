@@ -21,7 +21,7 @@ from kivy_garden.markdownlabel.tests.test_utils import (
 
 @pytest.mark.property
 class TestBatchedRebuilds:
-    """Property tests for batched rebuilds (Property 6).
+    """Property tests for batched rebuilds.
 
 
     Tests verify that multiple property changes within the same frame
@@ -106,7 +106,7 @@ class TestBatchedRebuilds:
 
 @pytest.mark.property
 class TestDeferredRebuildScheduling:
-    """Property tests for deferred rebuild scheduling (Property 7).
+    """Property tests for deferred rebuild scheduling.
 
 
     Tests verify that property changes trigger deferred rebuilds via

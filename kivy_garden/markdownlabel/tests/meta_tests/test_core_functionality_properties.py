@@ -17,7 +17,7 @@ from typing import List
 
 @pytest.mark.test_tests
 class TestNoTimingAssertions:
-    """Property tests for no timing assertions (Property 1)."""
+    """Property tests for no timing assertions."""
 
     def _check_file_for_timing_assertions(self, file_path: str) -> List[str]:
         """Check a file for timing assertions.
@@ -86,7 +86,7 @@ class TestNoTimingAssertions:
 
 @pytest.mark.test_tests
 class TestSubprocessPytestConfiguration:
-    """Property tests for subprocess pytest configuration (Property 2)."""
+    """Property tests for subprocess pytest configuration."""
 
     def _check_file_for_subprocess_pytest_calls(self, file_path: str) -> List[str]:
         """Check a file for subprocess pytest calls and their configuration.
@@ -178,7 +178,7 @@ class TestSubprocessPytestConfiguration:
 
 @pytest.mark.test_tests
 class TestNoSilentPassFileChecks:
-    """Property tests for no silent-pass file checks (Property 3)."""
+    """Property tests for no silent-pass file checks."""
 
     def _check_file_for_silent_pass_patterns(self, file_path: str) -> List[str]:
         """Check a file for silent-pass file existence patterns.
@@ -244,7 +244,7 @@ class TestNoSilentPassFileChecks:
 
 @pytest.mark.test_tests
 class TestNoBroadExceptionHandling:
-    """Property tests for no broad exception handling (Property 4)."""
+    """Property tests for no broad exception handling."""
 
     def _check_file_for_broad_exception_handling(self, file_path: str) -> List[str]:
         """Check a file for broad exception handling patterns.
@@ -312,7 +312,7 @@ class TestNoBroadExceptionHandling:
 
 @pytest.mark.test_tests
 class TestFixedListPropertyTestsConverted:
-    """Property tests for fixed-list property tests conversion (Property 5)."""
+    """Property tests for fixed-list property tests conversion."""
 
     def _check_file_for_fixed_list_property_tests(self, file_path: str) -> List[str]:
         """Check a file for property tests using fixed lists that should be parametrized.
@@ -490,7 +490,7 @@ class TestFixedListPropertyTestsConverted:
 
 @pytest.mark.test_tests
 class TestPerformanceTestsMarked:
-    """Property tests for performance test marking (Property 10)."""
+    """Property tests for performance test marking."""
 
     def _check_file_for_performance_test_markers(self, file_path: str) -> dict:
         """Check a file for performance test markers and configuration.
@@ -608,7 +608,7 @@ class TestPerformanceTestsMarked:
 
 @pytest.mark.test_tests
 class TestNoDuplicateEnvironmentSetup:
-    """Property tests for no duplicate environment setup (Property 11)."""
+    """Property tests for no duplicate environment setup."""
 
     def _check_file_for_duplicate_environment_setup(self, file_path: str) -> List[str]:
         """Check a file for duplicate environment setup patterns.

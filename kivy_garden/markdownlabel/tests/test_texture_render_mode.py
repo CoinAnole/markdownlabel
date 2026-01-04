@@ -2,15 +2,15 @@
 Property-based tests for texture render mode in MarkdownLabel.
 
 This module contains tests for the texture render mode feature, including:
-- Texture render mode structure (Property 14): Image widget creation and
+- Texture render mode structure: Image widget creation and
   render_mode property behavior
-- Texture mode link handling (Property 15): Link zone aggregation and
+- Texture mode link handling: Link zone aggregation and
   on_ref_press event dispatching
 - Deterministic texture hit-testing: Touch event handling within and outside
   link zones
 - Texture fallback branch: Fallback to widgets mode when texture rendering
   fails
-- Auto render mode selection (Property 16): Automatic selection between widgets
+- Auto render mode selection: Automatic selection between widgets
   and texture modes based on content complexity and layout constraints
 
 These tests use a combination of property-based testing with Hypothesis and
@@ -31,7 +31,7 @@ from .test_utils import find_labels_recursive, FakeTouch, find_images
 
 @pytest.mark.slow
 class TestTextureRenderModeStructure:
-    """Property tests for texture render mode structure (Property 14)."""
+    """Property tests for texture render mode structure."""
 
     @pytest.mark.parametrize('text', [
         'Hello World',
@@ -112,7 +112,7 @@ class TestTextureRenderModeStructure:
 
 @pytest.mark.slow
 class TestTextureModeLinksHandling:
-    """Property tests for texture mode link handling (Property 15)."""
+    """Property tests for texture mode link handling."""
 
     def test_aggregated_refs_populated_in_texture_mode(self):
         """In texture mode, _aggregated_refs is populated with link zones.
@@ -566,7 +566,7 @@ class TestTextureFallbackBranch:
 
 @pytest.mark.slow
 class TestAutoRenderModeSelection:
-    """Property tests for auto render mode selection (Property 16)."""
+    """Property tests for auto render mode selection."""
 
     def test_auto_mode_uses_widgets_by_default(self):
         """Auto mode uses 'widgets' for simple content without constraints.

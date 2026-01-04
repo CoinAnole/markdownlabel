@@ -28,7 +28,7 @@ from kivy_garden.markdownlabel.tests.test_utils import (
 
 @pytest.mark.test_tests
 class TestSharedStrategyAvailability:
-    """Property tests for shared strategy availability (Property 6)."""
+    """Property tests for shared strategy availability."""
 
     @given(markdown_heading())
     # Complex strategy: 20 examples (adequate coverage)
@@ -149,7 +149,7 @@ class TestSharedStrategyAvailability:
 
 @pytest.mark.test_tests
 class TestSharedInfrastructureHelpers:
-    """Property tests for shared infrastructure helper functions (Property 7)."""
+    """Property tests for shared infrastructure helper functions."""
 
     @given(st.text(min_size=1, max_size=50))
     # Complex strategy: 50 examples (adequate coverage)

@@ -26,7 +26,7 @@ from .test_utils import (
 # block-level element in the AST.
 
 class TestMarkdownToWidgetTreeGeneration:
-    """Property tests for widget tree generation (Property 1)."""
+    """Property tests for widget tree generation."""
 
     @pytest.mark.needs_window
     @given(simple_markdown_document())
@@ -102,7 +102,7 @@ class TestMarkdownToWidgetTreeGeneration:
 # of the second text, not the first.
 
 class TestMarkdownTextPropertyUpdates:
-    """Property tests for reactive text updates (Property 2)."""
+    """Property tests for reactive text updates."""
 
     @pytest.mark.needs_window
     @given(markdown_heading(), markdown_paragraph())
@@ -199,7 +199,7 @@ class TestMarkdownTextPropertyUpdates:
 # [ref=url]text[/ref].
 
 class TestMarkdownLinkRendering:
-    """Property tests for link ref markup (Property 12)."""
+    """Property tests for link ref markup."""
 
     @pytest.mark.needs_window
     @given(markdown_link())
@@ -273,7 +273,7 @@ class TestMarkdownLinkRendering:
 # the MarkdownLabel SHALL render without raising exceptions or causing stack overflow.
 
 class TestMarkdownNestingStability:
-    """Property tests for deep nesting stability (Property 18)."""
+    """Property tests for deep nesting stability."""
 
     @pytest.mark.needs_window
     @given(st.integers(min_value=1, max_value=15))

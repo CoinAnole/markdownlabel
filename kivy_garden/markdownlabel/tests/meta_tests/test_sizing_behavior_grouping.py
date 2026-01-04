@@ -11,7 +11,7 @@ import pytest
 
 @pytest.mark.test_tests
 class TestLogicalTestGrouping:
-    """Property tests for logical test grouping (Property 9)."""
+    """Property tests for logical test grouping."""
 
     def test_sizing_behavior_classes_grouped_together(self):
         """All sizing behavior test classes are grouped in the same module."""

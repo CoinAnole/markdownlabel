@@ -78,7 +78,7 @@ def link_token(draw):
 # **text** → [b]text[/b], *text* → [i]text[/i], `code` → [font=monospace]code[/font], ~~text~~ → [s]text[/s]
 
 class TestInlineFormattingConversion:
-    """Property tests for inline formatting conversion (Property 4)."""
+    """Property tests for inline formatting conversion."""
 
     @given(strong_token())
     # Complex strategy: 20 examples (adequate coverage)
@@ -166,7 +166,7 @@ class TestInlineFormattingConversion:
 # the rendered Label text SHALL properly escape them (&bl;, &br;, &amp;) to prevent markup injection.
 
 class TestSpecialCharacterEscaping:
-    """Property tests for special character escaping (Property 19)."""
+    """Property tests for special character escaping."""
 
     @given(text_token())
     # Complex strategy: 20 examples (adequate coverage)
@@ -396,7 +396,7 @@ class TestURLMarkupSafety:
 # while preserving link functionality.
 
 class TestURLMarkupSafetyProperty:
-    """Property test for URL markup safety (Property 6)."""
+    """Property test for URL markup safety."""
 
     @given(st.one_of(
         # URLs with closing brackets
@@ -652,7 +652,7 @@ class TestHTMLSecurity:
 # without introducing exploitable Kivy markup.
 
 class TestHTMLContentEscapingProperty:
-    """Property test for HTML content escaping (Property 9)."""
+    """Property test for HTML content escaping."""
 
     @given(st.one_of(
         # HTML with various tag structures

@@ -27,7 +27,7 @@ from kivy_garden.markdownlabel.tests.test_utils import (
 
 @pytest.mark.test_tests
 class TestHelperFunctionAvailability:
-    """Property tests for helper function availability (Property 7)."""
+    """Property tests for helper function availability."""
 
     # Complex strategy: 10 examples (adequate coverage)
     @given(st.text(min_size=1, max_size=50))
@@ -165,7 +165,7 @@ class TestHelperFunctionAvailability:
 
 @pytest.mark.test_tests
 class TestHelperFunctionConsolidation:
-    """Property tests for helper function consolidation (Property 3)."""
+    """Property tests for helper function consolidation."""
 
     def test_no_duplicate_find_labels_recursive_implementations(self):
         """For any test file, there should be no duplicate _find_labels_recursive implementations.

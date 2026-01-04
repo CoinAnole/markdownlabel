@@ -33,7 +33,7 @@ from .test_utils import (
 # than headings with larger level numbers (e.g., h6).
 
 class TestHeadingFontHierarchy:
-    """Property tests for heading font size hierarchy (Property 3)."""
+    """Property tests for heading font size hierarchy."""
 
     @given(st.integers(min_value=1, max_value=5))
     # Small finite strategy: 5 examples (input space size: 5)
@@ -106,7 +106,7 @@ class TestHeadingFontHierarchy:
 
 
 class TestParagraphMarkupEnabled:
-    """Property tests for paragraph markup enabled (Property 5)."""
+    """Property tests for paragraph markup enabled."""
 
     @given(paragraph_token())
     # Complex strategy: 20 examples (adequate coverage)
@@ -136,7 +136,7 @@ class TestParagraphMarkupEnabled:
 
 
 class TestListStructurePreservation:
-    """Property tests for list structure preservation (Property 6)."""
+    """Property tests for list structure preservation."""
 
     @given(list_token())
     # Complex strategy: 20 examples (adequate coverage)
@@ -207,7 +207,7 @@ class TestListStructurePreservation:
 # increase the left padding/indentation of the nested content.
 
 class TestNestedListIndentation:
-    """Property tests for nested list indentation (Property 7)."""
+    """Property tests for nested list indentation."""
 
     @given(st.integers(min_value=1, max_value=4))
     # Small finite strategy: 4 examples (input space size: 4)
@@ -259,7 +259,7 @@ class TestNestedListIndentation:
 
 
 class TestCodeBlockStyling:
-    """Property tests for code block styling (Property 10)."""
+    """Property tests for code block styling."""
 
     @given(code_block_token())
     # Complex strategy: 20 examples (adequate coverage)
@@ -310,7 +310,7 @@ class TestCodeBlockStyling:
 # SHALL store the language string in an accessible attribute.
 
 class TestCodeBlockLanguageMetadata:
-    """Property tests for code block language metadata (Property 11)."""
+    """Property tests for code block language metadata."""
 
     @given(code_block_token())
     # Complex strategy: 20 examples (adequate coverage)
@@ -346,7 +346,7 @@ class TestCodeBlockLanguageMetadata:
 # with left border styling and its content indented from the left edge.
 
 class TestBlockQuoteStructure:
-    """Property tests for block quote structure (Property 14)."""
+    """Property tests for block quote structure."""
 
     @given(block_quote_token())
     # Complex strategy: 20 examples (adequate coverage)
@@ -386,7 +386,7 @@ class TestBlockQuoteStructure:
 # SHALL contain a Widget with a horizontal line drawn on its canvas.
 
 class TestThematicBreakRendering:
-    """Property tests for thematic break rendering (Property 15)."""
+    """Property tests for thematic break rendering."""
 
     def test_thematic_break_returns_widget(self):
         """Thematic break tokens produce Widget."""
@@ -419,7 +419,7 @@ class TestThematicBreakRendering:
 # an AsyncImage widget with source=url.
 
 class TestImageWidgetCreation:
-    """Property tests for image widget creation (Property 13)."""
+    """Property tests for image widget creation."""
 
     @given(image_token())
     # Complex strategy: 20 examples (adequate coverage)
@@ -458,7 +458,7 @@ class TestImageWidgetCreation:
 # SHALL have cols=C and contain exactly R×C Label widgets.
 
 class TestTableGridStructure:
-    """Property tests for table grid structure (Property 8)."""
+    """Property tests for table grid structure."""
 
     @given(st.integers(min_value=1, max_value=5), st.integers(min_value=1, max_value=5))
     # Combination strategy: 25 examples (combination coverage)
@@ -571,7 +571,7 @@ class TestTableGridStructure:
 # the corresponding Label widget SHALL have halign set to that alignment value.
 
 class TestTableAlignmentApplication:
-    """Property tests for table alignment application (Property 9)."""
+    """Property tests for table alignment application."""
 
     @pytest.mark.parametrize('alignment', ['left', 'center', 'right'])
     def test_cell_alignment_applied(self, alignment):

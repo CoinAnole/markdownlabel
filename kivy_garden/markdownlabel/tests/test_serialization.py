@@ -22,7 +22,7 @@ from .test_utils import (
 
 
 class TestMarkdownRoundTripSerialization:
-    """Property tests for round-trip serialization (Property 17)."""
+    """Property tests for round-trip serialization."""
 
     def _normalize_ast(self, tokens):
         """Normalize AST for comparison by removing non-semantic fields.
@@ -551,7 +551,7 @@ class TestCodeFenceCollisionProperty:
     # Complex strategy: 30 examples (adequate coverage)
     @settings(max_examples=30, deadline=None)
     def test_fence_collision_handling_property(self, code_content):
-        """**Feature: test-improvements, Property 7: Code fence collision handling**
+        """**Feature: test-improvements, Code fence collision handling**
 
         For any code content that contains backticks, the MarkdownSerializer
         SHALL choose a fence length longer than any backtick sequence in the content
@@ -621,7 +621,7 @@ class TestCodeFenceCollisionProperty:
     # Combination strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_code_serialization_round_trip_property(self, code_content, language):
-        """**Feature: test-improvements, Property 8: Code serialization round-trip**
+        """**Feature: test-improvements, Code serialization round-trip**
 
         For any code block, serializing and then parsing the result SHALL produce
         valid Markdown that preserves the original content exactly.
