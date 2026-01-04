@@ -205,6 +205,7 @@ Located in `external/`:
 - `setup.py`: Package metadata, dependencies, entry points
 - `setup.cfg`: Flake8 configuration, code style rules (110 char line limit, PEP8 compliance)
 - `pytest.ini`: Pytest configuration
+- `.coveragerc`: Coverage configuration for test coverage reporting - specifying which source files to include in coverage reports and lines to exclude from coverage calculations
 - `kivy_garden/markdownlabel/tests/TESTING.md`: Comprehensive testing guidelines including property-based testing optimization
 
 ## Documentation Structure
