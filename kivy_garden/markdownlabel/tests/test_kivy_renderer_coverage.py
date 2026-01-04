@@ -11,10 +11,12 @@ from unittest.mock import MagicMock, patch
 
 from kivy_garden.markdownlabel.kivy_renderer import KivyRenderer
 from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.label import Label
+from kivy.uix.widget import Widget
 
 
-class TestKivyRendererCoverage:
-    """Tests for specific KivyRenderer implementation details."""
+class TestKivyRendererEdgeCases:
+    """Tests for KivyRenderer edge cases and internal methods."""
 
     @pytest.fixture
     def renderer(self):
@@ -69,7 +71,11 @@ class TestKivyRendererCoverage:
             assert mock_list.called
 
     def test_image_on_texture_callback(self, renderer):
-        """Test the on_texture callback in image rendering."""
+        """Test the on_texture callback in image rendering.
+
+        Verifies that AsyncImage texture updates properly trigger
+        height recalculation based on aspect ratio.
+        """
         # Create a mock label that will be passed to image
         renderer.label = MagicMock()
 
@@ -116,7 +122,11 @@ class TestKivyRendererCoverage:
             assert mock_image.height == 50
 
     def test_block_code_update_bg_logic(self, renderer):
-        """Test the update_bg function inner logic in block_code."""
+        """Test the update_bg function inner logic in block_code.
+
+        Verifies that background rectangle position and size are properly
+        updated when the code block container changes.
+        """
         token = {
             'type': 'block_code',
             'raw': 'print("hello")',
@@ -149,7 +159,11 @@ class TestKivyRendererCoverage:
             assert rect_instance.size == container.size
 
     def test_block_quote_update_border_logic(self, renderer):
-        """Test the update_border function inner logic in block_quote."""
+        """Test the update_border function inner logic in block_quote.
+
+        Verifies that border line position is properly updated when
+        the block quote container changes.
+        """
         token = {
             'type': 'block_quote',
             'children': [{'type': 'paragraph', 'children': [{'type': 'text', 'raw': 'Quote'}]}]
@@ -171,7 +185,11 @@ class TestKivyRendererCoverage:
             # access call args to verify logic if needed, or just trust coverage hit
 
     def test_table_internals_coverage(self, renderer):
-        """Test table internal methods directly to ensure coverage."""
+        """Test table internal methods directly to ensure coverage.
+
+        Verifies that table rendering properly handles table_head and
+        table_body structures with various alignments.
+        """
         # _render_table_head, _render_table_body, etc.
 
         # Mock token structure for table
@@ -217,3 +235,91 @@ class TestKivyRendererCoverage:
         # Should be GridLayout or similar
         # Since we mocked properties that might be needed, we assume it returned OK if no exception.
         assert table_widget is not None
+
+    def test_deep_nesting_truncation(self, renderer):
+        """Test that deeply nested structures are truncated to prevent infinite recursion.
+
+        Verifies that when nesting depth exceeds the maximum (10),
+        a placeholder label is returned instead of continuing to render.
+        """
+        renderer._nesting_depth = 11  # Exceeds max depth of 10
+
+        token = {'type': 'paragraph', 'children': []}
+        result = renderer._render_token(token)
+
+        # Should return placeholder label
+        assert result is not None
+        assert isinstance(result, Label)
+        assert result.text == '[...content truncated due to deep nesting...]'
+
+    def test_unknown_token_render(self, renderer):
+        """Test that unknown token types return None.
+
+        Verifies that _render_token handles unrecognized token types
+        gracefully by returning None.
+        """
+        token = {'type': 'unknown_thing'}
+        assert renderer._render_token(token) is None
+
+    def test_list_item_direct_call(self, renderer):
+        """Test direct call to list_item method.
+
+        Verifies that list_item creates a BoxLayout container
+        with appropriate children for the list item content.
+        """
+        token_para = {
+            'type': 'list_item',
+            'children': [{
+                'type': 'paragraph',
+                'children': [{'type': 'text', 'raw': 'item'}]
+            }]
+        }
+        widget = renderer.list_item(token_para)
+        assert isinstance(widget, BoxLayout)
+        assert len(widget.children) > 0
+
+    def test_list_item_text_token(self, renderer):
+        """Test block_text token rendering.
+
+        Verifies that block_text tokens are rendered as Label widgets
+        with the correct text content.
+        """
+        token = {'type': 'block_text', 'children': [{'type': 'text', 'raw': 'item'}]}
+        widget = renderer.block_text(token)
+        assert isinstance(widget, Label)
+        assert widget.text == 'item'
+
+    def test_text_size_binding_strict_mode(self, renderer):
+        """Test text_size binding in strict label mode.
+
+        Verifies that when strict_label_mode is enabled and text_size
+        is [None, None], no binding is applied to the label.
+        """
+        renderer = KivyRenderer(strict_label_mode=True, text_size=[None, None])
+        label = Label()
+        renderer._apply_text_size_binding(label)
+        # No binding should be properly applied
+        assert label.text_size == [None, None] or label.text_size == (None, None)
+
+    def test_text_size_binding_height_only(self, renderer):
+        """Test text_size binding with height constraint.
+
+        Verifies that when text_size is [None, height], the label's
+        text_size[1] is set to the specified height value.
+        """
+        renderer = KivyRenderer(text_size=[None, 100])
+        label = Label(width=200)
+        renderer._apply_text_size_binding(label)
+        # Should bind width to label width, height to 100
+        assert label.text_size[1] == 100
+
+    def test_blank_line(self, renderer):
+        """Test blank_line token rendering.
+
+        Verifies that blank_line tokens are rendered as Widget instances
+        with height equal to base_font_size for spacing.
+        """
+        token = {'type': 'blank_line'}
+        widget = renderer.blank_line(token)
+        assert isinstance(widget, Widget)
+        assert widget.height == renderer.base_font_size

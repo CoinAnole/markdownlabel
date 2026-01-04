@@ -678,3 +678,71 @@ class TestCodeFenceCollisionProperty:
             f"Original: {original_lang!r}\n"
             f"Round-trip: {round_trip_lang!r}"
         )
+
+
+class TestMarkdownSerializerEdgeCases:
+    """Tests for MarkdownSerializer edge cases and coverage."""
+
+    def test_serialize_unknown_token(self):
+        """Test that unknown token types return empty string."""
+        serializer = MarkdownSerializer()
+        # Token with unknown type
+        token = {'type': 'unknown_thing', 'raw': 'content'}
+        # _serialize_token returns '' for unknown
+        assert serializer._serialize_token(token) == ''
+
+    def test_serialize_inline_unknown(self):
+        """Test that unknown inline tokens fall back to raw content."""
+        serializer = MarkdownSerializer()
+        # Inline token with unknown type
+        token = {'type': 'weird_inline', 'raw': 'content'}
+        # serialize_inline falls back to raw
+        assert serializer.serialize_inline([token]) == 'content'
+
+    def test_blank_line(self):
+        """Test that blank_line tokens return None."""
+        serializer = MarkdownSerializer()
+        token = {'type': 'blank_line'}
+        assert serializer.blank_line(token) is None
+
+    def test_table_edge_cases(self):
+        """Test table serialization with empty children."""
+        serializer = MarkdownSerializer()
+        # Table with empty children
+        token = {'type': 'table', 'children': []}
+        assert serializer.table(token) == ''
+
+    def test_serialize_list_item_unknown_child(self):
+        """Test list item serialization with unknown child type."""
+        serializer = MarkdownSerializer()
+        # List item with unknown child type
+        item_token = {
+            'type': 'list_item',
+            'children': [{'type': 'unknown_block', 'raw': 'ignore me'}]
+        }
+        # It calls _serialize_token which returns '' so result is empty string
+        assert serializer._serialize_list_item(item_token) == ''
+
+    def test_serialize_list_item_known_child_returns_empty(self):
+        """Test list item serialization with child that serializes to empty."""
+        serializer = MarkdownSerializer()
+        # List item with a child that serializes to empty (e.g. blank_line)
+        item_token = {
+            'type': 'list_item',
+            'children': [{'type': 'blank_line'}]
+        }
+        assert serializer._serialize_list_item(item_token) == ''
+
+    def test_block_code_no_newline(self):
+        """Test block code serialization without trailing newline."""
+        serializer = MarkdownSerializer()
+        token = {'type': 'block_code', 'raw': 'code without newline'}
+        result = serializer.block_code(token)
+        assert result == '```\ncode without newline\n```'
+
+    def test_block_code_with_newline(self):
+        """Test block code serialization with trailing newline."""
+        serializer = MarkdownSerializer()
+        token = {'type': 'block_code', 'raw': 'code with newline\n'}
+        result = serializer.block_code(token)
+        assert result == '```\ncode with newline\n```'

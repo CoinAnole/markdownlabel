@@ -812,3 +812,40 @@ class TestHTMLContentEscapingProperty:
                 if content_chars:  # Only check if there are alphanumeric characters
                     assert content_chars.issubset(result_chars), \
                         f"Should preserve content characters. Content: {content!r}, Result: {result!r}"
+
+
+class TestInlineRendererEdgeCases:
+    """Tests for InlineRenderer edge cases and coverage."""
+
+    def test_unknown_token_type(self):
+        """Test that unknown token types fallback to _unknown method."""
+        renderer = InlineRenderer()
+        # Mock token with unknown type
+        token = {'type': 'unknown_weird_type', 'raw': 'some text [b]'}
+        # Should fallback to _unknown which escapes raw text
+        result = renderer.render([token])
+        assert result == 'some text &bl;b&br;'
+
+        # Test direct _unknown call
+        assert renderer._unknown(token) == 'some text &bl;b&br;'
+
+    def test_image_rendering(self):
+        """Test that image tokens render alt text in inline context."""
+        renderer = InlineRenderer()
+        # Image in inline context renders children (alt text)
+        token = {
+            'type': 'image',
+            'children': [{'type': 'text', 'raw': 'alt text'}],
+            'attrs': {'url': 'http://example.com/img.png'}
+        }
+        result = renderer.image(token)
+        # Should render alt text
+        assert result == 'alt text'
+
+    def test_escape_markup_edge_cases(self):
+        """Test markup escaping with edge cases."""
+        renderer = InlineRenderer()
+        # Test basic escaping
+        assert renderer._escape_markup('[b]') == '&bl;b&br;'
+        # Test nothing to escape
+        assert renderer._escape_markup('plain') == 'plain'
