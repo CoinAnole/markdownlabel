@@ -21,9 +21,7 @@ class TestDiscoveryPerformance:
     """Property tests for test discovery performance."""
 
     def test_fast_test_discovery_baseline(self):
-        """Test that test discovery works correctly for the refactored structure.
-
-        """
+        """Test that test discovery works correctly for the refactored structure."""
         import subprocess
 
         # Get the test directory path
@@ -67,9 +65,7 @@ class TestDiscoveryPerformance:
         'test_performance.py'
     ])
     def test_individual_module_discovery_functionality(self, module_name):
-        """Test that individual modules can be discovered correctly.
-
-        """
+        """Test that individual modules can be discovered correctly."""
         import subprocess
 
         # Get the test directory path
@@ -100,9 +96,7 @@ class TestDiscoveryPerformance:
             f"No tests discovered in {module_name}. Module may be empty or have issues."
 
     def test_discovery_startup_functionality(self):
-        """Test that discovery startup works correctly for refactored structure.
-
-        """
+        """Test that discovery startup works correctly for refactored structure."""
         import subprocess
 
         # Get the test directory path
@@ -191,9 +185,7 @@ class TestRebuildContractEnforcement:
         return '\n'.join(method_content)
 
     def test_rebuild_contract_enforcement(self):
-        """Test that all tests claiming to test rebuilds actually verify rebuilds.
-
-        """
+        """Test that all tests claiming to test rebuilds actually verify rebuilds."""
         test_dir = Path(__file__).parent
         violations = []
 
@@ -243,9 +235,7 @@ class TestRebuildContractEnforcement:
             assert False, f"Found {len(violations)} rebuild contract violations:\n{violation_details}"
 
     def test_rebuild_verification_patterns_work(self):
-        """Test that our rebuild verification detection patterns work correctly.
-
-        """
+        """Test that our rebuild verification detection patterns work correctly."""
         # Test cases with rebuild verification
         valid_rebuild_tests = [
             """

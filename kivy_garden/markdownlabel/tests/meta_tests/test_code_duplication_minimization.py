@@ -101,10 +101,7 @@ class TestModule{i}:
     def {func_name}_helper(self, widget, labels=None):
         """Helper function for {func_name}."""
 {template}
-'''
-
-        # Add unique functions to each file
-        file_content += f'''
+'''# Add unique functions to each file'''
     def unique_helper_{i}(self):
         """Unique helper for file {i}."""
         return {i}

@@ -41,9 +41,7 @@ class TestTextureRenderModeStructure:
         '[Link](http://example.com)',
     ])
     def test_texture_mode_creates_image_widget(self, text):
-        """When render_mode='texture', widget tree contains an Image widget.
-
-        """
+        """When render_mode='texture', widget tree contains an Image widget."""
         label = MarkdownLabel(
             text=text,
             render_mode='texture',
@@ -57,9 +55,7 @@ class TestTextureRenderModeStructure:
             f"Expected at least 1 Image widget in texture mode, found {len(images)}"
 
     def test_texture_mode_with_empty_text_no_image(self):
-        """When render_mode='texture' with empty text, no Image widget is created.
-
-        """
+        """When render_mode='texture' with empty text, no Image widget is created."""
         label = MarkdownLabel(
             text='',
             render_mode='texture',
@@ -73,9 +69,7 @@ class TestTextureRenderModeStructure:
             f"Expected no Image widgets with empty text, found {len(images)}"
 
     def test_widgets_mode_no_image_widget(self):
-        """When render_mode='widgets', no Image widget is created.
-
-        """
+        """When render_mode='widgets', no Image widget is created."""
         label = MarkdownLabel(
             text='Hello World',
             render_mode='widgets',
@@ -90,17 +84,13 @@ class TestTextureRenderModeStructure:
 
     @pytest.mark.parametrize('render_mode', ['widgets', 'texture', 'auto'])
     def test_render_mode_property_values(self, render_mode):
-        """render_mode property accepts valid values.
-
-        """
+        """render_mode property accepts valid values."""
         label = MarkdownLabel(text='Hello World', render_mode=render_mode)
         assert label.render_mode == render_mode, \
             f"Expected render_mode={render_mode}, got {label.render_mode}"
 
     def test_default_render_mode_is_widgets(self):
-        """Default render_mode is 'widgets'.
-
-        """
+        """Default render_mode is 'widgets'."""
         label = MarkdownLabel(text='Hello World')
         assert label.render_mode == 'widgets', \
             f"Default render_mode should be 'widgets', got {label.render_mode}"
@@ -115,9 +105,7 @@ class TestTextureModeLinksHandling:
     """Property tests for texture mode link handling."""
 
     def test_aggregated_refs_populated_in_texture_mode(self):
-        """In texture mode, _aggregated_refs is populated with link zones.
-
-        """
+        """In texture mode, _aggregated_refs is populated with link zones."""
         label = MarkdownLabel(
             text='Click [here](http://example.com) for more info.',
             render_mode='texture',
@@ -133,9 +121,7 @@ class TestTextureModeLinksHandling:
             "Expected _aggregated_refs attribute"
 
     def test_widgets_mode_no_aggregated_refs(self):
-        """In widgets mode, _aggregated_refs is empty (links handled by Labels).
-
-        """
+        """In widgets mode, _aggregated_refs is empty (links handled by Labels)."""
         label = MarkdownLabel(
             text='Click [here](http://example.com) for more info.',
             render_mode='widgets',
@@ -154,9 +140,7 @@ class TestTextureModeLinksHandling:
         ('[A](http://a.com) and [B](http://b.com)', ['http://a.com', 'http://b.com']),
     ])
     def test_multiple_links_collected(self, text, expected_refs):
-        """Multiple links in content are collected in _aggregated_refs.
-
-        """
+        """Multiple links in content are collected in _aggregated_refs."""
         label = MarkdownLabel(
             text=text,
             render_mode='texture',
@@ -187,9 +171,7 @@ class TestDeterministicTextureHitTesting:
     """
 
     def test_inside_zone_dispatch(self):
-        """Touch inside ref zone dispatches on_ref_press and returns True.
-
-        """
+        """Touch inside ref zone dispatches on_ref_press and returns True."""
         # Create MarkdownLabel with render_mode='texture'
         label = MarkdownLabel(
             text='Test content',
@@ -297,9 +279,7 @@ class TestDeterministicTextureHitTesting:
             "Expected on_touch_down to return True"
 
     def test_outside_zone_no_dispatch(self):
-        """Touch outside ref zones does not dispatch on_ref_press.
-
-        """
+        """Touch outside ref zones does not dispatch on_ref_press."""
         # Create MarkdownLabel with render_mode='texture'
         label = MarkdownLabel(
             text='Test content',
@@ -399,9 +379,7 @@ class TestDeterministicTextureHitTesting:
             "Expected on_touch_down to return falsy value"
 
     def test_multiple_zones_first_match(self):
-        """Multiple zones: first matching zone triggers dispatch.
-
-        """
+        """Multiple zones: first matching zone triggers dispatch."""
         # Create MarkdownLabel with render_mode='texture'
         label = MarkdownLabel(
             text='Test content',
@@ -444,9 +422,7 @@ class TestDeterministicTextureHitTesting:
             "Expected on_touch_down to return True"
 
     def test_multiple_zones_non_overlapping(self):
-        """Multiple non-overlapping zones: correct zone triggers dispatch.
-
-        """
+        """Multiple non-overlapping zones: correct zone triggers dispatch."""
         # Create MarkdownLabel with render_mode='texture'
         label = MarkdownLabel(
             text='Test content',
@@ -533,9 +509,7 @@ class TestTextureFallbackBranch:
             f"Expected at least 1 Label widget in fallback mode, found {len(labels)}"
 
     def test_texture_fallback_preserves_content(self, monkeypatch):
-        """Fallback to widgets mode preserves all content.
-
-        """
+        """Fallback to widgets mode preserves all content."""
         # Monkeypatch _render_as_texture to return None
         monkeypatch.setattr(
             MarkdownLabel,
@@ -569,9 +543,7 @@ class TestAutoRenderModeSelection:
     """Property tests for auto render mode selection."""
 
     def test_auto_mode_uses_widgets_by_default(self):
-        """Auto mode uses 'widgets' for simple content without constraints.
-
-        """
+        """Auto mode uses 'widgets' for simple content without constraints."""
         label = MarkdownLabel(
             text='Hello World',
             render_mode='auto',
@@ -583,9 +555,7 @@ class TestAutoRenderModeSelection:
             f"Expected 'widgets' for simple content, got '{effective_mode}'"
 
     def test_auto_mode_uses_texture_with_strict_mode_and_height(self):
-        """Auto mode uses 'texture' when strict_label_mode with height constraints.
-
-        """
+        """Auto mode uses 'texture' when strict_label_mode with height constraints."""
         label = MarkdownLabel(
             text='Hello World',
             render_mode='auto',
@@ -599,9 +569,7 @@ class TestAutoRenderModeSelection:
             f"Expected 'texture' with strict_label_mode and height constraint, got '{effective_mode}'"
 
     def test_auto_mode_uses_texture_with_text_size_height(self):
-        """Auto mode uses 'texture' when strict_label_mode with text_size height.
-
-        """
+        """Auto mode uses 'texture' when strict_label_mode with text_size height."""
         label = MarkdownLabel(
             text='Hello World',
             render_mode='auto',
@@ -614,9 +582,7 @@ class TestAutoRenderModeSelection:
             f"Expected 'texture' with strict_label_mode and text_size height, got '{effective_mode}'"
 
     def test_auto_mode_uses_widgets_without_strict_mode(self):
-        """Auto mode uses 'widgets' when strict_label_mode is False.
-
-        """
+        """Auto mode uses 'widgets' when strict_label_mode is False."""
         label = MarkdownLabel(
             text='Hello World',
             render_mode='auto',
@@ -635,9 +601,7 @@ class TestAutoRenderModeSelection:
         (True, None, 'texture'),  # Height constraint
     ])
     def test_auto_mode_selection_combinations(self, strict_mode, size_hint_y, expected):
-        """Auto mode selection based on strict_label_mode and size_hint_y.
-
-        """
+        """Auto mode selection based on strict_label_mode and size_hint_y."""
         label = MarkdownLabel(
             text='Hello World',
             render_mode='auto',
@@ -651,9 +615,7 @@ class TestAutoRenderModeSelection:
             f"size_hint_y={size_hint_y}, got '{effective_mode}'"
 
     def test_explicit_widgets_mode_overrides_auto_logic(self):
-        """Explicit 'widgets' mode is used regardless of constraints.
-
-        """
+        """Explicit 'widgets' mode is used regardless of constraints."""
         label = MarkdownLabel(
             text='Hello World',
             render_mode='widgets',
@@ -667,9 +629,7 @@ class TestAutoRenderModeSelection:
             f"Expected 'widgets' when explicitly set, got '{effective_mode}'"
 
     def test_explicit_texture_mode_overrides_auto_logic(self):
-        """Explicit 'texture' mode is used regardless of constraints.
-
-        """
+        """Explicit 'texture' mode is used regardless of constraints."""
         label = MarkdownLabel(
             text='Hello World',
             render_mode='texture',

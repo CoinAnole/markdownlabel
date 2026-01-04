@@ -24,9 +24,7 @@ class TestAutoAlignmentRespectsDirection:
     @pytest.mark.needs_window
     @pytest.mark.parametrize('base_direction', ['rtl', 'weak_rtl'])
     def test_auto_alignment_rtl_directions_use_right(self, base_direction):
-        """Auto alignment uses 'right' for RTL base directions.
-
-        """
+        """Auto alignment uses 'right' for RTL base directions."""
         label = MarkdownLabel(
             text='Hello World',
             halign='auto',
@@ -45,9 +43,7 @@ class TestAutoAlignmentRespectsDirection:
     @pytest.mark.needs_window
     @pytest.mark.parametrize('base_direction', ['ltr', 'weak_ltr', None])
     def test_auto_alignment_ltr_directions_use_left(self, base_direction):
-        """Auto alignment uses 'left' for LTR base directions and None.
-
-        """
+        """Auto alignment uses 'left' for LTR base directions and None."""
         label = MarkdownLabel(
             text='Hello World',
             halign='auto',
@@ -72,9 +68,7 @@ class TestAutoAlignmentRespectsDirection:
     # Use 12 examples for full coverage
     @settings(max_examples=12, deadline=None)
     def test_auto_alignment_rtl_applies_to_headings(self, base_direction, heading_level):
-        """Auto alignment with RTL direction applies to heading Labels.
-
-        """
+        """Auto alignment with RTL direction applies to heading Labels."""
         heading_text = '#' * heading_level + ' Test Heading'
         label = MarkdownLabel(
             text=heading_text,
@@ -100,9 +94,7 @@ class TestAutoAlignmentRespectsDirection:
     # Use 18 examples for full coverage
     @settings(max_examples=18, deadline=None)
     def test_auto_alignment_ltr_applies_to_headings(self, base_direction, heading_level):
-        """Auto alignment with LTR direction applies to heading Labels.
-
-        """
+        """Auto alignment with LTR direction applies to heading Labels."""
         heading_text = '#' * heading_level + ' Test Heading'
         label = MarkdownLabel(
             text=heading_text,
@@ -122,9 +114,7 @@ class TestAutoAlignmentRespectsDirection:
     @pytest.mark.needs_window
     @pytest.mark.parametrize('base_direction', ['rtl', 'weak_rtl'])
     def test_auto_alignment_rtl_applies_to_mixed_content(self, base_direction):
-        """Auto alignment with RTL direction applies to mixed content types.
-
-        """
+        """Auto alignment with RTL direction applies to mixed content types."""
         markdown_text = '# Heading\n\nParagraph text\n\n- List item'
         label = MarkdownLabel(
             text=markdown_text,
@@ -148,9 +138,7 @@ class TestAutoAlignmentRespectsDirection:
     @pytest.mark.needs_window
     @pytest.mark.parametrize('base_direction', ['ltr', 'weak_ltr', None])
     def test_auto_alignment_ltr_applies_to_mixed_content(self, base_direction):
-        """Auto alignment with LTR direction applies to mixed content types.
-
-        """
+        """Auto alignment with LTR direction applies to mixed content types."""
         markdown_text = '# Heading\n\nParagraph text\n\n- List item'
         label = MarkdownLabel(
             text=markdown_text,
@@ -188,9 +176,7 @@ class TestDirectionChangeUpdatesAlignment:
     # Use 6 examples for full coverage
     @settings(max_examples=6, deadline=None)
     def test_direction_change_ltr_to_rtl_updates_alignment(self, initial_direction, new_direction):
-        """Changing base_direction from LTR to RTL updates alignment.
-
-        """
+        """Changing base_direction from LTR to RTL updates alignment."""
         label = MarkdownLabel(
             text='Hello World',
             halign='auto',
@@ -224,9 +210,7 @@ class TestDirectionChangeUpdatesAlignment:
     # Use 6 examples for full coverage
     @settings(max_examples=6, deadline=None)
     def test_direction_change_rtl_to_ltr_updates_alignment(self, initial_direction, new_direction):
-        """Changing base_direction from RTL to LTR updates alignment.
-
-        """
+        """Changing base_direction from RTL to LTR updates alignment."""
         label = MarkdownLabel(
             text='Hello World',
             halign='auto',
@@ -263,9 +247,7 @@ class TestDirectionChangeUpdatesAlignment:
     def test_direction_change_updates_heading_alignment(
         self, heading_level, initial_direction, new_direction
     ):
-        """Direction change updates heading alignment.
-
-        """
+        """Direction change updates heading alignment."""
         heading_text = '#' * heading_level + ' Test Heading'
         label = MarkdownLabel(
             text=heading_text,
@@ -302,9 +284,7 @@ class TestDirectionChangeUpdatesAlignment:
     # Use 6 examples for full coverage
     @settings(max_examples=6, deadline=None)
     def test_direction_change_preserves_widget_identities(self, initial_direction, new_direction):
-        """Direction change preserves widget identities (no rebuild).
-
-        """
+        """Direction change preserves widget identities (no rebuild)."""
         label = MarkdownLabel(
             text='Hello World',
             halign='auto',
@@ -335,9 +315,7 @@ class TestDirectionChangeUpdatesAlignment:
     # Use 6 examples for full coverage
     @settings(max_examples=6, deadline=None)
     def test_direction_change_mixed_content_updates_alignment(self, initial_direction, new_direction):
-        """Direction change updates alignment for mixed content types.
-
-        """
+        """Direction change updates alignment for mixed content types."""
         markdown_text = '# Heading\n\nParagraph text\n\n- List item'
         label = MarkdownLabel(
             text=markdown_text,
@@ -386,9 +364,7 @@ class TestExplicitAlignmentOverridesAuto:
     # Use 20 examples for full coverage
     @settings(max_examples=20, deadline=None)
     def test_explicit_alignment_overrides_base_direction(self, explicit_halign, base_direction):
-        """Explicit halign overrides base_direction for all content.
-
-        """
+        """Explicit halign overrides base_direction for all content."""
         label = MarkdownLabel(
             text='Hello World',
             halign=explicit_halign,
@@ -417,9 +393,7 @@ class TestExplicitAlignmentOverridesAuto:
     def test_explicit_alignment_overrides_rtl_for_headings(
         self, explicit_halign, base_direction, heading_level
     ):
-        """Explicit halign overrides RTL base_direction for headings.
-
-        """
+        """Explicit halign overrides RTL base_direction for headings."""
         heading_text = '#' * heading_level + ' Test Heading'
         label = MarkdownLabel(
             text=heading_text,
@@ -446,9 +420,7 @@ class TestExplicitAlignmentOverridesAuto:
     # Use 20 examples for full coverage
     @settings(max_examples=20, deadline=None)
     def test_explicit_alignment_overrides_direction_for_mixed_content(self, explicit_halign, base_direction):
-        """Explicit halign overrides base_direction for mixed content types.
-
-        """
+        """Explicit halign overrides base_direction for mixed content types."""
         markdown_text = '# Heading\n\nParagraph text\n\n- List item'
         label = MarkdownLabel(
             text=markdown_text,
@@ -481,9 +453,7 @@ class TestExplicitAlignmentOverridesAuto:
     def test_explicit_alignment_unchanged_by_direction_change(
         self, explicit_halign, initial_direction, new_direction
     ):
-        """Explicit halign remains unchanged when base_direction changes.
-
-        """
+        """Explicit halign remains unchanged when base_direction changes."""
         label = MarkdownLabel(
             text='Hello World',
             halign=explicit_halign,
@@ -517,9 +487,7 @@ class TestExplicitAlignmentOverridesAuto:
     # Use 20 examples for full coverage
     @settings(max_examples=20, deadline=None)
     def test_explicit_alignment_stored_correctly_on_widget(self, explicit_halign, base_direction):
-        """Explicit halign is stored correctly on MarkdownLabel widget.
-
-        """
+        """Explicit halign is stored correctly on MarkdownLabel widget."""
         label = MarkdownLabel(
             text='Hello World',
             halign=explicit_halign,

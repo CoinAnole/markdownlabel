@@ -33,9 +33,7 @@ class TestHelperFunctionAvailability:
     @given(st.text(min_size=1, max_size=50))
     @settings(max_examples=10, deadline=None)
     def test_widget_traversal_helpers_available(self, markdown_text):
-        """For any markdown content, widget traversal helpers should be available and functional.
-
-        """
+        """For any markdown content, widget traversal helpers should be available and functional."""
         # Create a MarkdownLabel with content
         label = MarkdownLabel(text=markdown_text)
 
@@ -57,9 +55,7 @@ class TestHelperFunctionAvailability:
     @given(color_strategy, color_strategy)
     @settings(max_examples=10, deadline=None)
     def test_comparison_helpers_available(self, color1, color2):
-        """For any color values, comparison helpers should be available and functional.
-
-        """
+        """For any color values, comparison helpers should be available and functional."""
         # Test colors_equal is available and works
         result = colors_equal(color1, color2)
         assert isinstance(result, bool)
@@ -71,9 +67,7 @@ class TestHelperFunctionAvailability:
     @given(text_padding_strategy, text_padding_strategy)
     @settings(max_examples=10, deadline=None)
     def test_padding_comparison_helpers_available(self, padding1, padding2):
-        """For any padding values, padding comparison helpers should be available and functional.
-
-        """
+        """For any padding values, padding comparison helpers should be available and functional."""
         # Test padding_equal is available and works
         result = padding_equal(padding1, padding2)
         assert isinstance(result, bool)
@@ -86,9 +80,7 @@ class TestHelperFunctionAvailability:
            st.floats(min_value=-1000, max_value=1000, allow_nan=False, allow_infinity=False))
     @settings(max_examples=10, deadline=None)
     def test_float_comparison_helpers_available(self, float1, float2):
-        """For any float values, float comparison helpers should be available and functional.
-
-        """
+        """For any float values, float comparison helpers should be available and functional."""
         # Test floats_equal is available and works
         result = floats_equal(float1, float2)
         assert isinstance(result, bool)
@@ -100,9 +92,7 @@ class TestHelperFunctionAvailability:
     @given(simple_markdown_document())
     @settings(max_examples=5, deadline=None)
     def test_rebuild_detection_helpers_available(self, markdown_text):
-        """For any markdown content, rebuild detection helpers should be available and functional.
-
-        """
+        """For any markdown content, rebuild detection helpers should be available and functional."""
         # Create a MarkdownLabel with content
         label = MarkdownLabel(text=markdown_text)
 
@@ -121,9 +111,7 @@ class TestHelperFunctionAvailability:
         assert_rebuild_occurred(label, ids_before, exclude_root=True)
 
     def test_touch_simulation_helpers_available(self):
-        """Touch simulation helpers should be available and functional.
-
-        """
+        """Touch simulation helpers should be available and functional."""
         # Test FakeTouch is available and works
         touch = FakeTouch(100, 200)
         assert touch.x == 100
@@ -134,9 +122,7 @@ class TestHelperFunctionAvailability:
     @given(color_strategy)
     @settings(max_examples=1, deadline=None)
     def test_color_strategy_available(self, color):
-        """color_strategy is available and generates valid colors.
-
-        """
+        """color_strategy is available and generates valid colors."""
         assert isinstance(color, list)
         assert len(color) == 4
         assert all(isinstance(c, float) for c in color)
@@ -145,9 +131,7 @@ class TestHelperFunctionAvailability:
     @given(text_padding_strategy)
     @settings(max_examples=1, deadline=None)
     def test_text_padding_strategy_available(self, padding):
-        """text_padding_strategy is available and generates valid padding.
-
-        """
+        """text_padding_strategy is available and generates valid padding."""
         assert isinstance(padding, list)
         assert len(padding) == 4
         assert all(isinstance(p, float) for p in padding)
@@ -156,9 +140,7 @@ class TestHelperFunctionAvailability:
     @given(simple_markdown_document())
     @settings(max_examples=1, deadline=None)
     def test_simple_markdown_document_strategy_available(self, doc):
-        """simple_markdown_document strategy is available and generates valid documents.
-
-        """
+        """simple_markdown_document strategy is available and generates valid documents."""
         assert isinstance(doc, str)
         assert len(doc) > 0
 
@@ -168,9 +150,7 @@ class TestHelperFunctionConsolidation:
     """Property tests for helper function consolidation."""
 
     def test_no_duplicate_find_labels_recursive_implementations(self):
-        """For any test file, there should be no duplicate _find_labels_recursive implementations.
-
-        """
+        """For any test file, there should be no duplicate _find_labels_recursive implementations."""
         import ast
         from pathlib import Path
 
@@ -199,9 +179,7 @@ class TestHelperFunctionConsolidation:
             f"Found duplicate _find_labels_recursive implementations in: {duplicate_implementations}"
 
     def test_no_duplicate_collect_widget_ids_implementations(self):
-        """For any test file, there should be no duplicate collect_widget_ids implementations.
-
-        """
+        """For any test file, there should be no duplicate collect_widget_ids implementations."""
         import ast
         from pathlib import Path
 
@@ -230,9 +208,7 @@ class TestHelperFunctionConsolidation:
             f"Found duplicate collect_widget_ids implementations in: {duplicate_implementations}"
 
     def test_all_test_files_import_from_test_utils(self):
-        """For any test file using helper functions, it should import them from test_utils.
-
-        """
+        """For any test file using helper functions, it should import them from test_utils."""
         import ast
         from pathlib import Path
 

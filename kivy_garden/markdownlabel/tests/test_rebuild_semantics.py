@@ -86,9 +86,7 @@ class TestStylePropertyIdentityPreservation:
     """
 
     def test_base_font_size_preserves_widget_tree(self):
-        """Changing base_font_size preserves widget tree.
-
-        """
+        """Changing base_font_size preserves widget tree."""
         label = MarkdownLabel(text='# Heading\n\nParagraph text', base_font_size=15)
 
         # Capture widget IDs before change
@@ -103,9 +101,7 @@ class TestStylePropertyIdentityPreservation:
             "Widget IDs changed after base_font_size update"
 
     def test_color_preserves_widget_tree(self):
-        """Changing color preserves widget tree.
-
-        """
+        """Changing color preserves widget tree."""
         label = MarkdownLabel(text='# Heading\n\nParagraph text', color=[1, 1, 1, 1])
 
         # Capture widget IDs before change
@@ -120,9 +116,7 @@ class TestStylePropertyIdentityPreservation:
             "Widget IDs changed after color update"
 
     def test_halign_preserves_widget_tree(self):
-        """Changing halign preserves widget tree.
-
-        """
+        """Changing halign preserves widget tree."""
         label = MarkdownLabel(text='# Heading\n\nParagraph text', halign='left')
 
         # Capture widget IDs before change
@@ -137,9 +131,7 @@ class TestStylePropertyIdentityPreservation:
             "Widget IDs changed after halign update"
 
     def test_valign_preserves_widget_tree(self):
-        """Changing valign preserves widget tree.
-
-        """
+        """Changing valign preserves widget tree."""
         label = MarkdownLabel(text='# Heading\n\nParagraph text', valign='bottom')
 
         # Capture widget IDs before change
@@ -154,9 +146,7 @@ class TestStylePropertyIdentityPreservation:
             "Widget IDs changed after valign update"
 
     def test_disabled_preserves_widget_tree(self):
-        """Changing disabled preserves widget tree.
-
-        """
+        """Changing disabled preserves widget tree."""
         label = MarkdownLabel(text='# Heading\n\nParagraph text', disabled=False)
 
         # Capture widget IDs before change
@@ -171,9 +161,7 @@ class TestStylePropertyIdentityPreservation:
             "Widget IDs changed after disabled update"
 
     def test_disabled_color_preserves_widget_tree(self):
-        """Changing disabled_color preserves widget tree.
-
-        """
+        """Changing disabled_color preserves widget tree."""
         label = MarkdownLabel(
             text='# Heading\n\nParagraph text',
             disabled_color=[1, 1, 1, 0.3]
@@ -191,9 +179,7 @@ class TestStylePropertyIdentityPreservation:
             "Widget IDs changed after disabled_color update"
 
     def test_base_direction_preserves_widget_tree(self):
-        """Changing base_direction preserves widget tree.
-
-        """
+        """Changing base_direction preserves widget tree."""
         label = MarkdownLabel(text='# Heading\n\nParagraph text', base_direction=None)
 
         # Capture widget IDs before change
@@ -208,9 +194,7 @@ class TestStylePropertyIdentityPreservation:
             "Widget IDs changed after base_direction update"
 
     def test_line_height_preserves_widget_tree(self):
-        """Changing line_height preserves widget tree.
-
-        """
+        """Changing line_height preserves widget tree."""
         label = MarkdownLabel(text='# Heading\n\nParagraph text', line_height=1.0)
 
         # Capture widget IDs before change
@@ -225,9 +209,7 @@ class TestStylePropertyIdentityPreservation:
             "Widget IDs changed after line_height update"
 
     def test_multiple_style_properties_preserve_widget_tree(self):
-        """Changing multiple style properties preserves widget tree.
-
-        """
+        """Changing multiple style properties preserves widget tree."""
         label = MarkdownLabel(
             text='# Heading\n\nParagraph text',
             base_font_size=15,
@@ -327,9 +309,7 @@ class TestStylePropertyPropagation:
     """
 
     def test_color_propagates_to_descendants(self):
-        """Color value propagates to all descendant Labels.
-
-        """
+        """Color value propagates to all descendant Labels."""
         label = MarkdownLabel(text='# Heading\n\nParagraph text', color=[1, 1, 1, 1])
 
         # Change color
@@ -345,9 +325,7 @@ class TestStylePropertyPropagation:
                 f"Expected color {new_color}, got {list(child_label.color)}"
 
     def test_halign_propagates_to_descendants(self):
-        """Halign value propagates to all descendant Labels.
-
-        """
+        """Halign value propagates to all descendant Labels."""
         label = MarkdownLabel(text='# Heading\n\nParagraph text', halign='left')
 
         # Change halign
@@ -363,9 +341,7 @@ class TestStylePropertyPropagation:
                 f"Expected halign {new_halign}, got {child_label.halign}"
 
     def test_valign_propagates_to_descendants(self):
-        """Valign value propagates to all descendant Labels.
-
-        """
+        """Valign value propagates to all descendant Labels."""
         label = MarkdownLabel(text='# Heading\n\nParagraph text', valign='bottom')
 
         # Change valign
@@ -381,9 +357,7 @@ class TestStylePropertyPropagation:
                 f"Expected valign {new_valign}, got {child_label.valign}"
 
     def test_line_height_propagates_to_descendants(self):
-        """Line_height value propagates to all descendant Labels.
-
-        """
+        """Line_height value propagates to all descendant Labels."""
         label = MarkdownLabel(text='# Heading\n\nParagraph text', line_height=1.0)
 
         # Change line_height
@@ -399,9 +373,7 @@ class TestStylePropertyPropagation:
                 f"Expected line_height {new_line_height}, got {child_label.line_height}"
 
     def test_disabled_color_propagates_when_disabled(self):
-        """Disabled_color propagates to descendants when disabled is True.
-
-        """
+        """Disabled_color propagates to descendants when disabled is True."""
         label = MarkdownLabel(
             text='# Heading\n\nParagraph text',
             color=[1, 1, 1, 1],
@@ -422,9 +394,7 @@ class TestStylePropertyPropagation:
                 f"Expected disabled_color {expected_color}, got {list(child_label.color)}"
 
     def test_base_direction_propagates_to_descendants(self):
-        """Base_direction value propagates to all descendant Labels.
-
-        """
+        """Base_direction value propagates to all descendant Labels."""
         label = MarkdownLabel(text='# Heading\n\nParagraph text', base_direction=None)
 
         # Change base_direction
@@ -531,9 +501,7 @@ class TestStructurePropertyRebuild:
     """
 
     def test_text_change_triggers_rebuild(self):
-        """Changing text triggers widget rebuild with new widget instances.
-
-        """
+        """Changing text triggers widget rebuild with new widget instances."""
         label = MarkdownLabel(text='# Initial Heading\n\nInitial paragraph')
         root_id_before = id(label)
 
@@ -556,9 +524,7 @@ class TestStructurePropertyRebuild:
             "Root MarkdownLabel ID should remain unchanged"
 
     def test_font_name_change_triggers_rebuild(self):
-        """Changing font_name triggers widget rebuild with new widget instances.
-
-        """
+        """Changing font_name triggers widget rebuild with new widget instances."""
         label = MarkdownLabel(text='# Heading\n\nParagraph', font_name='Roboto')
         root_id_before = id(label)
 
@@ -581,9 +547,7 @@ class TestStructurePropertyRebuild:
             "Root MarkdownLabel ID should remain unchanged"
 
     def test_text_size_change_triggers_rebuild(self):
-        """Changing text_size triggers widget rebuild with new widget instances.
-
-        """
+        """Changing text_size triggers widget rebuild with new widget instances."""
         label = MarkdownLabel(text='# Heading\n\nParagraph', text_size=[None, None])
         root_id_before = id(label)
 
@@ -606,9 +570,7 @@ class TestStructurePropertyRebuild:
             "Root MarkdownLabel ID should remain unchanged"
 
     def test_link_style_change_triggers_rebuild(self):
-        """Changing link_style triggers widget rebuild with new widget instances.
-
-        """
+        """Changing link_style triggers widget rebuild with new widget instances."""
         label = MarkdownLabel(
             text='# Heading\n\n[Link](http://example.com)',
             link_style='unstyled'
@@ -634,9 +596,7 @@ class TestStructurePropertyRebuild:
             "Root MarkdownLabel ID should remain unchanged"
 
     def test_strict_label_mode_change_triggers_rebuild(self):
-        """Changing strict_label_mode triggers widget rebuild.
-
-        """
+        """Changing strict_label_mode triggers widget rebuild."""
         label = MarkdownLabel(text='# Heading\n\nParagraph', strict_label_mode=False)
         root_id_before = id(label)
 
@@ -659,9 +619,7 @@ class TestStructurePropertyRebuild:
             "Root MarkdownLabel ID should remain unchanged"
 
     def test_render_mode_change_triggers_rebuild(self):
-        """Changing render_mode triggers widget rebuild.
-
-        """
+        """Changing render_mode triggers widget rebuild."""
         label = MarkdownLabel(text='# Heading\n\nParagraph', render_mode='widgets')
         root_id_before = id(label)
 
@@ -821,9 +779,7 @@ class TestStructurePropertyRebuildPBT:
 
 @pytest.mark.slow
 class TestRootIDPreservationPBT:
-    """Property-based tests for root widget ID preservation.
-
-    """
+    """Property-based tests for root widget ID preservation."""
 
     @given(
         markdown_text=simple_markdown_document(),

@@ -24,9 +24,7 @@ class TestStrategyClassification:
     # Boolean strategy: 2 examples (True/False coverage)
     @settings(max_examples=2, deadline=None)
     def test_boolean_strategy_classification(self, strategy_code):
-        """Boolean strategies are correctly classified with input space size 2.
-
-        """
+        """Boolean strategies are correctly classified with input space size 2."""
         analysis = self.classifier.classify_strategy(strategy_code)
 
         assert analysis.strategy_type == StrategyType.BOOLEAN
@@ -110,9 +108,7 @@ class TestMaxExamplesCalculation:
     # Small finite strategy: 10 examples (input space size: 10)
     @settings(max_examples=10, deadline=None)
     def test_small_finite_uses_input_space_size(self, range_size):
-        """Small finite strategies should use max_examples equal to input space size.
-
-        """
+        """Small finite strategies should use max_examples equal to input space size."""
         # Test integer ranges
         strategy_code = f'st.integers(min_value=0, max_value={range_size-1})'
         optimal = self.calculator.calculate_optimal_examples(strategy_code)
@@ -161,9 +157,7 @@ class TestMaxExamplesCalculation:
     # Small finite strategy: 4 examples (input space size: 4)
     @settings(max_examples=4, deadline=None)
     def test_complex_strategy_uses_complexity_based_examples(self, complexity_level):
-        """Complex strategies should use examples based on complexity level.
-
-        """
+        """Complex strategies should use examples based on complexity level."""
         # Simulate a complex strategy analysis
         from kivy_garden.markdownlabel.tests.modules.strategy_analyzer import (
             StrategyAnalysis, StrategyType
@@ -197,9 +191,7 @@ class TestCombinationStrategies:
     # Combination strategy: 16 examples (combination coverage)
     @settings(max_examples=16, deadline=None)
     def test_combination_uses_product_formula(self, size1, size2):
-        """Combination strategies should use product of individual strategy sizes.
-
-        """
+        """Combination strategies should use product of individual strategy sizes."""
         # Create a combination strategy with two small finite strategies
         strategy_code = (
             f'st.tuples(st.integers(min_value=0, max_value={size1-1}), '
@@ -318,9 +310,7 @@ class TestOverTestingDetection:
     # Medium finite strategy: 20 examples (adequate finite coverage)
     @settings(max_examples=20, deadline=None)
     def test_boolean_over_testing_detected(self, excessive_examples):
-        """Over-testing of boolean strategies should be correctly detected.
-
-        """
+        """Over-testing of boolean strategies should be correctly detected."""
         strategy_code = 'st.booleans()'
 
         is_over_testing = self.analyzer.calculator.is_over_testing(

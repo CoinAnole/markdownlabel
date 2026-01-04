@@ -902,9 +902,7 @@ class TestCommentStandardizationIntegration:
         self.analyzer = CommentAnalyzer()
 
     def test_end_to_end_standardization_workflow(self):
-        """Test complete workflow: analyze -> standardize -> validate.
-
-        """
+        """Test complete workflow: analyze -> standardize -> validate."""
         # Create a test file with various comment issues
         test_content = '''
 from hypothesis import given, settings
@@ -969,9 +967,7 @@ def test_already_documented(text):
                 os.unlink(result.backup_path)
 
     def test_batch_standardization_workflow(self):
-        """Test batch processing of multiple files.
-
-        """
+        """Test batch processing of multiple files."""
         # Create multiple test files
         test_files = []
 
@@ -1022,16 +1018,12 @@ def test_file_{i}_function(value):
                     os.unlink(file_path)
 
     def test_backup_and_rollback_functionality(self):
-        """Test backup creation and rollback capability.
-
-        """
+        """Test backup creation and rollback capability."""
         # Backup functionality no longer exercised in tests.
         assert True
 
     def test_standardization_tool_integration_compatibility(self):
-        """Test integration with existing optimization tools.
-
-        """
+        """Test integration with existing optimization tools."""
         # Create a file with standardized comments
         test_content = '''
 from hypothesis import given, settings
@@ -1097,9 +1089,7 @@ def test_complex_example(text):
                 os.unlink(temp_file)
 
     def test_error_handling_and_recovery(self):
-        """Test error handling in standardization workflow.
-
-        """
+        """Test error handling in standardization workflow."""
         # Test with invalid Python file
         invalid_content = '''
 This is not valid Python code

@@ -35,9 +35,7 @@ class TestAdvancedFontPropertiesForwarding:
     # Medium finite strategy: 20 examples (adequate finite coverage)
     @settings(max_examples=20, deadline=None)
     def test_font_family_forwarded_to_labels(self, font_family_value):
-        """font_family is forwarded to all internal Labels.
-
-        """
+        """font_family is forwarded to all internal Labels."""
         label = MarkdownLabel(text='Hello World', font_family=font_family_value)
 
         labels = find_labels_recursive(label)
@@ -54,9 +52,7 @@ class TestAdvancedFontPropertiesForwarding:
     # Medium finite strategy: 20 examples (adequate finite coverage)
     @settings(max_examples=20, deadline=None)
     def test_font_context_forwarded_to_labels(self, font_context_value):
-        """font_context is forwarded to all internal Labels.
-
-        """
+        """font_context is forwarded to all internal Labels."""
         label = MarkdownLabel(text='Hello World', font_context=font_context_value)
 
         labels = find_labels_recursive(label)
@@ -73,9 +69,7 @@ class TestAdvancedFontPropertiesForwarding:
     # Medium finite strategy: 20 examples (adequate finite coverage)
     @settings(max_examples=20, deadline=None)
     def test_font_features_forwarded_to_labels(self, font_features_value):
-        """font_features is forwarded to all internal Labels.
-
-        """
+        """font_features is forwarded to all internal Labels."""
         label = MarkdownLabel(text='Hello World', font_features=font_features_value)
 
         labels = find_labels_recursive(label)
@@ -87,9 +81,7 @@ class TestAdvancedFontPropertiesForwarding:
 
     @pytest.mark.parametrize('font_hinting_value', [None, 'normal', 'light', 'mono'])
     def test_font_hinting_forwarded_to_labels(self, font_hinting_value):
-        """font_hinting is forwarded to all internal Labels.
-
-        """
+        """font_hinting is forwarded to all internal Labels."""
         label = MarkdownLabel(text='Hello World', font_hinting=font_hinting_value)
 
         labels = find_labels_recursive(label)
@@ -105,9 +97,7 @@ class TestAdvancedFontPropertiesForwarding:
     # Boolean strategy: 2 examples (True/False coverage)
     @settings(max_examples=2, deadline=None)
     def test_font_kerning_forwarded_to_labels(self, font_kerning_value):
-        """font_kerning is forwarded to all internal Labels.
-
-        """
+        """font_kerning is forwarded to all internal Labels."""
         label = MarkdownLabel(text='Hello World', font_kerning=font_kerning_value)
 
         labels = find_labels_recursive(label)
@@ -121,9 +111,7 @@ class TestAdvancedFontPropertiesForwarding:
     # Boolean strategy: 2 examples (True/False coverage)
     @settings(max_examples=2, deadline=None)
     def test_font_blended_forwarded_to_labels(self, font_blended_value):
-        """font_blended is forwarded to all internal Labels.
-
-        """
+        """font_blended is forwarded to all internal Labels."""
         label = MarkdownLabel(text='Hello World', font_blended=font_blended_value)
 
         labels = find_labels_recursive(label)
@@ -281,9 +269,7 @@ class TestDisabledColorApplication:
     # Medium finite strategy: 20 examples (adequate finite coverage)
     @settings(max_examples=20, deadline=None)
     def test_disabled_color_stored_correctly(self, disabled_color):
-        """disabled_color property stores the value correctly.
-
-        """
+        """disabled_color property stores the value correctly."""
         label = MarkdownLabel(text='Hello World', disabled_color=disabled_color)
 
         assert colors_equal(label.disabled_color, disabled_color), \
@@ -296,9 +282,7 @@ class TestDisabledColorApplication:
     # Medium finite strategy: 20 examples (adequate finite coverage)
     @settings(max_examples=20, deadline=None)
     def test_disabled_color_applied_when_disabled(self, disabled_color):
-        """When disabled=True, internal Labels use disabled_color instead of color.
-
-        """
+        """When disabled=True, internal Labels use disabled_color instead of color."""
         regular_color = [1, 0, 0, 1]  # Red
 
         label = MarkdownLabel(
@@ -325,9 +309,7 @@ class TestDisabledColorApplication:
     # Medium finite strategy: 20 examples (adequate finite coverage)
     @settings(max_examples=20, deadline=None)
     def test_regular_color_applied_when_not_disabled(self, regular_color):
-        """When disabled=False, internal Labels use regular color.
-
-        """
+        """When disabled=False, internal Labels use regular color."""
         disabled_color = [0.5, 0.5, 0.5, 0.3]  # Gray semi-transparent
 
         label = MarkdownLabel(
@@ -351,9 +333,7 @@ class TestDisabledColorApplication:
     # Boolean strategy: 2 examples (True/False coverage)
     @settings(max_examples=2, deadline=None)
     def test_disabled_state_determines_color(self, disabled):
-        """disabled property determines which color is used.
-
-        """
+        """disabled property determines which color is used."""
         regular_color = [1, 0, 0, 1]  # Red
         disabled_color = [0.5, 0.5, 0.5, 0.3]  # Gray semi-transparent
 
@@ -377,9 +357,7 @@ class TestDisabledColorApplication:
                 f"Expected color={expected_color}, got {list(lbl.color)}"
 
     def test_disabled_change_triggers_rebuild(self):
-        """Changing disabled property triggers widget rebuild.
-
-        """
+        """Changing disabled property triggers widget rebuild."""
         regular_color = [1, 0, 0, 1]  # Red
         disabled_color = [0.5, 0.5, 0.5, 0.3]  # Gray semi-transparent
 
@@ -675,9 +653,7 @@ class TestReactiveRebuildOnPropertyChange:
     # Use 20 examples to sample adequately
     @settings(max_examples=20, deadline=None)
     def test_multiple_property_changes_rebuild_correctly(self, font_name, color, line_height):
-        """Multiple property changes each trigger rebuilds with correct values.
-
-        """
+        """Multiple property changes each trigger rebuilds with correct values."""
         label = MarkdownLabel(text='# Heading\n\nParagraph text')
 
         # Change font_name
@@ -711,9 +687,7 @@ class TestReactiveRebuildOnPropertyChange:
         ('justify', 'left'), ('justify', 'center'), ('justify', 'right')
     ])
     def test_halign_updates_value(self, halign1, halign2):
-        """Changing halign after initial rendering updates value on existing widgets.
-
-        """
+        """Changing halign after initial rendering updates value on existing widgets."""
 
         label = MarkdownLabel(text='Hello World', halign=halign1)
 
@@ -740,9 +714,7 @@ class TestReactiveRebuildOnPropertyChange:
         ('top', 'bottom'), ('top', 'middle'), ('top', 'center')
     ])
     def test_valign_updates_value(self, valign1, valign2):
-        """Changing valign after initial rendering updates value on existing widgets.
-
-        """
+        """Changing valign after initial rendering updates value on existing widgets."""
 
         label = MarkdownLabel(text='Hello World', valign=valign1)
 
@@ -768,9 +740,7 @@ class TestReactiveRebuildOnPropertyChange:
         ('ignore', 'strict'), ('ignore', 'replace')
     ])
     def test_unicode_errors_updates_value(self, errors1, errors2):
-        """Changing unicode_errors after initial rendering triggers rebuild with new value.
-
-        """
+        """Changing unicode_errors after initial rendering triggers rebuild with new value."""
 
         label = MarkdownLabel(text='Hello World', unicode_errors=errors1)
 
@@ -796,9 +766,7 @@ class TestReactiveRebuildOnPropertyChange:
     # Use 4 examples for full coverage
     @settings(max_examples=4, deadline=None)
     def test_strip_updates_value(self, strip1, strip2):
-        """Changing strip after initial rendering triggers rebuild with new value.
-
-        """
+        """Changing strip after initial rendering triggers rebuild with new value."""
         assume(strip1 != strip2)
 
         label = MarkdownLabel(text='Hello World', strip=strip1)
@@ -825,9 +793,7 @@ class TestReactiveRebuildOnPropertyChange:
     # Use 4 examples for full coverage
     @settings(max_examples=4, deadline=None)
     def test_disabled_change_triggers_rebuild(self, disabled1, disabled2):
-        """Changing disabled after initial rendering triggers widget rebuild.
-
-        """
+        """Changing disabled after initial rendering triggers widget rebuild."""
         assume(disabled1 != disabled2)
 
         regular_color = [1, 0, 0, 1]  # Red
@@ -866,9 +832,7 @@ class TestReactiveRebuildOnPropertyChange:
     # Use 20 examples to sample adequately
     @settings(max_examples=20, deadline=None)
     def test_rebuild_preserves_content_structure(self, markdown_text, font1, font2):
-        """Rebuilding widgets preserves the content structure.
-
-        """
+        """Rebuilding widgets preserves the content structure."""
         assume(markdown_text.strip())
         assume(font1 != font2)
 
@@ -892,9 +856,7 @@ class TestReactiveRebuildOnPropertyChange:
     # Use 4 examples for full coverage
     @settings(max_examples=4, deadline=None)
     def test_font_kerning_updates_value(self, kerning1, kerning2):
-        """Changing font_kerning after initial rendering triggers rebuild with new value.
-
-        """
+        """Changing font_kerning after initial rendering triggers rebuild with new value."""
         assume(kerning1 != kerning2)
 
         label = MarkdownLabel(text='Hello World', font_kerning=kerning1)
@@ -921,9 +883,7 @@ class TestReactiveRebuildOnPropertyChange:
     # Use 4 examples for full coverage
     @settings(max_examples=4, deadline=None)
     def test_font_blended_updates_value(self, blended1, blended2):
-        """Changing font_blended after initial rendering triggers rebuild with new value.
-
-        """
+        """Changing font_blended after initial rendering triggers rebuild with new value."""
         assume(blended1 != blended2)
 
         label = MarkdownLabel(text='Hello World', font_blended=blended1)

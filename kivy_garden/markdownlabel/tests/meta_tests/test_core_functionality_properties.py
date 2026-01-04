@@ -66,9 +66,7 @@ class TestNoTimingAssertions:
         'test_core_functionality_properties.py'
     ])
     def test_no_timing_assertions_in_test_files(self, module_name):
-        """Test files should not contain timing assertions.
-
-        """
+        """Test files should not contain timing assertions."""
         module_path = Path(f'kivy_garden/markdownlabel/tests/{module_name}')
         if not module_path.exists():
             return  # Skip non-existent modules
@@ -158,9 +156,7 @@ class TestSubprocessPytestConfiguration:
         'test_core_functionality_properties.py'
     ])
     def test_subprocess_pytest_uses_stable_configuration(self, module_name):
-        """Subprocess pytest calls should use stable configuration.
-
-        """
+        """Subprocess pytest calls should use stable configuration."""
         module_path = Path(f'kivy_garden/markdownlabel/tests/{module_name}')
         if not module_path.exists():
             return  # Skip non-existent modules
@@ -225,9 +221,7 @@ class TestNoSilentPassFileChecks:
         'test_core_functionality_properties.py'
     ])
     def test_no_silent_pass_file_existence_checks(self, module_name):
-        """Test files should not contain silent-pass file existence checks.
-
-        """
+        """Test files should not contain silent-pass file existence checks."""
         module_path = Path(f'kivy_garden/markdownlabel/tests/{module_name}')
         if not module_path.exists():
             return  # Skip non-existent modules
@@ -289,9 +283,7 @@ class TestNoBroadExceptionHandling:
         'test_core_functionality_properties.py'
     ])
     def test_no_broad_exception_handling(self, module_name):
-        """Test files should not contain broad exception handling.
-
-        """
+        """Test files should not contain broad exception handling."""
         module_path = Path(f'kivy_garden/markdownlabel/tests/{module_name}')
         if not module_path.exists():
             return  # Skip non-existent modules
@@ -415,9 +407,7 @@ class TestFixedListPropertyTestsConverted:
         'test_rebuild_scheduling.py'
     ])
     def test_fixed_list_property_tests_converted_to_parametrized(self, module_name):
-        """Fixed-list property tests should be converted to parametrized tests.
-
-        """
+        """Fixed-list property tests should be converted to parametrized tests."""
         module_path = Path(f'kivy_garden/markdownlabel/tests/{module_name}')
         if not module_path.exists():
             return  # Skip non-existent modules
@@ -449,9 +439,7 @@ class TestFixedListPropertyTestsConverted:
                 )
 
     def test_conversion_progress_tracking(self):
-        """Track overall progress of fixed-list to parametrized conversion.
-
-        """
+        """Track overall progress of fixed-list to parametrized conversion."""
         test_dir = Path('kivy_garden/markdownlabel/tests')
         if not test_dir.exists():
             return
@@ -549,9 +537,7 @@ class TestPerformanceTestsMarked:
         return analysis
 
     def test_performance_tests_properly_marked(self):
-        """Performance tests should be properly marked with @pytest.mark.slow.
-
-        """
+        """Performance tests should be properly marked with @pytest.mark.slow."""
         # Check the performance test file specifically
         performance_file = Path('kivy_garden/markdownlabel/tests/test_performance.py')
 
@@ -583,9 +569,7 @@ class TestPerformanceTestsMarked:
         'test_core_functionality_properties.py'
     ])
     def test_performance_indicators_are_marked(self, module_name):
-        """Tests with performance indicators should be properly marked.
-
-        """
+        """Tests with performance indicators should be properly marked."""
         module_path = Path(f'kivy_garden/markdownlabel/tests/{module_name}')
         if not module_path.exists():
             return  # Skip non-existent modules
@@ -664,9 +648,7 @@ class TestNoDuplicateEnvironmentSetup:
         'test_inline_renderer.py'
     ])
     def test_no_duplicate_environment_setup(self, module_name):
-        """Test files should not contain duplicate environment setup.
-
-        """
+        """Test files should not contain duplicate environment setup."""
         module_path = Path(f'kivy_garden/markdownlabel/tests/{module_name}')
         if not module_path.exists():
             return  # Skip non-existent modules
@@ -683,9 +665,7 @@ class TestNoDuplicateEnvironmentSetup:
             f"Remove KIVY_NO_ARGS and KIVY_NO_CONSOLELOG setup from individual test files."
 
     def test_conftest_has_centralized_setup(self):
-        """conftest.py should contain the centralized environment setup.
-
-        """
+        """conftest.py should contain the centralized environment setup."""
         conftest_path = Path('kivy_garden/markdownlabel/tests/conftest.py')
 
         if not conftest_path.exists():

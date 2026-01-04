@@ -109,9 +109,7 @@ class TestFontNamePropertyForwarding:
         ('Roboto-Italic', 'Roboto'), ('Roboto-Italic', 'Roboto-Bold')
     ])
     def test_font_name_property_forwarding_triggers_rebuild(self, font1, font2):
-        """Changing font_name triggers widget rebuild with new font.
-
-        """
+        """Changing font_name triggers widget rebuild with new font."""
         label = MarkdownLabel(text='Hello World', font_name=font1)
 
         # Collect widget IDs before change
@@ -349,9 +347,7 @@ class TestAdvancedFontPropertyForwarding:
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_font_family_excluded_from_code_blocks(self, font_family_value):
-        """font_family is NOT forwarded to code block Labels.
-
-        """
+        """font_family is NOT forwarded to code block Labels."""
         # Create markdown with both regular text and code block
         markdown = 'Regular paragraph\n\n```python\ncode here\n```'
         label = MarkdownLabel(text=markdown, font_family=font_family_value)
@@ -369,9 +365,7 @@ class TestAdvancedFontPropertyForwarding:
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_font_family_forwarded_to_non_code_labels(self, font_family_value):
-        """font_family IS forwarded to non-code block Labels.
-
-        """
+        """font_family IS forwarded to non-code block Labels."""
         # Create markdown with both regular text and code block
         markdown = 'Regular paragraph\n\n```python\ncode here\n```'
         label = MarkdownLabel(text=markdown, font_family=font_family_value)
@@ -390,9 +384,7 @@ class TestAdvancedFontPropertyForwarding:
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_font_context_forwarded_to_all_labels_including_code(self, font_context_value):
-        """font_context IS forwarded to ALL Labels including code blocks.
-
-        """
+        """font_context IS forwarded to ALL Labels including code blocks."""
         # Create markdown with both regular text and code block
         markdown = 'Regular paragraph\n\n```python\ncode here\n```'
         label = MarkdownLabel(text=markdown, font_context=font_context_value)
@@ -411,9 +403,7 @@ class TestAdvancedFontPropertyForwarding:
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_font_features_forwarded_to_all_labels_including_code(self, font_features_value):
-        """font_features IS forwarded to ALL Labels including code blocks.
-
-        """
+        """font_features IS forwarded to ALL Labels including code blocks."""
         # Create markdown with both regular text and code block
         markdown = 'Regular paragraph\n\n```python\ncode here\n```'
         label = MarkdownLabel(text=markdown, font_features=font_features_value)
@@ -429,9 +419,7 @@ class TestAdvancedFontPropertyForwarding:
 
     @pytest.mark.parametrize('font_hinting_value', [None, 'normal', 'light', 'mono'])
     def test_font_hinting_forwarded_to_all_labels_including_code(self, font_hinting_value):
-        """font_hinting IS forwarded to ALL Labels including code blocks.
-
-        """
+        """font_hinting IS forwarded to ALL Labels including code blocks."""
         # Create markdown with both regular text and code block
         markdown = 'Regular paragraph\n\n```python\ncode here\n```'
         label = MarkdownLabel(text=markdown, font_hinting=font_hinting_value)
@@ -451,9 +439,7 @@ class TestAdvancedFontPropertyForwarding:
     # Boolean strategy: 2 examples (True/False coverage)
     @settings(max_examples=2, deadline=None)
     def test_font_kerning_forwarded_to_all_labels_including_code(self, font_kerning_value):
-        """font_kerning IS forwarded to ALL Labels including code blocks.
-
-        """
+        """font_kerning IS forwarded to ALL Labels including code blocks."""
         # Create markdown with both regular text and code block
         markdown = 'Regular paragraph\n\n```python\ncode here\n```'
         label = MarkdownLabel(text=markdown, font_kerning=font_kerning_value)
@@ -476,9 +462,7 @@ class TestAdvancedFontPropertyForwarding:
     @settings(max_examples=20, deadline=None)
     def test_combined_font_properties_with_code_block(self, font_family, font_context,
                                                        font_hinting, font_kerning):
-        """Combined font properties are correctly forwarded with code block exclusion.
-
-        """
+        """Combined font properties are correctly forwarded with code block exclusion."""
         # Create markdown with both regular text and code block
         markdown = '# Heading\n\nParagraph\n\n```python\ncode\n```'
         label = MarkdownLabel(
