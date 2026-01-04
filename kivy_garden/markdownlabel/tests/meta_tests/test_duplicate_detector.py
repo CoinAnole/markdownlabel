@@ -9,6 +9,7 @@ import pytest
 from hypothesis import given, strategies as st, settings
 import tempfile
 import os
+from unittest.mock import MagicMock
 
 from kivy_garden.markdownlabel.tests.modules.duplicate_detector import (
     DuplicateDetector,
@@ -17,16 +18,14 @@ from kivy_garden.markdownlabel.tests.modules.duplicate_detector import (
 from kivy_garden.markdownlabel.tests.test_utils import duplicate_helper_functions
 
 
-# **Feature: test-suite-refactoring, Property 3: Helper Function Consolidation**
 # *For any* helper function that appears in multiple test files with identical
 # or similar implementations, the function SHALL be defined once in `test_utils.py`
 # and imported by other files.
-# **Validates: Requirements 2.1, 2.2, 2.3**
 
 
 @pytest.mark.test_tests
 class TestHelperFunctionConsolidation:
-    """Property tests for helper function consolidation (Property 3)."""
+    """Property tests for helper function consolidation."""
 
     @given(duplicate_helper_functions())
     # Complex strategy: 20 examples (adequate coverage)
@@ -50,7 +49,7 @@ class TestHelperFunctionConsolidation:
             detector = DuplicateDetector(similarity_threshold=0.7)
             report = detector.analyze_directory(temp_dir)
 
-            # Property 3: Should detect duplicates when functions appear in multiple files
+            # Should detect duplicates when functions appear in multiple files
             if len(file_contents) > 1:
                 # Should find at least one duplicate group
                 assert len(report.duplicate_groups) >= 1, \
@@ -303,6 +302,44 @@ class TestTarget{i}:
                 if os.path.exists(file_path):
                     os.unlink(file_path)
             os.rmdir(temp_dir)
+
+
+class TestDuplicateDetectorUnit:
+    """Unit tests for DuplicateDetector initialization and similarity calculation."""
+
+    def test_initialization(self):
+        """Test DuplicateDetector initialization."""
+        detector = DuplicateDetector()
+        assert detector.similarity_threshold > 0
+
+        detector_custom = DuplicateDetector(similarity_threshold=0.9)
+        assert detector_custom.similarity_threshold == 0.9
+
+    def test_similarity_calculation_direct(self):
+        """Test similarity calculation logic directly."""
+        detector = DuplicateDetector()
+
+        # Helper to create mock functions
+        def create_mock_func(name, body_hash, params=None):
+            func = MagicMock()
+            func.name = name
+            func.body_hash = body_hash
+            func.parameters = params or []
+            return func
+
+        # Identical code (same body hash)
+        func1 = create_mock_func("foo", "hash123")
+        func2 = create_mock_func("foo", "hash123")
+
+        score = detector._calculate_similarity(func1, func2)
+        assert score == 1.0
+
+        # Different code
+        func3 = create_mock_func("foo", "hash_one", ["a"])
+        func4 = create_mock_func("bar", "hash_two", ["b"])
+
+        score = detector._calculate_similarity(func3, func4)
+        assert score < 1.0
 
 
 if __name__ == "__main__":

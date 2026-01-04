@@ -15,16 +15,14 @@ from kivy_garden.markdownlabel.tests.modules.file_parser import FileParser, File
 from kivy_garden.markdownlabel.tests.test_utils import rebuild_test_file_strategy
 
 
-# **Feature: test-suite-refactoring, Property 1: Test Name Consistency**
 # *For any* test method with "triggers_rebuild" in its name, the test
 # implementation SHALL contain assertions that verify a rebuild actually
 # occurred (such as widget identity checks or explicit rebuild verification).
-# **Validates: Requirements 1.1**
 
 
 @pytest.mark.test_tests
 class TestTestNameConsistency:
-    """Property tests for test name consistency (Property 1)."""
+    """Property tests for test name consistency."""
 
     @given(rebuild_test_file_strategy())
     # Complex strategy: 20 examples (adequate coverage)
@@ -52,7 +50,7 @@ class TestTestNameConsistency:
 
             assert test_method is not None, f"Test method {test_name} not found"
 
-            # Property 1: If test name contains "triggers_rebuild",
+            # If test name contains "triggers_rebuild",
             # it should have rebuild assertions
             if "triggers_rebuild" in test_name:
                 if has_rebuild_assertion:

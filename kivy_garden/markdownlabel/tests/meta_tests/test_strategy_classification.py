@@ -14,21 +14,17 @@ from kivy_garden.markdownlabel.tests.modules.strategy_analyzer import (
 
 @pytest.mark.property
 class TestStrategyClassification:
-    """Property tests for strategy classification (Property 1)."""
+    """Property tests for strategy classification."""
 
     def setup_method(self):
         """Set up test fixtures."""
         self.classifier = StrategyClassifier()
 
-    # **Feature: test-performance-optimization, Property 1: Boolean tests use exactly 2 examples**
     @given(st.just('st.booleans()'))
     # Boolean strategy: 2 examples (True/False coverage)
     @settings(max_examples=2, deadline=None)
     def test_boolean_strategy_classification(self, strategy_code):
-        """Boolean strategies are correctly classified with input space size 2.
-
-        **Validates: Requirements 1.1, 2.1**
-        """
+        """Boolean strategies are correctly classified with input space size 2."""
         analysis = self.classifier.classify_strategy(strategy_code)
 
         assert analysis.strategy_type == StrategyType.BOOLEAN
@@ -101,22 +97,18 @@ class TestStrategyClassification:
 
 @pytest.mark.property
 class TestMaxExamplesCalculation:
-    """Property tests for max_examples calculation (Property 2)."""
+    """Property tests for max_examples calculation."""
 
     def setup_method(self):
         """Set up test fixtures."""
         from kivy_garden.markdownlabel.tests.modules.max_examples_calculator import MaxExamplesCalculator
         self.calculator = MaxExamplesCalculator()
 
-    # **Feature: test-performance-optimization, Property 2: Small finite strategies use input space size**
     @given(st.integers(min_value=1, max_value=10))
     # Small finite strategy: 10 examples (input space size: 10)
     @settings(max_examples=10, deadline=None)
     def test_small_finite_uses_input_space_size(self, range_size):
-        """Small finite strategies should use max_examples equal to input space size.
-
-        **Validates: Requirements 1.2, 1.3, 2.2**
-        """
+        """Small finite strategies should use max_examples equal to input space size."""
         # Test integer ranges
         strategy_code = f'st.integers(min_value=0, max_value={range_size-1})'
         optimal = self.calculator.calculate_optimal_examples(strategy_code)
@@ -161,15 +153,11 @@ class TestMaxExamplesCalculation:
         expected = min(range_size, 20)
         assert optimal == expected, f"Expected {expected} examples for medium range, got {optimal}"
 
-    # **Feature: test-performance-optimization, Property 4: Complex strategies use appropriate ranges**
     @given(st.integers(min_value=1, max_value=4))
     # Small finite strategy: 4 examples (input space size: 4)
     @settings(max_examples=4, deadline=None)
     def test_complex_strategy_uses_complexity_based_examples(self, complexity_level):
-        """Complex strategies should use examples based on complexity level.
-
-        **Validates: Requirements 1.5, 2.3**
-        """
+        """Complex strategies should use examples based on complexity level."""
         # Simulate a complex strategy analysis
         from kivy_garden.markdownlabel.tests.modules.strategy_analyzer import (
             StrategyAnalysis, StrategyType
@@ -192,22 +180,18 @@ class TestMaxExamplesCalculation:
 
 @pytest.mark.property
 class TestCombinationStrategies:
-    """Property tests for combination strategy handling (Property 3)."""
+    """Property tests for combination strategy handling."""
 
     def setup_method(self):
         """Set up test fixtures."""
         from kivy_garden.markdownlabel.tests.modules.max_examples_calculator import MaxExamplesCalculator
         self.calculator = MaxExamplesCalculator()
 
-    # **Feature: test-performance-optimization, Property 3: Combination strategies use product formula**
     @given(st.integers(min_value=2, max_value=5), st.integers(min_value=2, max_value=5))
     # Combination strategy: 16 examples (combination coverage)
     @settings(max_examples=16, deadline=None)
     def test_combination_uses_product_formula(self, size1, size2):
-        """Combination strategies should use product of individual strategy sizes.
-
-        **Validates: Requirements 1.4, 2.4**
-        """
+        """Combination strategies should use product of individual strategy sizes."""
         # Create a combination strategy with two small finite strategies
         strategy_code = (
             f'st.tuples(st.integers(min_value=0, max_value={size1-1}), '
@@ -315,22 +299,18 @@ class TestCombinationStrategies:
 
 @pytest.mark.test_tests
 class TestOverTestingDetection:
-    """Property tests for over-testing detection (Property 7)."""
+    """Property tests for over-testing detection."""
 
     def setup_method(self):
         """Set up test fixtures."""
         from kivy_garden.markdownlabel.tests.modules.file_analyzer import FileAnalyzer
         self.analyzer = FileAnalyzer()
 
-    # **Feature: test-performance-optimization, Property 7: Over-testing detection works correctly**
     @given(st.integers(min_value=3, max_value=50))
     # Medium finite strategy: 20 examples (adequate finite coverage)
     @settings(max_examples=20, deadline=None)
     def test_boolean_over_testing_detected(self, excessive_examples):
-        """Over-testing of boolean strategies should be correctly detected.
-
-        **Validates: Requirements 4.1, 4.2, 4.3**
-        """
+        """Over-testing of boolean strategies should be correctly detected."""
         strategy_code = 'st.booleans()'
 
         is_over_testing = self.analyzer.calculator.is_over_testing(

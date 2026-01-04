@@ -10,57 +10,57 @@ inclusion: always
 
 ```
 kivy_garden/
-└── markdownlabel/           # Main package (namespace: kivy_garden.markdownlabel)
-    ├── __init__.py          # MarkdownLabel widget class (main entry point)
-    ├── _version.py          # Version string (__version__)
-    ├── kivy_renderer.py     # Block-level Markdown → Kivy widgets
-    ├── inline_renderer.py   # Inline Markdown → Kivy markup strings
-    ├── markdown_serializer.py  # AST → Markdown serialization
-    └── tests/               # Test suite (organized by functionality)
+└── markdownlabel/
+    ├── __init__.py
+    ├── _version.py
+    ├── kivy_renderer.py
+    ├── inline_renderer.py
+    ├── markdown_serializer.py
+    └── tests/
         ├── __init__.py
-        ├── conftest.py                   # Pytest configuration and fixtures
-        ├── TESTING.md                    # Comprehensive testing guidelines
-        ├── test_import.py                # Import and basic functionality tests
-        ├── test_inline_renderer.py       # Inline markdown rendering tests
-        ├── test_kivy_renderer.py         # Block-level rendering tests
-        ├── test_core_functionality.py    # Core markdown parsing and rendering
-        ├── test_label_compatibility.py   # Basic label property forwarding
-        ├── test_font_properties.py       # Font-related property forwarding
-        ├── test_color_properties.py      # Color and styling properties
-        ├── test_text_properties.py       # Text-related property forwarding
-        ├── test_padding_properties.py    # Padding and spacing properties
-        ├── test_sizing_behavior.py       # Auto-sizing and layout behavior
-        ├── test_advanced_compatibility.py # Advanced label features
-        ├── test_serialization.py         # Round-trip serialization
-        ├── test_performance.py           # Performance and stability tests
-        ├── test_rebuild_scheduling.py    # Rebuild scheduling and timing tests
-        ├── test_rebuild_semantics.py     # Rebuild contract semantics tests
-        ├── test_clipping_behavior.py     # Text clipping and overflow behavior
-        ├── test_texture_render_mode.py   # Texture rendering mode tests
-        ├── test_texture_sizing.py        # Texture sizing behavior tests
-        ├── test_rtl_alignment.py         # Right-to-left text alignment tests
-        ├── test_shortening_and_coordinate.py # Text shortening and coordinate tests
-        ├── test_utils.py                 # Shared test utilities and strategies
-        ├── TESTING.md                    # Comprehensive testing guidelines
-        ├── meta_tests/                   # Meta-testing infrastructure
+        ├── conftest.py
+        ├── TESTING.md
+        ├── test_import.py
+        ├── test_inline_renderer.py
+        ├── test_kivy_renderer.py
+        ├── test_core_functionality.py
+        ├── test_label_compatibility.py
+        ├── test_font_properties.py
+        ├── test_color_properties.py
+        ├── test_text_properties.py
+        ├── test_padding_properties.py
+        ├── test_sizing_behavior.py
+        ├── test_advanced_compatibility.py
+        ├── test_serialization.py
+        ├── test_performance.py
+        ├── test_rebuild_scheduling.py
+        ├── test_rebuild_semantics.py
+        ├── test_clipping_behavior.py
+        ├── test_texture_render_mode.py
+        ├── test_texture_sizing.py
+        ├── test_rtl_alignment.py
+        ├── test_shortening_and_coordinate.py
+        ├── test_utils.py
+        ├── TESTING.md
+        ├── meta_tests/
         │   ├── test_assertion_analyzer.py
         │   ├── test_code_duplication_minimization.py
         │   ├── test_comment_format.py
         │   ├── test_comment_standardizer.py
-        │   ├── test_core_functionality_properties.py # Core functionality property tests
+        │   ├── test_core_functionality_properties.py
         │   ├── test_coverage_preservation.py
         │   ├── test_documentation_compliance.py
-        │   ├── test_duplicate_detector.py
         │   ├── test_file_analyzer.py
         │   ├── test_helper_availability.py
         │   ├── test_naming_convention_validator.py
-        │   ├── test_refactoring_properties.py # Property refactoring validation tests
-        │   ├── test_shared_infrastructure.py # Shared testing infrastructure tests
-        │   ├── test_sizing_behavior_grouping.py # Sizing behavior test grouping validation
+        │   ├── test_refactoring_properties.py
+        │   ├── test_shared_infrastructure.py
+        │   ├── test_sizing_behavior_grouping.py
         │   ├── test_strategy_classification.py
         │   ├── test_test_file_parser.py
-        │   └── test_texture_sizing_grouping.py # Texture sizing test grouping validation
-        └── modules/                      # Test analysis and utility modules
+        │   ├── test_texture_sizing_grouping.py
+        │   └── test_duplicate_detector.py
+        └── modules/
             ├── __init__.py
             ├── assertion_analyzer.py
             ├── comment_manager.py
@@ -125,28 +125,59 @@ The codebase follows a strict three-layer architecture for converting Markdown t
 
 ### Test Suite Organization
 Tests are organized by **functionality**, not by implementation file:
-- `test_core_functionality.py`: Core parsing and rendering
-- `test_*_properties.py`: Property forwarding tests (font, color, text, padding)
-- `test_*_compatibility.py`: Label API compatibility
-- `test_performance.py`: Performance and stability (uses Hypothesis property-based testing)
-- `test_serialization.py`: Round-trip serialization tests
-- `test_*_behavior.py`: Behavioral tests (sizing, clipping, etc.)
-- `test_rebuild_*.py`: Rebuild contract and semantics testing
-- `test_*_alignment.py`: Text alignment and RTL support tests
-- `test_texture_*.py`: Texture rendering and sizing tests
-- `test_utils.py`: Shared test utilities and Hypothesis strategies
+- `test_import.py`: Tests for MarkdownLabel import functionality - verifying that MarkdownLabel can be imported and has the expected basic properties available
+- `test_inline_renderer.py`: Property-based tests for InlineRenderer - verifying inline Markdown formatting is correctly converted to Kivy markup strings
+- `test_kivy_renderer.py`: Property-based tests and edge case coverage for KivyRenderer - verifying block-level Markdown elements are correctly converted to Kivy widgets, targeting implementation details for edge cases and internal methods
+- `test_core_functionality.py`: Core functionality tests for MarkdownLabel widget - tests for fundamental markdown parsing, rendering, and widget tree generation functionality
+- `test_label_compatibility.py`: Label compatibility tests for MarkdownLabel widget - verifying MarkdownLabel maintains compatibility with Kivy Label API for basic properties like font_size aliases and no-op property acceptance
+- `test_font_properties.py`: Property-based tests for font-related properties - verifying font properties (font_name, line_height, font_size, etc.) are correctly forwarded to child Label widgets and font scaling behavior works correctly for headings
+- `test_color_properties.py`: Property-based tests for color-related properties - verifying color properties (color, disabled_color) are correctly forwarded to internal Label widgets and applied appropriately based on the widget's disabled state
+- `test_text_properties.py`: Property-based tests for text-related property forwarding - verifying text-related properties like text_size, unicode_errors, and strip are correctly forwarded to child Label widgets
+- `test_padding_properties.py`: Property-based tests for MarkdownLabel padding properties - verifying padding-related properties (padding, text_padding, label_padding) work correctly and are properly forwarded to child widgets
+- `test_sizing_behavior.py`: Property-based tests for MarkdownLabel sizing behavior - tests for auto-sizing behavior, size hint management, and strict label mode sizing
+- `test_advanced_compatibility.py`: Property-based tests for advanced MarkdownLabel compatibility features - tests for advanced Label API compatibility including advanced font properties forwarding, disabled color application, and reactive rebuild on property changes
+- `test_serialization.py`: Tests for round-trip serialization functionality - verifying the MarkdownLabel can correctly serialize and deserialize Markdown content, maintaining semantic equivalence through parse-serialize-parse cycles
+- `test_performance.py`: Performance and efficiency tests for MarkdownLabel widget - tests verifying performance-related behaviors including efficient style updates, batched rebuilds, deferred rebuild scheduling, and content clipping behavior
+- `test_rebuild_scheduling.py`: Rebuild batching and deferred scheduling tests for MarkdownLabel - tests for rebuild scheduler behavior including batching multiple structure property changes into a single rebuild and deferring rebuilds via Clock triggers
+- `test_rebuild_semantics.py`: Widget identity preservation and rebuild semantics tests for MarkdownLabel - tests verifying widget identity preservation for style-only property changes and widget tree rebuilding for structure property changes, designed for headless CI environments
+- `test_clipping_behavior.py`: Clipping behavior tests for MarkdownLabel - tests for content clipping behavior including verification that content is wrapped in a StencilView clipping container when height-constrained and that content expands naturally when unconstrained
+- `test_texture_render_mode.py`: Property-based tests for texture render mode in MarkdownLabel - tests for texture render mode feature including Image widget creation, render_mode property behavior, link zone aggregation, on_ref_press event dispatching, deterministic texture hit-testing, texture fallback branch, and auto render mode selection
+- `test_texture_sizing.py`: Property-based tests for MarkdownLabel texture size calculations - tests for texture size calculation behavior and logical test grouping validation
+- `test_rtl_alignment.py`: Property-based tests for RTL-aware auto alignment in MarkdownLabel - tests for RTL alignment behavior including auto alignment respecting base_direction, direction change updates, and explicit alignment overriding auto behavior
+- `test_shortening_and_coordinate.py`: Property-based tests for text shortening and coordinate translation features - tests for label compatibility features including text shortening property forwarding and coordinate translation for refs and anchors
+- `test_utils.py`: Shared test utilities and Hypothesis strategies for MarkdownLabel tests - common test utilities, Hypothesis strategies, and helper functions used across multiple test modules
 - `TESTING.md`: Comprehensive testing guidelines and property-based testing optimization
 - `meta_tests/`: Meta-testing infrastructure for test analysis and validation
-  - `test_core_functionality_properties.py`: Core functionality property tests
-  - `test_refactoring_properties.py`: Property refactoring validation tests
-  - `test_shared_infrastructure.py`: Shared testing infrastructure tests
-  - `test_strategy_classification.py`: Tests for optimization infrastructure
-  - `test_file_analyzer.py`: Tests for test file analysis tools
-  - `test_documentation_compliance.py`: Tests for max_examples documentation
-  - `test_comment_*.py`: Comment format validation and standardization tests
-  - `test_helper_availability.py`: Helper function availability tests
-  - `test_*_grouping.py`: Test grouping validation tests
+  - `test_assertion_analyzer.py`: Tests for the assertion analyzer module - both unit tests and property-based tests for validating the assertion analyzer's ability to correctly identify assertion patterns and detect naming mismatches
+  - `test_code_duplication_minimization.py`: Property-based tests for code duplication minimization validation - property tests that validate the refactoring successfully minimizes code duplication in the test suite
+  - `test_comment_format.py`: Property-based tests for comment format specification and validation - tests the CommentFormatValidator's ability to correctly validate and parse standardized comment formats for max_examples documentation
+  - `test_comment_standardizer.py`: Property-based tests for comment standardization functionality - tests the CommentStandardizer's ability to generate and apply standardized comments for property-based tests with proper strategy documentation
+  - `test_core_functionality_properties.py`: Property-based tests for core functionality module refactoring - property-based tests that validate the refactoring process for the core functionality test module
+  - `test_coverage_preservation.py`: Property-based tests for test coverage preservation validation - property tests that validate the refactoring preserves or improves test coverage metrics
+  - `test_documentation_compliance.py`: Tests for documentation compliance of max_examples values - tests that custom max_examples values are properly documented according to the optimization guidelines
+  - `test_file_analyzer.py`: Tests for the FileAnalyzer optimization tool - tests the FileAnalyzer's ability to correctly analyze test files and generate optimization recommendations for max_examples values
+  - `test_helper_availability.py`: Property tests for helper function availability in test_utils - property-based tests that verify all required helper functions are available in test_utils.py and work correctly
+  - `test_naming_convention_validator.py`: Tests for the naming convention validator module - both unit tests and property-based tests for validating the naming convention validator's ability to detect violations and suggest appropriate renames
+  - `test_refactoring_properties.py`: Property-based tests for test refactoring validation - tests that validate the test refactoring process itself, including module naming consistency and other refactoring properties
+  - `test_shared_infrastructure.py`: Meta tests for shared test infrastructure - tests validating that the shared test utilities and strategies work correctly and are available for use across all test modules
+  - `test_sizing_behavior_grouping.py`: Meta tests for sizing behavior test grouping validation - tests validating that sizing behavior tests are properly organized and grouped
+  - `test_strategy_classification.py`: Property-based tests for strategy classification system - tests the StrategyClassifier's ability to correctly identify and categorize Hypothesis strategies for max_examples optimization
+  - `test_test_file_parser.py`: Property-based tests for test file parser - property tests that validate the test file parser correctly extracts metadata from test files
+  - `test_texture_sizing_grouping.py`: Meta tests for texture sizing test grouping validation - tests validating that texture sizing tests are properly organized and grouped
+  - `test_duplicate_detector.py`: Property-based tests for duplicate helper function detector - property tests that validate the duplicate detector correctly identifies duplicate helper functions across test files
 - `modules/`: Test analysis and utility modules for code quality and duplication detection
+  - `__init__.py`: Package initialization and public API exports for test analysis infrastructure - consolidating imports from all analysis modules into a single namespace for easy access
+  - `assertion_analyzer.py`: Test assertion analyzer for identifying assertion patterns in test methods - analyzing test method bodies to distinguish between rebuild-related assertions and value-only assertions, detecting naming mismatches between test names and their assertion patterns
+  - `comment_manager.py`: Unified comment management module for property-based test documentation - consolidating comment format validation, analysis, and standardization functionality to ensure max_examples values are properly documented with standardized rationale
+  - `duplicate_detector.py`: Duplicate helper function detector for test suite analysis - detecting duplicate helper function implementations across test files using body hashing and similarity scoring to generate consolidation reports
+  - `file_analyzer.py`: Test file analyzer for Hypothesis test optimization - analyzing test files to identify property-based tests and their current max_examples usage, generating optimization recommendations based on strategy classification
+  - `file_parser.py`: AST-based test file parser for analyzing test methods, classes, and helper functions - parsing Python test files to extract metadata about test methods, test classes, and helper functions for analysis
+  - `max_examples_calculator.py`: Max examples calculator for Hypothesis test optimization - calculating optimal max_examples values based on strategy analysis and environment conditions (CI vs local development)
+  - `naming_convention_validator.py`: Naming convention validator for test methods - implementing rules for consistent test naming patterns and generating suggested renames for non-compliant tests based on their assertion patterns
+  - `optimization_detector.py`: Unified optimization detection module - consolidating performance rationale and CI optimization detection into a single module to identify and document test optimizations with consistent API
+  - `over_testing_validator.py`: Over-testing validation system for preventing regression to excessive max_examples - providing automated detection of excessive max_examples values and generating reports for optimization opportunities with CI integration
+  - `strategy_analyzer.py`: Strategy analysis system for Hypothesis test optimization - providing tools to analyze Hypothesis strategies and classify them by input space size and complexity for optimal max_examples calculation
+  - `test_discovery.py`: Test discovery utility for finding property-based test functions - providing unified implementation for discovering property-based test functions in Python test files, extracting metadata including location, decorators, and max_examples configuration
 
 **When adding tests**: Place in the appropriate functional test file, not necessarily matching the implementation file.
 
@@ -158,6 +189,7 @@ Contains development and analysis tools:
 - `validate_refactoring.py`: Tool for validating refactoring changes
 - `hooks/`: Git hooks for development workflow
   - `pre-commit`: Pre-commit validation hook
+
 **When modifying tests**: Use tools for validation and performance analysis
 
 ## External Dependencies (Submodules)
@@ -173,9 +205,13 @@ Located in `external/`:
 - `setup.py`: Package metadata, dependencies, entry points
 - `setup.cfg`: Flake8 configuration, code style rules (110 char line limit, PEP8 compliance)
 - `pytest.ini`: Pytest configuration
-- `kivy_garden/markdownlabel/tests/TESTING.md`: Comprehensive testing guidelines including property-based testing optimization
+- `.coveragerc`: Coverage configuration for test coverage reporting - specifying which source files to include in coverage reports and lines to exclude from coverage calculations
 
 ## Documentation Structure
+
+### Generated Documentation (gh-pages)
+
+The `doc/` directory contains Sphinx-based documentation that builds to gh-pages:
 
 ```
 doc/
@@ -187,6 +223,13 @@ doc/
 │   └── ...
 └── Makefile             # Build with: cd doc && make html
 ```
+
+### Development Documentation
+
+Key development documentation files:
+
+- `kivy_garden/markdownlabel/tests/TESTING.md`: Comprehensive testing guidelines including property-based testing optimization
+- `REBUILD_CONTRACT.md`: MarkdownLabel rebuild contract documentation - defining which property changes trigger widget tree rebuilds versus style-only updates, including performance implications, testing guidelines, and implementation details for the rebuild contract
 
 ## Key Architectural Constraints
 

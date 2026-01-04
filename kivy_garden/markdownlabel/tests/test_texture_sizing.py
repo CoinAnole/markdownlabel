@@ -15,10 +15,8 @@ from .test_utils import (
 )
 
 
-# **Feature: label-compatibility, Property 3: Comprehensive Texture Size Calculation**
 # *For any* MarkdownLabel with content, the `texture_size` property SHALL return
 # a valid [width, height] list with non-negative values that aggregate all child widgets.
-# **Validates: Requirements 1.1, 1.2, 1.3**
 
 # The texture_size calculation must handle all widget types correctly:
 # 1. Correct return type and structure
@@ -28,7 +26,7 @@ from .test_utils import (
 # 5. Widget types that have explicit heights (thematic_break, blank_line, AsyncImage)
 
 class TestComprehensiveTextureSizeCalculation:
-    """Property tests for comprehensive texture_size calculation (Property 3)."""
+    """Property tests for comprehensive texture_size calculation."""
 
     @given(simple_markdown_document())
     # Complex strategy: 20 examples (adequate coverage)

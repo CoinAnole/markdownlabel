@@ -14,13 +14,11 @@ from .test_utils import (
 )
 
 
-# **Feature: markdown-label, Property 16: Auto-Sizing Behavior**
 # *For any* MarkdownLabel with content, the widget SHALL have size_hint_y=None
 # and its height SHALL equal or exceed the sum of its children's heights.
-# **Validates: Requirements 11.1**
 
 class TestAutoSizingBehavior:
-    """Property tests for auto-sizing behavior (Property 16)."""
+    """Property tests for auto-sizing behavior."""
 
     @pytest.mark.property
     @given(simple_markdown_document())
@@ -79,13 +77,11 @@ class TestAutoSizingBehavior:
         assert len(label.children) >= num_paragraphs
 
 
-# **Feature: label-compatibility, Property 7: auto_size_height True Behavior**
 # *For any* MarkdownLabel with `auto_size_height=True`, the widget SHALL have
 # `size_hint_y=None` AND its height SHALL be bound to `minimum_height`.
-# **Validates: Requirements 3.1, 3.3**
 
 class TestAutoSizeHeightTrueBehavior:
-    """Property tests for auto_size_height True behavior (Property 7)."""
+    """Property tests for auto_size_height True behavior."""
 
     @pytest.mark.property
     @given(simple_markdown_document())
@@ -146,14 +142,12 @@ class TestAutoSizeHeightTrueBehavior:
             f"Expected _user_size_hint_y={user_size_hint_y}, got {label._user_size_hint_y}"
 
 
-# **Feature: label-compatibility, Property 8: auto_size_height False Behavior**
 # *For any* MarkdownLabel with `auto_size_height=False`, the widget SHALL preserve
 # the user-specified `size_hint_y` value (or default to 1) AND its height SHALL NOT
 # be bound to `minimum_height`.
-# **Validates: Requirements 3.2**
 
 class TestAutoSizeHeightFalseBehavior:
-    """Property tests for auto_size_height False behavior (Property 8)."""
+    """Property tests for auto_size_height False behavior."""
 
     @pytest.mark.property
     @given(simple_markdown_document())
@@ -205,15 +199,13 @@ class TestAutoSizeHeightFalseBehavior:
             f"Expected auto_size_height=False, got {label.auto_size_height}"
 
 
-# **Feature: label-compatibility, Property 9: auto_size_height Dynamic Toggling**
 # *For any* MarkdownLabel, when `auto_size_height` is toggled from True to False,
 # the height binding SHALL be removed and `size_hint_y` SHALL be restored. When
 # toggled from False to True, the height binding SHALL be added and `size_hint_y`
 # SHALL be set to None.
-# **Validates: Requirements 3.4, 3.5**
 
 class TestAutoSizeHeightDynamicToggling:
-    """Property tests for auto_size_height dynamic toggling (Property 9)."""
+    """Property tests for auto_size_height dynamic toggling."""
 
     @pytest.mark.property
     @given(simple_markdown_document())
@@ -321,14 +313,12 @@ class TestAutoSizeHeightDynamicToggling:
                 f"Expected size_hint_y={expected_size_hint_y}, got {label.size_hint_y}"
 
 
-# **Feature: label-compatibility-phase2, Property 2: Strict Label Mode Sizing Behavior**
 # *For any* MarkdownLabel with `strict_label_mode=True`, the widget SHALL preserve
 # the user-specified `size_hint_y` value (or default to 1) AND SHALL ignore
 # `auto_size_height` settings.
-# **Validates: Requirements 2.1, 2.2, 2.3, 2.4**
 
 class TestStrictLabelModeSizingBehavior:
-    """Property tests for strict label mode sizing behavior (Property 2)."""
+    """Property tests for strict label mode sizing behavior."""
 
     @pytest.mark.property
     @given(simple_markdown_document())

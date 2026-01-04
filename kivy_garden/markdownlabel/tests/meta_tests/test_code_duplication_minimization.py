@@ -13,10 +13,8 @@ import os
 from kivy_garden.markdownlabel.tests.modules.duplicate_detector import DuplicateDetector
 
 
-# **Feature: test-suite-refactoring, Property 9: Code Duplication Minimization**
 # *For any* test file, the amount of duplicated code (identical function implementations,
 # repeated setup patterns) SHALL be below a reasonable threshold.
-# **Validates: Requirements 5.4**
 
 
 @st.composite
@@ -103,10 +101,7 @@ class TestModule{i}:
     def {func_name}_helper(self, widget, labels=None):
         """Helper function for {func_name}."""
 {template}
-'''
-
-        # Add unique functions to each file
-        file_content += f'''
+'''# Add unique functions to each file'''
     def unique_helper_{i}(self):
         """Unique helper for file {i}."""
         return {i}
@@ -128,7 +123,7 @@ class TestModule{i}:
 
 @pytest.mark.test_tests
 class TestCodeDuplicationMinimization:
-    """Property tests for code duplication minimization (Property 9)."""
+    """Property tests for code duplication minimization."""
 
     @given(_test_suite_with_duplicates())
     # Complex strategy: 15 examples (adequate coverage for duplication patterns)
@@ -157,7 +152,7 @@ class TestCodeDuplicationMinimization:
             # Calculate duplication metrics
             duplication_ratio = report.total_duplicates / max(num_files, 1)
 
-            # Property 9: Duplication should be below reasonable thresholds
+            # Duplication should be below reasonable thresholds
             if duplication_level == 'low':
                 # Low duplication: should have very few duplicates
                 assert duplication_ratio <= 2.0, \
@@ -271,7 +266,7 @@ class TestAfter{i}:
             # Measure "after" duplication
             after_report = detector.analyze_directory(temp_dir)
 
-            # Property 9: Consolidation should reduce duplication
+            # Consolidation should reduce duplication
             assert after_report.total_duplicates < before_report.total_duplicates, \
                 (f"Consolidation should reduce duplicates: "
                  f"{before_report.total_duplicates} -> {after_report.total_duplicates}")
