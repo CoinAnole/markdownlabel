@@ -206,9 +206,12 @@ Located in `external/`:
 - `setup.cfg`: Flake8 configuration, code style rules (110 char line limit, PEP8 compliance)
 - `pytest.ini`: Pytest configuration
 - `.coveragerc`: Coverage configuration for test coverage reporting - specifying which source files to include in coverage reports and lines to exclude from coverage calculations
-- `kivy_garden/markdownlabel/tests/TESTING.md`: Comprehensive testing guidelines including property-based testing optimization
 
 ## Documentation Structure
+
+### Generated Documentation (gh-pages)
+
+The `doc/` directory contains Sphinx-based documentation that builds to gh-pages:
 
 ```
 doc/
@@ -221,6 +224,11 @@ doc/
 └── Makefile             # Build with: cd doc && make html
 ```
 
+### Development Documentation
+
+Key development documentation files:
+
+- `kivy_garden/markdownlabel/tests/TESTING.md`: Comprehensive testing guidelines including property-based testing optimization
 - `REBUILD_CONTRACT.md`: MarkdownLabel rebuild contract documentation - defining which property changes trigger widget tree rebuilds versus style-only updates, including performance implications, testing guidelines, and implementation details for the rebuild contract
 
 ## Key Architectural Constraints
