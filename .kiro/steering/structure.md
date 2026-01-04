@@ -221,6 +221,8 @@ doc/
 └── Makefile             # Build with: cd doc && make html
 ```
 
+- `REBUILD_CONTRACT.md`: MarkdownLabel rebuild contract documentation - defining which property changes trigger widget tree rebuilds versus style-only updates, including performance implications, testing guidelines, and implementation details for the rebuild contract
+
 ## Key Architectural Constraints
 
 1. **MarkdownLabel extends BoxLayout**: Cannot extend Label directly because Markdown rendering requires multiple child widgets
