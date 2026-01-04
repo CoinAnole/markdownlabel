@@ -166,6 +166,18 @@ Tests are organized by **functionality**, not by implementation file:
   - `test_texture_sizing_grouping.py`: Meta tests for texture sizing test grouping validation - tests validating that texture sizing tests are properly organized and grouped
   - `test_duplicate_detector.py`: Property-based tests for duplicate helper function detector - property tests that validate the duplicate detector correctly identifies duplicate helper functions across test files
 - `modules/`: Test analysis and utility modules for code quality and duplication detection
+  - `__init__.py`: Package initialization and public API exports for test analysis infrastructure - consolidating imports from all analysis modules into a single namespace for easy access
+  - `assertion_analyzer.py`: Test assertion analyzer for identifying assertion patterns in test methods - analyzing test method bodies to distinguish between rebuild-related assertions and value-only assertions, detecting naming mismatches between test names and their assertion patterns
+  - `comment_manager.py`: Unified comment management module for property-based test documentation - consolidating comment format validation, analysis, and standardization functionality to ensure max_examples values are properly documented with standardized rationale
+  - `duplicate_detector.py`: Duplicate helper function detector for test suite analysis - detecting duplicate helper function implementations across test files using body hashing and similarity scoring to generate consolidation reports
+  - `file_analyzer.py`: Test file analyzer for Hypothesis test optimization - analyzing test files to identify property-based tests and their current max_examples usage, generating optimization recommendations based on strategy classification
+  - `file_parser.py`: AST-based test file parser for analyzing test methods, classes, and helper functions - parsing Python test files to extract metadata about test methods, test classes, and helper functions for analysis
+  - `max_examples_calculator.py`: Max examples calculator for Hypothesis test optimization - calculating optimal max_examples values based on strategy analysis and environment conditions (CI vs local development)
+  - `naming_convention_validator.py`: Naming convention validator for test methods - implementing rules for consistent test naming patterns and generating suggested renames for non-compliant tests based on their assertion patterns
+  - `optimization_detector.py`: Unified optimization detection module - consolidating performance rationale and CI optimization detection into a single module to identify and document test optimizations with consistent API
+  - `over_testing_validator.py`: Over-testing validation system for preventing regression to excessive max_examples - providing automated detection of excessive max_examples values and generating reports for optimization opportunities with CI integration
+  - `strategy_analyzer.py`: Strategy analysis system for Hypothesis test optimization - providing tools to analyze Hypothesis strategies and classify them by input space size and complexity for optimal max_examples calculation
+  - `test_discovery.py`: Test discovery utility for finding property-based test functions - providing unified implementation for discovering property-based test functions in Python test files, extracting metadata including location, decorators, and max_examples configuration
 
 **When adding tests**: Place in the appropriate functional test file, not necessarily matching the implementation file.
 
