@@ -221,7 +221,7 @@ class TestLineHeightPropertyForwarding:
 
     @pytest.mark.property
     @given(line_height_strategy, line_height_strategy)
-    # Combination strategy: 20 examples (combination coverage)
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_line_height_change_triggers_rebuild(self, lh1, lh2):
         """Changing line_height triggers widget rebuild with new value."""
@@ -458,7 +458,7 @@ class TestAdvancedFontPropertyForwarding:
         st_alphanumeric_text(min_size=1, max_size=20),
         st.sampled_from([None, 'normal', 'light', 'mono']),
         st.booleans())
-    # Combination strategy: 20 examples (combination coverage)
+    # Mixed finite/complex strategy: 20 examples (8 finite × 2.5 complex samples)
     @settings(max_examples=20, deadline=None)
     def test_combined_font_properties_with_code_block(self, font_family, font_context,
                                                        font_hinting, font_kerning):
@@ -515,7 +515,7 @@ class TestFontSizeImmediateUpdates:
         st_font_size(min_value=8, max_value=50),
         st_font_size(min_value=8, max_value=50)
     )
-    # Combination strategy: 20 examples (combination coverage)
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_base_font_size_updates_all_labels_immediately(self, markdown_text, initial_size, new_size):
         """Changing base_font_size immediately updates all child Label font_size properties."""
@@ -565,7 +565,7 @@ class TestFontSizeImmediateUpdates:
         st_font_size(min_value=10, max_value=30),
         st_font_size(min_value=10, max_value=30)
     )
-    # Combination strategy: 20 examples (combination coverage)
+    # Mixed finite/complex strategy: 20 examples (6 finite × ~3 complex samples)
     @settings(max_examples=20, deadline=None)
     def test_heading_font_size_updates_with_scale(self, heading_level, initial_size, new_size):
         """Heading font sizes update immediately with correct scale factors."""
@@ -641,7 +641,7 @@ class TestHeadingScalePreservation:
         st.integers(min_value=1, max_value=6),  # Heading levels
         st_font_size(min_value=8, max_value=50)
     )
-    # Combination strategy: 20 examples (combination coverage)
+    # Mixed finite/complex strategy: 20 examples (6 finite × ~3 complex samples)
     @settings(max_examples=20, deadline=None)
     def test_heading_scale_factors_preserved(self, heading_level, base_size):
         """Heading scale factors are preserved according to HEADING_SIZES."""
@@ -683,7 +683,7 @@ class TestHeadingScalePreservation:
         ),
         st_font_size(min_value=12, max_value=24)
     )
-    # Combination strategy: 20 examples (combination coverage)
+    # Mixed finite/complex strategy: 20 examples (large finite lists × complex)
     @settings(max_examples=20, deadline=None)
     def test_multiple_headings_preserve_relative_scales(self, heading_levels, base_size):
         """Multiple headings preserve correct relative scale factors."""
@@ -731,7 +731,7 @@ class TestHeadingScalePreservation:
         st_font_size(min_value=10, max_value=20),
         st_font_size(min_value=20, max_value=40)
     )
-    # Combination strategy: 20 examples (combination coverage)
+    # Mixed finite/complex strategy: 20 examples (6 finite × ~3 complex samples)
     @settings(max_examples=20, deadline=None)
     def test_heading_scale_preserved_after_base_font_size_change(self, heading_level, initial_size, new_size):
         """Heading scale factors are preserved when base_font_size changes."""
@@ -784,7 +784,7 @@ class TestNoRebuildOnFontSizeChange:
         st_font_size(min_value=10, max_value=20),
         st_font_size(min_value=20, max_value=40)
     )
-    # Combination strategy: 20 examples (combination coverage)
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_widget_identities_preserved_on_font_size_change(self, markdown_text, initial_size, new_size):
         """Widget object identities are preserved when base_font_size changes."""
@@ -815,8 +815,8 @@ class TestNoRebuildOnFontSizeChange:
         st_font_size(min_value=12, max_value=18),
         st_font_size(min_value=20, max_value=30)
     )
-    # Small finite strategy: 6 examples (input space size: 6)
-    @settings(max_examples=6, deadline=None)
+    # Mixed finite/complex strategy: 30 examples (6 finite × 5 complex samples)
+    @settings(max_examples=30, deadline=None)
     def test_heading_widget_identity_preserved(self, heading_level, initial_size, new_size):
         """Heading Label widget identity is preserved when base_font_size changes."""
         # Create heading
@@ -858,7 +858,7 @@ class TestNoRebuildOnFontSizeChange:
         st_font_size(min_value=20, max_value=25),
         st_font_size(min_value=30, max_value=35)
     )
-    # Combination strategy: 20 examples (combination coverage)
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_multiple_font_size_changes_preserve_identities(self, size1, size2, size3):
         """Multiple font size changes preserve widget identities."""

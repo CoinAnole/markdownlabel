@@ -155,8 +155,7 @@ class TestTextSizeHeightForwarding:
     @pytest.mark.property
     @given(st.floats(min_value=50, max_value=500, allow_nan=False, allow_infinity=False),
            st.sampled_from(['top', 'middle', 'bottom']))
-    # Continuous height × 3 valigns
-    # Use 20 examples to sample adequately
+    # Mixed finite/complex strategy: 20 examples (3 finite × 7 complex samples)
     @settings(max_examples=20, deadline=None)
     def test_valign_forwarded_with_height(self, height, valign):
         """valign is forwarded to Labels when text_size height is set."""
@@ -429,8 +428,7 @@ class TestUnicodeErrorsForwarding:
 
     @pytest.mark.property
     @given(unicode_errors_strategy, unicode_errors_strategy)
-    # 3 errors × 3 errors = 9 combinations
-    # Use 9 examples for full coverage
+    # Combination strategy: 9 examples (combination coverage)
     @settings(max_examples=9, deadline=None)
     def test_unicode_errors_change_triggers_rebuild(self, errors1, errors2):
         """Changing unicode_errors triggers widget rebuild with new value."""
@@ -571,8 +569,7 @@ class TestStripForwarding:
 
     @pytest.mark.property
     @given(st.booleans(), st.booleans())
-    # 2 × 2 = 4 combinations
-    # Use 4 examples for full coverage
+    # Combination strategy: 4 examples (combination coverage)
     @settings(max_examples=4, deadline=None)
     def test_strip_change_triggers_rebuild(self, strip1, strip2):
         """Changing strip triggers widget rebuild with new value."""
