@@ -154,10 +154,15 @@ Use descriptive, specific class names:
 Use appropriate pytest markers to categorize tests:
 
 ```python
-@pytest.mark.slow           # Performance-intensive tests
-@pytest.mark.needs_window   # Tests requiring Kivy window
-@pytest.mark.test_tests     # Meta-tests (tests about test suite structure)
+@pytest.mark.property        # Property-based tests using Hypothesis (see guidelines below)
+@pytest.mark.parametrize     # Parameterized tests with concrete examples (see guidelines below)
+@pytest.mark.unit            # Unit tests
+@pytest.mark.slow            # Performance-intensive tests
+@pytest.mark.needs_window    # Tests requiring Kivy window
+@pytest.mark.test_tests      # Meta-tests (tests about test suite structure)
 ```
+
+**Note:** See [When to Use Hypothesis vs. @pytest.mark.parametrize](#when-to-use-hypothesis-vs-pytestmarkparametrize) for guidance on choosing between `@pytest.mark.property` and `@pytest.mark.parametrize`.
 
 #### Meta-Test Marking
 
