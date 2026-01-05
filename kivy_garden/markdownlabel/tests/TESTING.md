@@ -95,6 +95,17 @@ class TestMisc:
     pass
 ```
 
+#### Acceptable Variations
+
+The "one class per property/behavior" guideline is a recommendation, not a strict rule. These patterns are acceptable:
+
+- **Edge case classes**: A `TestKivyRendererEdgeCases` class grouping miscellaneous edge cases for a component is fine when the tests don't fit neatly into property-based categories
+- **Comprehensive test classes**: A `TestComprehensiveTextureSizeCalculation` class testing many aspects of a single method is reasonable
+- **Small test files**: Import tests or simple smoke tests don't need elaborate class hierarchies
+- **Related behaviors**: Testing multiple closely-related properties (e.g., all color-related properties) in one class is acceptable
+
+The goal is navigability and maintainability, not rigid adherence to structure.
+
 ## Test Naming Conventions
 
 ### Test Method Names
@@ -841,6 +852,17 @@ When adding new helper functions:
 3. **Add docstrings** - Document parameters and return values
 4. **Write tests** - Add tests for complex helper functions
 
+### When Local Helpers Are Acceptable
+
+The guideline to consolidate helpers in `test_utils.py` applies to **reusable** helpers. These patterns are acceptable:
+
+- **Test-file-specific helpers**: A helper like `_find_code_block_labels()` that's only meaningful for font property tests can stay in `test_font_properties.py`
+- **Renderer-specific strategies**: Custom Hypothesis strategies for generating mistune token structures can stay in `test_inline_renderer.py` if they're not useful elsewhere
+- **Serialization helpers**: Functions like `_normalize_ast()` that are specific to serialization testing can stay local
+- **Custom widget traversal**: When `find_labels_recursive()` doesn't fit your use case (e.g., you need to filter by a specific attribute or traverse in a specific order), writing custom traversal logic inline is fine
+
+**Rule of thumb**: If a helper is used in 2+ test files, move it to `test_utils.py`. If it's specific to one test file's domain, keeping it local is acceptable.
+
 ## Test File Structure
 
 ### Standard Test File Template
@@ -1036,7 +1058,7 @@ def test_wrong_pattern(self):
 
 ✅ **Use descriptive test and class names**
 ✅ **Group related tests in the same class**
-✅ **Use shared helper functions from test_utils.py**
+✅ **Use shared helper functions from test_utils.py when reusable**
 ✅ **Test both positive and negative cases**
 ✅ **Use appropriate pytest markers**
 ✅ **Write property tests for universal behaviors**
@@ -1047,16 +1069,28 @@ def test_wrong_pattern(self):
 
 ### Don'ts
 
-❌ **Don't duplicate helper function implementations**
-❌ **Don't mix unrelated functionality in the same class**
+❌ **Don't duplicate helper functions across multiple test files** (local helpers in one file are fine)
+❌ **Don't mix completely unrelated functionality in the same class** (related behaviors are fine)
 ❌ **Don't use vague test names like `test_basic` or `test_misc`**
 ❌ **Don't claim to test rebuilds without verifying them**
-❌ **Don't write property tests for simple examples**
+❌ **Don't write property tests for simple examples that don't benefit from fuzzing**
 ❌ **Don't ignore test failures or skip tests without good reason**
 ❌ **Don't test implementation details instead of behavior**
 ❌ **Don't use default max_examples=100 for all property tests**
 ❌ **Don't ignore finite input space sizes**
 ❌ **Don't use undocumented custom max_examples values**
+
+### Guidelines vs. Rules
+
+These guidelines aim to improve code quality and maintainability. Use judgment when applying them:
+
+- **Import tests** don't need property-based testing or elaborate class hierarchies
+- **Edge case classes** grouping miscellaneous tests for a component are acceptable
+- **Local helpers** specific to one test file's domain don't need to be in test_utils.py
+- **Manual widget traversal** is fine when shared helpers don't fit the use case
+- **Test naming** should be clear, but perfect naming is subjective
+
+The goal is readable, maintainable tests — not rigid adherence to rules.
 
 ### Performance Considerations
 
