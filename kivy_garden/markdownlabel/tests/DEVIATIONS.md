@@ -172,3 +172,78 @@ No deviations found.
 
 - Line 28-356: Class `TestComprehensiveTextureSizeCalculation` contains tests for multiple distinct texture_size behaviors (return type, non-negative values, empty labels, heading widgets, paragraph widgets, code blocks, lists, tables, block quotes, thematic breaks, content height, mixed content, accessibility, nested lists, ordered lists, text changes, images, heading levels, blank lines). According to the guideline "One class per property or behavior", these should be split into separate classes like `TestTextureSizeReturnType`, `TestTextureSizeNonNegative`, `TestEmptyLabelTextureSize`, `TestHeadingTextureSize`, `TestParagraphTextureSize`, `TestCodeBlockTextureSize`, `TestListTextureSize`, `TestTableTextureSize`, `TestBlockQuoteTextureSize`, `TestThematicBreakTextureSize`, `TestContentHeightTextureSize`, `TestMixedContentTextureSize`, `TestTextureSizeAccessibility`, `TestNestedListTextureSize`, `TestOrderedListTextureSize`, `TestTextureSizeTextChanges`, `TestImageTextureSize`, `TestHeadingLevelsTextureSize`, `TestBlankLinesTextureSize` for better organization and clarity.
 - Line 269-293: Test method `test_texture_size_updates_on_text_change` uses `force_rebuild()` after text property changes but does not verify that a rebuild occurred. According to the rebuild contract testing guidelines, tests for structure property changes should verify that the widget tree was rebuilt using `collect_widget_ids()` to compare widget IDs before and after the change, or use `assert_rebuild_occurred()` helper from test_utils.py. The current test only verifies that texture_size returns valid values without checking whether the widget tree was actually rebuilt.
+
+## meta_tests/test_assertion_analyzer.py
+
+- Line 95-99, 142-155: Custom Hypothesis strategies are defined inline in the test file instead of in `test_utils.py`. The guidelines state: "When adding new helper functions: 1. **Add to `test_utils.py`** - Never duplicate in individual test files" and "Always use helper functions from `test_utils.py` instead of duplicating code." The strategies `st.text(min_size=1, max_size=50, alphabet=st.characters(whitelist_categories=['L', 'N']) | st.just('_'))` and the combination of `st.sampled_from([...])` with `st.text(...)` should be extracted as reusable strategy functions in test_utils.py.
+- Line 156-157: Strategy combining `st.sampled_from([...])` (5 assertion types, finite) and `st.text(...)` (complex/infinite text generation) is classified as "Combination strategy: 30 examples (combination coverage)". This is incorrect. The guidelines state: "Combination strategy classification is for combining finite strategies where the product can be calculated." Since one strategy is complex/infinite (text generation), this should be classified as "Complex strategy" with rationale about testing assertion classification consistency across different test structures and assertion types.
+- Line 156-157: The comment "# Combination strategy: 30 examples (combination coverage)" should be "# Complex strategy: 30 examples (testing assertion classification consistency across different test structures and assertion types)" to accurately reflect the strategy type.
+- Line 21-188: Class `TestAssertionAnalyzer` follows the "one class per property/behavior" guideline with descriptive class name and related test methods grouped together. This is compliant.
+- Line 192-247: Class `TestAssertionAnalyzerIntegration` follows the "one class per property/behavior" guideline with descriptive class name and related test methods grouped together. This is compliant.
+- Line 29-92: Test method names (`test_rebuild_assertion_detection`, `test_value_assertion_detection`, `test_naming_mismatch_detection`, `test_suggested_name_generation`) accurately reflect what they assert. This is compliant with the guideline that "Test method names should accurately reflect what they assert."
+- Line 101-102, 156-157: Property-based tests have standardized comments following the format `# [Strategy Type] strategy: [N] examples ([Rationale])`. The comment format itself is compliant, though one strategy type is incorrectly classified.
+- Line 195-247: Integration test `test_file_analysis_integration` correctly uses `tempfile.NamedTemporaryFile` and `os.unlink` for temporary file handling with proper try/finally cleanup. This is good practice.
+
+## meta_tests/test_code_duplication_minimization.py
+
+No deviations found.
+
+## meta_tests/test_comment_format.py
+
+No deviations found.
+
+## meta_tests/test_comment_standardizer.py
+
+No deviations found.
+
+## meta_tests/test_core_functionality_properties.py
+
+No deviations found.
+
+## meta_tests/test_coverage_preservation.py
+
+No deviations found.
+
+## meta_tests/test_documentation_compliance.py
+
+No deviations found.
+
+## meta_tests/test_duplicate_detector.py
+
+No deviations found.
+
+## meta_tests/test_file_analyzer.py
+
+No deviations found.
+
+## meta_tests/test_helper_availability.py
+
+No deviations found.
+
+## meta_tests/test_naming_convention_validator.py
+
+No deviations found.
+
+## meta_tests/test_refactoring_properties.py
+
+No deviations found.
+
+## meta_tests/test_shared_infrastructure.py
+
+No deviations found.
+
+## meta_tests/test_sizing_behavior_grouping.py
+
+No deviations found.
+
+## meta_tests/test_strategy_classification.py
+
+No deviations found.
+
+## meta_tests/test_test_file_parser.py
+
+No deviations found.
+
+## meta_tests/test_texture_sizing_grouping.py
+
+No deviations found.
