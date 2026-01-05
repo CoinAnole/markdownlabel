@@ -187,6 +187,16 @@ class TestHelperFunctionAvailability:
 
 ## Rebuild Contract Testing
 
+> **📌 IMPORTANT NOTE ON HELPER FUNCTIONS**
+>
+> The rebuild testing helpers `assert_rebuild_occurred()` and `assert_no_rebuild()` require manual ID collection:
+> ```python
+> ids_before = collect_widget_ids(widget)  # You must do this first
+> # ... make changes ...
+> assert_rebuild_occurred(widget, ids_before)  # Pass ids_before, not a function
+> ```
+> They do NOT take a `change_func` parameter. See [Rebuild Testing Helpers](#rebuild-testing-helpers) for correct usage.
+
 ### Understanding the Rebuild Contract
 
 MarkdownLabel distinguishes between two types of property changes:
@@ -264,15 +274,88 @@ def test_text_change_triggers_rebuild(self):
 Use these helper functions from `test_utils.py`:
 
 ```python
-def collect_widget_ids(widget):
-    """Collect Python object IDs of all widgets in the tree."""
+def collect_widget_ids(widget, exclude_root=True):
+    """Collect Python object IDs of all widgets in the tree.
     
-def assert_rebuild_occurred(widget, change_func):
-    """Assert that a change function triggers a rebuild."""
+    Returns a dict mapping widget IDs to widget objects for comparison.
+    """
     
-def assert_no_rebuild(widget, change_func):
-    """Assert that a change function does NOT trigger a rebuild."""
+def assert_rebuild_occurred(widget, ids_before, exclude_root=True):
+    """Assert that a widget tree rebuild occurred.
+    
+    Args:
+        widget: Root widget to check
+        ids_before: Dict from collect_widget_ids() before the change
+        exclude_root: If True, exclude root widget from comparison
+    """
+    
+def assert_no_rebuild(widget, ids_before, exclude_root=True):
+    """Assert that no widget tree rebuild occurred.
+    
+    Args:
+        widget: Root widget to check
+        ids_before: Dict from collect_widget_ids() before the change
+        exclude_root: If True, exclude root widget from comparison
+    """
 ```
+
+#### Using the Helper Functions
+
+**IMPORTANT**: These helpers require you to collect widget IDs **before** making changes:
+
+```python
+def test_color_preserves_widget_tree_with_helper(self):
+    """Test that color changes preserve widget tree using helper."""
+    label = MarkdownLabel(text="Hello World")
+    
+    # Step 1: Collect IDs before change
+    ids_before = collect_widget_ids(label)
+    
+    # Step 2: Make the change
+    label.color = [1, 0, 0, 1]
+    
+    # Step 3: Use helper to verify no rebuild
+    assert_no_rebuild(label, ids_before)
+    
+    # Step 4: Verify the change was applied
+    labels = find_labels_recursive(label)
+    assert all(l.color == [1, 0, 0, 1] for l in labels)
+```
+
+```python
+def test_text_triggers_rebuild_with_helper(self):
+    """Test that text changes trigger rebuild using helper."""
+    label = MarkdownLabel(text="Original")
+    
+    # Step 1: Collect IDs before change
+    ids_before = collect_widget_ids(label)
+    
+    # Step 2: Make the change (schedules deferred rebuild)
+    label.text = "New text"
+    
+    # Step 3: Force immediate rebuild for testing
+    label.force_rebuild()
+    
+    # Step 4: Use helper to verify rebuild occurred
+    assert_rebuild_occurred(label, ids_before)
+```
+
+**Manual vs Helper Approach**: Both approaches are valid:
+
+```python
+# Manual approach (explicit, clear)
+ids_before = collect_widget_ids(label)
+label.color = [1, 0, 0, 1]
+ids_after = collect_widget_ids(label)
+assert ids_before == ids_after  # No rebuild
+
+# Helper approach (more concise)
+ids_before = collect_widget_ids(label)
+label.color = [1, 0, 0, 1]
+assert_no_rebuild(label, ids_before)
+```
+
+Both patterns are acceptable. Use helpers for consistency or manual comparison when you need custom error messages.
 
 ### Using `force_rebuild()` in Tests
 
@@ -350,29 +433,83 @@ Don't use `force_rebuild()` when:
        assert label._pending_rebuild is False
    ```
 
-#### Common Pattern for Rebuild Tests
+#### Common Patterns for Rebuild Tests
+
+**Pattern 1: Manual ID Comparison (Explicit)**
 
 ```python
-# 1. Create widget with initial state
-label = MarkdownLabel(text='Test', property=initial_value)
-
-# 2. Capture widget IDs before change
-ids_before = collect_widget_ids(label)
-
-# 3. Change the property (schedules deferred rebuild)
-label.property = new_value
-
-# 4. Force immediate rebuild for test determinism
-label.force_rebuild()
-
-# 5. Capture widget IDs after change
-ids_after = collect_widget_ids(label)
-
-# 6. Assert rebuild occurred (or didn't, for style-only properties)
-assert ids_before != ids_after  # For structure properties
-# OR
-assert ids_before == ids_after  # For style-only properties
+def test_text_change_triggers_rebuild(self):
+    """Test that text changes rebuild the widget tree."""
+    # 1. Create widget with initial state
+    label = MarkdownLabel(text='Original')
+    
+    # 2. Collect widget IDs before change
+    ids_before = collect_widget_ids(label)
+    
+    # 3. Change the property (schedules deferred rebuild)
+    label.text = 'New text'
+    
+    # 4. Force immediate rebuild for test determinism
+    label.force_rebuild()
+    
+    # 5. Collect widget IDs after change
+    ids_after = collect_widget_ids(label)
+    
+    # 6. Assert rebuild occurred
+    assert ids_before != ids_after, "Widget tree should rebuild for text changes"
 ```
+
+**Pattern 2: Using Helper Functions (Concise)**
+
+```python
+def test_text_change_triggers_rebuild_with_helper(self):
+    """Test that text changes rebuild the widget tree."""
+    # 1. Create widget with initial state
+    label = MarkdownLabel(text='Original')
+    
+    # 2. Collect widget IDs before change
+    ids_before = collect_widget_ids(label)
+    
+    # 3. Change the property and force rebuild
+    label.text = 'New text'
+    label.force_rebuild()
+    
+    # 4. Use helper to verify rebuild occurred
+    assert_rebuild_occurred(label, ids_before)
+```
+
+**Pattern 3: Style-Only Properties (No Rebuild)**
+
+```python
+def test_color_change_preserves_widget_tree(self):
+    """Test that color changes preserve widget tree (no rebuild)."""
+    # 1. Create widget
+    label = MarkdownLabel(text='Hello')
+    
+    # 2. Collect widget IDs before change
+    ids_before = collect_widget_ids(label)
+    
+    # 3. Change style-only property (NO force_rebuild needed!)
+    label.color = [1, 0, 0, 1]
+    
+    # 4. Verify no rebuild occurred (can use helper or manual)
+    assert_no_rebuild(label, ids_before)
+    # OR: ids_after = collect_widget_ids(label); assert ids_before == ids_after
+    
+    # 5. Verify the style change was applied
+    labels = find_labels_recursive(label)
+    assert all(l.color == [1, 0, 0, 1] for l in labels)
+```
+
+**⚠️ CRITICAL: Helper Functions Don't Eliminate Manual Steps**
+
+The helpers `assert_rebuild_occurred()` and `assert_no_rebuild()` **require** you to:
+1. Manually collect `ids_before` using `collect_widget_ids()`
+2. Make your property change
+3. Call `force_rebuild()` if testing structure properties
+4. Pass `ids_before` to the helper
+
+They do NOT take a `change_func` parameter. Both manual and helper approaches require the same steps.
 
 ## Property-Based Testing
 
@@ -798,6 +935,40 @@ jobs:
    ```
 
 ## Best Practices
+
+### Quick Reference: Rebuild Testing Patterns
+
+```python
+# ✅ CORRECT: Testing structure property changes (rebuild expected)
+def test_text_triggers_rebuild(self):
+    label = MarkdownLabel(text='Original')
+    ids_before = collect_widget_ids(label)  # Step 1: Collect before
+    label.text = 'New'                       # Step 2: Change property
+    label.force_rebuild()                    # Step 3: Force sync rebuild
+    assert_rebuild_occurred(label, ids_before)  # Step 4: Verify rebuild
+
+# ✅ CORRECT: Testing style property changes (no rebuild expected)
+def test_color_preserves_tree(self):
+    label = MarkdownLabel(text='Hello')
+    ids_before = collect_widget_ids(label)  # Step 1: Collect before
+    label.color = [1, 0, 0, 1]              # Step 2: Change property (no force_rebuild!)
+    assert_no_rebuild(label, ids_before)    # Step 3: Verify no rebuild
+
+# ✅ CORRECT: Manual comparison (alternative to helpers)
+def test_text_triggers_rebuild_manual(self):
+    label = MarkdownLabel(text='Original')
+    ids_before = collect_widget_ids(label)
+    label.text = 'New'
+    label.force_rebuild()
+    ids_after = collect_widget_ids(label)
+    assert ids_before != ids_after  # Manual comparison is fine
+
+# ❌ WRONG: Helpers don't take functions
+def test_wrong_pattern(self):
+    label = MarkdownLabel(text='Original')
+    # This signature doesn't exist!
+    assert_rebuild_occurred(label, lambda: label.text = 'New')  # ❌ Wrong!
+```
 
 ### Do's
 
