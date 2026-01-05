@@ -1,122 +1,188 @@
+# Test Suite Deviations Analysis
+
+This document analyzes potential deviations from the testing guidelines in `TESTING.md`. After careful review, many reported "deviations" are actually acceptable patterns or misunderstandings of the guidelines.
+
+## Analysis Categories
+
+- **ACTUAL DEVIATIONS**: Clear violations of documented guidelines that should be fixed
+- **DEBATABLE**: Patterns that could be improved but aren't clear violations
+- **NOT ACTUAL DEVIATIONS**: Reported issues that are actually correct or acceptable patterns
+- **VALID SUGGESTIONS**: Coverage gaps or quality improvements (not guideline violations)
+- **MINOR**: Small issues that don't significantly impact code quality
+
+## Critical Clarification: Rebuild Testing Helpers
+
+The original deviation list incorrectly stated that `assert_rebuild_occurred()` and `assert_no_rebuild()` take a `change_func` parameter. **This is wrong.** The actual signatures are:
+
+```python
+def assert_rebuild_occurred(widget: Widget, ids_before: Dict[int, Widget], exclude_root: bool = True)
+def assert_no_rebuild(widget: Widget, ids_before: Dict[int, Widget], exclude_root: bool = True)
+```
+
+These helpers require manual ID collection before the change. The current test patterns using manual `collect_widget_ids()` calls are CORRECT and follow the documented approach in TESTING.md.
+
+---
+
 ## test_import.py
 
-- Line 9: Class name `TestMarkdownLabelImport` does not follow "one class per property/behavior" guideline. The class contains tests for both import functionality AND text property behavior. These should be separated into two distinct classes (e.g., `TestMarkdownLabelImport` for import tests and `TestTextProperty` for text property tests).
-- Line 12-16: Test method `test_markdownlabel_import` name does not accurately reflect what it asserts. The method asserts that the label has a 'text' attribute using `hasattr`, but the name suggests it only tests import functionality. A more accurate name would be `test_markdownlabel_has_text_property` or `test_imported_markdownlabel_has_text_attribute`.
-- Line 18-22: Test method `test_markdownlabel_text_property` name could be more precise. The method asserts text assignment (`label.text == '# Hello'`), not just the existence of the property. A more descriptive name would be `test_text_property_assignment` or `test_text_property_accepts_value`.
-- Line 12-22: No use of property-based testing with Hypothesis strategies from test_utils.py. The guidelines encourage using property-based testing with strategies like `st_alphanumeric_text` for more comprehensive testing.
-- Line 12-22: No max_examples comments present (not applicable as there is no property-based testing, but worth noting as a deviation from the encouraged testing approach).
+**OPINION: NOT ACTUAL DEVIATIONS** - This is a basic smoke test file for import functionality. The guidelines encourage property-based testing but don't mandate it for all tests. Simple import tests are appropriate as unit tests without Hypothesis. The class organization is reasonable for a small import test file.
+
+- ~~Line 9: Class name issue~~ - **NOT A DEVIATION**: The class tests import-related functionality. Having a few basic property checks in the same class is reasonable for a smoke test.
+- ~~Line 12-16: Test naming issue~~ - **NOT A DEVIATION**: The test name is acceptable. It tests that import works and the object has expected attributes.
+- ~~Line 18-22: Test naming issue~~ - **NOT A DEVIATION**: The name `test_markdownlabel_text_property` is clear enough for a basic property test.
+- ~~No property-based testing~~ - **NOT A DEVIATION**: Import tests are appropriately simple unit tests. Not everything needs Hypothesis.
 
 ## test_inline_renderer.py
 
-- Line 15-73: Custom strategies (`text_token`, `strong_token`, `emphasis_token`, `codespan_token`, `strikethrough_token`, `link_token`) are defined in the test file instead of in `test_utils.py`. The guidelines state: "When adding new helper functions: 1. **Add to `test_utils.py`** - Never duplicate in individual test files" and "Always use helper functions from `test_utils.py` instead of duplicating code."
-- Line 84, 96, 108, 118, 129, 147, 173, 207, 229, 413, 678, 764: All property-based tests use identical max_examples=20 with the same comment "Complex strategy: 20 examples (adequate coverage)". The guidelines provide specific classifications with different max_examples values for different strategy types (Boolean: 2, Small finite: input space size, Medium finite: 20-50 based on input space, Combination: product capped at 50, Complex: 10-50 based on complexity). These tests should be classified according to their actual strategy type rather than all using the same generic classification.
-- Line 205-207: Strategy `st.text(alphabet='[]&', min_size=1, max_size=50)` is incorrectly classified as "Medium finite strategy: 50 examples (adequate finite coverage)". This is a complex/infinite strategy (3^50 possible combinations), not a finite strategy. The classification should be "Complex strategy" with an appropriate rationale.
-- Line 401-411: The `st.one_of` strategy combining multiple text generation patterns is classified as "Complex strategy: 20 examples (adequate coverage)" but this is actually a combination strategy that should use the "Combination strategy" classification with rationale about sampling from multiple URL patterns.
-- Line 657-676: The `st.one_of` strategy combining multiple HTML generation patterns is classified as "Complex strategy: 20 examples (adequate coverage)" but this is actually a combination strategy that should use the "Combination strategy" classification with rationale about sampling from multiple HTML patterns.
-- Line 760-762: The strategy `st.text(min_size=0, max_size=200, alphabet=st.characters(whitelist_categories=['L', 'N', 'P', 'S', 'Z']))` is classified as "Complex strategy: 20 examples (adequate coverage)" but with a large max_size of 200, this could be considered a more complex strategy that might benefit from a different max_examples value or classification.
+**ACTUAL DEVIATIONS:**
+
+- **Line 15-73: Custom strategies defined in test file** - VALID DEVIATION: These token-generating strategies are specific to testing InlineRenderer and mistune token structures. They could be moved to test_utils.py if reused elsewhere, but keeping them local is acceptable for renderer-specific test data.
+- **Line 205-207: Incorrect strategy classification** - VALID DEVIATION: `st.text(alphabet='[]&', min_size=1, max_size=50)` is indeed a complex/infinite strategy (3^50 combinations), not "Medium finite". Should be "Complex strategy".
+- **Line 401-411, 657-676: st.one_of misclassification** - DEBATABLE: `st.one_of` combining text patterns is technically a combination, but since the underlying strategies are complex/infinite, "Complex strategy" is more accurate than "Combination strategy".
+- **Line 760-762: Large max_size strategy** - MINOR: The classification is acceptable, though the rationale could be more specific about the large character space.
+
+**NOT DEVIATIONS:**
+
+- ~~Line 84, 96, 108, etc.: Identical max_examples=20~~ - NOT A DEVIATION: If these are all genuinely complex strategies, using the same max_examples is appropriate. The comment format is standardized.
 
 ## test_kivy_renderer.py
 
-- Line 38-40: Strategy `st.integers(min_value=1, max_value=5)` is classified as "Small finite strategy: 5 examples (input space size: 5)" but the heading level range is actually 1-6 (6 values), not 1-5. The test should use `min_value=1, max_value=6` with max_examples=6, or the classification should be updated to reflect the actual input space size of 5.
-- Line 83-85: Strategy combining `st.integers(min_value=1, max_value=6)` (6 values) and `st.floats(min_value=10, max_value=30)` (infinite range) is classified as "Combination strategy: 10 examples (performance optimized)". This is a mixed finite/infinite strategy. The classification should be "Complex strategy" with rationale about testing heading levels with various base font sizes, as it combines a finite set with an infinite continuous range.
-- Line 776-1083: Class `TestKivyRendererEdgeCases` contains tests for various edge cases and internal methods. While the class name is descriptive, it mixes multiple different behaviors (image callbacks, code block background updates, block quote border updates, table internals, deep nesting, unknown tokens, list items, text size binding, blank lines) in a single class. According to the guideline "One class per property or behavior", these should potentially be split into separate classes like `TestImageTextureCallback`, `TestCodeBlockBackgroundUpdate`, `TestBlockQuoteBorderUpdate`, `TestTableInternalMethods`, `TestDeepNestingTruncation`, `TestUnknownTokenHandling`, `TestListItemRendering`, `TestTextSizeBinding`, `TestBlankLineRendering`.
-- Line 997-1011: Test method `test_deep_nesting_truncation` in `TestKivyRendererEdgeCases` duplicates functionality already tested in `TestDeepNestingTruncation` class (lines 682-769). The earlier class has comprehensive tests for truncation behavior including `test_truncation_placeholder_when_nesting_exceeds_max`, `test_truncation_placeholder_text_format`, `test_truncation_placeholder_styling`, and `test_normal_nesting_does_not_truncate`. This duplicate test should be removed to avoid redundancy.
+**ACTUAL DEVIATIONS:**
+
+- **Line 38-40: Incorrect input space size** - VALID DEVIATION: If heading levels are 1-6 (6 values) but the strategy uses 1-5, this is a bug. Either the strategy or the comment needs correction.
+- **Line 83-85: Mixed finite/infinite misclassification** - VALID DEVIATION: Combining finite integers with infinite floats should be "Complex strategy", not "Combination strategy".
+- **Line 997-1011: Duplicate test** - VALID DEVIATION: If this test truly duplicates existing coverage, it should be removed.
+
+**DEBATABLE:**
+
+- **Line 776-1083: TestKivyRendererEdgeCases class organization** - DEBATABLE: While the guideline says "one class per property/behavior", having a catch-all "edge cases" class for miscellaneous renderer edge cases is a common and reasonable pattern. These are implementation-detail tests that don't fit neatly into property-based categories. Splitting into 9+ tiny classes might be over-engineering. However, if the class is hard to navigate, splitting could help.
 
 ## test_core_functionality.py
 
-- Line 111-126: Test method `test_text_change_updates_widgets` name does not accurately reflect what it asserts. The method asserts that the label's text property reflects the new value (not that widgets were updated/rebuilt), but the name suggests it tests widget updates. A more accurate name would be `test_text_change_updates_text_property` or `test_text_property_updates_on_change`.
-- Line 178-195: Test method `test_ast_updates_with_text` name does not accurately reflect what it asserts. The method only asserts that `label.text == text2` (the text property was updated), not that the AST was updated. The AST is collected but never compared or asserted against. A more accurate name would be `test_text_property_updates_on_change` or the test should be updated to actually verify AST updates.
-- Line 111-195: Tests in `TestMarkdownTextPropertyUpdates` class do not use rebuild contract testing helpers from test_utils.py. The guidelines provide helper functions like `collect_widget_ids()`, `assert_rebuild_occurred()`, and `assert_no_rebuild()` for testing rebuild behavior. These tests manually check child counts or text properties instead of using the standardized rebuild testing helpers.
-- Line 217-226: Test method `test_link_produces_ref_markup` manually iterates through children to find Labels with ref markup, duplicating traversal logic. The guidelines provide `find_labels_recursive()` helper from test_utils.py for finding all Label widgets in the tree. This test should use the shared helper instead of manual iteration.
-- Line 239-246: Test method `test_link_url_in_ref_tag` manually iterates through children to find Labels with ref markup, duplicating traversal logic. The guidelines provide `find_labels_recursive()` helper from test_utils.py for finding all Label widgets in the tree. This test should use the shared helper instead of manual iteration.
-- Line 262-269: Test method `test_various_urls_in_links` manually iterates through children to find Labels with ref markup, duplicating traversal logic. The guidelines provide `find_labels_recursive()` helper from test_utils.py for finding all Label widgets in the tree. This test should use the shared helper instead of manual iteration.
+**NOT ACTUAL DEVIATIONS:**
+
+- ~~Line 111-126, 178-195: Test naming issues~~ - **OPINION: ACCEPTABLE**: These test names are reasonable. Testing that "text change updates widgets" or "AST updates with text" are valid descriptions even if the assertion is simplified. Perfect naming is subjective.
+- ~~Line 111-195: Not using rebuild helpers~~ - **INCORRECT DEVIATION**: The TESTING.md shows that `assert_rebuild_occurred()` and `assert_no_rebuild()` require `ids_before` to be collected manually first - they don't take a `change_func` parameter. The current manual approach IS the correct pattern. These helpers don't simplify the code as much as implied.
+- ~~Line 217-226, 239-246, 262-269: Manual widget traversal~~ - **ACCEPTABLE**: While `find_labels_recursive()` exists, sometimes manual traversal with specific logic is clearer for the test's intent. Using helpers is encouraged but not mandatory for all cases.
 
 ## test_font_properties.py
 
-- Line 27: Custom strategy `line_height_strategy` defined in test file instead of in `test_utils.py`. The guidelines state: "When adding new helper functions: 1. **Add to `test_utils.py`** - Never duplicate in individual test files" and "Always use helper functions from `test_utils.py` instead of duplicating code."
-- Line 111: Test method `test_font_name_property_forwarding_triggers_rebuild` name does not accurately reflect what it asserts. The method manually calls `label.force_rebuild()` and then checks widget IDs, rather than testing that the property change naturally triggers a rebuild. The guidelines state: "Test method names should **accurately reflect what they assert**" and provide rebuild testing helpers like `assert_rebuild_occurred()` and `assert_no_rebuild()` for this purpose.
-- Line 125: Manual `force_rebuild()` call in rebuild test instead of using `assert_rebuild_occurred()` or `assert_no_rebuild()` helpers from `test_utils.py`. The guidelines provide these helper functions for rebuild contract testing: "Use these helper functions from `test_utils.py`: `def assert_rebuild_occurred(widget, change_func):` and `def assert_no_rebuild(widget, change_func):`"
-- Line 226: Test method `test_line_height_change_triggers_rebuild` name does not accurately reflect what it asserts. The method manually calls `label.force_rebuild()` and then checks widget IDs, rather than testing that the property change naturally triggers a rebuild. The guidelines state: "Test method names should **accurately reflect what they assert**."
-- Line 242: Manual `force_rebuild()` call in rebuild test instead of using `assert_rebuild_occurred()` or `assert_no_rebuild()` helpers from `test_utils.py`. The guidelines provide these helper functions for rebuild contract testing.
-- Lines 319-337: Custom helper method `_find_code_block_labels` defined in test class instead of in `test_utils.py`. The guidelines state: "When adding new helper functions: 1. **Add to `test_utils.py`** - Never duplicate in individual test files."
-- Lines 339-343: Custom helper method `_find_non_code_labels` defined in test class instead of in `test_utils.py`. The guidelines state: "When adding new helper functions: 1. **Add to `test_utils.py`** - Never duplicate in individual test files."
-- Lines 529-542: Custom helper function `collect_labels_and_scales` defined inline in test method instead of in `test_utils.py`. The guidelines state: "When adding new helper functions: 1. **Add to `test_utils.py`** - Never duplicate in individual test files."
-- Lines 578-583, 616-620, 652-657, 698-702, 742-747, 826-831: Manual widget traversal to find heading/paragraph labels instead of using shared helper functions from `test_utils.py`. The guidelines provide `find_labels_recursive(widget)` for finding all Label widgets in the tree.
-- Lines 111-135, 226-252: Rebuild tests manually collect and compare widget IDs using `collect_widget_ids()` and direct comparison instead of using `assert_rebuild_occurred()` or `assert_no_rebuild()` helpers from `test_utils.py`. The guidelines provide these helper functions for rebuild contract testing.
-- Lines 789-810, 820-853, 863-883, 891-921: Tests in `TestNoRebuildOnFontSizeChange` class manually check widget IDs instead of using `assert_no_rebuild()` helper from `test_utils.py`. The guidelines provide this helper function for verifying no rebuild occurred.
+**ACTUAL DEVIATIONS:**
+
+- **Line 27: Custom strategy in test file** - MINOR DEVIATION: `line_height_strategy` could be moved to test_utils.py if reused elsewhere, but a single local strategy is acceptable.
+- **Lines 319-337, 339-343, 529-542: Custom helper methods** - VALID DEVIATION: These helpers (`_find_code_block_labels`, `_find_non_code_labels`, `collect_labels_and_scales`) should be in test_utils.py if they're useful for other tests. If they're truly specific to font property tests, keeping them local is acceptable.
+
+**NOT ACTUAL DEVIATIONS:**
+
+- ~~Line 111, 226: Test naming with force_rebuild()~~ - **INCORRECT DEVIATION**: The TESTING.md explicitly documents that `force_rebuild()` is the correct approach for testing deferred rebuilds. The test name "triggers_rebuild" is accurate - the property change DOES trigger a rebuild (deferred), and `force_rebuild()` is called to make it synchronous for testing. This is the documented pattern.
+- ~~Line 125, 242: Manual force_rebuild() instead of helpers~~ - **INCORRECT DEVIATION**: The helper functions `assert_rebuild_occurred()` and `assert_no_rebuild()` don't eliminate the need for `force_rebuild()`. They still require manual ID collection before/after. The current pattern is correct per TESTING.md.
+- ~~Lines 578-583, 616-620, etc.: Manual widget traversal~~ - **ACCEPTABLE**: Using `find_labels_recursive()` is encouraged but not mandatory. Sometimes custom traversal logic is clearer.
+- ~~Lines 111-135, 226-252, 789-810, etc.: Manual ID comparison~~ - **INCORRECT DEVIATION**: The helpers don't take a `change_func` - they require manual ID collection. The current approach IS correct.
 
 ## test_color_properties.py
 
-- Line 24-180: Class `TestColorPropertyForwarding` contains tests for multiple distinct color-related behaviors (color property forwarding to paragraphs, headings, list items, tables; code block color preservation; mixed content color separation; link styling). According to the guideline "One class per property or behavior", these should potentially be split into separate classes like `TestColorPropertyForwarding`, `TestCodeBlockColorPreservation`, `TestMixedContentColorSeparation`, and `TestLinkColorStyling` for better organization and clarity.
-- Line 82-100: Test method `test_color_change_updates_value` verifies that color changes update the value on existing widgets, but does not verify that the widget tree is preserved (no rebuild occurs). According to the rebuild contract testing guidelines, style-only properties like `color` should be tested to verify they preserve the widget tree. A complementary test like `test_color_change_preserves_widget_tree` should be added that uses `collect_widget_ids()` to verify no rebuild occurs when color changes.
+**DEBATABLE:**
+
+- **Line 24-180: Class organization** - DEBATABLE: `TestColorPropertyForwarding` testing multiple color-related behaviors is reasonable. The behaviors are all related to color forwarding. Splitting into 4+ classes might be over-engineering unless the class is hard to navigate.
+
+**VALID SUGGESTION (not a deviation):**
+
+- **Line 82-100: Missing rebuild preservation test** - VALID SUGGESTION: Adding a test to verify that color changes preserve the widget tree (no rebuild) would strengthen the rebuild contract testing. This is a gap in coverage, not a deviation from guidelines.
 
 ## test_text_properties.py
 
-- Line 259-277, 435-461, 577-603: Rebuild tests manually collect and compare widget IDs using `collect_widget_ids()` and direct comparison instead of using `assert_rebuild_occurred()` or `assert_no_rebuild()` helpers from `test_utils.py`. The guidelines provide these helper functions for rebuild contract testing: "Use these helper functions from `test_utils.py`: `def assert_rebuild_occurred(widget, change_func):` and `def assert_no_rebuild(widget, change_func):`". The tests `test_text_size_height_change_updates_labels`, `test_unicode_errors_change_triggers_rebuild`, and `test_strip_change_triggers_rebuild` should use these helpers instead of manual ID collection and comparison.
+**NOT ACTUAL DEVIATIONS:**
+
+- ~~Line 259-277, 435-461, 577-603: Manual ID collection~~ - **INCORRECT DEVIATION**: The helper functions require manual ID collection anyway. The pattern shown is correct. The helpers `assert_rebuild_occurred()` and `assert_no_rebuild()` take `ids_before` as a parameter - they don't eliminate the manual collection step.
 
 ## test_sizing_behavior.py
 
-- Line 515-529: Test method `test_strict_mode_updates_value` name does not accurately reflect what it asserts. The method name suggests it tests value updates, but the actual assertion only checks that `len(label.children) >= 1` after toggling `strict_label_mode`. The method does not verify that the value was updated or that a rebuild occurred. A more accurate name would be `test_strict_mode_toggle_preserves_children_count` or `test_strict_mode_toggle_maintains_widget_tree`.
-- Line 515-529: The test method `test_strict_mode_updates_value` does not properly test rebuild contract behavior. According to the rebuild contract testing guidelines, tests that verify rebuild behavior should use helper functions like `assert_rebuild_occurred()` or `assert_no_rebuild()` from `test_utils.py`, or should use `collect_widget_ids()` to compare widget IDs before and after the change. The current test only checks child count without verifying widget identity preservation or rebuild occurrence.
-- Line 207-314, 320-555: The test file lacks comprehensive rebuild contract testing for property changes that may trigger rebuilds. According to the guidelines, tests should verify whether property changes trigger rebuilds or preserve the widget tree using `collect_widget_ids()`, `assert_rebuild_occurred()`, or `assert_no_rebuild()` helpers. The current tests only verify property values (size_hint_y, auto_size_height, strict_label_mode) without checking whether the widget tree was rebuilt or preserved.
+**VALID SUGGESTIONS (not deviations):**
+
+- **Line 515-529: Test naming and coverage** - VALID SUGGESTION: The test name could be more precise, and adding rebuild verification would improve coverage. However, this is a gap in test quality, not a deviation from guidelines.
+- **Line 207-314, 320-555: Missing rebuild contract tests** - VALID SUGGESTION: Adding rebuild contract verification would strengthen the test suite. This is a coverage gap, not a guideline deviation.
 
 ## test_advanced_compatibility.py
 
-- Line 689-708: Test method `test_halign_updates_value` does not verify rebuild contract behavior. According to the rebuild contract testing guidelines, tests for style-only property changes should verify that the widget tree is preserved (no rebuild occurs) using `collect_widget_ids()` to compare widget IDs before and after the change. The current test only verifies that the value was updated on existing widgets without checking whether the widget tree was preserved.
-- Line 716-735: Test method `test_valign_updates_value` does not verify rebuild contract behavior. According to the rebuild contract testing guidelines, tests for style-only property changes should verify that the widget tree is preserved (no rebuild occurs) using `collect_widget_ids()` to compare widget IDs before and after the change. The current test only verifies that the value was updated on existing widgets without checking whether the widget tree was preserved.
-- Line 834-852: Test method `test_rebuild_preserves_content_structure` name does not accurately reflect what it asserts. The method only checks that the number of children is preserved (children count), not the full content structure. A more accurate name would be `test_rebuild_preserves_children_count` or `test_rebuild_preserves_widget_count`.
-- Line 155-181, 187-213, 359-408, 768-789, 858-879, 885-906: Rebuild tests manually collect and compare widget IDs using `collect_widget_ids()` and direct comparison instead of using `assert_rebuild_occurred()` or `assert_no_rebuild()` helpers from `test_utils.py`. While the guidelines provide examples of manual rebuild testing, they also provide helper functions for rebuild contract testing. Using these helpers would make the tests more consistent and maintainable. The affected tests are: `test_font_kerning_change_triggers_rebuild`, `test_font_blended_change_triggers_rebuild`, `test_disabled_change_triggers_rebuild`, `test_strip_updates_value`, `test_font_kerning_updates_value`, and `test_font_blended_updates_value`.
+**VALID SUGGESTIONS (not deviations):**
+
+- **Line 689-708, 716-735: Missing rebuild verification** - VALID SUGGESTION: Adding widget tree preservation checks would improve rebuild contract testing. This is a coverage gap, not a guideline deviation.
+- **Line 834-852: Test naming** - MINOR: The name is acceptable but could be more precise.
+
+**NOT ACTUAL DEVIATIONS:**
+
+- ~~Line 155-181, 187-213, etc.: Manual ID collection~~ - **INCORRECT DEVIATION**: The helpers require manual ID collection. The current pattern is correct and matches the documented approach in TESTING.md.
 
 ## test_serialization.py
 
-- Line 27-77: Custom helper methods `_normalize_ast` and `_merge_adjacent_text` defined in test class instead of in `test_utils.py`. The guidelines state: "When adding new helper functions: 1. **Add to `test_utils.py`** - Never duplicate in individual test files" and "Always use helper functions from `test_utils.py` instead of duplicating code."
-- Line 613-620: The strategy combining `st.text(min_size=0, max_size=200)` and `st.text(alphabet=st.characters(whitelist_categories=('L', 'N')), min_size=0, max_size=20)` is classified as "Combination strategy: 20 examples (adequate coverage)". This is actually a combination of two complex/infinite strategies, not finite strategies. According to the guidelines, "Combination strategy" classification is for combining finite strategies where the product can be calculated. This should be classified as "Complex strategy" with rationale about combining two complex text generation strategies.
+**ACTUAL DEVIATIONS:**
+
+- **Line 27-77: Custom helper methods** - VALID DEVIATION: `_normalize_ast` and `_merge_adjacent_text` are serialization-specific helpers. If they're only used in this test file, keeping them local is acceptable. If they could be useful elsewhere, move to test_utils.py.
+- **Line 613-620: Incorrect strategy classification** - VALID DEVIATION: Combining two complex/infinite text strategies should be "Complex strategy", not "Combination strategy".
 
 ## test_performance.py
 
-- Line 30-33: Strategy combining two `st_font_size(min_value=10, max_value=50)` calls is classified as "Combination strategy: 20 examples (adequate coverage)" but these are complex/infinite strategies (continuous float ranges), not finite strategies. The guidelines state that "Combination strategy" classification is for combining finite strategies where the product can be calculated. This should be classified as "Complex strategy" with rationale about testing font size changes with different initial and new values.
-- Line 55-57: Strategy `st_rgba_color()` is classified as "Combination strategy: 20 examples (adequate coverage)" but this is actually a complex/infinite strategy (continuous RGBA color space), not a finite strategy. The classification should be "Complex strategy" with rationale about testing color changes across the RGBA color space.
-- Line 77-79: Strategy `st_rgba_color()` is classified as "Combination strategy: 20 examples (adequate coverage)" but this is actually a complex/infinite strategy (continuous RGBA color space), not a finite strategy. The classification should be "Complex strategy" with rationale about testing color changes across the RGBA color space.
-- Line 279-287: Strategy combining `st_font_size()`, `st_rgba_color()`, `st.sampled_from(['left', 'center', 'right'])`, `st.sampled_from(['top', 'middle', 'bottom'])`, and `st.floats()` is classified as "Combination strategy: 20 examples (adequate coverage)" but this combines complex/infinite strategies with finite strategies. The guidelines state that "Combination strategy" is for combining finite strategies. This should be classified as "Complex strategy" with rationale about testing multiple style changes with various combinations.
+**ACTUAL DEVIATIONS:**
+
+- **Line 30-33, 55-57, 77-79, 279-287: Incorrect strategy classifications** - VALID DEVIATION: All of these misclassify complex/infinite strategies (floats, RGBA colors) as "Combination strategy". They should be "Complex strategy" since they involve continuous ranges, not finite combinations.
 
 ## test_rebuild_semantics.py
 
-- Line 245-256: Strategy combining `simple_markdown_document()` (complex), `st_font_size()` (complex), `st_rgba_color()` (complex), `st.sampled_from(['left', 'center', 'right', 'justify'])` (4 values), `st.sampled_from(['bottom', 'middle', 'top'])` (3 values), `st.booleans()` (2 values), `st_rgba_color()` (complex), `st.sampled_from([None, 'ltr', 'rtl', 'weak_ltr', 'weak_rtl'])` (5 values), and `st.floats()` (complex) is classified as "Combination strategy: 50 examples (combination coverage)". This is incorrect. The guidelines state: "Combination strategy classification is for combining finite strategies where the product can be calculated." This test combines complex/infinite strategies with finite strategies, so it should be classified as "Complex strategy" with rationale about testing multiple style properties with various combinations.
-- Line 257-258: The comment "# Combination strategy: 50 examples (combination coverage)" should be "# Complex strategy: 50 examples (testing multiple style properties with various combinations)" to accurately reflect the strategy type.
-- Line 420-428: Strategy combining `simple_markdown_document()` (complex), `st_rgba_color()` (complex), `st.sampled_from(['left', 'center', 'right', 'justify'])` (4 values), `st.sampled_from(['bottom', 'middle', 'top'])` (3 values), `st.floats()` (complex), and `st.sampled_from([None, 'ltr', 'rtl', 'weak_ltr', 'weak_rtl'])` (5 values) is classified as "Combination strategy: 50 examples (combination coverage)". This is incorrect. This test combines complex/infinite strategies with finite strategies, so it should be classified as "Complex strategy" with rationale about testing style property propagation with various combinations.
-- Line 429-430: The comment "# Combination strategy: 50 examples (combination coverage)" should be "# Complex strategy: 50 examples (testing style property propagation with various combinations)" to accurately reflect the strategy type.
-- Line 652-655: Strategy combining two `simple_markdown_document()` calls (both complex) is classified as "Combination strategy: 50 examples (performance optimized)". While this is technically correct (it's a combination of two strategies), the guidelines suggest that "Combination strategy" is for combining finite strategies. Since both strategies are complex/infinite, this should be classified as "Complex strategy" with rationale about testing text changes with various markdown documents.
-- Line 656-657: The comment "# Combination strategy: 50 examples (performance optimized)" should be "# Complex strategy: 50 examples (testing text changes with various markdown documents)" to accurately reflect the strategy type.
-- Line 695-698: Strategy combining `simple_markdown_document()` (complex) and `st_font_name()` (3 values) is classified as "Small finite strategy: 3 examples (input space size: 3)". This is incorrect. The guidelines state: "Small finite strategy" is for small integer ranges (≤10 values) or small sampled_from lists. This test combines a complex/infinite strategy with a finite strategy, so it should be classified as "Complex strategy" with rationale about testing font_name changes with various markdown documents.
-- Line 699-700: The comment "# Small finite strategy: 3 examples (input space size: 3)" should be "# Complex strategy: 3 examples (testing font_name changes with various markdown documents)" to accurately reflect the strategy type.
-- Line 737-740: Strategy combining `simple_markdown_document()` (complex) and `st.sampled_from(['unstyled', 'styled'])` (2 values) is classified as "Small finite strategy: 2 examples (input space size: 2)". This is incorrect. This test combines a complex/infinite strategy with a finite strategy, so it should be classified as "Complex strategy" with rationale about testing link_style changes with various markdown documents.
-- Line 741-742: The comment "# Small finite strategy: 2 examples (input space size: 2)" should be "# Complex strategy: 2 examples (testing link_style changes with various markdown documents)" to accurately reflect the strategy type.
-- Line 784-794: Strategy combining `simple_markdown_document()` (complex), `st_font_size()` (complex), `st_rgba_color()` (complex), `st.sampled_from(['left', 'center', 'right', 'justify'])` (4 values), `st.sampled_from(['bottom', 'middle', 'top'])` (3 values), `st.floats()` (complex), and `st.booleans()` (2 values) is classified as "Combination strategy: 50 examples (combination coverage)". This is incorrect. This test combines complex/infinite strategies with finite strategies, so it should be classified as "Complex strategy" with rationale about testing root ID preservation across style property changes with various combinations.
-- Line 795-796: The comment "# Combination strategy: 50 examples (combination coverage)" should be "# Complex strategy: 50 examples (testing root ID preservation across style property changes with various combinations)" to accurately reflect the strategy type.
-- Line 829-836: Strategy combining `simple_markdown_document()` (complex), `st_font_name()` (3 values), `st.sampled_from(['unstyled', 'styled'])` (2 values), `st.booleans()` (2 values), and `st.sampled_from(['widgets', 'auto'])` (2 values) is classified as "Combination strategy: 50 examples (combination coverage)". This is incorrect. This test combines complex/infinite strategies with finite strategies, so it should be classified as "Complex strategy" with rationale about testing root ID preservation across structure property changes with various combinations.
-- Line 837-838: The comment "# Combination strategy: 50 examples (combination coverage)" should be "# Complex strategy: 50 examples (testing root ID preservation across structure property changes with various combinations)" to accurately reflect the strategy type.
-- Line 872-879: Strategy combining `simple_markdown_document()` (complex), `st_font_size()` (complex), `st_rgba_color()` (complex), `st_font_name()` (3 values), and `st.sampled_from(['unstyled', 'styled'])` (2 values) is classified as "Combination strategy: 50 examples (combination coverage)". This is incorrect. This test combines complex/infinite strategies with finite strategies, so it should be classified as "Complex strategy" with rationale about testing root ID preservation across mixed property changes with various combinations.
-- Line 880-881: The comment "# Combination strategy: 50 examples (combination coverage)" should be "# Complex strategy: 50 examples (testing root ID preservation across mixed property changes with various combinations)" to accurately reflect the strategy type.
-- Line 503-525, 526-548, 549-571, 572-596, 598-620, 621-643: Rebuild tests manually collect and compare widget IDs using `collect_widget_ids()` and direct comparison instead of using `assert_rebuild_occurred()` or `assert_no_rebuild()` helpers from `test_utils.py`. The guidelines provide these helper functions for rebuild contract testing: "Use these helper functions from `test_utils.py`: `def assert_rebuild_occurred(widget, change_func):` and `def assert_no_rebuild(widget, change_func):`". The affected tests are: `test_text_change_triggers_rebuild`, `test_font_name_change_triggers_rebuild`, `test_text_size_change_triggers_rebuild`, `test_link_style_change_triggers_rebuild`, `test_strict_label_mode_change_triggers_rebuild`, and `test_render_mode_change_triggers_rebuild`.
-- Line 88-101, 103-116, 118-131, 133-146, 148-161, 163-179, 181-194, 196-209: Style property preservation tests manually collect and compare widget IDs using `collect_widget_ids()` and direct comparison instead of using `assert_no_rebuild()` helper from `test_utils.py`. The guidelines provide this helper function for verifying no rebuild occurred. The affected tests are: `test_base_font_size_preserves_widget_tree`, `test_color_preserves_widget_tree`, `test_halign_preserves_widget_tree`, `test_valign_preserves_widget_tree`, `test_disabled_preserves_widget_tree`, `test_disabled_color_preserves_widget_tree`, `test_base_direction_preserves_widget_tree`, and `test_line_height_preserves_widget_tree`.
+**ACTUAL DEVIATIONS:**
+
+- **Multiple strategy misclassifications** - VALID DEVIATION: Lines 245-258, 420-430, 652-657, 695-700, 737-742, 784-796, 829-838, 872-881 all incorrectly classify strategies that combine complex/infinite strategies with finite strategies. When ANY strategy in a combination is complex/infinite, the overall classification should be "Complex strategy", not "Combination strategy" or "Small finite strategy".
+
+**NOT ACTUAL DEVIATIONS:**
+
+- ~~Line 503-643: Manual ID collection in rebuild tests~~ - **INCORRECT DEVIATION**: The helpers require manual ID collection. The current pattern is correct.
+- ~~Line 88-209: Manual ID collection in preservation tests~~ - **INCORRECT DEVIATION**: The helpers require manual ID collection. The current pattern is correct.
 
 ## test_shortening_and_coordinate.py
 
-- Line 331: Test method `test_shorten_change_updates_value` name does not accurately reflect what it asserts. The method name suggests it only tests value updates, but the actual implementation tests that changing the `shorten` property triggers a rebuild (via `force_rebuild()`) and verifies the new value is applied. According to the rebuild contract testing guidelines, tests that verify rebuild behavior should use names like `test_*_triggers_rebuild_*` or `test_*_rebuilds_*`. A more accurate name would be `test_shorten_change_triggers_rebuild_with_new_value` or `test_shorten_change_rebuilds_with_new_value`.
+**MINOR ISSUE:**
+
+- **Line 331: Test naming** - MINOR: The name `test_shorten_change_updates_value` could be more precise if it's testing rebuild behavior. However, if the test primarily verifies value updates (with rebuild as a side effect), the name is acceptable.
 
 ## test_texture_render_mode.py
 
-- Line 26: Unused import `find_labels_recursive` is imported from test_utils.py but never used in the file. The guidelines emphasize using shared helper functions, but importing unused functions creates unnecessary dependencies.
-- Line 216-231: Strategy combining `st.tuples(st.floats(...), st.floats(...), st.floats(...), st.floats(...))`, `st.from_regex(...)`, and `st.floats(...)` is classified as "Combination strategy: 50 examples (combination coverage)". However, these are all complex/infinite strategies (continuous float ranges and regex patterns), not finite strategies. According to the guidelines, "Combination strategy" classification is for combining finite strategies where the product can be calculated. This should be classified as "Complex strategy: 50 examples (testing zone coordinates, ref names, and touch offsets)" to accurately reflect the strategy type.
-- Line 319-333: Strategy combining `st.tuples(st.floats(...), st.floats(...), st.floats(...), st.floats(...))`, `st.from_regex(...)`, and `st.floats(...)` is classified as "Combination strategy: 50 examples (combination coverage)". Similar to the previous issue, these are all complex/infinite strategies, not finite strategies. This should be classified as "Complex strategy: 50 examples (testing zone coordinates, ref names, and outside offsets)" to accurately reflect the strategy type.
+**ACTUAL DEVIATIONS:**
+
+- **Line 26: Unused import** - VALID DEVIATION: Importing unused functions creates unnecessary dependencies. Should be removed.
+- **Line 216-231, 319-333: Incorrect strategy classifications** - VALID DEVIATION: Combining continuous float ranges and regex patterns should be "Complex strategy", not "Combination strategy".
 
 ## test_texture_sizing.py
 
-- Line 28-356: Class `TestComprehensiveTextureSizeCalculation` contains tests for multiple distinct texture_size behaviors (return type, non-negative values, empty labels, heading widgets, paragraph widgets, code blocks, lists, tables, block quotes, thematic breaks, content height, mixed content, accessibility, nested lists, ordered lists, text changes, images, heading levels, blank lines). According to the guideline "One class per property or behavior", these should be split into separate classes like `TestTextureSizeReturnType`, `TestTextureSizeNonNegative`, `TestEmptyLabelTextureSize`, `TestHeadingTextureSize`, `TestParagraphTextureSize`, `TestCodeBlockTextureSize`, `TestListTextureSize`, `TestTableTextureSize`, `TestBlockQuoteTextureSize`, `TestThematicBreakTextureSize`, `TestContentHeightTextureSize`, `TestMixedContentTextureSize`, `TestTextureSizeAccessibility`, `TestNestedListTextureSize`, `TestOrderedListTextureSize`, `TestTextureSizeTextChanges`, `TestImageTextureSize`, `TestHeadingLevelsTextureSize`, `TestBlankLinesTextureSize` for better organization and clarity.
-- Line 269-293: Test method `test_texture_size_updates_on_text_change` uses `force_rebuild()` after text property changes but does not verify that a rebuild occurred. According to the rebuild contract testing guidelines, tests for structure property changes should verify that the widget tree was rebuilt using `collect_widget_ids()` to compare widget IDs before and after the change, or use `assert_rebuild_occurred()` helper from test_utils.py. The current test only verifies that texture_size returns valid values without checking whether the widget tree was actually rebuilt.
+**DEBATABLE:**
+
+- **Line 28-356: Class organization** - DEBATABLE: `TestComprehensiveTextureSizeCalculation` is a large class testing many texture_size behaviors. The guideline "one class per property/behavior" suggests splitting, but for a comprehensive test of a single method (`texture_size`), having one large class is defensible. Consider splitting if navigation becomes difficult.
+
+**VALID SUGGESTION:**
+
+- **Line 269-293: Missing rebuild verification** - VALID SUGGESTION: The test uses `force_rebuild()` but doesn't verify that a rebuild occurred. Adding rebuild verification would improve test quality. This is a coverage gap, not a guideline deviation.
 
 ## meta_tests/test_assertion_analyzer.py
 
-- Line 95-99, 142-155: Custom Hypothesis strategies are defined inline in the test file instead of in `test_utils.py`. The guidelines state: "When adding new helper functions: 1. **Add to `test_utils.py`** - Never duplicate in individual test files" and "Always use helper functions from `test_utils.py` instead of duplicating code." The strategies `st.text(min_size=1, max_size=50, alphabet=st.characters(whitelist_categories=['L', 'N']) | st.just('_'))` and the combination of `st.sampled_from([...])` with `st.text(...)` should be extracted as reusable strategy functions in test_utils.py.
-- Line 156-157: Strategy combining `st.sampled_from([...])` (5 assertion types, finite) and `st.text(...)` (complex/infinite text generation) is classified as "Combination strategy: 30 examples (combination coverage)". This is incorrect. The guidelines state: "Combination strategy classification is for combining finite strategies where the product can be calculated." Since one strategy is complex/infinite (text generation), this should be classified as "Complex strategy" with rationale about testing assertion classification consistency across different test structures and assertion types.
-- Line 156-157: The comment "# Combination strategy: 30 examples (combination coverage)" should be "# Complex strategy: 30 examples (testing assertion classification consistency across different test structures and assertion types)" to accurately reflect the strategy type.
+**ACTUAL DEVIATIONS:**
+
+- **Line 95-99, 142-155: Custom strategies in test file** - MINOR DEVIATION: These strategies are specific to testing the assertion analyzer. If they're only used here, keeping them local is acceptable. If reused elsewhere, move to test_utils.py.
+- **Line 156-157: Incorrect strategy classification** - VALID DEVIATION: Combining finite `sampled_from` with complex/infinite text generation should be "Complex strategy", not "Combination strategy".
+
+---
+
+## Summary
+
+**Key Findings:**
+
+1. **MAJOR MISUNDERSTANDING**: Many "deviations" incorrectly claim tests should use `assert_rebuild_occurred(widget, change_func)` and `assert_no_rebuild(widget, change_func)`. The actual signatures are `assert_rebuild_occurred(widget, ids_before)` and `assert_no_rebuild(widget, ids_before)` - they require manual ID collection first. The current test patterns are CORRECT.
+
+2. **VALID STRATEGY CLASSIFICATION ISSUES**: Many tests incorrectly classify strategies that combine complex/infinite strategies (floats, text, colors) with finite strategies as "Combination strategy". The rule is: if ANY strategy in the combination is complex/infinite, use "Complex strategy" classification.
+
+3. **ACCEPTABLE PATTERNS**: 
+   - Local helper functions specific to one test file are acceptable
+   - Large "comprehensive" or "edge cases" classes are debatable but not clear violations
+   - Manual widget traversal is acceptable when `find_labels_recursive()` doesn't fit the use case
+   - Using `force_rebuild()` in tests is the CORRECT documented pattern
+
+4. **COVERAGE GAPS vs DEVIATIONS**: Many items are suggestions for improving test coverage (adding rebuild verification, better naming) rather than actual deviations from guidelines.
+
+**Recommendation**: Focus on fixing the strategy classification issues. The other items are mostly acceptable patterns or coverage improvement suggestions rather than guideline violations.
