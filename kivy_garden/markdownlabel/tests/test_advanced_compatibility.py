@@ -781,8 +781,7 @@ class TestReactiveRebuildOnPropertyChange:
                 f"After change, expected strip={strip2}, got {lbl.strip}"
 
     @given(st.booleans(), st.booleans())
-    # 2 × 2 = 4 combinations
-    # Use 4 examples for full coverage
+    # Combination strategy: 4 examples (combination coverage)
     @settings(max_examples=4, deadline=None)
     def test_disabled_change_triggers_rebuild(self, disabled1, disabled2):
         """Changing disabled after initial rendering triggers widget rebuild."""

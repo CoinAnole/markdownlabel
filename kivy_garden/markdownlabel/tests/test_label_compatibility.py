@@ -152,7 +152,7 @@ class TestNoOpPropertiesAcceptance:
 
     @given(st.booleans(), st.booleans(), st.booleans(), st.booleans(), st.booleans(),
            simple_markdown_document())
-    # Mixed finite/complex strategy: 50 examples (32 finite × ~2 complex samples)
+    # Mixed finite/complex strategy: 50 examples (32 finite × 2 complex samples)
     @settings(max_examples=50, deadline=None)
     def test_noop_properties_do_not_affect_rendering(self, bold, italic, underline,
                                                       strikethrough, markup, markdown_text):
@@ -288,7 +288,7 @@ class TestNoOpPropertyAcceptanceAndStorage:
            st.one_of(st.none(), st.text(min_size=1, max_size=5)),
            st.sampled_from([None, 'ltr', 'rtl', 'weak_ltr', 'weak_rtl']),
            st.dictionaries(st.text(min_size=1, max_size=5), st.booleans(), max_size=3))
-    # Mixed finite/complex strategy: 50 examples (finite × complex samples)
+    # Mixed finite/complex strategy: 50 examples (10 finite × 5 complex samples)
     @settings(max_examples=50, deadline=None)
     def test_all_noop_properties_together_accepted_and_stored(self, mipmap, outline_width,
                                                               outline_color, text_language,
@@ -372,7 +372,7 @@ class TestNoOpPropertyAcceptanceAndStorage:
            st.sampled_from([None, 'ltr', 'rtl', 'weak_ltr', 'weak_rtl']),
            st.dictionaries(st.text(min_size=1, max_size=5), st.booleans(), max_size=3),
            simple_markdown_document())
-    # Mixed finite/complex strategy: 20 examples (finite × complex samples)
+    # Mixed finite/complex strategy: 20 examples (10 finite × 2 complex samples)
     @settings(max_examples=20, deadline=None)
     def test_advanced_noop_properties_do_not_affect_rendering(self, mipmap, outline_width, outline_color,
                                                               text_language, base_direction, ellipsis_options,

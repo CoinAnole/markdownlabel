@@ -68,7 +68,7 @@ class TestBatchedRebuilds:
         st_font_size(min_value=10, max_value=30),
         st_font_name(fonts=["Roboto", "RobotoMono-Regular"]),
     )
-    # Mixed finite/complex strategy: 15 examples (2 finite × ~7 complex samples)
+    # Mixed finite/complex strategy: 15 examples (2 finite × 8 complex samples)
     @settings(max_examples=15, deadline=None)
     def test_mixed_property_changes_batch_rebuilds(self, text, font_size, font_name):
         """Mixed structure property changes batch into single rebuild.

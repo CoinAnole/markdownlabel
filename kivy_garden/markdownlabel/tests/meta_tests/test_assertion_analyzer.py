@@ -153,7 +153,7 @@ def test_{test_name_suffix}_triggers_rebuild(self):
             alphabet=st.characters(whitelist_categories=['L', 'N']) | st.just('_'),
         )
     )
-    # Combination strategy: 30 examples (combination coverage)
+    # Mixed finite/complex strategy: 30 examples (5 finite × 6 complex samples)
     @settings(max_examples=30, deadline=None)
     def test_assertion_classification_consistency(self, assertion_type, test_name_base):
         """Test that assertion classification is consistent across different test structures."""
