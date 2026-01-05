@@ -183,7 +183,6 @@ class TestHelperFunctionAvailability:
 - Test universal properties across many inputs
 - Use Hypothesis for input generation
 - Verify behavior holds for all valid inputs
-- Minimum 100 iterations per property test (unless optimized)
 
 ## Rebuild Contract Testing
 
