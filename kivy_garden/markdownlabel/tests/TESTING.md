@@ -603,9 +603,9 @@ def test_medium_range(value):
     assert 1 <= value <= 20
 ```
 
-#### 4. Combination Strategies
+#### 4. Combination Strategies (All Finite)
 
-**Pattern:** Multiple strategies combined (tuples, multiple @given arguments)
+**Pattern:** Multiple finite strategies combined (tuples, multiple @given arguments) where ALL strategies are finite
 **Recommended max_examples:** Product of individual strategy sizes, capped at 50
 **Format:** `Combination strategy: [N] examples (combination coverage)`
 
@@ -619,9 +619,11 @@ def test_boolean_enum_combination(value):
     assert enum_val in ['a', 'b', 'c']
 ```
 
+**Important:** This classification only applies when ALL combined strategies are finite. If any strategy is complex/infinite, use "Mixed finite/complex strategy" instead.
+
 #### 5. Complex/Infinite Strategies
 
-**Pattern:** `st.text()`, `st.floats()`, large ranges, recursive strategies
+**Pattern:** Single `st.text()`, `st.floats()`, large ranges, or recursive strategies
 **Recommended max_examples:** 10-50 based on complexity
 **Format:** `Complex strategy: [N] examples (adequate coverage)` or `Complex strategy: [N] examples (performance optimized)`
 
@@ -633,11 +635,67 @@ def test_text_length_property(text):
     assert len(text) >= 0
 ```
 
+#### 6. Mixed Finite/Complex Strategies
+
+**Pattern:** Combinations where at least one strategy is finite AND at least one is complex/infinite
+**Recommended max_examples:** `finite_size × samples_per_finite_value` (typically 5-10 samples)
+**Format:** `Mixed finite/complex strategy: [N] examples ([finite_size] finite × [samples] complex samples)`
+
+The goal is to ensure each finite value gets paired with multiple samples from the complex/infinite space.
+
+```python
+# Example 1: Boolean + text
+@given(st.booleans(), st.text(min_size=1, max_size=50))
+# Mixed finite/complex strategy: 20 examples (2 finite × 10 complex samples)
+@settings(max_examples=20, deadline=None)
+def test_boolean_with_text(flag, text):
+    # Each boolean value (True/False) gets ~10 text samples
+    pass
+
+# Example 2: Small enum + floats
+@given(
+    st.sampled_from(['left', 'center', 'right']),
+    st.floats(min_value=0.0, max_value=1.0, allow_nan=False)
+)
+# Mixed finite/complex strategy: 30 examples (3 finite × 10 complex samples)
+@settings(max_examples=30, deadline=None)
+def test_alignment_with_opacity(halign, opacity):
+    # Each alignment value gets ~10 float samples
+    pass
+
+# Example 3: Heading level + color (RGBA floats)
+@given(
+    st.integers(min_value=1, max_value=6),
+    st.tuples(
+        st.floats(0, 1, allow_nan=False),
+        st.floats(0, 1, allow_nan=False),
+        st.floats(0, 1, allow_nan=False),
+        st.floats(0, 1, allow_nan=False)
+    )
+)
+# Mixed finite/complex strategy: 30 examples (6 finite × 5 complex samples)
+@settings(max_examples=30, deadline=None)
+def test_heading_with_color(level, color):
+    # Each heading level gets ~5 color samples
+    pass
+```
+
+**Formula:** `max_examples = finite_space_size × samples_per_value`
+
+| Finite Space Size | Samples per Value | max_examples |
+|-------------------|-------------------|--------------|
+| 2 (boolean)       | 10                | 20           |
+| 3-6 (small enum)  | 5-10              | 15-60        |
+| 7-10              | 3-5               | 21-50        |
+
+**Why this matters:** Without this approach, Hypothesis might generate 20 examples that happen to all use `True` with different texts, leaving `False` untested. By sizing based on the finite dimension, we ensure coverage of all finite values.
+
 ### Right-Sizing Principles
 
 - **Finite strategies:** Use input space size (test each value once)
 - **Infinite strategies:** Use moderate counts based on property complexity
-- **Combination strategies:** Calculate combinations, cap at reasonable limits
+- **Combination strategies (all finite):** Calculate product, cap at 50
+- **Mixed finite/complex:** Use `finite_size × samples` to ensure finite coverage
 
 ### Performance Impact
 
@@ -701,7 +759,7 @@ def test_alignment_with_direction_and_heading(halign, direction, heading_level):
 | 2 enums, product ≤20 | Either approach works | Parametrize gives full coverage |
 | 2+ enums, product >20 | Hypothesis | Sampling avoids test explosion |
 | Infinite/broad space | Hypothesis | Only option for text, floats, etc. |
-| Mixed finite + infinite | Hypothesis | Combine strategies naturally |
+| Mixed finite + infinite | Hypothesis with "Mixed finite/complex" | Use `finite_size × samples` formula |
 
 #### Hybrid Approach: Parametrize Important Dimension, Sample Others
 
@@ -1039,8 +1097,8 @@ class TestFontSizeImmediateUpdates:
         st.floats(min_value=8.0, max_value=50.0, allow_nan=False),
         st.floats(min_value=8.0, max_value=50.0, allow_nan=False)
     )
-    # Combination strategy: 50 examples (combination coverage)
-    @settings(max_examples=50, deadline=None)
+    # Complex strategy: 30 examples (two continuous float ranges)
+    @settings(max_examples=30, deadline=None)
     def test_font_size_updates_preserve_scale_factors(self, initial_size, new_size):
         """Test that font size updates preserve heading scale factors."""
         assume(abs(initial_size - new_size) > 1.0)
@@ -1057,6 +1115,22 @@ class TestFontSizeImmediateUpdates:
         # Verify scale factor preserved
         expected_size = new_size * scale_factor
         assert abs(heading_label.font_size - expected_size) < 0.1
+    
+    @given(
+        st.integers(min_value=1, max_value=6),  # heading level (finite)
+        st.floats(min_value=8.0, max_value=50.0, allow_nan=False)  # font size (complex)
+    )
+    # Mixed finite/complex strategy: 30 examples (6 finite × 5 complex samples)
+    @settings(max_examples=30, deadline=None)
+    def test_heading_scale_varies_by_level(self, heading_level, base_size):
+        """Test that heading scale factors vary correctly by level."""
+        markdown = f"{'#' * heading_level} Heading"
+        label = MarkdownLabel(text=markdown, base_font_size=base_size)
+        
+        heading_label = find_labels_recursive(label)[0]
+        # Higher level headings (h1) should have larger scale factors
+        expected_min_scale = 1.0 + (6 - heading_level) * 0.1
+        assert heading_label.font_size >= base_size * expected_min_scale
 ```
 
 ### Validation Checklist
@@ -1065,13 +1139,14 @@ Before committing tests, verify:
 
 1. **Boolean strategies use max_examples=2**
 2. **Small finite strategies use input space size**
-3. **Combination strategies use product formula (capped at 50)**
+3. **Combination strategies (all finite) use product formula (capped at 50)**
 4. **Complex strategies use 10-50 examples based on complexity**
-5. **All custom values include standardized comments**
-6. **Comments follow the format: `# [Strategy Type] strategy: [N] examples ([Rationale])`**
-7. **Strategy type classifications use standardized terminology**
-8. **Rationale templates match the strategy type**
-9. **Test names accurately reflect what they assert**
-10. **Helper functions are used from test_utils.py**
+5. **Mixed finite/complex strategies use `finite_size × samples` formula**
+6. **All custom values include standardized comments**
+7. **Comments follow the format: `# [Strategy Type] strategy: [N] examples ([Rationale])`**
+8. **Strategy type classifications use standardized terminology**
+9. **Rationale templates match the strategy type**
+10. **Test names accurately reflect what they assert**
+11. **Helper functions are used from test_utils.py**
 
 This comprehensive testing guide ensures consistent, maintainable, and high-performance test coverage for the MarkdownLabel project.
