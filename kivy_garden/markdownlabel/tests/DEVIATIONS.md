@@ -152,23 +152,6 @@
   - Total finite space: 10 × 9 = 90 combinations
   - The comment only mentions "9 finite" which omits the document structure finite combinations
 
-## Summary
-
-**Total deviations found**: 24 (22 from test_sizing_behavior.py + 2 from test_advanced_compatibility.py)
-
-**Patterns**:
-1. **test_sizing_behavior.py**: All tests using `simple_markdown_document()` or `markdown_heading()` strategies are incorrectly classified as "Complex strategy" when they should be classified as "Mixed finite/complex strategy" because these strategies combine finite elements (number of elements, element types, heading levels) with complex text generation.
-2. **test_advanced_compatibility.py**:
-   - One strategy definition incorrectly classifies continuous float generation as "Medium finite strategy"
-   - One test incorrectly calculates the finite space size when combining multiple finite strategies
-
-**Correctly classified tests**:
-- test_sizing_behavior.py:
-  - Line 64-66: `test_more_content_means_more_height_potential` - Correctly uses "Small finite strategy"
-  - Line 384-386: `test_strict_mode_property_accepted_and_stored` - Correctly uses "Boolean strategy"
-  - Line 393-395: `test_strict_mode_change_after_creation` - Correctly uses "Boolean strategy"
-- test_advanced_compatibility.py: All other tests with custom max_examples are correctly classified
-
 ## test_serialization.py
 
 ### Line 120-123: `test_heading_round_trip`
@@ -188,22 +171,6 @@
 - **Current comment**: `# Complex strategy: 20 examples (adequate coverage)`
 - **Expected comment**: `# Complex strategy: 20 examples (two complex strategies combined)` or similar
 - **Reason**: While this correctly identifies it as a complex strategy, the comment doesn't accurately reflect that it combines two separate complex strategies (`st.text()` for code_content and `st.text()` with alphabet filtering for language). The rationale should mention the combination of multiple complex strategies.
-
-## Summary
-
-**Total deviations found**: 27 (24 from previous files + 3 from test_serialization.py)
-
-**New patterns in test_serialization.py**:
-1. **test_heading_round_trip**: Incorrectly classifies `markdown_heading()` as pure complex when it's mixed finite/complex (6 heading levels × complex text)
-2. **test_document_round_trip**: Incorrectly classifies `simple_markdown_document()` as pure complex when it's mixed finite/complex (10 finite combinations × complex text)
-3. **test_code_serialization_round_trip_property**: Correctly identifies as complex strategy but the rationale doesn't accurately describe the combination of two complex strategies
-
-**Correctly classified tests in test_serialization.py**:
-- Line 139-142: `test_paragraph_round_trip` - Correctly uses "Complex strategy" (pure complex text generation)
-- Line 162-165: `test_bold_round_trip` - Correctly uses "Complex strategy" (pure complex text generation)
-- Line 178-181: `test_italic_round_trip` - Correctly uses "Complex strategy" (pure complex text generation)
-- Line 194-197: `test_link_round_trip` - Correctly uses "Complex strategy" (pure complex text + URL generation)
-- Line 550-553: `test_fence_collision_handling_property` - Correctly uses "Complex strategy" (pure complex text generation)
 
 ## test_rebuild_semantics.py
 
@@ -255,24 +222,6 @@
 - **Expected comment**: `# Mixed finite/complex strategy: 50 examples (2 finite × 25 complex samples)` or `# Mixed finite/complex strategy: 50 examples (multiple finite dimensions × complex samples)`
 - **Reason**: The strategy combines a finite dimension (link_style: 2 values) with complex strategies (simple_markdown_document(), st_font_size(), st_rgba_color()). The current rationale incorrectly states "0 complex samples" when there are 3 complex strategies. Also, `simple_markdown_document()` is a mixed finite/complex strategy.
 
-## Summary
-
-**Total deviations found**: 35 (27 from previous files + 8 from test_rebuild_semantics.py)
-
-**New patterns in test_rebuild_semantics.py**:
-1. **Incorrect rationale with "0 complex samples"**: Multiple tests incorrectly state "0 complex samples" in their rationale when they actually have multiple complex strategies (st_font_size, st_rgba_color, st.floats, etc.)
-2. **Undercounting finite combinations**: Tests using `simple_markdown_document()` fail to account for its finite dimensions (num_elements: 1-5, element_type: 2 = 10 combinations) when calculating finite space
-3. **Misclassification of simple_markdown_document()**: Several tests classify `simple_markdown_document()` as pure complex when it's actually a mixed finite/complex strategy
-
-**Correctly classified tests in test_rebuild_semantics.py**:
-- All unit tests (without @given decorator) are not subject to strategy classification guidelines
-- No property-based tests in this file have correct strategy classifications
-
-**Common issues across all files**:
-1. `simple_markdown_document()` is consistently misclassified as pure complex when it's mixed finite/complex
-2. Rationales claiming "0 complex samples" are incorrect when complex strategies are present
-3. Finite space calculations often omit dimensions from mixed strategies
-
 ## test_texture_render_mode.py
 
 ### Line 230-231: `test_property_inside_zone_dispatch`
@@ -287,17 +236,6 @@
 - **Expected comment**: `# Mixed finite/complex strategy: 50 examples (multiple finite dimensions × complex samples)` or similar
 - **Reason**: Same as above - combines a finite `st.from_regex()` strategy for URL generation with multiple complex `st.floats()` strategies for zone coordinates and offset values. Should be classified as "Mixed finite/complex strategy" rather than pure "Complex strategy".
 
-## Summary
-
-**Total deviations found**: 37 (35 from previous files + 2 from test_texture_render_mode.py)
-
-**New patterns in test_texture_render_mode.py**:
-1. **st.from_regex() with constrained patterns**: Tests using `st.from_regex()` with highly constrained patterns (limited character sets and length ranges) are classified as pure complex when they should be mixed finite/complex because the constrained pattern generates a finite input space combined with other complex strategies.
-
-**Correctly classified tests in test_texture_render_mode.py**:
-- All unit tests (without @given decorator) are not subject to strategy classification guidelines
-- All other property-based tests in this file have correct strategy classifications
-
 ## test_texture_sizing.py
 
 ### Line 269-271: `test_texture_size_updates_on_text_change`
@@ -305,23 +243,6 @@
 - **Current comment**: `# Complex strategy: 50 examples (adequate coverage)`
 - **Expected comment**: `# Mixed finite/complex strategy: 50 examples (100 finite combinations × 0.5 complex samples)` or similar
 - **Reason**: The strategy combines two `simple_markdown_document()` strategies, each of which is a mixed finite/complex strategy (num_elements: 1-5 values, element_type: 2 values = 10 finite combinations per strategy). The total finite space is 10 × 10 = 100 combinations. The current classification as "Complex strategy" doesn't accurately reflect the finite dimensions present in the combined strategy space. While "adequate coverage" is an acceptable rationale, the strategy type should be "Mixed finite/complex" to accurately reflect that both strategies have finite dimensions.
-
-## Summary
-
-**Total deviations found**: 38 (37 from previous files + 1 from test_texture_sizing.py)
-
-**New patterns in test_texture_sizing.py**:
-1. **Combining mixed finite/complex strategies**: When combining multiple `simple_markdown_document()` strategies, the finite dimensions multiply (10 × 10 = 100 combinations), which should be reflected in the strategy classification and rationale.
-
-**Correctly classified tests in test_texture_sizing.py**:
-- Line 31-33: `test_texture_size_returns_tuple` - Correctly uses "Complex strategy" (single complex strategy)
-- Line 45-47: `test_texture_size_non_negative` - Correctly uses "Complex strategy" (single complex strategy)
-- Line 68-70: `test_heading_creates_label_widget` - Correctly uses "Complex strategy" (single complex strategy)
-- Line 84-86: `test_paragraph_creates_label_widget` - Correctly uses "Complex strategy" (single complex strategy)
-- Line 174-176: `test_more_content_increases_texture_height` - Correctly uses "Small finite strategy" (5 finite values)
-- Line 218-220: `test_texture_size_accessible_for_all_content` - Correctly uses "Complex strategy" (single complex strategy)
-- Line 316-318: `test_all_heading_levels_create_label_widgets` - Correctly uses "Small finite strategy" (6 finite values)
-- All unit tests (without @given decorator) are not subject to strategy classification guidelines
 
 ## test_shortening_and_coordinate.py
 
@@ -337,36 +258,4 @@
   - Total finite space: 2 × 3 × 5 = 30 combinations
   - With max_examples=50, each finite combination gets approximately 50/30 = 1.7 complex text samples
   - The current rationale incorrectly states "50 complex samples" when it should be approximately 1.7 complex samples per finite value
-
-## Summary
-
-**Total deviations found**: 39 (38 from previous files + 1 from test_shortening_and_coordinate.py)
-
-**New patterns in test_shortening_and_coordinate.py**:
-1. **Incorrect complex samples calculation in rationale**: When combining multiple finite strategies with one complex strategy, rationale incorrectly states total max_examples as the number of complex samples instead of calculating samples per finite value (max_examples ÷ finite_combinations).
-
-**Correctly classified tests in test_shortening_and_coordinate.py**:
-- Line 42-44: `test_shorten_forwarded_to_paragraph` - Correctly uses "Boolean strategy" (2 examples)
-- Line 56-58: `test_shorten_forwarded_to_heading` - Correctly uses "Boolean strategy" (2 examples)
-- Line 70-72: `test_shorten_forwarded_to_list_items` - Correctly uses "Boolean strategy" (2 examples)
-- Line 86-88: `test_shorten_forwarded_to_table_cells` - Correctly uses "Boolean strategy" (2 examples)
-- Line 137-139: `test_split_str_forwarded_to_paragraph` - Correctly uses "Complex strategy" (30 examples)
-- Line 151-153: `test_split_str_forwarded_to_heading` - Correctly uses "Complex strategy" (30 examples)
-- Line 165-167: `test_max_lines_forwarded_to_paragraph` - Correctly uses "Medium finite strategy" (11 examples)
-- Line 181-183: `test_max_lines_forwarded_to_heading` - Correctly uses "Small finite strategy" (10 examples)
-- Line 195-197: `test_max_lines_forwarded_to_list_items` - Correctly uses "Small finite strategy" (10 examples)
-- Line 210-214: `test_ellipsis_options_forwarded_to_paragraph` - Correctly uses "Complex strategy" (20 examples)
-- Line 226-230: `test_ellipsis_options_forwarded_to_heading` - Correctly uses "Complex strategy" (20 examples)
-- Line 242-246: `test_ellipsis_options_forwarded_to_list_items` - Correctly uses "Complex strategy" (20 examples)
-- Line 258-262: `test_ellipsis_options_forwarded_to_table_cells` - Correctly uses "Complex strategy" (20 examples)
-- Line 328-330: `test_shorten_change_updates_value` - Correctly uses "Combination strategy" (2 examples)
-- Line 366-368: `test_link_produces_ref_markup_for_translation` - Correctly uses "Complex strategy" (20 examples)
-- Line 397-402: `test_multiple_links_produce_ref_markup` - Correctly uses "Complex strategy" (20 examples)
-- Line 565-568: `test_ref_markup_updates_when_text_changes` - Correctly uses "Complex strategy" (20 examples)
-- Line 601-605: `test_coordinate_translation_math` - Correctly uses "Complex strategy" (20 examples)
-- Line 633-636: `test_anchor_translation_math` - Correctly uses "Complex strategy" (20 examples)
-- Line 925-945: `test_property_refs_coordinate_translation_math` - Correctly uses "Complex strategy" (50 examples)
-- Line 1260-1278: `test_property_anchors_coordinate_translation_math` - Correctly uses "Complex strategy" (50 examples)
-- All unit tests (without @given decorator) are not subject to strategy classification guidelines
-- All tests using `@pytest.mark.parametrize` are not subject to strategy classification guidelines
 
