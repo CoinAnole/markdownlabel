@@ -40,7 +40,7 @@ class TestBooleanStrategyDocumentation:
             whitelist_categories=('Lu', 'Ll', 'Nd', 'Pc')
         )).map(lambda x: f"test_{x}")
     )
-    # Boolean strategy: 2 examples (True/False coverage)
+    # Complex strategy: 2 examples (adequate coverage)
     @settings(max_examples=2, deadline=None)
     def test_boolean_strategy_comments_reference_true_false_coverage(
         self, max_examples, function_name
@@ -314,7 +314,7 @@ class TestFiniteStrategyDocumentation:
             lambda x: x not in {2, 5, 10, 20, 50, 100}
         )
     )
-    # Combination strategy: 25 examples (adequate coverage)
+    # Combination strategy: 25 examples (combination coverage)
     @settings(max_examples=25, deadline=None)
     def test_finite_strategy_comments_reference_input_space_size(
         self, min_value, max_value, max_examples
@@ -388,7 +388,7 @@ def test_finite_strategy(num):
             lambda x: x not in {2, 5, 10, 20, 50, 100}
         )
     )
-    # Combination strategy: 30 examples (adequate coverage)
+    # Complex strategy: 30 examples (adequate coverage)
     @settings(max_examples=30, deadline=None)
     def test_sampled_from_finite_strategy_documentation(self, items, max_examples):
         """Sampled_from finite strategies are properly documented."""
@@ -608,7 +608,7 @@ class TestPerformanceRationaleDocumentation:
             whitelist_categories=('Lu', 'Ll', 'Nd', 'Pc')
         )).map(lambda x: f"test_{x}")
     )
-    # Small finite strategy: 5 examples (input space size: 5)
+    # Mixed strategy: 5 examples (performance optimized)
     @settings(max_examples=5, deadline=None)
     def test_execution_time_performance_rationale_documented(
         self, max_examples, strategy_complexity, function_name
@@ -684,7 +684,7 @@ def {function_name}(data):
             whitelist_categories=('Lu', 'Ll', 'Nd', 'Pc')
         )).map(lambda x: f"test_{x}")
     )
-    # Combination strategy: 4 examples (performance optimized)
+    # Mixed strategy: 4 examples (performance optimized)
     @settings(max_examples=4, deadline=None)
     def test_explicit_performance_comments_detected(
         self, performance_keywords, max_examples, function_name

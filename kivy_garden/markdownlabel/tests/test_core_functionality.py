@@ -106,7 +106,7 @@ class TestMarkdownTextPropertyUpdates:
 
     @pytest.mark.needs_window
     @given(markdown_heading(), markdown_paragraph())
-    # Combination strategy: 50 examples (combination coverage)
+    # Complex strategy: 50 examples (adequate coverage)
     @settings(max_examples=50, deadline=None)
     def test_text_change_updates_widgets(self, text1, text2):
         """Changing text property updates the widget tree."""
@@ -173,7 +173,7 @@ class TestMarkdownTextPropertyUpdates:
 
     @pytest.mark.needs_window
     @given(simple_markdown_document(), simple_markdown_document())
-    # Combination strategy: 50 examples (combination coverage)
+    # Complex strategy: 50 examples (adequate coverage)
     @settings(max_examples=50, deadline=None)
     def test_ast_updates_with_text(self, text1, text2):
         """AST tokens update when text changes."""
@@ -277,8 +277,8 @@ class TestMarkdownNestingStability:
 
     @pytest.mark.needs_window
     @given(st.integers(min_value=1, max_value=15))
-    # Medium finite strategy: 15 examples (adequate finite coverage)
-    @settings(max_examples=15, deadline=None)
+    # Medium finite strategy: 20 examples (adequate finite coverage)
+    @settings(max_examples=20, deadline=None)
     def test_nested_lists_render_without_exception(self, depth):
         """Deeply nested lists render without raising exceptions."""
         # Generate nested list markdown
@@ -296,8 +296,8 @@ class TestMarkdownNestingStability:
 
     @pytest.mark.needs_window
     @given(st.integers(min_value=1, max_value=15))
-    # Medium finite strategy: 15 examples (adequate finite coverage)
-    @settings(max_examples=15, deadline=None)
+    # Medium finite strategy: 20 examples (adequate finite coverage)
+    @settings(max_examples=20, deadline=None)
     def test_nested_quotes_render_without_exception(self, depth):
         """Deeply nested block quotes render without raising exceptions."""
         # Generate nested quote markdown
@@ -314,8 +314,8 @@ class TestMarkdownNestingStability:
 
     @pytest.mark.needs_window
     @given(st.integers(min_value=1, max_value=15))
-    # Medium finite strategy: 15 examples (adequate finite coverage)
-    @settings(max_examples=15, deadline=None)
+    # Medium finite strategy: 20 examples (adequate finite coverage)
+    @settings(max_examples=20, deadline=None)
     def test_mixed_nesting_renders_without_exception(self, depth):
         """Mixed nested structures (lists and quotes) render without exceptions."""
         # Generate mixed nested markdown

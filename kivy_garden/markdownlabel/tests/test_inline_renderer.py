@@ -203,7 +203,7 @@ class TestSpecialCharacterEscaping:
             f"Expected {input_ampersands} &amp; escapes, got {output_amp}"
 
     @given(st.text(alphabet='[]&', min_size=1, max_size=50))
-    # Medium finite strategy: 50 examples (adequate finite coverage)
+    # Complex strategy: 50 examples (adequate coverage)
     @settings(max_examples=50, deadline=None)
     def test_only_special_chars_fully_escaped(self, raw):
         """Text containing only special characters is fully escaped."""

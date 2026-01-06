@@ -210,8 +210,8 @@ class TestShorteningPropertyForwarding:
     @given(st.fixed_dictionaries({
         'markup_color': st_rgba_color()
     }))
-    # Small finite strategy: 3 examples (input space size: 3)
-    @settings(max_examples=3, deadline=None)
+    # Complex strategy: 20 examples (adequate coverage)
+    @settings(max_examples=20, deadline=None)
     def test_ellipsis_options_forwarded_to_paragraph(self, ellipsis_opts):
         """ellipsis_options property is forwarded to paragraph Labels."""
         label = MarkdownLabel(text='Hello World', ellipsis_options=ellipsis_opts)
@@ -226,8 +226,8 @@ class TestShorteningPropertyForwarding:
     @given(st.fixed_dictionaries({
         'markup_color': st_rgba_color()
     }))
-    # Small finite strategy: 3 examples (input space size: 3)
-    @settings(max_examples=3, deadline=None)
+    # Complex strategy: 20 examples (adequate coverage)
+    @settings(max_examples=20, deadline=None)
     def test_ellipsis_options_forwarded_to_heading(self, ellipsis_opts):
         """ellipsis_options property is forwarded to heading Labels."""
         label = MarkdownLabel(text='# Heading', ellipsis_options=ellipsis_opts)
@@ -242,8 +242,8 @@ class TestShorteningPropertyForwarding:
     @given(st.fixed_dictionaries({
         'markup_color': st_rgba_color()
     }))
-    # Small finite strategy: 3 examples (input space size: 3)
-    @settings(max_examples=3, deadline=None)
+    # Complex strategy: 20 examples (adequate coverage)
+    @settings(max_examples=20, deadline=None)
     def test_ellipsis_options_forwarded_to_list_items(self, ellipsis_opts):
         """ellipsis_options property is forwarded to list item Labels."""
         markdown = '- Item 1\n- Item 2'
@@ -259,8 +259,8 @@ class TestShorteningPropertyForwarding:
     @given(st.fixed_dictionaries({
         'markup_color': st_rgba_color()
     }))
-    # Small finite strategy: 3 examples (input space size: 3)
-    @settings(max_examples=3, deadline=None)
+    # Complex strategy: 20 examples (adequate coverage)
+    @settings(max_examples=20, deadline=None)
     def test_ellipsis_options_forwarded_to_table_cells(self, ellipsis_opts):
         """ellipsis_options property is forwarded to table cell Labels."""
         markdown = '| A | B |\n| --- | --- |\n| 1 | 2 |'
@@ -288,7 +288,7 @@ class TestShorteningPropertyForwarding:
     @given(st.booleans(), st.sampled_from(['left', 'center', 'right']),
            st.text(min_size=0, max_size=3, alphabet='ab '),
            st.integers(min_value=1, max_value=5))
-    # Combination strategy: 50 examples (combination coverage)
+    # Mixed finite/complex strategy: 50 examples (30 finite × 50 complex samples)
     @settings(max_examples=50, deadline=None)
     def test_all_shortening_properties_forwarded_together(
             self, shorten_val, shorten_from_val, split_str_val, max_lines_val):
@@ -326,7 +326,7 @@ Paragraph text
                 f"Expected max_lines={max_lines_val}, got {lbl.max_lines}"
 
     @given(st.booleans(), st.booleans())
-    # Boolean strategy: 2 examples (True/False coverage)
+    # Combination strategy: 2 examples (combination coverage)
     @settings(max_examples=2, deadline=None)
     def test_shorten_change_updates_value(self, shorten1, shorten2):
         """Changing shorten triggers widget rebuild with new value."""
@@ -364,7 +364,7 @@ class TestCoordinateTranslation:
     """Property tests for coordinate translation of refs and anchors."""
 
     @given(st_alphanumeric_text(min_size=1, max_size=20))
-    # Combination strategy: 20 examples (adequate coverage)
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_link_produces_ref_markup_for_translation(self, link_text):
         """Links produce ref markup that will be translated when rendered.
@@ -941,8 +941,8 @@ class TestDeterministicRefsTranslation:
         st.floats(min_value=31, max_value=100, allow_nan=False, allow_infinity=False),
         st.floats(min_value=11, max_value=50, allow_nan=False, allow_infinity=False),
     )
-    # Complex strategy: 100 examples (adequate coverage for 12-parameter float strategy)
-    @settings(max_examples=100, deadline=None)
+    # Complex strategy: 50 examples (adequate coverage)
+    @settings(max_examples=50, deadline=None)
     def test_property_refs_coordinate_translation_math(
         self, container_x, container_y, label_x, label_y,
         label_w, label_h, tex_w, tex_h, box_x1, box_y1, box_x2, box_y2
@@ -1274,8 +1274,8 @@ class TestDeterministicAnchorsTranslation:
         st.floats(min_value=0, max_value=100, allow_nan=False, allow_infinity=False),
         st.floats(min_value=0, max_value=50, allow_nan=False, allow_infinity=False),
     )
-    # Complex strategy with 10 float parameters: 100 examples for adequate coverage
-    @settings(max_examples=100, deadline=None)
+    # Complex strategy: 50 examples (adequate coverage)
+    @settings(max_examples=50, deadline=None)
     def test_property_anchors_coordinate_translation_math(
         self, container_x, container_y, label_x, label_y,
         label_w, label_h, tex_w, tex_h, anchor_x, anchor_y

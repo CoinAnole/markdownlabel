@@ -73,7 +73,7 @@ class TestStrategyClassification:
         assert analysis.input_space_size == range_size
 
     @given(st.sampled_from(['st.text()', 'st.floats()', 'st.integers()']))
-    # Small finite strategy: 3 examples (testing complex strategy classification)
+    # Small finite strategy: 3 examples (input space size: 3)
     @settings(max_examples=3, deadline=None)
     def test_complex_strategy_classification(self, strategy_code):
         """Complex/infinite strategies are classified as COMPLEX."""

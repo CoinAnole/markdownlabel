@@ -132,7 +132,7 @@ def test_font_size_triggers_rebuild(self):
         ("value", "widget.text == 'test'", False),
     ])
 )
-# Combination strategy: 50 examples (combination coverage)
+# Mixed finite/complex strategy: 50 examples (2 finite × 25 complex samples)
 @settings(max_examples=50, deadline=None)
 def test_naming_pattern_consistency_property(test_name_base, assertion_type):
     """Test that test methods with consistent naming patterns (matching their

@@ -95,6 +95,17 @@ class TestMisc:
     pass
 ```
 
+#### Acceptable Variations
+
+The "one class per property/behavior" guideline is a recommendation, not a strict rule. These patterns are acceptable:
+
+- **Edge case classes**: A `TestKivyRendererEdgeCases` class grouping miscellaneous edge cases for a component is fine when the tests don't fit neatly into property-based categories
+- **Comprehensive test classes**: A `TestComprehensiveTextureSizeCalculation` class testing many aspects of a single method is reasonable
+- **Small test files**: Import tests or simple smoke tests don't need elaborate class hierarchies
+- **Related behaviors**: Testing multiple closely-related properties (e.g., all color-related properties) in one class is acceptable
+
+The goal is navigability and maintainability, not rigid adherence to structure.
+
 ## Test Naming Conventions
 
 ### Test Method Names
@@ -154,10 +165,15 @@ Use descriptive, specific class names:
 Use appropriate pytest markers to categorize tests:
 
 ```python
-@pytest.mark.slow           # Performance-intensive tests
-@pytest.mark.needs_window   # Tests requiring Kivy window
-@pytest.mark.test_tests     # Meta-tests (tests about test suite structure)
+@pytest.mark.property        # Property-based tests using Hypothesis (see guidelines below)
+@pytest.mark.parametrize     # Parameterized tests with concrete examples (see guidelines below)
+@pytest.mark.unit            # Unit tests
+@pytest.mark.slow            # Performance-intensive tests
+@pytest.mark.needs_window    # Tests requiring Kivy window
+@pytest.mark.test_tests      # Meta-tests (tests about test suite structure)
 ```
+
+**Note:** See [When to Use Hypothesis vs. @pytest.mark.parametrize](#when-to-use-hypothesis-vs-pytestmarkparametrize) for guidance on choosing between `@pytest.mark.property` and `@pytest.mark.parametrize`.
 
 #### Meta-Test Marking
 
@@ -183,9 +199,18 @@ class TestHelperFunctionAvailability:
 - Test universal properties across many inputs
 - Use Hypothesis for input generation
 - Verify behavior holds for all valid inputs
-- Minimum 100 iterations per property test (unless optimized)
 
 ## Rebuild Contract Testing
+
+> **📌 IMPORTANT NOTE ON HELPER FUNCTIONS**
+>
+> The rebuild testing helpers `assert_rebuild_occurred()` and `assert_no_rebuild()` require manual ID collection:
+> ```python
+> ids_before = collect_widget_ids(widget)  # You must do this first
+> # ... make changes ...
+> assert_rebuild_occurred(widget, ids_before)  # Pass ids_before, not a function
+> ```
+> They do NOT take a `change_func` parameter. See [Rebuild Testing Helpers](#rebuild-testing-helpers) for correct usage.
 
 ### Understanding the Rebuild Contract
 
@@ -264,15 +289,88 @@ def test_text_change_triggers_rebuild(self):
 Use these helper functions from `test_utils.py`:
 
 ```python
-def collect_widget_ids(widget):
-    """Collect Python object IDs of all widgets in the tree."""
+def collect_widget_ids(widget, exclude_root=True):
+    """Collect Python object IDs of all widgets in the tree.
     
-def assert_rebuild_occurred(widget, change_func):
-    """Assert that a change function triggers a rebuild."""
+    Returns a dict mapping widget IDs to widget objects for comparison.
+    """
     
-def assert_no_rebuild(widget, change_func):
-    """Assert that a change function does NOT trigger a rebuild."""
+def assert_rebuild_occurred(widget, ids_before, exclude_root=True):
+    """Assert that a widget tree rebuild occurred.
+    
+    Args:
+        widget: Root widget to check
+        ids_before: Dict from collect_widget_ids() before the change
+        exclude_root: If True, exclude root widget from comparison
+    """
+    
+def assert_no_rebuild(widget, ids_before, exclude_root=True):
+    """Assert that no widget tree rebuild occurred.
+    
+    Args:
+        widget: Root widget to check
+        ids_before: Dict from collect_widget_ids() before the change
+        exclude_root: If True, exclude root widget from comparison
+    """
 ```
+
+#### Using the Helper Functions
+
+**IMPORTANT**: These helpers require you to collect widget IDs **before** making changes:
+
+```python
+def test_color_preserves_widget_tree_with_helper(self):
+    """Test that color changes preserve widget tree using helper."""
+    label = MarkdownLabel(text="Hello World")
+    
+    # Step 1: Collect IDs before change
+    ids_before = collect_widget_ids(label)
+    
+    # Step 2: Make the change
+    label.color = [1, 0, 0, 1]
+    
+    # Step 3: Use helper to verify no rebuild
+    assert_no_rebuild(label, ids_before)
+    
+    # Step 4: Verify the change was applied
+    labels = find_labels_recursive(label)
+    assert all(l.color == [1, 0, 0, 1] for l in labels)
+```
+
+```python
+def test_text_triggers_rebuild_with_helper(self):
+    """Test that text changes trigger rebuild using helper."""
+    label = MarkdownLabel(text="Original")
+    
+    # Step 1: Collect IDs before change
+    ids_before = collect_widget_ids(label)
+    
+    # Step 2: Make the change (schedules deferred rebuild)
+    label.text = "New text"
+    
+    # Step 3: Force immediate rebuild for testing
+    label.force_rebuild()
+    
+    # Step 4: Use helper to verify rebuild occurred
+    assert_rebuild_occurred(label, ids_before)
+```
+
+**Manual vs Helper Approach**: Both approaches are valid:
+
+```python
+# Manual approach (explicit, clear)
+ids_before = collect_widget_ids(label)
+label.color = [1, 0, 0, 1]
+ids_after = collect_widget_ids(label)
+assert ids_before == ids_after  # No rebuild
+
+# Helper approach (more concise)
+ids_before = collect_widget_ids(label)
+label.color = [1, 0, 0, 1]
+assert_no_rebuild(label, ids_before)
+```
+
+Both patterns are acceptable. Use helpers for consistency or manual comparison when you need custom error messages.
 
 ### Using `force_rebuild()` in Tests
 
@@ -350,29 +448,83 @@ Don't use `force_rebuild()` when:
        assert label._pending_rebuild is False
    ```
 
-#### Common Pattern for Rebuild Tests
+#### Common Patterns for Rebuild Tests
+
+**Pattern 1: Manual ID Comparison (Explicit)**
 
 ```python
-# 1. Create widget with initial state
-label = MarkdownLabel(text='Test', property=initial_value)
-
-# 2. Capture widget IDs before change
-ids_before = collect_widget_ids(label)
-
-# 3. Change the property (schedules deferred rebuild)
-label.property = new_value
-
-# 4. Force immediate rebuild for test determinism
-label.force_rebuild()
-
-# 5. Capture widget IDs after change
-ids_after = collect_widget_ids(label)
-
-# 6. Assert rebuild occurred (or didn't, for style-only properties)
-assert ids_before != ids_after  # For structure properties
-# OR
-assert ids_before == ids_after  # For style-only properties
+def test_text_change_triggers_rebuild(self):
+    """Test that text changes rebuild the widget tree."""
+    # 1. Create widget with initial state
+    label = MarkdownLabel(text='Original')
+    
+    # 2. Collect widget IDs before change
+    ids_before = collect_widget_ids(label)
+    
+    # 3. Change the property (schedules deferred rebuild)
+    label.text = 'New text'
+    
+    # 4. Force immediate rebuild for test determinism
+    label.force_rebuild()
+    
+    # 5. Collect widget IDs after change
+    ids_after = collect_widget_ids(label)
+    
+    # 6. Assert rebuild occurred
+    assert ids_before != ids_after, "Widget tree should rebuild for text changes"
 ```
+
+**Pattern 2: Using Helper Functions (Concise)**
+
+```python
+def test_text_change_triggers_rebuild_with_helper(self):
+    """Test that text changes rebuild the widget tree."""
+    # 1. Create widget with initial state
+    label = MarkdownLabel(text='Original')
+    
+    # 2. Collect widget IDs before change
+    ids_before = collect_widget_ids(label)
+    
+    # 3. Change the property and force rebuild
+    label.text = 'New text'
+    label.force_rebuild()
+    
+    # 4. Use helper to verify rebuild occurred
+    assert_rebuild_occurred(label, ids_before)
+```
+
+**Pattern 3: Style-Only Properties (No Rebuild)**
+
+```python
+def test_color_change_preserves_widget_tree(self):
+    """Test that color changes preserve widget tree (no rebuild)."""
+    # 1. Create widget
+    label = MarkdownLabel(text='Hello')
+    
+    # 2. Collect widget IDs before change
+    ids_before = collect_widget_ids(label)
+    
+    # 3. Change style-only property (NO force_rebuild needed!)
+    label.color = [1, 0, 0, 1]
+    
+    # 4. Verify no rebuild occurred (can use helper or manual)
+    assert_no_rebuild(label, ids_before)
+    # OR: ids_after = collect_widget_ids(label); assert ids_before == ids_after
+    
+    # 5. Verify the style change was applied
+    labels = find_labels_recursive(label)
+    assert all(l.color == [1, 0, 0, 1] for l in labels)
+```
+
+**⚠️ CRITICAL: Helper Functions Don't Eliminate Manual Steps**
+
+The helpers `assert_rebuild_occurred()` and `assert_no_rebuild()` **require** you to:
+1. Manually collect `ids_before` using `collect_widget_ids()`
+2. Make your property change
+3. Call `force_rebuild()` if testing structure properties
+4. Pass `ids_before` to the helper
+
+They do NOT take a `change_func` parameter. Both manual and helper approaches require the same steps.
 
 ## Property-Based Testing
 
@@ -462,9 +614,9 @@ def test_medium_range(value):
     assert 1 <= value <= 20
 ```
 
-#### 4. Combination Strategies
+#### 4. Combination Strategies (All Finite)
 
-**Pattern:** Multiple strategies combined (tuples, multiple @given arguments)
+**Pattern:** Multiple finite strategies combined (tuples, multiple @given arguments) where ALL strategies are finite
 **Recommended max_examples:** Product of individual strategy sizes, capped at 50
 **Format:** `Combination strategy: [N] examples (combination coverage)`
 
@@ -478,9 +630,11 @@ def test_boolean_enum_combination(value):
     assert enum_val in ['a', 'b', 'c']
 ```
 
+**Important:** This classification only applies when ALL combined strategies are finite. If any strategy is complex/infinite, use "Mixed finite/complex strategy" instead.
+
 #### 5. Complex/Infinite Strategies
 
-**Pattern:** `st.text()`, `st.floats()`, large ranges, recursive strategies
+**Pattern:** Single `st.text()`, `st.floats()`, large ranges, or recursive strategies
 **Recommended max_examples:** 10-50 based on complexity
 **Format:** `Complex strategy: [N] examples (adequate coverage)` or `Complex strategy: [N] examples (performance optimized)`
 
@@ -492,11 +646,67 @@ def test_text_length_property(text):
     assert len(text) >= 0
 ```
 
+#### 6. Mixed Finite/Complex Strategies
+
+**Pattern:** Combinations where at least one strategy is finite AND at least one is complex/infinite
+**Recommended max_examples:** `finite_size × samples_per_finite_value` (typically 5-10 samples)
+**Format:** `Mixed finite/complex strategy: [N] examples ([finite_size] finite × [samples] complex samples)`
+
+The goal is to ensure each finite value gets paired with multiple samples from the complex/infinite space.
+
+```python
+# Example 1: Boolean + text
+@given(st.booleans(), st.text(min_size=1, max_size=50))
+# Mixed finite/complex strategy: 20 examples (2 finite × 10 complex samples)
+@settings(max_examples=20, deadline=None)
+def test_boolean_with_text(flag, text):
+    # Each boolean value (True/False) gets ~10 text samples
+    pass
+
+# Example 2: Small enum + floats
+@given(
+    st.sampled_from(['left', 'center', 'right']),
+    st.floats(min_value=0.0, max_value=1.0, allow_nan=False)
+)
+# Mixed finite/complex strategy: 30 examples (3 finite × 10 complex samples)
+@settings(max_examples=30, deadline=None)
+def test_alignment_with_opacity(halign, opacity):
+    # Each alignment value gets ~10 float samples
+    pass
+
+# Example 3: Heading level + color (RGBA floats)
+@given(
+    st.integers(min_value=1, max_value=6),
+    st.tuples(
+        st.floats(0, 1, allow_nan=False),
+        st.floats(0, 1, allow_nan=False),
+        st.floats(0, 1, allow_nan=False),
+        st.floats(0, 1, allow_nan=False)
+    )
+)
+# Mixed finite/complex strategy: 30 examples (6 finite × 5 complex samples)
+@settings(max_examples=30, deadline=None)
+def test_heading_with_color(level, color):
+    # Each heading level gets ~5 color samples
+    pass
+```
+
+**Formula:** `max_examples = finite_space_size × samples_per_value`
+
+| Finite Space Size | Samples per Value | max_examples |
+|-------------------|-------------------|--------------|
+| 2 (boolean)       | 10                | 20           |
+| 3-6 (small enum)  | 5-10              | 15-60        |
+| 7-10              | 3-5               | 21-50        |
+
+**Why this matters:** Without this approach, Hypothesis might generate 20 examples that happen to all use `True` with different texts, leaving `False` untested. By sizing based on the finite dimension, we ensure coverage of all finite values.
+
 ### Right-Sizing Principles
 
 - **Finite strategies:** Use input space size (test each value once)
 - **Infinite strategies:** Use moderate counts based on property complexity
-- **Combination strategies:** Calculate combinations, cap at reasonable limits
+- **Combination strategies (all finite):** Calculate product, cap at 50
+- **Mixed finite/complex:** Use `finite_size × samples` to ensure finite coverage
 
 ### Performance Impact
 
@@ -560,7 +770,7 @@ def test_alignment_with_direction_and_heading(halign, direction, heading_level):
 | 2 enums, product ≤20 | Either approach works | Parametrize gives full coverage |
 | 2+ enums, product >20 | Hypothesis | Sampling avoids test explosion |
 | Infinite/broad space | Hypothesis | Only option for text, floats, etc. |
-| Mixed finite + infinite | Hypothesis | Combine strategies naturally |
+| Mixed finite + infinite | Hypothesis with "Mixed finite/complex" | Use `finite_size × samples` formula |
 
 #### Hybrid Approach: Parametrize Important Dimension, Sample Others
 
@@ -641,6 +851,17 @@ When adding new helper functions:
 2. **Use descriptive names** - Make the purpose clear
 3. **Add docstrings** - Document parameters and return values
 4. **Write tests** - Add tests for complex helper functions
+
+### When Local Helpers Are Acceptable
+
+The guideline to consolidate helpers in `test_utils.py` applies to **reusable** helpers. These patterns are acceptable:
+
+- **Test-file-specific helpers**: A helper like `_find_code_block_labels()` that's only meaningful for font property tests can stay in `test_font_properties.py`
+- **Renderer-specific strategies**: Custom Hypothesis strategies for generating mistune token structures can stay in `test_inline_renderer.py` if they're not useful elsewhere
+- **Serialization helpers**: Functions like `_normalize_ast()` that are specific to serialization testing can stay local
+- **Custom widget traversal**: When `find_labels_recursive()` doesn't fit your use case (e.g., you need to filter by a specific attribute or traverse in a specific order), writing custom traversal logic inline is fine
+
+**Rule of thumb**: If a helper is used in 2+ test files, move it to `test_utils.py`. If it's specific to one test file's domain, keeping it local is acceptable.
 
 ## Test File Structure
 
@@ -799,11 +1020,45 @@ jobs:
 
 ## Best Practices
 
+### Quick Reference: Rebuild Testing Patterns
+
+```python
+# ✅ CORRECT: Testing structure property changes (rebuild expected)
+def test_text_triggers_rebuild(self):
+    label = MarkdownLabel(text='Original')
+    ids_before = collect_widget_ids(label)  # Step 1: Collect before
+    label.text = 'New'                       # Step 2: Change property
+    label.force_rebuild()                    # Step 3: Force sync rebuild
+    assert_rebuild_occurred(label, ids_before)  # Step 4: Verify rebuild
+
+# ✅ CORRECT: Testing style property changes (no rebuild expected)
+def test_color_preserves_tree(self):
+    label = MarkdownLabel(text='Hello')
+    ids_before = collect_widget_ids(label)  # Step 1: Collect before
+    label.color = [1, 0, 0, 1]              # Step 2: Change property (no force_rebuild!)
+    assert_no_rebuild(label, ids_before)    # Step 3: Verify no rebuild
+
+# ✅ CORRECT: Manual comparison (alternative to helpers)
+def test_text_triggers_rebuild_manual(self):
+    label = MarkdownLabel(text='Original')
+    ids_before = collect_widget_ids(label)
+    label.text = 'New'
+    label.force_rebuild()
+    ids_after = collect_widget_ids(label)
+    assert ids_before != ids_after  # Manual comparison is fine
+
+# ❌ WRONG: Helpers don't take functions
+def test_wrong_pattern(self):
+    label = MarkdownLabel(text='Original')
+    # This signature doesn't exist!
+    assert_rebuild_occurred(label, lambda: label.text = 'New')  # ❌ Wrong!
+```
+
 ### Do's
 
 ✅ **Use descriptive test and class names**
 ✅ **Group related tests in the same class**
-✅ **Use shared helper functions from test_utils.py**
+✅ **Use shared helper functions from test_utils.py when reusable**
 ✅ **Test both positive and negative cases**
 ✅ **Use appropriate pytest markers**
 ✅ **Write property tests for universal behaviors**
@@ -814,16 +1069,28 @@ jobs:
 
 ### Don'ts
 
-❌ **Don't duplicate helper function implementations**
-❌ **Don't mix unrelated functionality in the same class**
+❌ **Don't duplicate helper functions across multiple test files** (local helpers in one file are fine)
+❌ **Don't mix completely unrelated functionality in the same class** (related behaviors are fine)
 ❌ **Don't use vague test names like `test_basic` or `test_misc`**
 ❌ **Don't claim to test rebuilds without verifying them**
-❌ **Don't write property tests for simple examples**
+❌ **Don't write property tests for simple examples that don't benefit from fuzzing**
 ❌ **Don't ignore test failures or skip tests without good reason**
 ❌ **Don't test implementation details instead of behavior**
 ❌ **Don't use default max_examples=100 for all property tests**
 ❌ **Don't ignore finite input space sizes**
 ❌ **Don't use undocumented custom max_examples values**
+
+### Guidelines vs. Rules
+
+These guidelines aim to improve code quality and maintainability. Use judgment when applying them:
+
+- **Import tests** don't need property-based testing or elaborate class hierarchies
+- **Edge case classes** grouping miscellaneous tests for a component are acceptable
+- **Local helpers** specific to one test file's domain don't need to be in test_utils.py
+- **Manual widget traversal** is fine when shared helpers don't fit the use case
+- **Test naming** should be clear, but perfect naming is subjective
+
+The goal is readable, maintainable tests — not rigid adherence to rules.
 
 ### Performance Considerations
 
@@ -864,8 +1131,8 @@ class TestFontSizeImmediateUpdates:
         st.floats(min_value=8.0, max_value=50.0, allow_nan=False),
         st.floats(min_value=8.0, max_value=50.0, allow_nan=False)
     )
-    # Combination strategy: 50 examples (combination coverage)
-    @settings(max_examples=50, deadline=None)
+    # Complex strategy: 30 examples (two continuous float ranges)
+    @settings(max_examples=30, deadline=None)
     def test_font_size_updates_preserve_scale_factors(self, initial_size, new_size):
         """Test that font size updates preserve heading scale factors."""
         assume(abs(initial_size - new_size) > 1.0)
@@ -882,6 +1149,22 @@ class TestFontSizeImmediateUpdates:
         # Verify scale factor preserved
         expected_size = new_size * scale_factor
         assert abs(heading_label.font_size - expected_size) < 0.1
+    
+    @given(
+        st.integers(min_value=1, max_value=6),  # heading level (finite)
+        st.floats(min_value=8.0, max_value=50.0, allow_nan=False)  # font size (complex)
+    )
+    # Mixed finite/complex strategy: 30 examples (6 finite × 5 complex samples)
+    @settings(max_examples=30, deadline=None)
+    def test_heading_scale_varies_by_level(self, heading_level, base_size):
+        """Test that heading scale factors vary correctly by level."""
+        markdown = f"{'#' * heading_level} Heading"
+        label = MarkdownLabel(text=markdown, base_font_size=base_size)
+        
+        heading_label = find_labels_recursive(label)[0]
+        # Higher level headings (h1) should have larger scale factors
+        expected_min_scale = 1.0 + (6 - heading_level) * 0.1
+        assert heading_label.font_size >= base_size * expected_min_scale
 ```
 
 ### Validation Checklist
@@ -890,13 +1173,14 @@ Before committing tests, verify:
 
 1. **Boolean strategies use max_examples=2**
 2. **Small finite strategies use input space size**
-3. **Combination strategies use product formula (capped at 50)**
+3. **Combination strategies (all finite) use product formula (capped at 50)**
 4. **Complex strategies use 10-50 examples based on complexity**
-5. **All custom values include standardized comments**
-6. **Comments follow the format: `# [Strategy Type] strategy: [N] examples ([Rationale])`**
-7. **Strategy type classifications use standardized terminology**
-8. **Rationale templates match the strategy type**
-9. **Test names accurately reflect what they assert**
-10. **Helper functions are used from test_utils.py**
+5. **Mixed finite/complex strategies use `finite_size × samples` formula**
+6. **All custom values include standardized comments**
+7. **Comments follow the format: `# [Strategy Type] strategy: [N] examples ([Rationale])`**
+8. **Strategy type classifications use standardized terminology**
+9. **Rationale templates match the strategy type**
+10. **Test names accurately reflect what they assert**
+11. **Helper functions are used from test_utils.py**
 
 This comprehensive testing guide ensures consistent, maintainable, and high-performance test coverage for the MarkdownLabel project.

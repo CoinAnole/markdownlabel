@@ -180,7 +180,7 @@ class TestCoveragePreservation:
     """Property tests for coverage preservation."""
 
     @given(_test_suite_with_coverage())
-    # Complex strategy: 10 examples (adequate coverage for different scenarios)
+    # Complex strategy: 10 examples (adequate coverage)
     @settings(max_examples=10, deadline=None)
     def test_refactoring_preserves_coverage(self, test_data):
         """Refactoring operations should preserve or improve test coverage."""

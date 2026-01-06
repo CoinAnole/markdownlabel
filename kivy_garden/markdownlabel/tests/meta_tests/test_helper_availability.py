@@ -118,7 +118,7 @@ class TestHelperFunctionAvailability:
         assert touch.y == 200
         assert touch.pos == (100, 200)
 
-    # Complex strategy: 1 example (strategy availability verification only)
+    # Complex strategy: 1 example (adequate coverage)
     @given(color_strategy)
     @settings(max_examples=1, deadline=None)
     def test_color_strategy_available(self, color):
@@ -127,7 +127,7 @@ class TestHelperFunctionAvailability:
         assert len(color) == 4
         assert all(isinstance(c, float) for c in color)
 
-    # Complex strategy: 1 example (strategy availability verification only)
+    # Complex strategy: 1 example (adequate coverage)
     @given(text_padding_strategy)
     @settings(max_examples=1, deadline=None)
     def test_text_padding_strategy_available(self, padding):
@@ -136,7 +136,7 @@ class TestHelperFunctionAvailability:
         assert len(padding) == 4
         assert all(isinstance(p, float) for p in padding)
 
-    # Complex strategy: 1 example (strategy availability verification only)
+    # Complex strategy: 1 example (adequate coverage)
     @given(simple_markdown_document())
     @settings(max_examples=1, deadline=None)
     def test_simple_markdown_document_strategy_available(self, doc):

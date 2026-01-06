@@ -464,7 +464,7 @@ class TestToolIntegrationCompatibility:
         max_examples=st.integers(min_value=1, max_value=100),
         has_comment=st.booleans()
     )
-    # Small finite strategy: 20 examples (adequate coverage)
+    # Mixed finite/complex strategy: 20 examples (10 finite × 2 complex samples)
     @settings(max_examples=20, deadline=None)
     def test_tool_integration_compatibility(self, strategy_type, max_examples, has_comment):
         """**Feature: test-comment-standardization, Tool Integration Compatibility**
