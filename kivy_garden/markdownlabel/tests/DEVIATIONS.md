@@ -1486,19 +1486,6 @@ def test_block_code_with_newline(self):
     token = {'type': 'block_code', 'raw': 'code with newline\n'}
     result = serializer.block_code(token)
     assert result == '```\ncode with newline\n```'
-
----
-
-## test_performance.py
-
-No deviations found. The test file follows all testing guidelines:
-
-- ✅ Test naming conventions accurately reflect what they assert
-- ✅ Proper pytest markers used (@pytest.mark.slow for class)
-- ✅ Property-based testing optimization with appropriate max_examples values and standardized comments
-- ✅ Helper functions used from test_utils.py (find_labels_recursive, collect_widget_ids, st_font_size, st_rgba_color)
-- ✅ Rebuild contract testing patterns followed correctly (manual ID collection for style-only and structure property tests)
-- ✅ Test file structure and organization is appropriate
 ```
 
 **Expected code:**
@@ -1511,3 +1498,5 @@ def test_block_code_with_newline(self):
     result = serializer.block_code(token)
     assert result == '```\ncode with newline\n```'
 ```
+---
+
