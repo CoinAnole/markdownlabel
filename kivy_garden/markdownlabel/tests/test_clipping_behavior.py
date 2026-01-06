@@ -105,8 +105,8 @@ class TestContentClippingWhenHeightConstrained:
         st.integers(min_value=1, max_value=6),
         st.floats(min_value=50.0, max_value=200.0, allow_nan=False, allow_infinity=False),
     )
-    # Small finite strategy: 6 examples (input space size: 6)
-    @settings(max_examples=6, deadline=None)
+    # Mixed finite/complex strategy: 30 examples (6 finite × 5 complex samples)
+    @settings(max_examples=30, deadline=None)
     def test_heading_content_clipped_when_height_constrained(self, level, height):
         """Heading content is clipped when height is constrained."""
         heading = "#" * level + " Test Heading"

@@ -549,9 +549,16 @@ def assert_rebuild_occurred(widget: Widget, ids_before: Dict[int, Widget], exclu
     Verifies that the widget tree has been rebuilt by comparing widget mappings
     before and after a change. A rebuild means different widget instances.
 
+    IMPORTANT: You must collect ids_before BEFORE making changes:
+        ids_before = collect_widget_ids(widget)
+        # ... make property changes ...
+        # ... call force_rebuild() if needed ...
+        assert_rebuild_occurred(widget, ids_before)
+
     Args:
         widget: Root widget to check
-        ids_before: Dict mapping widget IDs to objects before the change
+        ids_before: Dict mapping widget IDs to objects BEFORE the change
+                    (from collect_widget_ids() called before changes)
         exclude_root: If True, exclude the root widget from comparison
 
     Raises:
@@ -570,9 +577,15 @@ def assert_no_rebuild(widget: Widget, ids_before: Dict[int, Widget], exclude_roo
     Verifies that the widget tree was updated in-place without creating new
     widget instances.
 
+    IMPORTANT: You must collect ids_before BEFORE making changes:
+        ids_before = collect_widget_ids(widget)
+        # ... make property changes ...
+        assert_no_rebuild(widget, ids_before)
+
     Args:
         widget: Root widget to check
-        ids_before: Dict mapping widget IDs to objects before the change
+        ids_before: Dict mapping widget IDs to objects BEFORE the change
+                    (from collect_widget_ids() called before changes)
         exclude_root: If True, exclude the root widget from comparison
 
     Raises:

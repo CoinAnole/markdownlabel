@@ -44,7 +44,7 @@ class TestFontSizeAliasBidirectionality:
 
     @given(st.floats(min_value=1, max_value=200, allow_nan=False, allow_infinity=False),
            st.floats(min_value=1, max_value=200, allow_nan=False, allow_infinity=False))
-    # Combination strategy: 50 examples (combination coverage)
+    # Complex strategy: 50 examples (adequate coverage)
     @settings(max_examples=50, deadline=None)
     def test_font_size_change_updates_base_font_size(self, initial_value, new_value):
         """Changing font_size after creation updates base_font_size."""
@@ -56,7 +56,7 @@ class TestFontSizeAliasBidirectionality:
 
     @given(st.floats(min_value=1, max_value=200, allow_nan=False, allow_infinity=False),
            st.floats(min_value=1, max_value=200, allow_nan=False, allow_infinity=False))
-    # Combination strategy: 50 examples (combination coverage)
+    # Complex strategy: 50 examples (adequate coverage)
     @settings(max_examples=50, deadline=None)
     def test_base_font_size_change_updates_font_size(self, initial_value, new_value):
         """Changing base_font_size after creation updates font_size."""
@@ -132,8 +132,7 @@ class TestNoOpPropertiesAcceptance:
         assert label.markup == value
 
     @given(st.booleans(), st.booleans(), st.booleans(), st.booleans(), st.booleans())
-    # 2 × 2 × 2 × 2 × 2 = 32 combinations
-    # Use 32 examples for full coverage
+    # Combination strategy: 32 examples (combination coverage)
     @settings(max_examples=32, deadline=None)
     def test_all_noop_properties_together(self, bold, italic, underline, strikethrough, markup):
         """Setting all no-op properties together does not raise an exception."""
@@ -153,7 +152,7 @@ class TestNoOpPropertiesAcceptance:
 
     @given(st.booleans(), st.booleans(), st.booleans(), st.booleans(), st.booleans(),
            simple_markdown_document())
-    # Combination strategy: 50 examples (combination coverage)
+    # Mixed finite/complex strategy: 50 examples (32 finite × 2 complex samples)
     @settings(max_examples=50, deadline=None)
     def test_noop_properties_do_not_affect_rendering(self, bold, italic, underline,
                                                       strikethrough, markup, markdown_text):
@@ -289,7 +288,7 @@ class TestNoOpPropertyAcceptanceAndStorage:
            st.one_of(st.none(), st.text(min_size=1, max_size=5)),
            st.sampled_from([None, 'ltr', 'rtl', 'weak_ltr', 'weak_rtl']),
            st.dictionaries(st.text(min_size=1, max_size=5), st.booleans(), max_size=3))
-    # Combination strategy: 50 examples (combination coverage)
+    # Mixed finite/complex strategy: 50 examples (10 finite × 5 complex samples)
     @settings(max_examples=50, deadline=None)
     def test_all_noop_properties_together_accepted_and_stored(self, mipmap, outline_width,
                                                               outline_color, text_language,
@@ -373,8 +372,8 @@ class TestNoOpPropertyAcceptanceAndStorage:
            st.sampled_from([None, 'ltr', 'rtl', 'weak_ltr', 'weak_rtl']),
            st.dictionaries(st.text(min_size=1, max_size=5), st.booleans(), max_size=3),
            simple_markdown_document())
-    # Combination strategy: 2 examples (combination coverage)
-    @settings(max_examples=2, deadline=None)
+    # Mixed finite/complex strategy: 20 examples (10 finite × 2 complex samples)
+    @settings(max_examples=20, deadline=None)
     def test_advanced_noop_properties_do_not_affect_rendering(self, mipmap, outline_width, outline_color,
                                                               text_language, base_direction, ellipsis_options,
                                                               markdown_text):

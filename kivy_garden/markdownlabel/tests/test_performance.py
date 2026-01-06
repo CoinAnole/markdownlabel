@@ -29,7 +29,7 @@ class TestStyleOnlyPropertyUpdates:
 
     @given(st_font_size(min_value=10, max_value=50),
            st_font_size(min_value=10, max_value=50))
-    # Combination strategy: 20 examples (adequate coverage)
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_font_size_change_preserves_widget_tree(self, initial_size, new_size):
         """Changing font_size preserves widget tree structure (widget identities)."""
@@ -53,7 +53,7 @@ class TestStyleOnlyPropertyUpdates:
             f"Widget tree changed after font_size update. Before: {len(ids_before)}, After: {len(ids_after)}"
 
     @given(st_rgba_color())
-    # Combination strategy: 20 examples (adequate coverage)
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_color_change_preserves_widget_tree(self, new_color):
         """Changing color preserves widget tree structure (widget identities)."""
@@ -75,7 +75,7 @@ class TestStyleOnlyPropertyUpdates:
             "Widget tree changed after color update"
 
     @given(st_rgba_color())
-    # Combination strategy: 20 examples (adequate coverage)
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_color_change_updates_descendant_labels(self, new_color):
         """Changing color updates all descendant Label widgets."""
@@ -283,7 +283,7 @@ class TestStyleOnlyPropertyUpdates:
         st.sampled_from(['top', 'middle', 'bottom']),
         st.floats(min_value=0.8, max_value=2.0, allow_nan=False, allow_infinity=False)
     )
-    # Combination strategy: 20 examples (adequate coverage)
+    # Mixed finite/complex strategy: 20 examples (9 finite × ~2 complex samples)
     @settings(max_examples=20, deadline=None)
     def test_multiple_style_changes_preserve_widget_tree(self, font_size, color,
                                                           halign, valign, line_height):

@@ -169,7 +169,7 @@ class TestSharedInfrastructureHelpers:
             assert isinstance(lbl, Label), f"Should find only Labels, got {type(lbl)}"
 
     @given(color_strategy, color_strategy)
-    # Combination strategy: 50 examples (combination coverage)
+    # Complex strategy: 50 examples (adequate coverage)
     @settings(max_examples=50, deadline=None)
     def test_colors_equal_function_available(self, color1, color2):
         """colors_equal helper function is available and works correctly."""
@@ -183,7 +183,7 @@ class TestSharedInfrastructureHelpers:
             assert isinstance(result, bool), "colors_equal should return boolean"
 
     @given(text_padding_strategy, text_padding_strategy)
-    # Combination strategy: 50 examples (combination coverage)
+    # Complex strategy: 50 examples (adequate coverage)
     @settings(max_examples=50, deadline=None)
     def test_padding_equal_function_available(self, padding1, padding2):
         """padding_equal helper function is available and works correctly."""
@@ -197,7 +197,7 @@ class TestSharedInfrastructureHelpers:
 
     @given(st.floats(min_value=0.0, max_value=100.0, allow_nan=False, allow_infinity=False),
            st.floats(min_value=0.0, max_value=100.0, allow_nan=False, allow_infinity=False))
-    # Combination strategy: 20 examples (combination coverage)
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_floats_equal_function_available(self, float1, float2):
         """floats_equal helper function is available and works correctly."""

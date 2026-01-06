@@ -77,7 +77,7 @@ class TestColorPropertyForwarding:
 
     @pytest.mark.property
     @given(color_strategy, color_strategy)
-    # Combination strategy: 50 examples (combination coverage)
+    # Complex strategy: 50 examples (adequate coverage)
     @settings(max_examples=50, deadline=None)
     def test_color_change_updates_value(self, color1, color2):
         """Changing color updates color on existing widgets without rebuild."""
