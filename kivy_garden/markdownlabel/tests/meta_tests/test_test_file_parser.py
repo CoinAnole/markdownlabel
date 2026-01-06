@@ -25,7 +25,7 @@ class TestTestNameConsistency:
     """Property tests for test name consistency."""
 
     @given(rebuild_test_file_strategy())
-    # Complex strategy: 20 examples (adequate coverage)
+    # Mixed finite/complex strategy: 20 examples (28 finite × ~0.7 complex samples)
     @settings(max_examples=20, deadline=None)
     def test_rebuild_test_names_match_assertions(self, test_data):
         """Tests with 'triggers_rebuild' in name should have rebuild assertions."""

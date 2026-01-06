@@ -118,7 +118,7 @@ class TestMarkdownRoundTripSerialization:
         return merged
 
     @given(markdown_heading())
-    # Complex strategy: 20 examples (adequate coverage)
+    # Mixed finite/complex strategy: 20 examples (6 finite × ~3 complex samples)
     @settings(max_examples=20, deadline=None)
     def test_heading_round_trip(self, heading):
         """Heading round-trips through parse-serialize-parse."""
@@ -208,7 +208,7 @@ class TestMarkdownRoundTripSerialization:
             f"AST mismatch after round-trip:\nOriginal: {ast1}\nAfter: {ast2}"
 
     @given(simple_markdown_document())
-    # Complex strategy: 20 examples (adequate coverage)
+    # Mixed finite/complex strategy: 20 examples (10 finite × 2 complex samples)
     @settings(max_examples=20, deadline=None)
     def test_document_round_trip(self, markdown_text):
         """Full document round-trips through parse-serialize-parse."""
@@ -618,7 +618,7 @@ class TestCodeFenceCollisionProperty:
             max_size=20
         )
     )
-    # Complex strategy: 20 examples (adequate coverage)
+    # Complex strategy: 20 examples (two complex strategies combined)
     @settings(max_examples=20, deadline=None)
     def test_code_serialization_round_trip_property(self, code_content, language):
         """**Feature: test-improvements, Code serialization round-trip**

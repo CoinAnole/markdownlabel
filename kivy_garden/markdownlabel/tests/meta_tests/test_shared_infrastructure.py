@@ -31,7 +31,7 @@ class TestSharedStrategyAvailability:
     """Property tests for shared strategy availability."""
 
     @given(markdown_heading())
-    # Complex strategy: 20 examples (adequate coverage)
+    # Mixed finite/complex strategy: 20 examples (6 finite × ~3 complex samples)
     @settings(max_examples=20, deadline=None)
     def test_markdown_heading_strategy_generates_valid_headings(self, heading):
         """Test that the shared markdown_heading strategy generates valid heading
@@ -90,7 +90,7 @@ class TestSharedStrategyAvailability:
         assert len(label.children) >= 1, "Link should produce at least one widget"
 
     @given(simple_markdown_document())
-    # Complex strategy: 20 examples (adequate coverage)
+    # Mixed finite/complex strategy: 20 examples (10 finite × 2 complex samples)
     @settings(max_examples=20, deadline=None)
     def test_simple_markdown_document_strategy_generates_valid_documents(self, document):
         """Document strategy generates valid markdown documents."""

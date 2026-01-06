@@ -267,7 +267,7 @@ code = "block"
         assert texture_size[0] >= 0 and texture_size[1] >= 0
 
     @given(simple_markdown_document(), simple_markdown_document())
-    # Complex strategy: 50 examples (adequate coverage)
+    # Mixed finite/complex strategy: 50 examples (100 finite combinations × 0.5 complex samples)
     @settings(max_examples=50, deadline=None)
     def test_texture_size_updates_on_text_change(self, text1, text2):
         """texture_size updates when text property changes."""

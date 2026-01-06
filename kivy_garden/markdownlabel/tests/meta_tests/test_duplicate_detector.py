@@ -28,7 +28,7 @@ class TestHelperFunctionConsolidation:
     """Property tests for helper function consolidation."""
 
     @given(duplicate_helper_functions())
-    # Complex strategy: 20 examples (adequate coverage)
+    # Mixed finite/complex strategy: 20 examples (36 finite × ~0.6 complex samples)
     @settings(max_examples=20, deadline=None)
     def test_duplicate_detection_finds_duplicates(self, test_data):
         """Duplicate detector should find helper functions that appear in multiple files."""
