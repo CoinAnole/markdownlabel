@@ -88,9 +88,9 @@ class TestHelperFunctionAvailability:
         # Test floats_equal with identical floats
         assert floats_equal(float1, float1) is True
 
-    # Complex strategy: 5 examples (adequate coverage)
+    # Mixed finite/complex strategy: 10 examples (10 finite × 1 complex sample)
     @given(simple_markdown_document())
-    @settings(max_examples=5, deadline=None)
+    @settings(max_examples=10, deadline=None)
     def test_rebuild_detection_helpers_available(self, markdown_text):
         """For any markdown content, rebuild detection helpers should be available and functional."""
         # Create a MarkdownLabel with content
@@ -118,27 +118,27 @@ class TestHelperFunctionAvailability:
         assert touch.y == 200
         assert touch.pos == (100, 200)
 
-    # Complex strategy: 1 example (adequate coverage)
+    # Complex strategy: 10 examples (adequate coverage)
     @given(color_strategy)
-    @settings(max_examples=1, deadline=None)
+    @settings(max_examples=10, deadline=None)
     def test_color_strategy_available(self, color):
         """color_strategy is available and generates valid colors."""
         assert isinstance(color, list)
         assert len(color) == 4
         assert all(isinstance(c, float) for c in color)
 
-    # Complex strategy: 1 example (adequate coverage)
+    # Complex strategy: 10 examples (adequate coverage)
     @given(text_padding_strategy)
-    @settings(max_examples=1, deadline=None)
+    @settings(max_examples=10, deadline=None)
     def test_text_padding_strategy_available(self, padding):
         """text_padding_strategy is available and generates valid padding."""
         assert isinstance(padding, list)
         assert len(padding) == 4
         assert all(isinstance(p, float) for p in padding)
 
-    # Complex strategy: 1 example (adequate coverage)
+    # Mixed finite/complex strategy: 10 examples (10 finite × 1 complex sample)
     @given(simple_markdown_document())
-    @settings(max_examples=1, deadline=None)
+    @settings(max_examples=10, deadline=None)
     def test_simple_markdown_document_strategy_available(self, doc):
         """simple_markdown_document strategy is available and generates valid documents."""
         assert isinstance(doc, str)

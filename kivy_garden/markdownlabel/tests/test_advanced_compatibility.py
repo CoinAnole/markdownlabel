@@ -478,7 +478,7 @@ class TestDisabledColorApplication:
 # Strategy for generating valid property values
 # Small finite strategy: 3 examples (input space size: 3)
 rebuild_font_names = st.sampled_from(['Roboto', 'Roboto-Bold', 'Roboto-Italic'])
-# Medium finite strategy: 20 examples (adequate finite coverage)
+# Complex strategy: 20 examples (adequate coverage)
 rebuild_colors = st.lists(
     st.floats(min_value=0.0, max_value=1.0, allow_nan=False, allow_infinity=False),
     min_size=4, max_size=4
@@ -819,7 +819,7 @@ class TestReactiveRebuildOnPropertyChange:
                 f"After change, expected color={expected_color2}, got {list(lbl.color)}"
 
     @given(simple_markdown_document(), rebuild_font_names, rebuild_font_names)
-    # Mixed finite/complex strategy: 20 examples (9 finite × ~2 complex samples)
+    # Mixed finite/complex strategy: 20 examples (90 finite combinations × ~0.2 complex samples)
     @settings(max_examples=20, deadline=None)
     def test_rebuild_preserves_content_structure(self, markdown_text, font1, font2):
         """Rebuilding widgets preserves the content structure."""

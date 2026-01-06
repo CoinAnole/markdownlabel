@@ -128,7 +128,7 @@ class TestCodeDuplicationMinimization:
     """Property tests for code duplication minimization."""
 
     @given(_test_suite_with_duplicates())
-    # Complex strategy: 15 examples (adequate coverage for duplication patterns)
+    # Mixed finite/complex strategy: 15 examples (18 finite × ~0.8 complex samples)
     @settings(max_examples=15, deadline=None)
     def test_duplication_below_threshold(self, test_data):
         """Test suite should have code duplication below acceptable threshold."""

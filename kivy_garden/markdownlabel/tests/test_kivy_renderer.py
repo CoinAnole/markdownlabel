@@ -35,6 +35,7 @@ from .test_utils import (
 class TestHeadingFontHierarchy:
     """Property tests for heading font size hierarchy."""
 
+    @pytest.mark.property
     @given(st.integers(min_value=1, max_value=5))
     # Small finite strategy: 5 examples (input space size: 5)
     @settings(max_examples=5, deadline=None)
@@ -60,6 +61,7 @@ class TestHeadingFontHierarchy:
         assert widget1.font_size > widget2.font_size, \
             f"h{level} font_size ({widget1.font_size}) should be > h{level+1} font_size ({widget2.font_size})"
 
+    @pytest.mark.property
     @given(heading_token())
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -70,6 +72,7 @@ class TestHeadingFontHierarchy:
 
         assert isinstance(widget, Label), f"Expected Label, got {type(widget)}"
 
+    @pytest.mark.property
     @given(heading_token())
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -80,6 +83,7 @@ class TestHeadingFontHierarchy:
 
         assert widget.markup is True, "Heading should have markup=True"
 
+    @pytest.mark.property
     @given(st.integers(min_value=1, max_value=6), st.floats(min_value=10, max_value=30))
     # Mixed finite/complex strategy: 30 examples (6 finite × 5 complex samples)
     @settings(max_examples=30, deadline=None)
@@ -108,6 +112,7 @@ class TestHeadingFontHierarchy:
 class TestParagraphMarkupEnabled:
     """Property tests for paragraph markup enabled."""
 
+    @pytest.mark.property
     @given(paragraph_token())
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -119,6 +124,7 @@ class TestParagraphMarkupEnabled:
         assert isinstance(widget, Label), f"Expected Label, got {type(widget)}"
         assert widget.markup is True, "Paragraph should have markup=True"
 
+    @pytest.mark.property
     @given(paragraph_token())
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -138,6 +144,7 @@ class TestParagraphMarkupEnabled:
 class TestListStructurePreservation:
     """Property tests for list structure preservation."""
 
+    @pytest.mark.property
     @given(list_token())
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -148,6 +155,7 @@ class TestListStructurePreservation:
 
         assert isinstance(widget, BoxLayout), f"Expected BoxLayout, got {type(widget)}"
 
+    @pytest.mark.property
     @given(list_token())
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -162,6 +170,7 @@ class TestListStructurePreservation:
         assert actual_count == expected_count, \
             f"Expected {expected_count} children, got {actual_count}"
 
+    @pytest.mark.property
     @given(list_token(ordered=False))
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -179,6 +188,7 @@ class TestListStructurePreservation:
             assert isinstance(marker, Label), "Marker should be Label"
             assert '•' in marker.text, f"Unordered list marker should contain bullet, got: {marker.text}"
 
+    @pytest.mark.property
     @given(list_token(ordered=True))
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -209,6 +219,7 @@ class TestListStructurePreservation:
 class TestNestedListIndentation:
     """Property tests for nested list indentation."""
 
+    @pytest.mark.property
     @given(st.integers(min_value=1, max_value=4))
     # Small finite strategy: 4 examples (input space size: 4)
     @settings(max_examples=4, deadline=None)
@@ -261,6 +272,7 @@ class TestNestedListIndentation:
 class TestCodeBlockStyling:
     """Property tests for code block styling."""
 
+    @pytest.mark.property
     @given(code_block_token())
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -271,6 +283,7 @@ class TestCodeBlockStyling:
 
         assert isinstance(widget, Widget), f"Expected Widget, got {type(widget)}"
 
+    @pytest.mark.property
     @given(code_block_token())
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -293,6 +306,7 @@ class TestCodeBlockStyling:
         assert label.font_name == 'RobotoMono-Regular', \
             f"Expected monospace font, got {label.font_name}"
 
+    @pytest.mark.property
     @given(code_block_token())
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -312,6 +326,7 @@ class TestCodeBlockStyling:
 class TestCodeBlockLanguageMetadata:
     """Property tests for code block language metadata."""
 
+    @pytest.mark.property
     @given(code_block_token())
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -348,6 +363,7 @@ class TestCodeBlockLanguageMetadata:
 class TestBlockQuoteStructure:
     """Property tests for block quote structure."""
 
+    @pytest.mark.property
     @given(block_quote_token())
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -358,6 +374,7 @@ class TestBlockQuoteStructure:
 
         assert isinstance(widget, BoxLayout), f"Expected BoxLayout, got {type(widget)}"
 
+    @pytest.mark.property
     @given(block_quote_token())
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -370,6 +387,7 @@ class TestBlockQuoteStructure:
         assert widget.padding[0] > 0, \
             f"Block quote should have left padding, got {widget.padding[0]}"
 
+    @pytest.mark.property
     @given(block_quote_token())
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -421,6 +439,7 @@ class TestThematicBreakRendering:
 class TestImageWidgetCreation:
     """Property tests for image widget creation."""
 
+    @pytest.mark.property
     @given(image_token())
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -431,6 +450,7 @@ class TestImageWidgetCreation:
 
         assert isinstance(widget, AsyncImage), f"Expected AsyncImage, got {type(widget)}"
 
+    @pytest.mark.property
     @given(image_token())
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -443,6 +463,7 @@ class TestImageWidgetCreation:
         assert widget.source == expected_url, \
             f"Expected source '{expected_url}', got '{widget.source}'"
 
+    @pytest.mark.property
     @given(image_token())
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -460,6 +481,7 @@ class TestImageWidgetCreation:
 class TestTableGridStructure:
     """Property tests for table grid structure."""
 
+    @pytest.mark.property
     @given(st.integers(min_value=1, max_value=5), st.integers(min_value=1, max_value=5))
     # Combination strategy: 25 examples (combination coverage)
     @settings(max_examples=25, deadline=None)
@@ -503,6 +525,7 @@ class TestTableGridStructure:
         assert widget.cols == num_cols, \
             f"Expected {num_cols} columns, got {widget.cols}"
 
+    @pytest.mark.property
     @given(st.integers(min_value=1, max_value=5), st.integers(min_value=1, max_value=5))
     # Combination strategy: 25 examples (combination coverage)
     @settings(max_examples=25, deadline=None)
@@ -545,6 +568,7 @@ class TestTableGridStructure:
         assert label_count == expected_count, \
             f"Expected {expected_count} cells (R={num_rows} × C={num_cols}), got {label_count}"
 
+    @pytest.mark.property
     @given(table_token())
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -555,6 +579,7 @@ class TestTableGridStructure:
 
         assert isinstance(widget, GridLayout), f"Expected GridLayout, got {type(widget)}"
 
+    @pytest.mark.property
     @given(table_token())
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -590,6 +615,7 @@ class TestTableAlignmentApplication:
         assert widget.halign == alignment, \
             f"Expected halign='{alignment}', got '{widget.halign}'"
 
+    @pytest.mark.property
     @given(st.integers(min_value=1, max_value=3), st.integers(min_value=2, max_value=4))
     # Combination strategy: 9 examples (combination coverage)
     @settings(max_examples=9, deadline=None)
@@ -659,6 +685,7 @@ class TestTableAlignmentApplication:
         assert widget.halign == 'left', \
             f"Expected halign='left' for invalid alignment, got '{widget.halign}'"
 
+    @pytest.mark.property
     @given(table_token())
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)

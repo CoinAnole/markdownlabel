@@ -180,8 +180,8 @@ class TestCoveragePreservation:
     """Property tests for coverage preservation."""
 
     @given(_test_suite_with_coverage())
-    # Complex strategy: 10 examples (adequate coverage)
-    @settings(max_examples=10, deadline=None)
+    # Mixed finite/complex strategy: 12 examples (12 finite ×1 complex (_test_suite_with_coverage:4 num_files×3 coverage_level))
+    @settings(max_examples=12, deadline=None)
     def test_refactoring_preserves_coverage(self, test_data):
         """Refactoring operations should preserve or improve test coverage."""
         source_files = test_data['source_files']
@@ -455,8 +455,8 @@ class TestCalculator:
             os.rmdir(temp_dir)
 
     @given(st.floats(min_value=50.0, max_value=95.0))
-    # Complex strategy: 6 examples (adequate coverage)
-    @settings(max_examples=6, deadline=None)
+    # Complex strategy: 10 examples (adequate coverage)
+    @settings(max_examples=10, deadline=None)
     def test_coverage_tolerance_reasonable(self, initial_coverage):
         """Coverage tolerance should be reasonable for measurement variance."""
         # Simulate small measurement variance

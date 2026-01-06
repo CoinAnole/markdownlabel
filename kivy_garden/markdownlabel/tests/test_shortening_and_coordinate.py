@@ -288,7 +288,7 @@ class TestShorteningPropertyForwarding:
     @given(st.booleans(), st.sampled_from(['left', 'center', 'right']),
            st.text(min_size=0, max_size=3, alphabet='ab '),
            st.integers(min_value=1, max_value=5))
-    # Mixed finite/complex strategy: 50 examples (30 finite × 50 complex samples)
+    # Mixed finite/complex strategy: 50 examples (30 finite × ~1.7 complex samples)
     @settings(max_examples=50, deadline=None)
     def test_all_shortening_properties_forwarded_together(
             self, shorten_val, shorten_from_val, split_str_val, max_lines_val):
