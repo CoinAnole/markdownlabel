@@ -20,7 +20,7 @@ kivy_garden/
         ├── __init__.py
         ├── conftest.py
         ├── TESTING.md
-        ├── test_import.py
+
         ├── test_inline_renderer.py
         ├── test_kivy_renderer.py
         ├── test_core_functionality.py
@@ -125,7 +125,7 @@ The codebase follows a strict three-layer architecture for converting Markdown t
 
 ### Test Suite Organization
 Tests are organized by **functionality**, not by implementation file:
-- `test_import.py`: Tests for MarkdownLabel import functionality - verifying that MarkdownLabel can be imported and has the expected basic properties available
+
 - `test_inline_renderer.py`: Property-based tests for InlineRenderer - verifying inline Markdown formatting is correctly converted to Kivy markup strings
 - `test_kivy_renderer.py`: Property-based tests and edge case coverage for KivyRenderer - verifying block-level Markdown elements are correctly converted to Kivy widgets, targeting implementation details for edge cases and internal methods
 - `test_core_functionality.py`: Core functionality tests for MarkdownLabel widget - tests for fundamental markdown parsing, rendering, and widget tree generation functionality
