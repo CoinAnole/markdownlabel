@@ -553,6 +553,7 @@ class TestStrictLabelModeSizingBehavior:
             assert label.size_hint_y == expected_size_hint_y, \
                 f"Expected size_hint_y={expected_size_hint_y}, got {label.size_hint_y}"
 
+    @pytest.mark.test_tests
     def test_all_classes_test_related_functionality(self):
         """All test classes in this module test related sizing functionality."""
         import inspect
