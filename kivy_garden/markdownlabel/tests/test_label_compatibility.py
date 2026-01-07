@@ -407,6 +407,7 @@ class TestNoOpPropertyAcceptanceAndStorage:
 class TestImportFunctionality:
     """Property test for import functionality."""
 
+    @pytest.mark.test_tests
     def test_label_compatibility_imports_resolve(self):
         """Label compatibility module imports resolve successfully."""
         try:
@@ -432,6 +433,7 @@ class TestImportFunctionality:
         except Exception as e:
             pytest.fail(f"Unexpected error importing test_label_compatibility: {e}")
 
+    @pytest.mark.test_tests
     def test_shared_utilities_imports_resolve(self):
         """Shared test utilities imports resolve successfully."""
         try:
@@ -461,6 +463,7 @@ class TestImportFunctionality:
         except Exception as e:
             pytest.fail(f"Unexpected error importing test_utils: {e}")
 
+    @pytest.mark.test_tests
     def test_cross_module_imports_work(self):
         """Test modules can import from shared utilities."""
         try:

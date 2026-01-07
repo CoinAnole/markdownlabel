@@ -6,6 +6,7 @@ serialize and deserialize Markdown content, maintaining semantic equivalence
 through parse-serialize-parse cycles.
 """
 
+import pytest
 from hypothesis import given, settings, assume
 from hypothesis import strategies as st
 
@@ -117,6 +118,7 @@ class TestMarkdownRoundTripSerialization:
 
         return merged
 
+    @pytest.mark.property
     @given(markdown_heading())
     # Mixed finite/complex strategy: 20 examples (6 finite × ~3 complex samples)
     @settings(max_examples=20, deadline=None)
@@ -136,6 +138,7 @@ class TestMarkdownRoundTripSerialization:
         assert ast1 == ast2, \
             f"AST mismatch after round-trip:\nOriginal: {ast1}\nAfter: {ast2}\nSerialized: {serialized!r}"
 
+    @pytest.mark.property
     @given(markdown_paragraph())
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -159,6 +162,7 @@ class TestMarkdownRoundTripSerialization:
         assert ast1 == ast2, \
             f"AST mismatch after round-trip:\nOriginal: {ast1}\nAfter: {ast2}"
 
+    @pytest.mark.property
     @given(markdown_bold())
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -175,6 +179,7 @@ class TestMarkdownRoundTripSerialization:
         assert ast1 == ast2, \
             f"AST mismatch after round-trip:\nOriginal: {ast1}\nAfter: {ast2}"
 
+    @pytest.mark.property
     @given(markdown_italic())
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -191,6 +196,7 @@ class TestMarkdownRoundTripSerialization:
         assert ast1 == ast2, \
             f"AST mismatch after round-trip:\nOriginal: {ast1}\nAfter: {ast2}"
 
+    @pytest.mark.property
     @given(markdown_link())
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -207,6 +213,7 @@ class TestMarkdownRoundTripSerialization:
         assert ast1 == ast2, \
             f"AST mismatch after round-trip:\nOriginal: {ast1}\nAfter: {ast2}"
 
+    @pytest.mark.property
     @given(simple_markdown_document())
     # Mixed finite/complex strategy: 20 examples (10 finite × 2 complex samples)
     @settings(max_examples=20, deadline=None)
@@ -227,6 +234,7 @@ class TestMarkdownRoundTripSerialization:
         assert ast1 == ast2, \
             f"AST mismatch after round-trip:\nOriginal: {ast1}\nAfter: {ast2}\nSerialized: {serialized!r}"
 
+    @pytest.mark.unit
     def test_code_block_round_trip(self):
         """Code block round-trips correctly."""
         markdown = '```python\nprint("hello")\n```'
@@ -242,6 +250,7 @@ class TestMarkdownRoundTripSerialization:
         assert ast1 == ast2, \
             f"AST mismatch after round-trip:\nOriginal: {ast1}\nAfter: {ast2}"
 
+    @pytest.mark.unit
     def test_list_round_trip(self):
         """List round-trips correctly."""
         markdown = '- Item 1\n- Item 2\n- Item 3'
@@ -257,6 +266,7 @@ class TestMarkdownRoundTripSerialization:
         assert ast1 == ast2, \
             f"AST mismatch after round-trip:\nOriginal: {ast1}\nAfter: {ast2}"
 
+    @pytest.mark.unit
     def test_ordered_list_round_trip(self):
         """Ordered list round-trips correctly."""
         markdown = '1. First\n2. Second\n3. Third'
@@ -272,6 +282,7 @@ class TestMarkdownRoundTripSerialization:
         assert ast1 == ast2, \
             f"AST mismatch after round-trip:\nOriginal: {ast1}\nAfter: {ast2}"
 
+    @pytest.mark.unit
     def test_block_quote_round_trip(self):
         """Block quote round-trips correctly."""
         markdown = '> This is a quote'
@@ -287,6 +298,7 @@ class TestMarkdownRoundTripSerialization:
         assert ast1 == ast2, \
             f"AST mismatch after round-trip:\nOriginal: {ast1}\nAfter: {ast2}"
 
+    @pytest.mark.unit
     def test_thematic_break_round_trip(self):
         """Thematic break round-trips correctly."""
         markdown = 'Before\n\n---\n\nAfter'
@@ -302,6 +314,7 @@ class TestMarkdownRoundTripSerialization:
         assert ast1 == ast2, \
             f"AST mismatch after round-trip:\nOriginal: {ast1}\nAfter: {ast2}"
 
+    @pytest.mark.unit
     def test_table_round_trip(self):
         """Table round-trips correctly."""
         markdown = '| A | B |\n| --- | --- |\n| 1 | 2 |'
@@ -317,6 +330,7 @@ class TestMarkdownRoundTripSerialization:
         assert ast1 == ast2, \
             f"AST mismatch after round-trip:\nOriginal: {ast1}\nAfter: {ast2}"
 
+    @pytest.mark.unit
     def test_table_alignment_round_trip(self):
         """Table with alignment round-trips correctly."""
         markdown = '| Left | Center | Right |\n| :--- | :---: | ---: |\n| 1 | 2 | 3 |'
@@ -337,6 +351,7 @@ class TestMarkdownRoundTripSerialization:
         assert ast1 == ast2, \
             f"AST mismatch after round-trip:\nOriginal: {ast1}\nAfter: {ast2}"
 
+    @pytest.mark.unit
     def test_inline_code_serialization(self):
         """Inline code serialization."""
         markdown = 'Text with `code` included.'
@@ -352,6 +367,7 @@ class TestMarkdownRoundTripSerialization:
 
         assert ast1 == ast2
 
+    @pytest.mark.unit
     def test_strikethrough_serialization(self):
         """Strikethrough serialization."""
         markdown = 'Text with ~~strikethrough~~ included.'
@@ -367,6 +383,7 @@ class TestMarkdownRoundTripSerialization:
 
         assert ast1 == ast2
 
+    @pytest.mark.unit
     def test_image_serialization(self):
         """Image serialization."""
         markdown = '![Alt text](http://example.com/image.png)'
@@ -382,6 +399,7 @@ class TestMarkdownRoundTripSerialization:
 
         assert ast1 == ast2
 
+    @pytest.mark.unit
     def test_softbreak_serialization(self):
         """Softbreak serialization."""
         # A parseable softbreak usually requires a newline in the input that doesn't trigger a paragraph break
@@ -404,6 +422,7 @@ class TestMarkdownRoundTripSerialization:
         # Check if ASTs are equivalent structure-wise
         assert ast1 == ast2
 
+    @pytest.mark.unit
     def test_hard_linebreak_serialization(self):
         """Hard linebreak serialization."""
         # Hard linebreak is two spaces at end of line
@@ -424,6 +443,7 @@ class TestMarkdownRoundTripSerialization:
 class TestCodeBlockSerialization:
     """Tests for code block serialization edge cases."""
 
+    @pytest.mark.unit
     def test_code_with_backticks(self):
         """Code containing backticks should use longer fence."""
         markdown = '```\ncode with ``` backticks\n```'
@@ -446,6 +466,7 @@ class TestCodeBlockSerialization:
 
         assert code1 == code2, f"Code content mismatch: {code1!r} != {code2!r}"
 
+    @pytest.mark.unit
     def test_code_with_four_backticks(self):
         """Code containing four backticks should use five backticks fence."""
         markdown = '```\ncode with ```` four backticks\n```'
@@ -457,6 +478,7 @@ class TestCodeBlockSerialization:
         assert '`````' in serialized
         assert 'code with ```` four backticks' in serialized
 
+    @pytest.mark.unit
     def test_code_only_backticks(self):
         """Code containing only backticks should be handled correctly."""
         # Use a code block that actually contains backticks as content
@@ -479,6 +501,7 @@ class TestCodeBlockSerialization:
 
         assert code1 == code2, f"Code content mismatch: {code1!r} != {code2!r}"
 
+    @pytest.mark.unit
     def test_empty_code_block(self):
         """Empty code blocks should serialize correctly."""
         markdown = '```\n\n```'
@@ -498,6 +521,7 @@ class TestCodeBlockSerialization:
         assert ast1[0].get('type') == 'block_code'
         assert ast2[0].get('type') == 'block_code'
 
+    @pytest.mark.unit
     def test_code_with_language_and_backticks(self):
         """Code with language info and backticks should preserve both."""
         markdown = '```python\nprint("```")\n```'
@@ -519,6 +543,7 @@ class TestCodeBlockSerialization:
 
         assert lang1 == lang2 == 'python'
 
+    @pytest.mark.unit
     def test_code_with_mixed_backtick_lengths(self):
         """Code with various backtick lengths should use appropriate fence."""
         code_content = 'single ` double `` triple ``` quadruple ````'
@@ -547,6 +572,7 @@ class TestCodeBlockSerialization:
 class TestCodeFenceCollisionProperty:
     """Property-based tests for code fence collision handling."""
 
+    @pytest.mark.property
     @given(st.text(min_size=0, max_size=200))
     # Complex strategy: 30 examples (adequate coverage)
     @settings(max_examples=30, deadline=None)
@@ -610,6 +636,7 @@ class TestCodeFenceCollisionProperty:
         assert code_content in result, \
             f"Original content should be preserved in result. Content: {code_content!r}, Result: {result!r}"
 
+    @pytest.mark.property
     @given(
         st.text(min_size=0, max_size=200),
         st.text(
@@ -681,6 +708,7 @@ class TestCodeFenceCollisionProperty:
 class TestMarkdownSerializerEdgeCases:
     """Tests for MarkdownSerializer edge cases and coverage."""
 
+    @pytest.mark.unit
     def test_serialize_unknown_token(self):
         """Test that unknown token types return empty string."""
         serializer = MarkdownSerializer()
@@ -689,6 +717,7 @@ class TestMarkdownSerializerEdgeCases:
         # _serialize_token returns '' for unknown
         assert serializer._serialize_token(token) == ''
 
+    @pytest.mark.unit
     def test_serialize_inline_unknown(self):
         """Test that unknown inline tokens fall back to raw content."""
         serializer = MarkdownSerializer()
@@ -697,12 +726,14 @@ class TestMarkdownSerializerEdgeCases:
         # serialize_inline falls back to raw
         assert serializer.serialize_inline([token]) == 'content'
 
+    @pytest.mark.unit
     def test_blank_line(self):
         """Test that blank_line tokens return None."""
         serializer = MarkdownSerializer()
         token = {'type': 'blank_line'}
         assert serializer.blank_line(token) is None
 
+    @pytest.mark.unit
     def test_table_edge_cases(self):
         """Test table serialization with empty children."""
         serializer = MarkdownSerializer()
@@ -710,6 +741,7 @@ class TestMarkdownSerializerEdgeCases:
         token = {'type': 'table', 'children': []}
         assert serializer.table(token) == ''
 
+    @pytest.mark.unit
     def test_serialize_list_item_unknown_child(self):
         """Test list item serialization with unknown child type."""
         serializer = MarkdownSerializer()
@@ -721,6 +753,7 @@ class TestMarkdownSerializerEdgeCases:
         # It calls _serialize_token which returns '' so result is empty string
         assert serializer._serialize_list_item(item_token) == ''
 
+    @pytest.mark.unit
     def test_serialize_list_item_known_child_returns_empty(self):
         """Test list item serialization with child that serializes to empty."""
         serializer = MarkdownSerializer()
@@ -731,6 +764,7 @@ class TestMarkdownSerializerEdgeCases:
         }
         assert serializer._serialize_list_item(item_token) == ''
 
+    @pytest.mark.unit
     def test_block_code_no_newline(self):
         """Test block code serialization without trailing newline."""
         serializer = MarkdownSerializer()
@@ -738,6 +772,7 @@ class TestMarkdownSerializerEdgeCases:
         result = serializer.block_code(token)
         assert result == '```\ncode without newline\n```'
 
+    @pytest.mark.unit
     def test_block_code_with_newline(self):
         """Test block code serialization with trailing newline."""
         serializer = MarkdownSerializer()

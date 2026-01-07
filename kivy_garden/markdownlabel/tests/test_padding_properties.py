@@ -115,6 +115,7 @@ class TestPaddingApplication:
             assert abs(actual - exp) < 0.001, \
                 f"After change, padding[{i}]: expected {exp}, got {actual}"
 
+    @pytest.mark.unit
     def test_default_padding_is_zero(self):
         """Default padding is [0, 0, 0, 0]."""
         label = MarkdownLabel(text='Hello World')
@@ -262,6 +263,7 @@ Regular paragraph
             assert padding_equal(list(lbl.padding), padding2), \
                 f"After change, expected padding={padding2}, got {list(lbl.padding)}"
 
+    @pytest.mark.unit
     def test_default_padding_is_zero_for_all_labels(self):
         """Default padding is [0, 0, 0, 0] for all labels."""
         label = MarkdownLabel(text='Hello World')
@@ -762,6 +764,7 @@ class TestLabelPaddingAliasSynchronization:
         assert padding_equal(list(label.text_padding), padding2), \
             f"Expected text_padding={padding2} after setting text_padding"
 
+    @pytest.mark.unit
     def test_default_values_synchronized(self):
         """Default values of label_padding and text_padding are synchronized."""
         label = MarkdownLabel(text='Hello World')

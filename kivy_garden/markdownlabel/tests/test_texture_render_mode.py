@@ -33,6 +33,7 @@ from .test_utils import find_labels_recursive, FakeTouch, find_images
 class TestTextureRenderModeStructure:
     """Property tests for texture render mode structure."""
 
+    @pytest.mark.unit
     @pytest.mark.parametrize('text', [
         'Hello World',
         '# Heading',
@@ -54,6 +55,7 @@ class TestTextureRenderModeStructure:
         assert len(images) >= 1, \
             f"Expected at least 1 Image widget in texture mode, found {len(images)}"
 
+    @pytest.mark.unit
     def test_texture_mode_with_empty_text_no_image(self):
         """When render_mode='texture' with empty text, no Image widget is created."""
         label = MarkdownLabel(
@@ -68,6 +70,7 @@ class TestTextureRenderModeStructure:
         assert len(images) == 0, \
             f"Expected no Image widgets with empty text, found {len(images)}"
 
+    @pytest.mark.unit
     def test_widgets_mode_no_image_widget(self):
         """When render_mode='widgets', no Image widget is created."""
         label = MarkdownLabel(
@@ -82,6 +85,7 @@ class TestTextureRenderModeStructure:
         assert len(images) == 0, \
             f"Expected no Image widgets in widgets mode, found {len(images)}"
 
+    @pytest.mark.unit
     @pytest.mark.parametrize('render_mode', ['widgets', 'texture', 'auto'])
     def test_render_mode_property_values(self, render_mode):
         """render_mode property accepts valid values."""
@@ -89,6 +93,7 @@ class TestTextureRenderModeStructure:
         assert label.render_mode == render_mode, \
             f"Expected render_mode={render_mode}, got {label.render_mode}"
 
+    @pytest.mark.unit
     def test_default_render_mode_is_widgets(self):
         """Default render_mode is 'widgets'."""
         label = MarkdownLabel(text='Hello World')
@@ -104,6 +109,7 @@ class TestTextureRenderModeStructure:
 class TestTextureModeLinksHandling:
     """Property tests for texture mode link handling."""
 
+    @pytest.mark.unit
     def test_aggregated_refs_populated_in_texture_mode(self):
         """In texture mode, _aggregated_refs is populated with link zones."""
         label = MarkdownLabel(
@@ -120,6 +126,7 @@ class TestTextureModeLinksHandling:
         assert hasattr(label, '_aggregated_refs'), \
             "Expected _aggregated_refs attribute"
 
+    @pytest.mark.unit
     def test_widgets_mode_no_aggregated_refs(self):
         """In widgets mode, _aggregated_refs is empty (links handled by Labels)."""
         label = MarkdownLabel(
@@ -135,6 +142,7 @@ class TestTextureModeLinksHandling:
         assert label._aggregated_refs == {}, \
             f"Expected empty _aggregated_refs in widgets mode, got {label._aggregated_refs}"
 
+    @pytest.mark.unit
     @pytest.mark.parametrize('text,expected_refs', [
         ('[Link](http://example.com)', ['http://example.com']),
         ('[A](http://a.com) and [B](http://b.com)', ['http://a.com', 'http://b.com']),
@@ -170,6 +178,7 @@ class TestDeterministicTextureHitTesting:
     without relying on actual texture rendering.
     """
 
+    @pytest.mark.unit
     def test_inside_zone_dispatch(self):
         """Touch inside ref zone dispatches on_ref_press and returns True."""
         # Create MarkdownLabel with render_mode='texture'
@@ -229,6 +238,7 @@ class TestDeterministicTextureHitTesting:
     )
     # Mixed finite/complex strategy: 50 examples (multiple finite dimensions × complex samples)
     @settings(max_examples=50, deadline=None)
+    @pytest.mark.property
     def test_property_inside_zone_dispatch(
         self, zone, ref_name, touch_offset_x, touch_offset_y
     ):
@@ -278,6 +288,7 @@ class TestDeterministicTextureHitTesting:
         assert result is True, \
             "Expected on_touch_down to return True"
 
+    @pytest.mark.unit
     def test_outside_zone_no_dispatch(self):
         """Touch outside ref zones does not dispatch on_ref_press."""
         # Create MarkdownLabel with render_mode='texture'
@@ -331,6 +342,7 @@ class TestDeterministicTextureHitTesting:
     )
     # Mixed finite/complex strategy: 50 examples (multiple finite dimensions × complex samples)
     @settings(max_examples=50, deadline=None)
+    @pytest.mark.property
     def test_property_outside_zone_no_dispatch(self, zone, ref_name, outside_offset):
         """Property test: Touch outside ref zones does not dispatch.
 
@@ -378,6 +390,7 @@ class TestDeterministicTextureHitTesting:
         assert not result, \
             "Expected on_touch_down to return falsy value"
 
+    @pytest.mark.unit
     def test_multiple_zones_first_match(self):
         """Multiple zones: first matching zone triggers dispatch."""
         # Create MarkdownLabel with render_mode='texture'
@@ -421,6 +434,7 @@ class TestDeterministicTextureHitTesting:
         assert result is True, \
             "Expected on_touch_down to return True"
 
+    @pytest.mark.unit
     def test_multiple_zones_non_overlapping(self):
         """Multiple non-overlapping zones: correct zone triggers dispatch."""
         # Create MarkdownLabel with render_mode='texture'
@@ -472,6 +486,7 @@ class TestDeterministicTextureHitTesting:
 class TestTextureFallbackBranch:
     """Tests for texture mode fallback to widgets mode when rendering fails."""
 
+    @pytest.mark.unit
     def test_texture_fallback_to_widgets_mode(self, monkeypatch):
         """When _render_as_texture returns None, fallback to widgets mode.
 
@@ -508,6 +523,7 @@ class TestTextureFallbackBranch:
         assert len(labels) >= 1, \
             f"Expected at least 1 Label widget in fallback mode, found {len(labels)}"
 
+    @pytest.mark.unit
     def test_texture_fallback_preserves_content(self, monkeypatch):
         """Fallback to widgets mode preserves all content."""
         # Monkeypatch _render_as_texture to return None
@@ -542,6 +558,7 @@ class TestTextureFallbackBranch:
 class TestAutoRenderModeSelection:
     """Property tests for auto render mode selection."""
 
+    @pytest.mark.unit
     def test_auto_mode_uses_widgets_by_default(self):
         """Auto mode uses 'widgets' for simple content without constraints."""
         label = MarkdownLabel(
@@ -554,6 +571,7 @@ class TestAutoRenderModeSelection:
         assert effective_mode == 'widgets', \
             f"Expected 'widgets' for simple content, got '{effective_mode}'"
 
+    @pytest.mark.unit
     def test_auto_mode_uses_texture_with_strict_mode_and_height(self):
         """Auto mode uses 'texture' when strict_label_mode with height constraints."""
         label = MarkdownLabel(
@@ -568,6 +586,7 @@ class TestAutoRenderModeSelection:
         assert effective_mode == 'texture', \
             f"Expected 'texture' with strict_label_mode and height constraint, got '{effective_mode}'"
 
+    @pytest.mark.unit
     def test_auto_mode_uses_texture_with_text_size_height(self):
         """Auto mode uses 'texture' when strict_label_mode with text_size height."""
         label = MarkdownLabel(
@@ -581,6 +600,7 @@ class TestAutoRenderModeSelection:
         assert effective_mode == 'texture', \
             f"Expected 'texture' with strict_label_mode and text_size height, got '{effective_mode}'"
 
+    @pytest.mark.unit
     def test_auto_mode_uses_widgets_without_strict_mode(self):
         """Auto mode uses 'widgets' when strict_label_mode is False."""
         label = MarkdownLabel(
@@ -594,6 +614,7 @@ class TestAutoRenderModeSelection:
         assert effective_mode == 'widgets', \
             f"Expected 'widgets' without strict_label_mode, got '{effective_mode}'"
 
+    @pytest.mark.unit
     @pytest.mark.parametrize('strict_mode,size_hint_y,expected', [
         (False, 1, 'widgets'),
         (False, None, 'widgets'),
@@ -614,6 +635,7 @@ class TestAutoRenderModeSelection:
             f"Expected '{expected}' for strict_mode={strict_mode}, " \
             f"size_hint_y={size_hint_y}, got '{effective_mode}'"
 
+    @pytest.mark.unit
     def test_explicit_widgets_mode_overrides_auto_logic(self):
         """Explicit 'widgets' mode is used regardless of constraints."""
         label = MarkdownLabel(
@@ -628,6 +650,7 @@ class TestAutoRenderModeSelection:
         assert effective_mode == 'widgets', \
             f"Expected 'widgets' when explicitly set, got '{effective_mode}'"
 
+    @pytest.mark.unit
     def test_explicit_texture_mode_overrides_auto_logic(self):
         """Explicit 'texture' mode is used regardless of constraints."""
         label = MarkdownLabel(

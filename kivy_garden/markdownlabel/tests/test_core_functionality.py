@@ -330,6 +330,7 @@ class TestMarkdownNestingStability:
         except Exception as e:
             pytest.fail(f"Unexpected exception at depth {depth}: {e}")
 
+    @pytest.mark.needs_window
     def test_exactly_10_levels_renders_fully(self):
         """Exactly 10 levels of nesting renders without truncation warning."""
         markdown = self._generate_nested_list(10)
@@ -339,6 +340,7 @@ class TestMarkdownNestingStability:
         assert isinstance(label, BoxLayout)
         assert len(label.children) >= 1
 
+    @pytest.mark.needs_window
     def test_beyond_10_levels_still_renders(self):
         """Beyond 10 levels still renders (with truncation) without crashing."""
         markdown = self._generate_nested_list(15)

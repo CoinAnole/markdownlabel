@@ -155,6 +155,7 @@ class TestColorPropertyForwarding:
         assert len(body_labels) >= 1, "Expected at least one body text label with specified color"
         assert len(code_labels) >= 1, "Expected at least one code label with light color"
 
+    @pytest.mark.unit
     def test_links_unstyled_by_default(self):
         """Default links remain unstyled while keeping ref markup."""
         markdown = 'Click [here](https://kivy.org)'
@@ -168,6 +169,7 @@ class TestColorPropertyForwarding:
         assert not any('[color=' in getattr(lbl, 'text', '') for lbl in labels), \
             "Default links should not inject color markup"
 
+    @pytest.mark.unit
     def test_links_styled_when_enabled(self):
         """Links gain color markup when link_style='styled'."""
         markdown = 'Click [here](https://kivy.org)'

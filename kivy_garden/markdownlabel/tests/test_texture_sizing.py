@@ -6,6 +6,7 @@ logical test grouping validation.
 """
 
 from hypothesis import given, strategies as st, settings, assume
+import pytest
 
 from kivy.uix.gridlayout import GridLayout
 
@@ -28,6 +29,7 @@ from .test_utils import (
 class TestComprehensiveTextureSizeCalculation:
     """Property tests for comprehensive texture_size calculation."""
 
+    @pytest.mark.property
     @given(simple_markdown_document())
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -42,6 +44,7 @@ class TestComprehensiveTextureSizeCalculation:
         assert len(texture_size) == 2, \
             f"Expected texture_size to have 2 elements, got {len(texture_size)}"
 
+    @pytest.mark.property
     @given(simple_markdown_document())
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -56,6 +59,7 @@ class TestComprehensiveTextureSizeCalculation:
         assert texture_size[1] >= 0, \
             f"Expected texture_size height >= 0, got {texture_size[1]}"
 
+    @pytest.mark.unit
     def test_empty_label_texture_size_is_zero(self):
         """Empty MarkdownLabel has texture_size [0, 0]."""
         label = MarkdownLabel(text='')
@@ -65,6 +69,7 @@ class TestComprehensiveTextureSizeCalculation:
         assert texture_size == [0, 0], \
             f"Expected texture_size [0, 0] for empty label, got {texture_size}"
 
+    @pytest.mark.property
     @given(markdown_heading())
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -81,6 +86,7 @@ class TestComprehensiveTextureSizeCalculation:
         assert isinstance(texture_size, (list, tuple)) and len(texture_size) == 2
         assert texture_size[0] >= 0 and texture_size[1] >= 0
 
+    @pytest.mark.property
     @given(markdown_paragraph())
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -99,6 +105,7 @@ class TestComprehensiveTextureSizeCalculation:
         assert isinstance(texture_size, (list, tuple)) and len(texture_size) == 2
         assert texture_size[0] >= 0 and texture_size[1] >= 0
 
+    @pytest.mark.unit
     def test_code_block_creates_container_widget(self):
         """Code block content creates a BoxLayout container that is included in texture_size calculation."""
         markdown = '```python\nprint("hello")\n```'
@@ -113,6 +120,7 @@ class TestComprehensiveTextureSizeCalculation:
         assert isinstance(texture_size, (list, tuple)) and len(texture_size) == 2
         assert texture_size[0] >= 0 and texture_size[1] >= 0
 
+    @pytest.mark.unit
     def test_list_creates_container_widget(self):
         """List content creates a BoxLayout container that is included in texture_size calculation."""
         markdown = '- Item 1\n- Item 2\n- Item 3'
@@ -127,6 +135,7 @@ class TestComprehensiveTextureSizeCalculation:
         assert isinstance(texture_size, (list, tuple)) and len(texture_size) == 2
         assert texture_size[0] >= 0 and texture_size[1] >= 0
 
+    @pytest.mark.unit
     def test_table_creates_gridlayout_widget(self):
         """Table content creates a GridLayout widget that is included in texture_size calculation."""
         markdown = '| A | B |\n| --- | --- |\n| 1 | 2 |'
@@ -145,6 +154,7 @@ class TestComprehensiveTextureSizeCalculation:
         assert isinstance(texture_size, (list, tuple)) and len(texture_size) == 2
         assert texture_size[0] >= 0 and texture_size[1] >= 0
 
+    @pytest.mark.unit
     def test_block_quote_creates_container_widget(self):
         """Block quote content creates a BoxLayout container that is included in texture_size calculation."""
         markdown = '> This is a quote'
@@ -159,6 +169,7 @@ class TestComprehensiveTextureSizeCalculation:
         assert isinstance(texture_size, (list, tuple)) and len(texture_size) == 2
         assert texture_size[0] >= 0 and texture_size[1] >= 0
 
+    @pytest.mark.unit
     def test_thematic_break_contributes_to_texture_size(self):
         """Thematic break (horizontal rule) contributes to texture_size with explicit height."""
         markdown = 'Before\n\n---\n\nAfter'
@@ -171,6 +182,7 @@ class TestComprehensiveTextureSizeCalculation:
         assert texture_size[1] > 0, \
             f"Expected texture_size height > 0 for thematic break, got {texture_size[1]}"
 
+    @pytest.mark.property
     @given(st.integers(min_value=1, max_value=5))
     # Small finite strategy: 5 examples (input space size: 5)
     @settings(max_examples=5, deadline=None)
@@ -188,6 +200,7 @@ class TestComprehensiveTextureSizeCalculation:
             assert label_multi.texture_size[1] >= label1.texture_size[1], \
                 "Expected multi-paragraph height >= single paragraph height"
 
+    @pytest.mark.unit
     def test_mixed_content_creates_multiple_widgets(self):
         """Mixed content (heading, paragraph, code, list) creates multiple widgets for texture_size."""
         markdown = '''# Heading
@@ -215,6 +228,7 @@ code = "block"
         assert len(label.children) > 1, \
             f"Expected multiple children for mixed content, got {len(label.children)}"
 
+    @pytest.mark.property
     @given(simple_markdown_document())
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -235,6 +249,7 @@ code = "block"
             # The method should have traversed all children
             pass  # No assertion needed - if we got here, the method worked
 
+    @pytest.mark.unit
     def test_nested_list_creates_nested_containers(self):
         """Nested list content creates nested BoxLayout containers for texture_size calculation."""
         markdown = '''- Item 1
@@ -252,6 +267,7 @@ code = "block"
         assert isinstance(texture_size, (list, tuple)) and len(texture_size) == 2
         assert texture_size[0] >= 0 and texture_size[1] >= 0
 
+    @pytest.mark.unit
     def test_ordered_list_creates_container_widget(self):
         """Ordered list content creates a BoxLayout container for texture_size calculation."""
         markdown = '1. First\n2. Second\n3. Third'
@@ -266,6 +282,7 @@ code = "block"
         assert isinstance(texture_size, (list, tuple)) and len(texture_size) == 2
         assert texture_size[0] >= 0 and texture_size[1] >= 0
 
+    @pytest.mark.property
     @given(simple_markdown_document(), simple_markdown_document())
     # Mixed finite/complex strategy: 50 examples (100 finite combinations × 0.5 complex samples)
     @settings(max_examples=50, deadline=None)
@@ -292,6 +309,7 @@ code = "block"
         assert texture_size2[0] >= 0 and texture_size2[1] >= 0, \
             "Expected non-negative texture_size after text change"
 
+    @pytest.mark.unit
     def test_texture_size_with_image_markdown(self):
         """Image markdown contributes to texture_size.
 
@@ -313,6 +331,7 @@ code = "block"
         assert len(label.children) > 0, \
             f"Expected children for image markdown, got {len(label.children)}"
 
+    @pytest.mark.property
     @given(st.integers(min_value=1, max_value=6))
     # Small finite strategy: 6 examples (input space size: 6)
     @settings(max_examples=6, deadline=None)
@@ -330,6 +349,7 @@ code = "block"
         assert isinstance(texture_size, (list, tuple)) and len(texture_size) == 2
         assert texture_size[0] >= 0 and texture_size[1] >= 0
 
+    @pytest.mark.unit
     def test_blank_lines_create_spacer_widgets(self):
         """Blank lines create spacer widgets with explicit height for texture_size."""
         markdown_no_blanks = 'Para 1\nPara 2'

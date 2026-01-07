@@ -118,6 +118,7 @@ class TestContentClippingWhenHeightConstrained:
             f"Expected clipping for heading level {level} with height={height}"
         )
 
+    @pytest.mark.unit
     def test_clipping_uses_stencil_view(self):
         """Clipping mechanism uses StencilView."""
         from kivy.uix.stencilview import StencilView
@@ -232,6 +233,7 @@ class TestNoClippingWhenUnconstrained:
             f"Expected no clipping for heading level {level} when unconstrained"
         )
 
+    @pytest.mark.unit
     def test_default_settings_no_clipping(self):
         """Default MarkdownLabel settings do not enable clipping."""
         label = MarkdownLabel(text="Test content")
