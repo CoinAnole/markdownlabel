@@ -25,6 +25,9 @@ When there's a finite dimension and a complex dimension, we now express it as:
 - `test_comment_format.py`: 
   - 50 → 30 examples (6 finite × 5 complex samples)
   - 25 → 30 examples (6 finite × 5 complex samples)
+- `test_comment_standardizer.py`:
+  - 5 → 15 examples (15 finite combinations × 1 complex sample)
+  - 4 → 25 examples (5 finite × 5 complex samples)
 
 ### 2. Complex Combination Strategy Fixes
 When there are multiple complex strategies combined with finite strategies, we now use:
@@ -35,6 +38,8 @@ When there are multiple complex strategies combined with finite strategies, we n
   - 50 examples (120 finite combinations with 5 complex strategies)
   - 50 examples (60 finite combinations with 3 complex strategies)
   - 50 examples (24 finite combinations with 4 complex strategies)
+- `test_comment_standardizer.py`:
+  - 25 → 50 examples (440 finite combinations with 1 complex strategy)
 
 ### 3. Pure Complex Strategy Fixes
 When there's only complex strategies (no finite dimension), we simplified to:
@@ -44,6 +49,7 @@ When there's only complex strategies (no finite dimension), we simplified to:
 - `test_sizing_behavior.py`: Removed incorrect "6 finite" claim
 - `test_serialization.py`: Removed incorrect "6 finite" claim
 - `test_shared_infrastructure.py`: Removed incorrect "6 finite" claim
+- `test_comment_standardizer.py`: 30 examples (adequate coverage)
 
 ### 4. Combination Strategy Fixes
 When all strategies are finite (no complex strategies), we use:
@@ -56,15 +62,17 @@ When all strategies are finite (no complex strategies), we use:
 
 ## Key Principles Applied
 
-1. **Whole numbers only**: No fractional samples (0.4, 0.7, etc.)
+1. **Whole numbers only**: No fractional samples (0.4, 0.7, 0.06, 0.33, 0.8, 1.5, etc.)
 2. **Clear formulas**: For mixed finite/complex, use `finite_size × samples_per_value`
 3. **Appropriate classification**: 
    - Use "Mixed finite/complex" only when there's exactly 1 finite and 1+ complex
    - Use "Complex combination" when there are multiple complex strategies with finite
    - Use "Combination" when all strategies are finite
    - Use "Complex" when all strategies are complex/infinite
+4. **Adequate coverage**: Ensure max_examples is sufficient to cover the finite dimension properly
 
 ## Total Changes
-- 23 test files updated
+- 24 test files updated
 - All fractional sample comments eliminated
 - max_examples values adjusted where needed to ensure adequate coverage of finite dimensions
+

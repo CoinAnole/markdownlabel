@@ -314,8 +314,8 @@ class TestFiniteStrategyDocumentation:
             lambda x: x not in {2, 5, 10, 20, 50, 100}
         )
     )
-    # Mixed finite/complex strategy: 25 examples (440 finite × ~0.06 complex)
-    @settings(max_examples=25, deadline=None)
+    # Complex combination strategy: 50 examples (440 finite combinations with 1 complex strategy)
+    @settings(max_examples=50, deadline=None)
     def test_finite_strategy_comments_reference_input_space_size(
         self, min_value, max_value, max_examples
     ):
@@ -388,7 +388,7 @@ def test_finite_strategy(num):
             lambda x: x not in {2, 5, 10, 20, 50, 100}
         )
     )
-    # Mixed finite/complex strategy: 30 examples (20 finite × ~1.5 complex)
+    # Complex strategy: 30 examples (adequate coverage)
     @settings(max_examples=30, deadline=None)
     def test_sampled_from_finite_strategy_documentation(self, items, max_examples):
         """Sampled_from finite strategies are properly documented."""
@@ -608,8 +608,8 @@ class TestPerformanceRationaleDocumentation:
             whitelist_categories=('Lu', 'Ll', 'Nd', 'Pc')
         )).map(lambda x: f"test_{x}")
     )
-    # Mixed finite/complex strategy: 5 examples (15 finite × ~0.33 complex)
-    @settings(max_examples=5, deadline=None)
+    # Mixed finite/complex strategy: 15 examples (15 finite combinations × 1 complex sample)
+    @settings(max_examples=15, deadline=None)
     def test_execution_time_performance_rationale_documented(
         self, max_examples, strategy_complexity, function_name
     ):
@@ -684,8 +684,8 @@ def {function_name}(data):
             whitelist_categories=('Lu', 'Ll', 'Nd', 'Pc')
         )).map(lambda x: f"test_{x}")
     )
-    # Mixed finite/complex strategy: 4 examples (5 finite × ~0.8 complex)
-    @settings(max_examples=4, deadline=None)
+    # Mixed finite/complex strategy: 25 examples (5 finite × 5 complex samples)
+    @settings(max_examples=25, deadline=None)
     def test_explicit_performance_comments_detected(
         self, performance_keywords, max_examples, function_name
     ):
