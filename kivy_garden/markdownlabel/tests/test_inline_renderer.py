@@ -80,6 +80,7 @@ def link_token(draw):
 class TestInlineFormattingConversion:
     """Property tests for inline formatting conversion."""
 
+    @pytest.mark.property
     @given(strong_token())
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -91,6 +92,7 @@ class TestInlineFormattingConversion:
         assert result.startswith('[b]'), f"Strong should start with [b], got: {result}"
         assert result.endswith('[/b]'), f"Strong should end with [/b], got: {result}"
 
+    @pytest.mark.property
     @given(emphasis_token())
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -102,6 +104,7 @@ class TestInlineFormattingConversion:
         assert result.startswith('[i]'), f"Emphasis should start with [i], got: {result}"
         assert result.endswith('[/i]'), f"Emphasis should end with [/i], got: {result}"
 
+    @pytest.mark.property
     @given(codespan_token())
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -113,6 +116,7 @@ class TestInlineFormattingConversion:
         assert result.startswith('[font='), f"Codespan should start with [font=, got: {result}"
         assert result.endswith('[/font]'), f"Codespan should end with [/font], got: {result}"
 
+    @pytest.mark.property
     @given(strikethrough_token())
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -124,6 +128,7 @@ class TestInlineFormattingConversion:
         assert result.startswith('[s]'), f"Strikethrough should start with [s], got: {result}"
         assert result.endswith('[/s]'), f"Strikethrough should end with [/s], got: {result}"
 
+    @pytest.mark.property
     @given(link_token())
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -142,6 +147,7 @@ class TestInlineFormattingConversion:
         assert '[u]' not in result and '[/u]' not in result, \
             f"Unstyled link should not add underline, got: {result}"
 
+    @pytest.mark.property
     @given(link_token())
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -168,6 +174,7 @@ class TestInlineFormattingConversion:
 class TestSpecialCharacterEscaping:
     """Property tests for special character escaping."""
 
+    @pytest.mark.property
     @given(text_token())
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -202,6 +209,7 @@ class TestSpecialCharacterEscaping:
         assert output_amp == input_ampersands, \
             f"Expected {input_ampersands} &amp; escapes, got {output_amp}"
 
+    @pytest.mark.property
     @given(st.text(alphabet='[]&', min_size=1, max_size=50))
     # Complex strategy: 50 examples (adequate coverage)
     @settings(max_examples=50, deadline=None)
@@ -224,6 +232,7 @@ class TestSpecialCharacterEscaping:
         # After removing escape sequences, there should be no & left
         assert '&' not in cleaned, f"Found unescaped & in: {result}"
 
+    @pytest.mark.property
     @given(st.text(min_size=0, max_size=100))
     # Complex strategy: 30 examples (adequate coverage)
     @settings(max_examples=30, deadline=None)
@@ -398,6 +407,7 @@ class TestURLMarkupSafety:
 class TestURLMarkupSafetyProperty:
     """Property test for URL markup safety."""
 
+    @pytest.mark.property
     @given(st.one_of(
         # URLs with closing brackets
         st.text(min_size=1, max_size=100).map(lambda s: f"http://example.com/{s}]"),
@@ -654,6 +664,7 @@ class TestHTMLSecurity:
 class TestHTMLContentEscapingProperty:
     """Property test for HTML content escaping."""
 
+    @pytest.mark.property
     @given(st.one_of(
         # HTML with various tag structures
         st.text(min_size=1, max_size=50).map(lambda s: f"<script>{s}</script>"),
@@ -757,6 +768,7 @@ class TestHTMLContentEscapingProperty:
             f"HTML: {html_content!r}, Result: {result!r}, Cleaned: {cleaned_result!r}"
         )
 
+    @pytest.mark.property
     @given(st.text(min_size=0, max_size=200, alphabet=st.characters(
         whitelist_categories=['L', 'N', 'P', 'S', 'Z']
     )))
