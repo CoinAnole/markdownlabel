@@ -565,8 +565,8 @@ class TestFontSizeImmediateUpdates:
         st_font_size(min_value=10, max_value=30),
         st_font_size(min_value=10, max_value=30)
     )
-    # Mixed finite/complex strategy: 20 examples (6 finite × ~3 complex samples)
-    @settings(max_examples=20, deadline=None)
+    # Mixed finite/complex strategy: 30 examples (6 finite × 5 complex samples)
+    @settings(max_examples=30, deadline=None)
     def test_heading_font_size_updates_with_scale(self, heading_level, initial_size, new_size):
         """Heading font sizes update immediately with correct scale factors."""
         assume(abs(initial_size - new_size) > 1.0)
@@ -641,8 +641,8 @@ class TestHeadingScalePreservation:
         st.integers(min_value=1, max_value=6),  # Heading levels
         st_font_size(min_value=8, max_value=50)
     )
-    # Mixed finite/complex strategy: 20 examples (6 finite × ~3 complex samples)
-    @settings(max_examples=20, deadline=None)
+    # Mixed finite/complex strategy: 30 examples (6 finite × 5 complex samples)
+    @settings(max_examples=30, deadline=None)
     def test_heading_scale_factors_preserved(self, heading_level, base_size):
         """Heading scale factors are preserved according to HEADING_SIZES."""
         # Create heading markdown
@@ -731,8 +731,8 @@ class TestHeadingScalePreservation:
         st_font_size(min_value=10, max_value=20),
         st_font_size(min_value=20, max_value=40)
     )
-    # Mixed finite/complex strategy: 20 examples (6 finite × ~3 complex samples)
-    @settings(max_examples=20, deadline=None)
+    # Mixed finite/complex strategy: 30 examples (6 finite × 5 complex samples)
+    @settings(max_examples=30, deadline=None)
     def test_heading_scale_preserved_after_base_font_size_change(self, heading_level, initial_size, new_size):
         """Heading scale factors are preserved when base_font_size changes."""
         # Create heading

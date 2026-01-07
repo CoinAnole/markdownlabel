@@ -254,7 +254,7 @@ class TestStylePropertyIdentityPreservationPBT:
         line_height=st.floats(min_value=0.5, max_value=3.0, allow_nan=False,
                                allow_infinity=False)
     )
-    # Mixed finite/complex strategy: 50 examples (120 finite × ~0.4 complex samples)
+    # Complex combination strategy: 50 examples (120 finite combinations with 5 complex strategies)
     @settings(max_examples=50, deadline=None)
     def test_style_property_changes_preserve_widget_tree(
         self, markdown_text, base_font_size, color, halign, valign,
@@ -426,7 +426,7 @@ class TestStylePropertyPropagationPBT:
                                allow_infinity=False),
         base_direction=st.sampled_from([None, 'ltr', 'rtl', 'weak_ltr', 'weak_rtl'])
     )
-    # Mixed finite/complex strategy: 50 examples (60 finite × ~0.8 complex samples)
+    # Complex combination strategy: 50 examples (60 finite combinations with 3 complex strategies)
     @settings(max_examples=50, deadline=None)
     def test_style_property_values_propagate_to_descendants(
         self, markdown_text, color, halign, valign, line_height, base_direction
@@ -696,8 +696,8 @@ class TestStructurePropertyRebuildPBT:
         markdown_text=simple_markdown_document(),
         font_name=st_font_name()
     )
-    # Mixed finite/complex strategy: 3 examples (30 finite × ~0.1 complex samples)
-    @settings(max_examples=3, deadline=None)
+    # Mixed finite/complex strategy: 15 examples (3 finite × 5 complex samples)
+    @settings(max_examples=15, deadline=None)
     def test_font_name_change_triggers_rebuild_pbt(self, markdown_text, font_name):
         """
         *For any* MarkdownLabel with non-empty content, and *for any* structure
@@ -738,8 +738,8 @@ class TestStructurePropertyRebuildPBT:
         markdown_text=simple_markdown_document(),
         link_style=st.sampled_from(['unstyled', 'styled'])
     )
-    # Mixed finite/complex strategy: 2 examples (20 finite × ~0.1 complex samples)
-    @settings(max_examples=2, deadline=None)
+    # Mixed finite/complex strategy: 10 examples (2 finite × 5 complex samples)
+    @settings(max_examples=10, deadline=None)
     def test_link_style_change_triggers_rebuild_pbt(self, markdown_text, link_style):
         """
         *For any* MarkdownLabel with non-empty content, and *for any* structure
@@ -792,7 +792,7 @@ class TestRootIDPreservationPBT:
                                allow_infinity=False),
         disabled=st.booleans()
     )
-    # Mixed finite/complex strategy: 50 examples (24 finite × ~2 complex samples)
+    # Complex combination strategy: 50 examples (24 finite combinations with 4 complex strategies)
     @settings(max_examples=50, deadline=None)
     def test_root_id_preserved_across_style_property_changes(
         self, markdown_text, base_font_size, color, halign, valign,
@@ -834,8 +834,8 @@ class TestRootIDPreservationPBT:
         strict_label_mode=st.booleans(),
         render_mode=st.sampled_from(['widgets', 'auto'])
     )
-    # Mixed finite/complex strategy: 50 examples (8 finite × ~6 complex samples)
-    @settings(max_examples=50, deadline=None)
+    # Mixed finite/complex strategy: 48 examples (24 finite combinations × 2 complex samples)
+    @settings(max_examples=48, deadline=None)
     def test_root_id_preserved_across_structure_property_changes(
         self, initial_text, new_text, font_name, link_style,
         strict_label_mode, render_mode

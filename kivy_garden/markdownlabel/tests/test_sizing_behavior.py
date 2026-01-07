@@ -22,7 +22,7 @@ class TestAutoSizingBehavior:
 
     @pytest.mark.property
     @given(simple_markdown_document())
-    # Mixed finite/complex strategy: 20 examples (6 finite × ~3 complex samples)
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_auto_size_hint_enabled_sets_none(self, markdown_text):
         """With auto_size_height=True, size_hint_y is None for auto-sizing."""

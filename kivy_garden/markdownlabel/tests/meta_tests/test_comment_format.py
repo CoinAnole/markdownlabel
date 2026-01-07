@@ -36,8 +36,8 @@ class TestCommentFormatValidation:
             )
         )
     )
-    # Mixed finite/complex strategy: 50 examples (6 finite × ~8 complex samples)
-    @settings(max_examples=50, deadline=None)
+    # Mixed finite/complex strategy: 30 examples (6 finite × 5 complex samples)
+    @settings(max_examples=30, deadline=None)
     def test_valid_comment_format_compliance(self, strategy_type, max_examples, rationale):
         """Valid standardized comments are correctly validated and parsed."""
         # Generate a valid comment using the standard format
@@ -222,8 +222,8 @@ class TestCustomValueDocumentation:
         ),
         strategy_type=st.sampled_from([s.value for s in StrategyType])
     )
-    # Mixed finite/complex strategy: 25 examples (6 finite × ~4 complex samples)
-    @settings(max_examples=25, deadline=None)
+    # Mixed finite/complex strategy: 30 examples (6 finite × 5 complex samples)
+    @settings(max_examples=30, deadline=None)
     def test_custom_max_examples_require_documentation(self, max_examples, strategy_type):
         """Custom max_examples values require documentation comments."""
         # Create a test function with custom max_examples but no comment

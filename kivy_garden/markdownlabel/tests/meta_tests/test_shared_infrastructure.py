@@ -31,7 +31,7 @@ class TestSharedStrategyAvailability:
     """Property tests for shared strategy availability."""
 
     @given(markdown_heading())
-    # Mixed finite/complex strategy: 20 examples (6 finite × ~3 complex samples)
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_markdown_heading_strategy_generates_valid_headings(self, heading):
         """Test that the shared markdown_heading strategy generates valid heading

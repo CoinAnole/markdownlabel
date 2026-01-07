@@ -283,8 +283,8 @@ class TestStyleOnlyPropertyUpdates:
         st.sampled_from(['top', 'middle', 'bottom']),
         st.floats(min_value=0.8, max_value=2.0, allow_nan=False, allow_infinity=False)
     )
-    # Mixed finite/complex strategy: 20 examples (9 finite × ~2 complex samples)
-    @settings(max_examples=20, deadline=None)
+    # Mixed finite/complex strategy: 27 examples (9 finite combinations × 3 complex samples)
+    @settings(max_examples=27, deadline=None)
     def test_multiple_style_changes_preserve_widget_tree(self, font_size, color,
                                                           halign, valign, line_height):
         """Multiple style-only property changes preserve widget tree structure."""

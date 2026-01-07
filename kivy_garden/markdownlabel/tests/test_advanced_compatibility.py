@@ -643,8 +643,8 @@ class TestReactiveRebuildOnPropertyChange:
         assert len(labels_after) >= 1, "Expected at least one Label after update"
 
     @given(rebuild_font_names, rebuild_colors, rebuild_line_heights)
-    # Mixed finite/complex strategy: 20 examples (3 finite × ~7 complex samples)
-    @settings(max_examples=20, deadline=None)
+    # Mixed finite/complex strategy: 15 examples (3 finite × 5 complex samples)
+    @settings(max_examples=15, deadline=None)
     def test_multiple_property_changes_rebuild_correctly(self, font_name, color, line_height):
         """Multiple property changes each trigger rebuilds with correct values."""
         label = MarkdownLabel(text='# Heading\n\nParagraph text')
@@ -819,8 +819,8 @@ class TestReactiveRebuildOnPropertyChange:
                 f"After change, expected color={expected_color2}, got {list(lbl.color)}"
 
     @given(simple_markdown_document(), rebuild_font_names, rebuild_font_names)
-    # Mixed finite/complex strategy: 20 examples (3 finite × ~7 complex samples)
-    @settings(max_examples=20, deadline=None)
+    # Mixed finite/complex strategy: 18 examples (9 finite combinations × 2 complex samples)
+    @settings(max_examples=18, deadline=None)
     def test_rebuild_preserves_content_structure(self, markdown_text, font1, font2):
         """Rebuilding widgets preserves the content structure."""
         assume(markdown_text.strip())

@@ -120,7 +120,7 @@ class TestMarkdownRoundTripSerialization:
 
     @pytest.mark.property
     @given(markdown_heading())
-    # Mixed finite/complex strategy: 20 examples (6 finite × ~3 complex samples)
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_heading_round_trip(self, heading):
         """Heading round-trips through parse-serialize-parse."""
