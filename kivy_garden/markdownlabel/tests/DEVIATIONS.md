@@ -28,10 +28,6 @@
 - Line 133-137: Manual StencilView traversal code is duplicated. Same issue as lines 91-96.
 - Line 216-218: Manual StencilView traversal code is duplicated. Same issue as lines 91-96.
 
-## test_color_properties.py
-
-No deviations found
-
 ## test_core_functionality.py
 
 - Line 116: Test name is `test_text_change_updates_widgets` but the test does NOT verify rebuild occurred. The test only checks that `label.text == text2` (line 130). According to guidelines, tests that change structure properties like `text` should verify rebuild behavior using `collect_widget_ids()` and comparison or `assert_rebuild_occurred()`. The current test only verifies the text value changed, not that the widget tree was rebuilt.
@@ -58,27 +54,11 @@ No deviations found
 - Line 248-253: Manual widget traversal code to find Labels with ref markup. Same issue as lines 227-231 - should use `find_labels_with_ref_markup()` helper.
 - Line 272-276: Manual widget traversal code to find Labels with ref markup. Same issue as lines 227-231 - should use `find_labels_with_ref_markup()` helper.
 
-## test_font_properties.py
-
-No deviations found
-
-## test_inline_renderer.py
-
-No deviations found
-
-## test_kivy_renderer.py
-
-No deviations found
-
 ## test_label_compatibility.py
 
 - Line 155-156: Comment says "32 finite × 2 complex samples" but max_examples=50. The calculation 32 × 2 = 64 doesn't match the actual max_examples value of 50. The comment calculation should match the actual max_examples value.
 - Line 291-292: Comment says "10 finite × 5 complex samples" but max_examples=50. The strategy combines multiple complex dimensions (floats, RGBA color, text, dictionaries) with finite dimensions (boolean, sampled_from). The comment oversimplifies by suggesting only 5 samples from the complex space, but there are multiple complex dimensions being sampled, not just one. The comment should either be "Complex strategy: 50 examples (adequate coverage)" or accurately reflect the multi-dimensional nature of the complex sampling.
 - Line 375-376: Comment says "10 finite × 2 complex samples" but max_examples=20. Similar to line 291, the strategy combines multiple complex dimensions (floats, RGBA color, text, dictionaries, markdown) with finite dimensions (boolean, sampled_from). The comment oversimplifies by suggesting only 2 samples from the complex space, but there are multiple complex dimensions being sampled. The comment should either be "Complex strategy: 20 examples (adequate coverage)" or accurately reflect the multi-dimensional nature of the complex sampling.
-
-## test_padding_properties.py
-
-No deviations found
 
 ## test_performance.py
 
@@ -103,14 +83,6 @@ No deviations found
 - Line 228: Test name is `test_multiple_changes_all_deferred` but according to guidelines, tests that verify rebuilds should use `test_*_triggers_rebuild_*` naming pattern. The test calls `force_rebuild()` and verifies that widgets changed after force_rebuild() (lines 256-258). The current name doesn't follow the standard naming convention.
 - Line 228-258: The test `test_multiple_changes_all_deferred` correctly verifies rebuild behavior using `collect_widget_ids()` and manual comparison. The test is specifically testing that multiple changes are all deferred (widgets don't change until force_rebuild()), which is a valid test scenario. However, the test name doesn't follow the standard `test_*_triggers_rebuild_*` pattern. Consider renaming to `test_multiple_changes_trigger_deferred_rebuild` to better match the naming convention while preserving the intent.
 
-## test_rebuild_semantics.py
-
-No deviations found
-
-## test_rtl_alignment.py
-
-No deviations found
-
 ## test_serialization.py
 
 - Line 648: Comment rationale "two complex strategies combined" does not follow standardized format. According to guidelines, complex strategies should use rationales like "adequate coverage" or "performance optimized". While the strategy classification as "Complex strategy" is correct for combining two complex strategies (st.text() and st.text() with constrained alphabet), the rationale should be "Complex strategy: 20 examples (adequate coverage)" to follow the standardized format.
@@ -120,10 +92,9 @@ No deviations found
 - Line 331: Test name is `test_shorten_change_updates_value` but the test calls `force_rebuild()` (line 344) and the docstring says "Changing shorten triggers widget rebuild with new value." According to guidelines, tests that verify rebuilds should use `test_*_triggers_rebuild_*` naming pattern. The current name uses "updates_value" pattern (for no rebuild tests) but the test actually calls `force_rebuild()` and verifies the new value after the rebuild. This should be renamed to `test_shorten_change_triggers_rebuild` to follow the naming convention.
 - Line 331-350: The test `test_shorten_change_updates_value` has a name that doesn't match its behavior. The test name uses "updates_value" pattern (typically for style-only property tests that don't rebuild) but the test calls `force_rebuild()` and the docstring explicitly states it tests that "shorten triggers widget rebuild". The test should be renamed to `test_shorten_change_triggers_rebuild` to accurately reflect that it verifies rebuild behavior.
 
-## test_sizing_behavior.py
+## test_texture_render_mode.py
 
-No deviations found
-
-## test_text_properties.py
-
-No deviations found
+- Line 239: Comment incorrectly classifies strategy as "Mixed finite/complex strategy" but the strategy combines only complex/infinite dimensions: `zone=st.tuples(...)` (4 floats), `ref_name=st.from_regex(...)` (regex-based), `touch_offset_x=st.floats(...)`, `touch_offset_y=st.floats(...)`. According to guidelines, when ALL strategies are complex/infinite, this should be "Complex strategy: 50 examples (adequate coverage)" not "Mixed finite/complex strategy".
+- Line 239-240: The comment "Mixed finite/complex strategy: 50 examples (multiple finite dimensions × complex samples)" is incorrect because there are NO finite dimensions in the strategy. All four dimensions (zone, ref_name, touch_offset_x, touch_offset_y) are complex/infinite strategies.
+- Line 343: Comment incorrectly classifies strategy as "Mixed finite/complex strategy" but the strategy combines only complex/infinite dimensions: `zone=st.tuples(...)` (4 floats), `ref_name=st.from_regex(...)` (regex-based), `outside_offset=st.floats(...)`. Same issue as line 239.
+- Line 343-344: The comment "Mixed finite/complex strategy: 50 examples (multiple finite dimensions × complex samples)" is incorrect because there are NO finite dimensions in the strategy. All three dimensions (zone, ref_name, outside_offset) are complex/infinite strategies.
