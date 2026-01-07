@@ -732,7 +732,7 @@ class TestReactiveRebuildOnPropertyChange:
         ('replace', 'strict'), ('replace', 'ignore'),
         ('ignore', 'strict'), ('ignore', 'replace')
     ])
-    def test_unicode_errors_updates_value(self, errors1, errors2):
+    def test_unicode_errors_change_triggers_rebuild(self, errors1, errors2):
         """Changing unicode_errors after initial rendering triggers rebuild with new value."""
 
         label = MarkdownLabel(text='Hello World', unicode_errors=errors1)
@@ -783,8 +783,8 @@ class TestReactiveRebuildOnPropertyChange:
     @given(st.booleans(), st.booleans())
     # Combination strategy: 4 examples (combination coverage)
     @settings(max_examples=4, deadline=None)
-    def test_disabled_change_triggers_rebuild(self, disabled1, disabled2):
-        """Changing disabled after initial rendering triggers widget rebuild."""
+    def test_disabled_change_updates_value(self, disabled1, disabled2):
+        """Changing disabled after initial rendering updates color value."""
         assume(disabled1 != disabled2)
 
         regular_color = [1, 0, 0, 1]  # Red
@@ -819,7 +819,7 @@ class TestReactiveRebuildOnPropertyChange:
                 f"After change, expected color={expected_color2}, got {list(lbl.color)}"
 
     @given(simple_markdown_document(), rebuild_font_names, rebuild_font_names)
-    # Mixed finite/complex strategy: 20 examples (90 finite combinations × ~0.2 complex samples)
+    # Mixed finite/complex strategy: 20 examples (3 finite × ~7 complex samples)
     @settings(max_examples=20, deadline=None)
     def test_rebuild_preserves_content_structure(self, markdown_text, font1, font2):
         """Rebuilding widgets preserves the content structure."""
@@ -844,7 +844,7 @@ class TestReactiveRebuildOnPropertyChange:
     @given(st.booleans(), st.booleans())
     # Combination strategy: 4 examples (combination coverage)
     @settings(max_examples=4, deadline=None)
-    def test_font_kerning_updates_value(self, kerning1, kerning2):
+    def test_font_kerning_change_triggers_rebuild(self, kerning1, kerning2):
         """Changing font_kerning after initial rendering triggers rebuild with new value."""
         assume(kerning1 != kerning2)
 
@@ -870,7 +870,7 @@ class TestReactiveRebuildOnPropertyChange:
     @given(st.booleans(), st.booleans())
     # Combination strategy: 4 examples (combination coverage)
     @settings(max_examples=4, deadline=None)
-    def test_font_blended_updates_value(self, blended1, blended2):
+    def test_font_blended_change_triggers_rebuild(self, blended1, blended2):
         """Changing font_blended after initial rendering triggers rebuild with new value."""
         assume(blended1 != blended2)
 

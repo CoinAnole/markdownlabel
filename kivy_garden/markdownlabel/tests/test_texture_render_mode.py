@@ -236,7 +236,7 @@ class TestDeterministicTextureHitTesting:
         touch_offset_x=st.floats(min_value=0.1, max_value=0.9, allow_nan=False),
         touch_offset_y=st.floats(min_value=0.1, max_value=0.9, allow_nan=False)
     )
-    # Mixed finite/complex strategy: 50 examples (multiple finite dimensions × complex samples)
+    # Complex strategy: 50 examples (adequate coverage)
     @settings(max_examples=50, deadline=None)
     @pytest.mark.property
     def test_property_inside_zone_dispatch(
@@ -340,7 +340,7 @@ class TestDeterministicTextureHitTesting:
         ),
         outside_offset=st.floats(min_value=10, max_value=50, allow_nan=False)
     )
-    # Mixed finite/complex strategy: 50 examples (multiple finite dimensions × complex samples)
+    # Complex strategy: 50 examples (adequate coverage)
     @settings(max_examples=50, deadline=None)
     @pytest.mark.property
     def test_property_outside_zone_no_dispatch(self, zone, ref_name, outside_offset):

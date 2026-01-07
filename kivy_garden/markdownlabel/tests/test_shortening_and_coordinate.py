@@ -328,7 +328,7 @@ Paragraph text
     @given(st.booleans(), st.booleans())
     # Combination strategy: 2 examples (combination coverage)
     @settings(max_examples=2, deadline=None)
-    def test_shorten_change_updates_value(self, shorten1, shorten2):
+    def test_shorten_change_triggers_rebuild(self, shorten1, shorten2):
         """Changing shorten triggers widget rebuild with new value."""
         assume(shorten1 != shorten2)
 
