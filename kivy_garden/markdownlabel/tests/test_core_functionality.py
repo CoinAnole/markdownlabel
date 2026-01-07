@@ -28,6 +28,7 @@ from .test_utils import (
 class TestMarkdownToWidgetTreeGeneration:
     """Property tests for widget tree generation."""
 
+    @pytest.mark.property
     @pytest.mark.needs_window
     @given(simple_markdown_document())
     # Complex strategy: 20 examples (adequate coverage)
@@ -42,6 +43,7 @@ class TestMarkdownToWidgetTreeGeneration:
         assert len(label.children) >= 1, \
             f"Expected at least 1 child for markdown: {markdown_text!r}"
 
+    @pytest.mark.property
     @pytest.mark.needs_window
     @given(markdown_heading())
     # Complex strategy: 20 examples (adequate coverage)
@@ -60,6 +62,7 @@ class TestMarkdownToWidgetTreeGeneration:
         assert isinstance(heading_widget, Label), \
             f"Expected Label, got {type(heading_widget)}"
 
+    @pytest.mark.property
     @pytest.mark.needs_window
     @given(markdown_paragraph())
     # Complex strategy: 20 examples (adequate coverage)
@@ -74,6 +77,7 @@ class TestMarkdownToWidgetTreeGeneration:
         assert len(label.children) >= 1, \
             f"Expected at least 1 child for paragraph: {paragraph!r}"
 
+    @pytest.mark.property
     @given(st.integers(min_value=1, max_value=5))
     # Small finite strategy: 5 examples (input space size: 5)
     @settings(max_examples=5, deadline=None)
@@ -104,6 +108,7 @@ class TestMarkdownToWidgetTreeGeneration:
 class TestMarkdownTextPropertyUpdates:
     """Property tests for reactive text updates."""
 
+    @pytest.mark.property
     @pytest.mark.needs_window
     @given(markdown_heading(), markdown_paragraph())
     # Complex strategy: 50 examples (adequate coverage)
@@ -125,6 +130,7 @@ class TestMarkdownTextPropertyUpdates:
         assert label.text == text2, \
             f"Expected text to be {text2!r}, got {label.text!r}"
 
+    @pytest.mark.property
     @pytest.mark.needs_window
     @given(st.integers(min_value=1, max_value=3), st.integers(min_value=1, max_value=3))
     # Combination strategy: 9 examples (combination coverage)
@@ -152,6 +158,7 @@ class TestMarkdownTextPropertyUpdates:
         assert children_after >= count2, \
             f"Expected at least {count2} children after update, got {children_after}"
 
+    @pytest.mark.property
     @pytest.mark.needs_window
     @given(simple_markdown_document())
     # Complex strategy: 20 examples (adequate coverage)
@@ -171,6 +178,7 @@ class TestMarkdownTextPropertyUpdates:
         assert len(label.children) == 0, \
             f"Expected 0 children after clearing text, got {len(label.children)}"
 
+    @pytest.mark.property
     @pytest.mark.needs_window
     @given(simple_markdown_document(), simple_markdown_document())
     # Complex strategy: 50 examples (adequate coverage)
@@ -201,6 +209,7 @@ class TestMarkdownTextPropertyUpdates:
 class TestMarkdownLinkRendering:
     """Property tests for link ref markup."""
 
+    @pytest.mark.property
     @pytest.mark.needs_window
     @given(markdown_link())
     # Complex strategy: 20 examples (adequate coverage)
