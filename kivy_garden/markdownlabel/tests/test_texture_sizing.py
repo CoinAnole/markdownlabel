@@ -284,7 +284,7 @@ code = "block"
 
     @pytest.mark.property
     @given(simple_markdown_document(), simple_markdown_document())
-    # Mixed finite/complex strategy: 50 examples (100 finite combinations × 0.5 complex samples)
+    # Complex strategy: 50 examples (two complex strategies combined)
     @settings(max_examples=50, deadline=None)
     def test_texture_size_updates_on_text_change(self, text1, text2):
         """texture_size updates when text property changes."""
