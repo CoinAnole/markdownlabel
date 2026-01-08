@@ -19,6 +19,31 @@ if repo_root not in sys.path:
     sys.path.insert(0, repo_root)
 
 
+# Centralized list of all test modules for meta-testing
+# This list is used by meta-tests to validate all test files
+TEST_MODULES = [
+    'test_core_functionality.py',
+    'test_label_compatibility.py',
+    'test_font_properties.py',
+    'test_color_properties.py',
+    'test_sizing_behavior.py',
+    'test_text_properties.py',
+    'test_padding_properties.py',
+    'test_advanced_compatibility.py',
+    'test_serialization.py',
+    'test_performance.py',
+    'test_clipping_behavior.py',
+    'test_rebuild_scheduling.py',
+    'test_rebuild_semantics.py',
+    'test_rtl_alignment.py',
+    'test_shortening_and_coordinate.py',
+    'test_texture_render_mode.py',
+    'test_texture_sizing.py',
+    'test_kivy_renderer.py',
+    'test_inline_renderer.py',
+]
+
+
 @pytest.fixture(scope="session", autouse=True)
 def setup_kivy_environment():
     """Set up Kivy environment for testing."""

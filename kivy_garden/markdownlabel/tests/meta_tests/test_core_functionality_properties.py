@@ -10,6 +10,12 @@ from pathlib import Path
 import pytest
 from typing import List
 
+# Import TEST_MODULES from parent conftest
+import sys
+import os
+sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
+from conftest import TEST_MODULES
+
 
 # *For any* test file in the test suite, the file SHALL NOT contain timing assertions
 # with lower bounds (>= X seconds) or upper bounds (<= Y seconds) that can cause
@@ -51,27 +57,7 @@ class TestNoTimingAssertions:
 
         return timing_patterns
 
-    @pytest.mark.parametrize('module_name', [
-        'test_core_functionality.py',
-        'test_label_compatibility.py',
-        'test_font_properties.py',
-        'test_color_properties.py',
-        'test_sizing_behavior.py',
-        'test_text_properties.py',
-        'test_padding_properties.py',
-        'test_advanced_compatibility.py',
-        'test_serialization.py',
-        'test_performance.py',
-        'test_clipping_behavior.py',
-        'test_rebuild_scheduling.py',
-        'test_rebuild_semantics.py',
-        'test_rtl_alignment.py',
-        'test_shortening_and_coordinate.py',
-        'test_texture_render_mode.py',
-        'test_texture_sizing.py',
-        'test_kivy_renderer.py',
-        'test_inline_renderer.py'
-    ])
+    @pytest.mark.parametrize('module_name', TEST_MODULES)
     def test_no_timing_assertions_in_test_files(self, module_name):
         """Test files should not contain timing assertions."""
         module_path = Path(f'kivy_garden/markdownlabel/tests/{module_name}')
@@ -147,27 +133,7 @@ class TestSubprocessPytestConfiguration:
 
         return issues
 
-    @pytest.mark.parametrize('module_name', [
-        'test_core_functionality.py',
-        'test_label_compatibility.py',
-        'test_font_properties.py',
-        'test_color_properties.py',
-        'test_sizing_behavior.py',
-        'test_text_properties.py',
-        'test_padding_properties.py',
-        'test_advanced_compatibility.py',
-        'test_serialization.py',
-        'test_performance.py',
-        'test_clipping_behavior.py',
-        'test_rebuild_scheduling.py',
-        'test_rebuild_semantics.py',
-        'test_rtl_alignment.py',
-        'test_shortening_and_coordinate.py',
-        'test_texture_render_mode.py',
-        'test_texture_sizing.py',
-        'test_kivy_renderer.py',
-        'test_inline_renderer.py'
-    ])
+    @pytest.mark.parametrize('module_name', TEST_MODULES)
     def test_subprocess_pytest_uses_stable_configuration(self, module_name):
         """Subprocess pytest calls should use stable configuration."""
         module_path = Path(f'kivy_garden/markdownlabel/tests/{module_name}')
@@ -218,28 +184,7 @@ class TestNoSilentPassFileChecks:
 
         return silent_pass_patterns
 
-    @pytest.mark.parametrize('module_name', [
-        'test_core_functionality.py',
-        'test_label_compatibility.py',
-        'test_font_properties.py',
-        'test_color_properties.py',
-        'test_sizing_behavior.py',
-        'test_text_properties.py',
-        'test_padding_properties.py',
-        'test_advanced_compatibility.py',
-        'test_serialization.py',
-        'test_performance.py',
-        'test_clipping_behavior.py',
-        'test_rebuild_scheduling.py',
-        'test_rebuild_semantics.py',
-        'test_rtl_alignment.py',
-        'test_shortening_and_coordinate.py',
-        'test_texture_render_mode.py',
-        'test_texture_sizing.py',
-        'test_kivy_renderer.py',
-        'test_inline_renderer.py',
-        
-    ])
+    @pytest.mark.parametrize('module_name', TEST_MODULES)
     def test_no_silent_pass_file_existence_checks(self, module_name):
         """Test files should not contain silent-pass file existence checks."""
         module_path = Path(f'kivy_garden/markdownlabel/tests/{module_name}')
@@ -287,28 +232,7 @@ class TestNoBroadExceptionHandling:
 
         return broad_exception_patterns
 
-    @pytest.mark.parametrize('module_name', [
-        'test_core_functionality.py',
-        'test_label_compatibility.py',
-        'test_font_properties.py',
-        'test_color_properties.py',
-        'test_sizing_behavior.py',
-        'test_text_properties.py',
-        'test_padding_properties.py',
-        'test_advanced_compatibility.py',
-        'test_serialization.py',
-        'test_performance.py',
-        'test_clipping_behavior.py',
-        'test_rebuild_scheduling.py',
-        'test_rebuild_semantics.py',
-        'test_rtl_alignment.py',
-        'test_shortening_and_coordinate.py',
-        'test_texture_render_mode.py',
-        'test_texture_sizing.py',
-        'test_kivy_renderer.py',
-        'test_inline_renderer.py',
-        
-    ])
+    @pytest.mark.parametrize('module_name', TEST_MODULES)
     def test_no_broad_exception_handling(self, module_name):
         """Test files should not contain broad exception handling."""
         module_path = Path(f'kivy_garden/markdownlabel/tests/{module_name}')
@@ -415,30 +339,7 @@ class TestFixedListPropertyTestsConverted:
         parametrize_count = len(re.findall(r'@pytest\.mark\.parametrize', content))
         return parametrize_count
 
-    @pytest.mark.parametrize('module_name', [
-        'test_core_functionality.py',
-        'test_label_compatibility.py',
-        'test_font_properties.py',
-        'test_color_properties.py',
-        'test_sizing_behavior.py',
-        'test_text_properties.py',
-        'test_padding_properties.py',
-        'test_advanced_compatibility.py',
-        'test_serialization.py',
-        'test_performance.py',
-        'test_clipping_behavior.py',
-        'test_rebuild_scheduling.py',
-        'test_rebuild_semantics.py',
-        'test_rtl_alignment.py',
-        'test_shortening_and_coordinate.py',
-        'test_texture_render_mode.py',
-        'test_texture_sizing.py',
-        'test_kivy_renderer.py',
-        'test_inline_renderer.py',
-        'test_shortening_and_coordinate.py',
-        'test_rtl_alignment.py',
-        'test_rebuild_scheduling.py'
-    ])
+    @pytest.mark.parametrize('module_name', TEST_MODULES)
     def test_fixed_list_property_tests_converted_to_parametrized(self, module_name):
         """Fixed-list property tests should be converted to parametrized tests."""
         module_path = Path(f'kivy_garden/markdownlabel/tests/{module_name}')
@@ -502,6 +403,49 @@ class TestFixedListPropertyTestsConverted:
 
         # The test passes but provides information for tracking progress
         assert True, "Conversion progress tracking completed"
+
+    def test_centralized_test_modules_list_is_complete(self):
+        """Verify that TEST_MODULES includes all actual test files."""
+        test_dir = Path('kivy_garden/markdownlabel/tests')
+        assert test_dir.exists(), f"Expected test directory not found: {test_dir}"
+
+        # Find all actual test files
+        actual_test_files = set()
+        for test_file in test_dir.glob('test_*.py'):
+            # Skip utility files and meta-test files
+            if test_file.name not in ['test_utils.py']:
+                actual_test_files.add(test_file.name)
+
+        # Convert TEST_MODULES to set for comparison
+        declared_test_files = set(TEST_MODULES)
+
+        # Check for missing files in TEST_MODULES
+        missing_from_list = actual_test_files - declared_test_files
+        extra_in_list = declared_test_files - actual_test_files
+
+        error_messages = []
+        if missing_from_list:
+            error_messages.append(
+                f"Test files exist but are missing from TEST_MODULES in conftest.py: {sorted(missing_from_list)}"
+            )
+        if extra_in_list:
+            error_messages.append(
+                f"Files listed in TEST_MODULES but don't exist: {sorted(extra_in_list)}"
+            )
+
+        if error_messages:
+            assert False, "\n".join([
+                "TEST_MODULES list in conftest.py is out of sync with actual test files:",
+                *error_messages,
+                "",
+                "Please update the TEST_MODULES list in kivy_garden/markdownlabel/tests/conftest.py"
+            ])
+
+        # Verify we have a reasonable number of test files
+        assert len(declared_test_files) >= 15, (
+            f"Expected at least 15 test files, found {len(declared_test_files)}. "
+            f"This suggests the TEST_MODULES list may be incomplete."
+        )
 
 
 # *For any* genuinely performance-intensive test, the test SHALL be marked with
@@ -585,28 +529,7 @@ class TestPerformanceTestsMarked:
         assert len(analysis['unmarked_performance_tests']) == 0, \
             f"Found unmarked performance tests: {analysis['unmarked_performance_tests']}"
 
-    @pytest.mark.parametrize('module_name', [
-        'test_core_functionality.py',
-        'test_label_compatibility.py',
-        'test_font_properties.py',
-        'test_color_properties.py',
-        'test_sizing_behavior.py',
-        'test_text_properties.py',
-        'test_padding_properties.py',
-        'test_advanced_compatibility.py',
-        'test_serialization.py',
-        'test_performance.py',
-        'test_clipping_behavior.py',
-        'test_rebuild_scheduling.py',
-        'test_rebuild_semantics.py',
-        'test_rtl_alignment.py',
-        'test_shortening_and_coordinate.py',
-        'test_texture_render_mode.py',
-        'test_texture_sizing.py',
-        'test_kivy_renderer.py',
-        'test_inline_renderer.py',
-        
-    ])
+    @pytest.mark.parametrize('module_name', TEST_MODULES)
     def test_performance_indicators_are_marked(self, module_name):
         """Tests with performance indicators should be properly marked."""
         module_path = Path(f'kivy_garden/markdownlabel/tests/{module_name}')
@@ -665,33 +588,7 @@ class TestNoDuplicateEnvironmentSetup:
 
         return duplicate_setup_patterns
 
-    @pytest.mark.parametrize('module_name', [
-        'test_core_functionality.py',
-        'test_label_compatibility.py',
-        'test_font_properties.py',
-        'test_color_properties.py',
-        'test_sizing_behavior.py',
-        'test_text_properties.py',
-        'test_padding_properties.py',
-        'test_advanced_compatibility.py',
-        'test_serialization.py',
-        'test_performance.py',
-        'test_clipping_behavior.py',
-        'test_rebuild_scheduling.py',
-        'test_rebuild_semantics.py',
-        'test_rtl_alignment.py',
-        'test_shortening_and_coordinate.py',
-        'test_texture_render_mode.py',
-        'test_texture_sizing.py',
-        'test_kivy_renderer.py',
-        'test_inline_renderer.py',
-        'test_shortening_and_coordinate.py',
-        'test_rtl_alignment.py',
-        'test_rebuild_scheduling.py',
-        'test_clipping_behavior.py',
-        'test_kivy_renderer.py',
-        'test_inline_renderer.py'
-    ])
+    @pytest.mark.parametrize('module_name', TEST_MODULES)
     def test_no_duplicate_environment_setup(self, module_name):
         """Test files should not contain duplicate environment setup."""
         module_path = Path(f'kivy_garden/markdownlabel/tests/{module_name}')

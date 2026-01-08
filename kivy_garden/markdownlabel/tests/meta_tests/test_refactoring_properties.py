@@ -12,6 +12,10 @@ from pathlib import Path
 
 import pytest
 
+# Import TEST_MODULES from parent conftest
+sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
+from conftest import TEST_MODULES
+
 
 # *For any* test discovery operation, the time to discover all tests should not
 # increase significantly compared to the original structure
@@ -52,27 +56,7 @@ class TestDiscoveryPerformance:
             f"Discovery output doesn't contain 'collected', suggesting discovery failed. " \
             f"Output: {result.stdout}"
 
-    @pytest.mark.parametrize('module_name', [
-        'test_core_functionality.py',
-        'test_label_compatibility.py',
-        'test_advanced_compatibility.py',
-        'test_font_properties.py',
-        'test_color_properties.py',
-        'test_sizing_behavior.py',
-        'test_text_properties.py',
-        'test_padding_properties.py',
-        'test_serialization.py',
-        'test_performance.py',
-        'test_clipping_behavior.py',
-        'test_rebuild_scheduling.py',
-        'test_rebuild_semantics.py',
-        'test_rtl_alignment.py',
-        'test_shortening_and_coordinate.py',
-        'test_texture_render_mode.py',
-        'test_texture_sizing.py',
-        'test_kivy_renderer.py',
-        'test_inline_renderer.py'
-    ])
+    @pytest.mark.parametrize('module_name', TEST_MODULES)
     def test_individual_module_discovery_functionality(self, module_name):
         """Test that individual modules can be discovered correctly."""
         import subprocess
