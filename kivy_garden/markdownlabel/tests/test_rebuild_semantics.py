@@ -28,27 +28,55 @@ from .test_utils import (
 
 # Style Properties for Testing
 # These are properties that should preserve widget identities when changed
+# Note: This list should match MarkdownLabel.STYLE_ONLY_PROPERTIES plus
+# base_font_size/font_size (handled specially) and padding (BoxLayout handles)
 STYLE_ONLY_PROPERTIES = [
+    # Basic styling
     'color',
     'halign',
     'valign',
     'line_height',
     'disabled',
     'disabled_color',
+    # Font properties
+    'font_name',
+    'code_font_name',
+    'font_family',
+    'font_context',
+    'font_features',
+    'font_hinting',
+    'font_kerning',
+    'font_blended',
+    # Text direction & language
     'base_direction',
+    'text_language',
+    # Padding
+    'text_padding',
+    # Outline properties
+    'outline_width',
     'outline_color',
     'disabled_outline_color',
+    # Advanced rendering
     'mipmap',
-    'text_language',
     'limit_render_to_text_bbox',
+    # Text processing
+    'unicode_errors',
+    'strip',
+    # Truncation properties
+    'shorten',
+    'max_lines',
+    'shorten_from',
+    'split_str',
+    'ellipsis_options',
+    # Layout
+    'text_size',
 ]
 
 # Structure Properties for Testing
 # These are properties that should trigger a widget tree rebuild when changed
+# Note: This list should match MarkdownLabel.STRUCTURE_PROPERTIES exactly
 STRUCTURE_PROPERTIES = [
     'text',
-    'font_name',
-    'text_size',
     'link_style',
     'strict_label_mode',
     'render_mode',

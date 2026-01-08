@@ -223,34 +223,51 @@ MarkdownLabel distinguishes between two types of property changes:
 
 These properties update existing widgets without rebuilding:
 
+**Basic Styling:**
 - `color` - Updates Label.color on existing Labels
-- `font_size` / `base_font_size` - Updates Label.font_size on existing Labels
-- `font_name` - Updates Label.font_name on existing Labels (non-code Labels)
-- `code_font_name` - Updates Label.font_name on code block Labels
+- `font_size` / `base_font_size` - Updates Label.font_size on existing Labels (preserves heading scale factors)
 - `line_height` - Updates Label.line_height on existing Labels
 - `halign`, `valign` - Updates alignment on existing Labels
 - `disabled`, `disabled_color` - Updates disabled state/color on existing Labels
-- `base_direction` - Updates text direction on existing Labels
-- `text_padding` - Updates Label.padding on existing Labels
-- `padding` - Updates container padding (BoxLayout handles this automatically)
-- `outline_width` - Updates Label.outline_width on existing Labels
-- `outline_color`, `disabled_outline_color` - Updates outline colors on existing Labels
-- `mipmap` - Updates Label.mipmap on existing Labels
-- `text_language` - Updates Label.text_language on existing Labels
-- `limit_render_to_text_bbox` - Updates Label.limit_render_to_text_bbox on existing Labels
+
+**Font Properties:**
+- `font_name` - Updates Label.font_name on existing Labels (non-code Labels)
+- `code_font_name` - Updates Label.font_name on code block Labels
 - `font_family` - Updates Label.font_family on non-code Labels (code blocks preserve monospace font)
 - `font_context` - Updates Label.font_context on existing Labels
 - `font_features` - Updates Label.font_features on existing Labels
 - `font_hinting` - Updates Label.font_hinting on existing Labels
 - `font_kerning` - Updates Label.font_kerning on existing Labels
 - `font_blended` - Updates Label.font_blended on existing Labels
+
+**Text Direction & Language:**
+- `base_direction` - Updates text direction on existing Labels
+- `text_language` - Updates Label.text_language on existing Labels
+
+**Padding:**
+- `text_padding` - Updates Label.padding on existing Labels
+- `padding` - Updates container padding (BoxLayout handles this automatically)
+
+**Outline Properties:**
+- `outline_width` - Updates Label.outline_width on existing Labels
+- `outline_color`, `disabled_outline_color` - Updates outline colors on existing Labels
+
+**Advanced Rendering:**
+- `mipmap` - Updates Label.mipmap on existing Labels
+- `limit_render_to_text_bbox` - Updates Label.limit_render_to_text_bbox on existing Labels
+
+**Text Processing:**
 - `unicode_errors` - Updates Label.unicode_errors on existing Labels
 - `strip` - Updates Label.strip on existing Labels
+
+**Truncation Properties:**
 - `shorten` - Updates Label.shorten on existing Labels
 - `max_lines` - Updates Label.max_lines on existing Labels (only if > 0)
 - `shorten_from` - Updates Label.shorten_from on existing Labels
 - `split_str` - Updates Label.split_str on existing Labels
 - `ellipsis_options` - Updates Label.ellipsis_options on existing Labels
+
+**Layout:**
 - `text_size` - Updates Label.text_size on existing Labels with binding management
 
 ### Structure Properties
