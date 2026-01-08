@@ -100,7 +100,7 @@ This implementation plan reclassifies 14 properties from "structure" to "style-o
     - Verify code blocks keep code_font_name
     - **Validates: Requirements 6.2**
 
-  - [ ] 6.2 Write unit tests for property classification sets
+  - [x] 6.2 Write unit tests for property classification sets
     - **Property 5: Property classification sets are mutually exclusive and complete**
     - Verify reclassified properties in STYLE_ONLY_PROPERTIES
     - Verify STRUCTURE_PROPERTIES contains only expected properties
