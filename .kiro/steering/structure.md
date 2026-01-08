@@ -34,7 +34,12 @@ kivy_garden/
         ├── test_serialization.py
         ├── test_performance.py
         ├── test_rebuild_scheduling.py
-        ├── test_rebuild_semantics.py
+        ├── test_rebuild_identity_preservation.py
+        ├── test_rebuild_structure_changes.py
+        ├── test_rebuild_style_propagation.py
+        ├── test_rebuild_advanced_properties.py
+        ├── test_rebuild_text_size_and_code_blocks.py
+        ├── test_rebuild_property_classification.py
         ├── test_clipping_behavior.py
         ├── test_texture_render_mode.py
         ├── test_texture_sizing.py
@@ -139,7 +144,12 @@ Tests are organized by **functionality**, not by implementation file:
 - `test_serialization.py`: Tests for round-trip serialization functionality - verifying the MarkdownLabel can correctly serialize and deserialize Markdown content, maintaining semantic equivalence through parse-serialize-parse cycles
 - `test_performance.py`: Performance and efficiency tests for MarkdownLabel widget - tests verifying performance-related behaviors including efficient style updates, batched rebuilds, deferred rebuild scheduling, and content clipping behavior
 - `test_rebuild_scheduling.py`: Rebuild batching and deferred scheduling tests for MarkdownLabel - tests for rebuild scheduler behavior including batching multiple structure property changes into a single rebuild and deferring rebuilds via Clock triggers
-- `test_rebuild_semantics.py`: Widget identity preservation and rebuild semantics tests for MarkdownLabel - tests verifying widget identity preservation for style-only property changes and widget tree rebuilding for structure property changes, designed for headless CI environments
+- `test_rebuild_identity_preservation.py`: Widget identity preservation tests for style-only property changes - tests verifying that style-only property changes don't rebuild the widget tree, preserving widget identity and improving performance
+- `test_rebuild_structure_changes.py`: Structure property rebuild tests for MarkdownLabel - tests verifying that structure properties (text, link_style, render_mode, strict_label_mode) trigger widget tree rebuilds
+- `test_rebuild_style_propagation.py`: Style property propagation tests for MarkdownLabel - tests verifying that style property values are correctly propagated to descendant Label widgets
+- `test_rebuild_advanced_properties.py`: Advanced property rebuild semantics tests - tests for advanced font properties, text processing properties, and truncation properties including identity preservation and value propagation
+- `test_rebuild_text_size_and_code_blocks.py`: Text size and code block rebuild semantics tests - tests for text_size property special handling and code block font preservation behavior
+- `test_rebuild_property_classification.py`: Property classification validation tests - tests verifying that property classification sets (STYLE_ONLY_PROPERTIES and STRUCTURE_PROPERTIES) are correct and mutually exclusive
 - `test_clipping_behavior.py`: Clipping behavior tests for MarkdownLabel - tests for content clipping behavior including verification that content is wrapped in a StencilView clipping container when height-constrained and that content expands naturally when unconstrained
 - `test_texture_render_mode.py`: Property-based tests for texture render mode in MarkdownLabel - tests for texture render mode feature including Image widget creation, render_mode property behavior, link zone aggregation, on_ref_press event dispatching, deterministic texture hit-testing, texture fallback branch, and auto render mode selection
 - `test_texture_sizing.py`: Property-based tests for MarkdownLabel texture size calculations - tests for texture size calculation behavior and logical test grouping validation
