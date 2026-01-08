@@ -634,7 +634,7 @@ class TestReactiveRebuildOnPropertyChange:
         ids_after = collect_widget_ids(label, exclude_root=True)
         assert ids_before == ids_after, "Widget tree should NOT rebuild for text_size changes"
 
-        # Verify text_size was updated on existing widgets
+        # Verify text_size was updated on MarkdownLabel
         assert label.text_size[0] == width2, \
             f"After change, expected text_size[0]={width2}, got {label.text_size[0]}"
 
@@ -848,6 +848,11 @@ class TestReactiveRebuildOnPropertyChange:
         expected_color2 = disabled_color if disabled2 else regular_color
 
         # Verify widgets were rebuilt with correct color
+        labels_after = find_labels_recursive(label)
+        assert len(labels_after) >= 1, "Expected at least one Label after rebuild"
+        for lbl in labels_after:
+            assert colors_equal(list(lbl.color), expected_color2), \
+                f"After change, expected color={expected_color2}, got {list(lbl.color)}"
         labels_after = find_labels_recursive(label)
         assert len(labels_after) >= 1, "Expected at least one Label after rebuild"
         for lbl in labels_after:

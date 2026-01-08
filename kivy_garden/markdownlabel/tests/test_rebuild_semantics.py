@@ -420,10 +420,7 @@ class TestStylePropertyPropagation:
 @pytest.mark.property
 @pytest.mark.slow
 class TestStylePropertyPropagationPBT:
-    """Property-based tests for style property propagation to descendants.
-
-    to Descendants**
-    """
+    """Property-based tests for style property propagation to descendants."""
 
     @given(
         markdown_text=simple_markdown_document(),
@@ -653,10 +650,7 @@ class TestStructurePropertyRebuild:
 @pytest.mark.property
 @pytest.mark.slow
 class TestStructurePropertyRebuildPBT:
-    """Property-based tests for structure property rebuild behavior.
-
-    Rebuild Widget Tree**
-    """
+    """Property-based tests for structure property rebuild behavior."""
 
     @given(
         initial_text=simple_markdown_document(),

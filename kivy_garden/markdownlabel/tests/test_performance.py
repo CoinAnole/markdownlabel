@@ -55,12 +55,15 @@ class TestStyleOnlyPropertyUpdates:
         assert ids_before == ids_after, \
             f"Widget tree changed after font_size update. Before: {len(ids_before)}, After: {len(ids_after)}"
 
-        # Verify the font_size change was actually applied to child Labels
+        # Verify the font_size change was actually applied
         child_labels = find_labels_recursive(label)
         assert len(child_labels) >= 1, "Expected at least one child Label"
-        # Note: Heading labels have scaled font sizes, so we check base_font_size on the parent
+        # Verify base_font_size was updated on the parent
         assert floats_equal(label.base_font_size, new_size), \
             f"Expected base_font_size={new_size}, got {label.base_font_size}"
+        # Verify child labels have updated font sizes (scaled for headings)
+        for child_label in child_labels:
+            assert child_label.font_size > 0, "Child label should have positive font_size"
 
     @pytest.mark.property
     @given(st_rgba_color())

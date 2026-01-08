@@ -100,7 +100,7 @@ class TestColorPropertyForwarding:
         ids_after = collect_widget_ids(label)
         assert ids_before == ids_after, "Widget tree should NOT rebuild for color changes"
 
-        # Verify new color
+        # Verify new color was applied
         labels = find_labels_recursive(label)
         for lbl in labels:
             assert colors_equal(list(lbl.color), color2), \

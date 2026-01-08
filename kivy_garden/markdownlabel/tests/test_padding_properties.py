@@ -250,7 +250,7 @@ Regular paragraph
         for lbl in labels:
             assert padding_equal(list(lbl.padding), padding1)
 
-        # Change padding
+        # Change text_padding
         label.text_padding = padding2
 
         # Verify NO rebuild occurred (style-only property)
