@@ -20,6 +20,8 @@ These properties update existing widgets **without rebuilding** the widget tree:
 
 ### Font Properties
 - `base_font_size` / `font_size` - Updates `Label.font_size` on all existing Labels
+- `font_name` - Updates `Label.font_name` on all existing Labels (respects code block font settings)
+- `code_font_name` - Updates `Label.font_name` on code block Labels only
 - `line_height` - Updates `Label.line_height` on all existing Labels
 - `font_family` - Updates `Label.font_family` on non-code Labels
 - `font_context` - Updates `Label.font_context` on all Labels
@@ -30,15 +32,28 @@ These properties update existing widgets **without rebuilding** the widget tree:
 ### Color Properties
 - `color` - Updates `Label.color` on all existing Labels (except code blocks)
 - `disabled_color` - Updates `Label.disabled_color` when widget is disabled
+- `outline_color` - Updates `Label.outline_color` on all existing Labels
+- `disabled_outline_color` - Updates `Label.disabled_outline_color` when widget is disabled
 
 ### Text Layout Properties
 - `halign` - Updates `Label.halign` on all existing Labels
 - `valign` - Updates `Label.valign` on all existing Labels
+- `base_direction` - Updates `Label.base_direction` on all existing Labels
+
+### Outline Properties
+- `outline_width` - Updates `Label.outline_width` on all existing Labels
 
 ### Container Properties
 - `padding` - Updates BoxLayout container padding without rebuilding child widgets
 - `spacing` - Updates container spacing without rebuilding child widgets
 - `text_padding` - Updates `Label.padding` on all existing Labels
+
+### Advanced Label Properties
+- `mipmap` - Updates `Label.mipmap` on all existing Labels
+- `text_language` - Updates `Label.text_language` on all existing Labels
+- `limit_render_to_text_bbox` - Updates `Label.limit_render_to_text_bbox` on all existing Labels
+- `unicode_errors` - Updates `Label.unicode_errors` on all existing Labels
+- `strip` - Updates `Label.strip` on all existing Labels
 
 ## Structure Properties
 
@@ -46,22 +61,16 @@ These properties trigger a **complete widget tree rebuild**:
 
 ### Content Properties
 - `text` - Changes the markdown content, requiring new parsing and widget creation
-- `markup` - Changes how text is interpreted (markdown vs. plain text)
-
-### Font Properties
-- `font_name` - Changes the font used for rendering (affects text metrics and layout)
 
 ### Rendering Properties
 - `render_mode` - Changes between 'widgets', 'texture', and 'auto' rendering modes
 - `strict_label_mode` - Changes layout behavior, affecting widget hierarchy
 
 ### Layout Properties
-- `text_size` - Changes the text size constraints (affects wrapping and layout)
-- `outline_width` - Changes outline rendering
+- `text_size` - Changes the text size constraints (affects wrapping and layout bindings)
 
 ### Parser Configuration
-- `code_font_name` - Affects code block rendering, requires rebuild to apply
-- `link_style` - Changes link rendering behavior, requires rebuild
+- `link_style` - Changes link rendering behavior, requires rebuild to regenerate markup
 
 ## Implementation Details
 
@@ -203,16 +212,17 @@ def assert_no_rebuild(widget, change_func):
 - **Code blocks**: Use same font_size as other content
 
 #### `font_name`
-- **Type**: Structure (requires rebuild)
-- **Reason**: Font changes affect text metrics and layout calculations
-- **Behavior**: Triggers full widget tree rebuild
-- **Exception**: Code blocks preserve their `code_font_name` setting
+- **Type**: Style-only
+- **Behavior**: Updates `Label.font_name` on all existing Labels in place
+- **Exception**: Code blocks preserve their `code_font_name` setting (checked via `_is_code` marker)
 - **Fallback**: Uses system default if font not found
+- **Performance**: Fast O(n) update where n = number of Labels
 
 #### `code_font_name`
-- **Type**: Structure (requires rebuild)
-- **Reason**: Code blocks need to be re-rendered with new font
-- **Behavior**: Only affects Labels inside code block containers
+- **Type**: Style-only
+- **Behavior**: Updates `Label.font_name` on code block Labels only (identified by `_is_code` marker)
+- **Scope**: Only affects Labels inside code block containers
+- **Performance**: Fast O(n) update where n = number of code Labels
 
 ### Color Properties
 
@@ -221,6 +231,12 @@ def assert_no_rebuild(widget, change_func):
 - **Behavior**: Updates `Label.color` on all Labels
 - **Exception**: Code blocks preserve their light color `[0.9, 0.9, 0.9, 1]`
 - **Format**: RGBA list `[r, g, b, a]` with values 0.0-1.0
+
+#### `outline_width`
+- **Type**: Style-only
+- **Behavior**: Updates `Label.outline_width` on all existing Labels in place
+- **Format**: Float value (typically 0-10)
+- **Performance**: Fast O(n) update where n = number of Labels
 
 ### Text Properties
 
@@ -322,9 +338,10 @@ def update_content(label, new_markdown):
     """Update label content (triggers rebuild)."""
     label.text = new_markdown  # Structure change - rebuild required
     
-def update_formatting(label, font_size, color):
+def update_formatting(label, font_size, font_name, color):
     """Update label formatting without rebuild."""
     label.base_font_size = font_size  # Style-only
+    label.font_name = font_name       # Style-only (changed from structure)
     label.color = color               # Style-only
 ```
 
@@ -336,6 +353,12 @@ def animate_font_size(label, target_size, duration=1.0):
     # Style-only changes are fast enough for animation
     from kivy.animation import Animation
     Animation(base_font_size=target_size, duration=duration).start(label)
+
+def animate_outline(label, target_width, duration=0.5):
+    """Animate outline width change smoothly."""
+    # Style-only changes are fast enough for animation
+    from kivy.animation import Animation
+    Animation(outline_width=target_width, duration=duration).start(label)
 ```
 
 ## Debugging Rebuild Issues
