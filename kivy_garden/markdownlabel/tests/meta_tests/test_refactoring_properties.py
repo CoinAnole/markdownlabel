@@ -95,12 +95,13 @@ class TestDiscoveryPerformance:
         test_dir = os.path.dirname(__file__)
 
         # Test discovery startup by running discovery on a minimal module
-        minimal_module = 'test_import.py'  # Should be a simple, fast module
+        minimal_module = 'test_rebuild_scheduling.py'  # Should be a simple, fast module
         module_path = os.path.join(os.path.dirname(test_dir), minimal_module)
 
-        # Skip if minimal module doesn't exist
-        if not os.path.exists(module_path):
-            pytest.skip(f"Minimal test module {minimal_module} not found")
+        # Fail loudly if minimal module doesn't exist
+        assert os.path.exists(module_path), \
+            f"Required test module {minimal_module} not found at {module_path}. " \
+            f"This test requires a minimal test file to validate discovery functionality."
 
         # Run discovery with stable configuration
         # Use -o addopts= to clear default addopts and keep discovery deterministic
