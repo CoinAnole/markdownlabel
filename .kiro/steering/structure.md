@@ -157,6 +157,7 @@ Tests are organized by **functionality**, not by implementation file:
   - `test_documentation_compliance.py`: Tests for documentation compliance of max_examples values - tests that custom max_examples values are properly documented according to the optimization guidelines
   - `test_file_analyzer.py`: Tests for the FileAnalyzer optimization tool - tests the FileAnalyzer's ability to correctly analyze test files and generate optimization recommendations for max_examples values
   - `test_helper_availability.py`: Property tests for helper function availability in test_utils - property-based tests that verify all required helper functions are available in test_utils.py and work correctly
+  - `test_import_functionality.py`: Meta-tests for import functionality across test modules - tests that verify imports resolve successfully and tests can execute without import errors
   - `test_naming_convention_validator.py`: Tests for the naming convention validator module - both unit tests and property-based tests for validating the naming convention validator's ability to detect violations and suggest appropriate renames
   - `test_refactoring_properties.py`: Property-based tests for test refactoring validation - tests that validate the test refactoring process itself, including module naming consistency and other refactoring properties
   - `test_shared_infrastructure.py`: Meta tests for shared test infrastructure - tests validating that the shared test utilities and strategies work correctly and are available for use across all test modules
