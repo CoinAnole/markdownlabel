@@ -2459,7 +2459,8 @@ class TestAdvancedFontPropertyValuePropagationPBT:
             blacklist_characters='[]&\n\r'
         )))
     )
-    # Feature: optimize-rebuild-contract, Property 2: Style-only property updates apply values to all child Labels
+    # Feature: optimize-rebuild-contract, Property 2: Style-only property
+    # updates apply values to all child Labels
     # Complex strategy: font_family can be None or text
     @settings(max_examples=30, deadline=None)
     def test_font_family_value_propagates_to_non_code_children(
@@ -2504,7 +2505,8 @@ class TestAdvancedFontPropertyValuePropagationPBT:
             blacklist_characters='[]&\n\r'
         )))
     )
-    # Feature: optimize-rebuild-contract, Property 2: Style-only property updates apply values to all child Labels
+    # Feature: optimize-rebuild-contract, Property 2: Style-only property
+    # updates apply values to all child Labels
     # Complex strategy: font_context can be None or text
     @settings(max_examples=30, deadline=None)
     def test_font_context_value_propagates_to_all_children(
@@ -2549,7 +2551,8 @@ class TestAdvancedFontPropertyValuePropagationPBT:
             blacklist_characters='[]&\n\r'
         ))
     )
-    # Feature: optimize-rebuild-contract, Property 2: Style-only property updates apply values to all child Labels
+    # Feature: optimize-rebuild-contract, Property 2: Style-only property
+    # updates apply values to all child Labels
     # Complex strategy: font_features is a text string
     @settings(max_examples=30, deadline=None)
     def test_font_features_value_propagates_to_all_children(
@@ -2591,7 +2594,8 @@ class TestAdvancedFontPropertyValuePropagationPBT:
         initial_font_hinting=st.sampled_from([None, 'normal']),
         new_font_hinting=st.sampled_from([None, 'normal', 'light', 'mono'])
     )
-    # Feature: optimize-rebuild-contract, Property 2: Style-only property updates apply values to all child Labels
+    # Feature: optimize-rebuild-contract, Property 2: Style-only property
+    # updates apply values to all child Labels
     # Finite strategy: 4 font_hinting options
     @settings(max_examples=20, deadline=None)
     def test_font_hinting_value_propagates_to_all_children(
@@ -2635,7 +2639,8 @@ class TestAdvancedFontPropertyValuePropagationPBT:
         initial_font_kerning=st.booleans(),
         new_font_kerning=st.booleans()
     )
-    # Feature: optimize-rebuild-contract, Property 2: Style-only property updates apply values to all child Labels
+    # Feature: optimize-rebuild-contract, Property 2: Style-only property
+    # updates apply values to all child Labels
     # Finite strategy: 2 boolean options
     @settings(max_examples=20, deadline=None)
     def test_font_kerning_value_propagates_to_all_children(
@@ -2677,7 +2682,8 @@ class TestAdvancedFontPropertyValuePropagationPBT:
         initial_font_blended=st.booleans(),
         new_font_blended=st.booleans()
     )
-    # Feature: optimize-rebuild-contract, Property 2: Style-only property updates apply values to all child Labels
+    # Feature: optimize-rebuild-contract, Property 2: Style-only property
+    # updates apply values to all child Labels
     # Finite strategy: 2 boolean options
     @settings(max_examples=20, deadline=None)
     def test_font_blended_value_propagates_to_all_children(
@@ -2732,8 +2738,10 @@ class TestAdvancedFontPropertyValuePropagationPBT:
         font_kerning=st.booleans(),
         font_blended=st.booleans()
     )
-    # Feature: optimize-rebuild-contract, Property 2: Style-only property updates apply values to all child Labels
-    # Mixed finite/complex strategy: 50 examples (8 finite combinations with 3 complex strategies)
+    # Feature: optimize-rebuild-contract, Property 2: Style-only property
+    # updates apply values to all child Labels
+    # Mixed finite/complex strategy: 50 examples (8 finite combinations with
+    # 3 complex strategies)
     @settings(max_examples=50, deadline=None)
     def test_all_advanced_font_properties_propagate_to_children(
         self, markdown_text, font_family, font_context, font_features,
@@ -2837,7 +2845,8 @@ class TestTextProcessingPropertyValuePropagationPBT:
         initial_unicode_errors=st.sampled_from(['strict', 'replace']),
         new_unicode_errors=st.sampled_from(['strict', 'replace', 'ignore'])
     )
-    # Feature: optimize-rebuild-contract, Property 2: Style-only property updates apply values to all child Labels
+    # Feature: optimize-rebuild-contract, Property 2: Style-only property
+    # updates apply values to all child Labels
     # Finite strategy: 3 unicode_errors options
     @settings(max_examples=20, deadline=None)
     def test_unicode_errors_value_propagates_to_all_children(
@@ -2879,7 +2888,8 @@ class TestTextProcessingPropertyValuePropagationPBT:
         initial_strip=st.booleans(),
         new_strip=st.booleans()
     )
-    # Feature: optimize-rebuild-contract, Property 2: Style-only property updates apply values to all child Labels
+    # Feature: optimize-rebuild-contract, Property 2: Style-only property
+    # updates apply values to all child Labels
     # Finite strategy: 2 boolean options
     @settings(max_examples=20, deadline=None)
     def test_strip_value_propagates_to_all_children(
@@ -2921,8 +2931,10 @@ class TestTextProcessingPropertyValuePropagationPBT:
         unicode_errors=st.sampled_from(['strict', 'replace', 'ignore']),
         strip=st.booleans()
     )
-    # Feature: optimize-rebuild-contract, Property 2: Style-only property updates apply values to all child Labels
-    # Finite strategy: 3 unicode_errors × 2 strip = 6 combinations with complex markdown
+    # Feature: optimize-rebuild-contract, Property 2: Style-only property
+    # updates apply values to all child Labels
+    # Finite strategy: 3 unicode_errors × 2 strip = 6 combinations with
+    # complex markdown
     @settings(max_examples=30, deadline=None)
     def test_all_text_processing_properties_propagate_to_children(
         self, markdown_text, unicode_errors, strip
@@ -2990,7 +3002,8 @@ class TestTruncationPropertyValuePropagationPBT:
         initial_shorten=st.booleans(),
         new_shorten=st.booleans()
     )
-    # Feature: optimize-rebuild-contract, Property 2: Style-only property updates apply values to all child Labels
+    # Feature: optimize-rebuild-contract, Property 2: Style-only property
+    # updates apply values to all child Labels
     # Finite strategy: 2 boolean options
     @settings(max_examples=20, deadline=None)
     def test_shorten_value_propagates_to_all_children(
@@ -3032,7 +3045,8 @@ class TestTruncationPropertyValuePropagationPBT:
         initial_max_lines=st.integers(min_value=1, max_value=5),
         new_max_lines=st.integers(min_value=1, max_value=10)
     )
-    # Feature: optimize-rebuild-contract, Property 2: Style-only property updates apply values to all child Labels
+    # Feature: optimize-rebuild-contract, Property 2: Style-only property
+    # updates apply values to all child Labels
     # Finite strategy: 10 integer options (1-10)
     @settings(max_examples=30, deadline=None)
     def test_max_lines_value_propagates_to_all_children(
@@ -3074,7 +3088,8 @@ class TestTruncationPropertyValuePropagationPBT:
         initial_shorten_from=st.sampled_from(['left', 'center']),
         new_shorten_from=st.sampled_from(['left', 'center', 'right'])
     )
-    # Feature: optimize-rebuild-contract, Property 2: Style-only property updates apply values to all child Labels
+    # Feature: optimize-rebuild-contract, Property 2: Style-only property
+    # updates apply values to all child Labels
     # Finite strategy: 3 shorten_from options
     @settings(max_examples=20, deadline=None)
     def test_shorten_from_value_propagates_to_all_children(
@@ -3119,7 +3134,8 @@ class TestTruncationPropertyValuePropagationPBT:
             blacklist_characters='[]&\n\r'
         ))
     )
-    # Feature: optimize-rebuild-contract, Property 2: Style-only property updates apply values to all child Labels
+    # Feature: optimize-rebuild-contract, Property 2: Style-only property
+    # updates apply values to all child Labels
     # Complex strategy: split_str is a text string
     @settings(max_examples=30, deadline=None)
     def test_split_str_value_propagates_to_all_children(
@@ -3168,7 +3184,8 @@ class TestTruncationPropertyValuePropagationPBT:
             )
         })
     )
-    # Feature: optimize-rebuild-contract, Property 2: Style-only property updates apply values to all child Labels
+    # Feature: optimize-rebuild-contract, Property 2: Style-only property
+    # updates apply values to all child Labels
     # Complex strategy: ellipsis_options is a dictionary
     @settings(max_examples=30, deadline=None)
     def test_ellipsis_options_value_propagates_to_all_children(
@@ -3223,8 +3240,10 @@ class TestTruncationPropertyValuePropagationPBT:
             )
         })
     )
-    # Feature: optimize-rebuild-contract, Property 2: Style-only property updates apply values to all child Labels
-    # Mixed finite/complex strategy: 50 examples (2×10×3 = 60 finite combinations with 2 complex strategies)
+    # Feature: optimize-rebuild-contract, Property 2: Style-only property
+    # updates apply values to all child Labels
+    # Mixed finite/complex strategy: 50 examples (2×10×3 = 60 finite
+    # combinations with 2 complex strategies)
     @settings(max_examples=50, deadline=None)
     def test_all_truncation_properties_propagate_to_children(
         self, markdown_text, shorten, max_lines, shorten_from, split_str, ellipsis_options
@@ -3336,7 +3355,8 @@ class TestCodeBlockFontPreservationPBT:
             blacklist_characters='[]&\n\r'
         ))
     )
-    # Feature: optimize-rebuild-contract, Property 4: Code blocks preserve monospace font when font_family changes
+    # Feature: optimize-rebuild-contract, Property 4: Code blocks preserve
+    # monospace font when font_family changes
     # Complex strategy: font_family is text
     @settings(max_examples=30, deadline=None)
     def test_code_blocks_preserve_code_font_name_when_font_family_changes(
@@ -3401,7 +3421,8 @@ class TestCodeBlockFontPreservationPBT:
             blacklist_characters='[]&\n\r'
         ))
     )
-    # Feature: optimize-rebuild-contract, Property 4: Code blocks preserve monospace font when font_family changes
+    # Feature: optimize-rebuild-contract, Property 4: Code blocks preserve
+    # monospace font when font_family changes
     # Complex strategy: font_family transitions from None/Roboto to new value
     @settings(max_examples=30, deadline=None)
     def test_code_blocks_preserve_font_through_font_family_transitions(
@@ -3458,7 +3479,8 @@ class TestCodeBlockFontPreservationPBT:
         # Use only Kivy built-in fonts that are guaranteed to exist
         code_font_name=st.sampled_from(['RobotoMono-Regular', 'Roboto', 'Roboto-Bold'])
     )
-    # Feature: optimize-rebuild-contract, Property 4: Code blocks preserve monospace font when font_family changes
+    # Feature: optimize-rebuild-contract, Property 4: Code blocks preserve
+    # monospace font when font_family changes
     # Mixed finite/complex strategy: 15 examples (3 finite × 5 complex samples)
     @settings(max_examples=15, deadline=None)
     def test_code_blocks_preserve_custom_code_font_name(
