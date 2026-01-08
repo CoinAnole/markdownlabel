@@ -831,9 +831,16 @@ class TestReactiveRebuildOnPropertyChange:
         # Count children before
         children_before = len(label.children)
 
+        # Collect widget IDs before change to verify rebuild
+        ids_before = collect_widget_ids(label)
+
         # Change font_name (structure property, requires rebuild)
         label.font_name = font2
         label.force_rebuild()
+
+        # Verify rebuild occurred
+        ids_after = collect_widget_ids(label)
+        assert ids_before != ids_after, "Widget tree should rebuild for font_name change"
 
         # Count children after
         children_after = len(label.children)
