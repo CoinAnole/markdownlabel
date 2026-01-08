@@ -30,21 +30,11 @@ No deviations found
 
 ## test_duplicate_detector.py
 
-- Line 307: Missing `@pytest.mark.test_tests` marker on meta-test class - `TestDuplicateDetectorUnit` is a meta-test (tests about test suite structure) but lacks the required `@pytest.mark.test_tests` marker. Per TESTING.md section "Meta-Test Marking", tests that validate the test suite itself must be marked with `@pytest.mark.test_tests`. The class `TestHelperFunctionConsolidation` at line 27 correctly has this marker, but `TestDuplicateDetectorUnit` does not, despite being a meta-test that tests the duplicate detector module which is part of the test infrastructure.
+No deviations found
 
 ## test_file_analyzer.py
 
-- Line 82: Missing `@pytest.mark.test_tests` marker on meta-test class - `TestPropertyTestExtraction` is a meta-test (tests about test suite structure and analysis tools) but lacks the required `@pytest.mark.test_tests` marker. Per TESTING.md section "Meta-Test Marking", tests that validate the test suite itself must be marked with `@pytest.mark.test_tests`. The class `TestFileAnalyzerBasics` at line 21 correctly has this marker, but `TestPropertyTestExtraction` does not, despite being a meta-test that tests the property test extraction functionality which is part of the test infrastructure.
-
-- Line 222: Missing `@pytest.mark.test_tests` marker on meta-test class - `TestValidationReport` is a meta-test (tests about test suite structure and validation reporting) but lacks the required `@pytest.mark.test_tests` marker. Per TESTING.md section "Meta-Test Marking", tests that validate the test suite itself must be marked with `@pytest.mark.test_tests`. The class `TestFileAnalyzerBasics` at line 21 correctly has this marker, but `TestValidationReport` does not, despite being a meta-test that tests the validation report functionality which is part of the test infrastructure.
-
-- Line 283: Missing `@pytest.mark.test_tests` marker on meta-test class - `TestRationaleGeneration` is a meta-test (tests about test suite structure and rationale generation) but lacks the required `@pytest.mark.test_tests` marker. Per TESTING.md section "Meta-Test Marking", tests that validate the test suite itself must be marked with `@pytest.mark.test_tests`. The class `TestFileAnalyzerBasics` at line 21 correctly has this marker, but `TestRationaleGeneration` does not, despite being a meta-test that tests the rationale generation functionality which is part of the test infrastructure.
-
-- Line 318: Missing `@pytest.mark.test_tests` marker on meta-test class - `TestErrorHandling` is a meta-test (tests about test suite structure and error handling) but lacks the required `@pytest.mark.test_tests` marker. Per TESTING.md section "Meta-Test Marking", tests that validate the test suite itself must be marked with `@pytest.mark.test_tests`. The class `TestFileAnalyzerBasics` at line 21 correctly has this marker, but `TestErrorHandling` does not, despite being a meta-test that tests the error handling functionality which is part of the test infrastructure.
-
-- Line 388: Missing `@pytest.mark.test_tests` marker on meta-test class - `TestIntegrationWithOptimizationTools` is a meta-test (tests about test suite structure and tool integration) but lacks the required `@pytest.mark.test_tests` marker. Per TESTING.md section "Meta-Test Marking", tests that validate the test suite itself must be marked with `@pytest.mark.test_tests`. The class `TestFileAnalyzerBasics` at line 21 correctly has this marker, but `TestIntegrationWithOptimizationTools` does not, despite being a meta-test that tests the integration with optimization tools which is part of the test infrastructure.
-
-- Line 453: Missing `@pytest.mark.test_tests` marker on meta-test class - `TestToolIntegrationCompatibility` is a meta-test (tests about test suite structure and tool compatibility) but lacks the required `@pytest.mark.test_tests` marker. Per TESTING.md section "Meta-Test Marking", tests that validate the test suite itself must be marked with `@pytest.mark.test_tests`. The class `TestFileAnalyzerBasics` at line 21 correctly has this marker, but `TestToolIntegrationCompatibility` does not, despite being a meta-test that tests the tool integration compatibility which is part of the test infrastructure.
+No deviations found
 
 ## test_helper_availability.py
 

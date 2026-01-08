@@ -304,6 +304,7 @@ class TestTarget{i}:
             os.rmdir(temp_dir)
 
 
+@pytest.mark.test_tests
 class TestDuplicateDetectorUnit:
     """Unit tests for DuplicateDetector initialization and similarity calculation."""
 
