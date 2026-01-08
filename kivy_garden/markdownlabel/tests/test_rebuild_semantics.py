@@ -11,6 +11,8 @@ a Kivy window.
 import pytest
 from hypothesis import given, strategies as st, settings, assume
 
+from kivy.uix.label import Label
+
 from kivy_garden.markdownlabel import MarkdownLabel
 from .test_utils import (
     simple_markdown_document,
@@ -2053,3 +2055,413 @@ class TestTextSizePropertyIdentityPreservationPBT:
             f"Widget IDs changed after text_size update to [{width}, {height}]. "
             f"Before: {len(ids_before)} widgets, After: {len(ids_after)} widgets"
         )
+
+
+# =============================================================================
+# Advanced Font Properties Value Propagation Tests
+# =============================================================================
+# These tests validate Property 2 from the design document:
+# "Style-only property updates apply values to all child Labels"
+# Specifically for the newly reclassified advanced font properties:
+# font_family, font_context, font_features, font_hinting, font_kerning, font_blended
+# =============================================================================
+
+
+@pytest.mark.property
+@pytest.mark.slow
+class TestAdvancedFontPropertyValuePropagationPBT:
+    """Property-based tests for advanced font property value propagation.
+
+    These tests verify that changing advanced font properties (font_family,
+    font_context, font_features, font_hinting, font_kerning, font_blended)
+    applies the new values to all child Label widgets.
+
+    **Property 2: Style-only property updates apply values to all child Labels**
+    **Validates: Requirements 1.1-1.6**
+    """
+
+    def _find_code_block_labels(self, widget):
+        """Find Labels that are inside code block containers.
+
+        Code block containers have a 'language_info' attribute or '_is_code' marker.
+        """
+        code_labels = []
+
+        def find_in_container(container):
+            if hasattr(container, 'language_info'):
+                # This is a code block container
+                for child in container.children:
+                    if isinstance(child, Label):
+                        code_labels.append(child)
+            if isinstance(container, Label) and hasattr(container, '_is_code') and container._is_code:
+                code_labels.append(container)
+            if hasattr(container, 'children'):
+                for child in container.children:
+                    find_in_container(child)
+
+        find_in_container(widget)
+        return code_labels
+
+    def _find_non_code_labels(self, widget):
+        """Find Labels that are NOT inside code block containers."""
+        all_labels = find_labels_recursive(widget)
+        code_labels = self._find_code_block_labels(widget)
+        return [lbl for lbl in all_labels if lbl not in code_labels]
+
+    @given(
+        markdown_text=simple_markdown_document(),
+        initial_font_family=st.one_of(st.none(), st.just('Roboto')),
+        new_font_family=st.one_of(st.none(), st.text(min_size=1, max_size=30, alphabet=st.characters(
+            whitelist_categories=['L', 'N'],
+            blacklist_characters='[]&\n\r'
+        )))
+    )
+    # Feature: optimize-rebuild-contract, Property 2: Style-only property updates apply values to all child Labels
+    # Complex strategy: font_family can be None or text
+    @settings(max_examples=30, deadline=None)
+    def test_font_family_value_propagates_to_non_code_children(
+        self, markdown_text, initial_font_family, new_font_family
+    ):
+        """font_family Value Propagates to Non-Code Children After Change.
+
+        *For any* MarkdownLabel with non-empty content, and *for any* font_family
+        value, changing font_family SHALL apply the new value to all non-code
+        child Label widgets (code blocks preserve their monospace font).
+
+        **Validates: Requirements 1.1**
+        """
+        # Ensure we have non-empty content
+        assume(markdown_text and markdown_text.strip())
+        # Ensure we're actually changing the value
+        assume(initial_font_family != new_font_family)
+
+        # Create MarkdownLabel with initial font_family
+        label = MarkdownLabel(text=markdown_text, font_family=initial_font_family)
+
+        # Ensure we have children to test
+        non_code_labels = self._find_non_code_labels(label)
+        assume(len(non_code_labels) >= 1)
+
+        # Apply font_family change
+        label.font_family = new_font_family
+
+        # Verify all non-code child Labels have the new font_family value
+        non_code_labels = self._find_non_code_labels(label)
+        for child_label in non_code_labels:
+            assert child_label.font_family == new_font_family, (
+                f"font_family not propagated to child Label. "
+                f"Expected {new_font_family!r}, got {child_label.font_family!r}"
+            )
+
+    @given(
+        markdown_text=simple_markdown_document(),
+        initial_font_context=st.one_of(st.none(), st.just('system')),
+        new_font_context=st.one_of(st.none(), st.text(min_size=1, max_size=30, alphabet=st.characters(
+            whitelist_categories=['L', 'N'],
+            blacklist_characters='[]&\n\r'
+        )))
+    )
+    # Feature: optimize-rebuild-contract, Property 2: Style-only property updates apply values to all child Labels
+    # Complex strategy: font_context can be None or text
+    @settings(max_examples=30, deadline=None)
+    def test_font_context_value_propagates_to_all_children(
+        self, markdown_text, initial_font_context, new_font_context
+    ):
+        """font_context Value Propagates to All Children After Change.
+
+        *For any* MarkdownLabel with non-empty content, and *for any* font_context
+        value, changing font_context SHALL apply the new value to all child
+        Label widgets.
+
+        **Validates: Requirements 1.2**
+        """
+        # Ensure we have non-empty content
+        assume(markdown_text and markdown_text.strip())
+        # Ensure we're actually changing the value
+        assume(initial_font_context != new_font_context)
+
+        # Create MarkdownLabel with initial font_context
+        label = MarkdownLabel(text=markdown_text, font_context=initial_font_context)
+
+        # Ensure we have children to test
+        child_labels = find_labels_recursive(label)
+        assume(len(child_labels) >= 1)
+
+        # Apply font_context change
+        label.font_context = new_font_context
+
+        # Verify all child Labels have the new font_context value
+        child_labels = find_labels_recursive(label)
+        for child_label in child_labels:
+            assert child_label.font_context == new_font_context, (
+                f"font_context not propagated to child Label. "
+                f"Expected {new_font_context!r}, got {child_label.font_context!r}"
+            )
+
+    @given(
+        markdown_text=simple_markdown_document(),
+        initial_font_features=st.just(''),
+        new_font_features=st.text(min_size=0, max_size=30, alphabet=st.characters(
+            whitelist_categories=['L', 'N', 'P'],
+            blacklist_characters='[]&\n\r'
+        ))
+    )
+    # Feature: optimize-rebuild-contract, Property 2: Style-only property updates apply values to all child Labels
+    # Complex strategy: font_features is a text string
+    @settings(max_examples=30, deadline=None)
+    def test_font_features_value_propagates_to_all_children(
+        self, markdown_text, initial_font_features, new_font_features
+    ):
+        """font_features Value Propagates to All Children After Change.
+
+        *For any* MarkdownLabel with non-empty content, and *for any* font_features
+        value, changing font_features SHALL apply the new value to all child
+        Label widgets.
+
+        **Validates: Requirements 1.3**
+        """
+        # Ensure we have non-empty content
+        assume(markdown_text and markdown_text.strip())
+        # Ensure we're actually changing the value
+        assume(initial_font_features != new_font_features)
+
+        # Create MarkdownLabel with initial font_features
+        label = MarkdownLabel(text=markdown_text, font_features=initial_font_features)
+
+        # Ensure we have children to test
+        child_labels = find_labels_recursive(label)
+        assume(len(child_labels) >= 1)
+
+        # Apply font_features change
+        label.font_features = new_font_features
+
+        # Verify all child Labels have the new font_features value
+        child_labels = find_labels_recursive(label)
+        for child_label in child_labels:
+            assert child_label.font_features == new_font_features, (
+                f"font_features not propagated to child Label. "
+                f"Expected {new_font_features!r}, got {child_label.font_features!r}"
+            )
+
+    @given(
+        markdown_text=simple_markdown_document(),
+        initial_font_hinting=st.sampled_from([None, 'normal']),
+        new_font_hinting=st.sampled_from([None, 'normal', 'light', 'mono'])
+    )
+    # Feature: optimize-rebuild-contract, Property 2: Style-only property updates apply values to all child Labels
+    # Finite strategy: 4 font_hinting options
+    @settings(max_examples=20, deadline=None)
+    def test_font_hinting_value_propagates_to_all_children(
+        self, markdown_text, initial_font_hinting, new_font_hinting
+    ):
+        """font_hinting Value Propagates to All Children After Change.
+
+        *For any* MarkdownLabel with non-empty content, and *for any* font_hinting
+        value (None, 'normal', 'light', 'mono'), changing font_hinting SHALL
+        apply the new value to all child Label widgets.
+
+        **Validates: Requirements 1.4**
+        """
+        # Ensure we have non-empty content
+        assume(markdown_text and markdown_text.strip())
+        # Ensure we're actually changing the value
+        assume(initial_font_hinting != new_font_hinting)
+
+        # Create MarkdownLabel with initial font_hinting
+        label = MarkdownLabel(text=markdown_text, font_hinting=initial_font_hinting)
+
+        # Ensure we have children to test
+        child_labels = find_labels_recursive(label)
+        assume(len(child_labels) >= 1)
+
+        # Apply font_hinting change
+        label.font_hinting = new_font_hinting
+
+        # Verify all child Labels have the new font_hinting value
+        child_labels = find_labels_recursive(label)
+        for child_label in child_labels:
+            # font_hinting may be None or a string value
+            if new_font_hinting is not None:
+                assert child_label.font_hinting == new_font_hinting, (
+                    f"font_hinting not propagated to child Label. "
+                    f"Expected {new_font_hinting!r}, got {child_label.font_hinting!r}"
+                )
+
+    @given(
+        markdown_text=simple_markdown_document(),
+        initial_font_kerning=st.booleans(),
+        new_font_kerning=st.booleans()
+    )
+    # Feature: optimize-rebuild-contract, Property 2: Style-only property updates apply values to all child Labels
+    # Finite strategy: 2 boolean options
+    @settings(max_examples=20, deadline=None)
+    def test_font_kerning_value_propagates_to_all_children(
+        self, markdown_text, initial_font_kerning, new_font_kerning
+    ):
+        """font_kerning Value Propagates to All Children After Change.
+
+        *For any* MarkdownLabel with non-empty content, and *for any* font_kerning
+        value (True/False), changing font_kerning SHALL apply the new value to
+        all child Label widgets.
+
+        **Validates: Requirements 1.5**
+        """
+        # Ensure we have non-empty content
+        assume(markdown_text and markdown_text.strip())
+        # Ensure we're actually changing the value
+        assume(initial_font_kerning != new_font_kerning)
+
+        # Create MarkdownLabel with initial font_kerning
+        label = MarkdownLabel(text=markdown_text, font_kerning=initial_font_kerning)
+
+        # Ensure we have children to test
+        child_labels = find_labels_recursive(label)
+        assume(len(child_labels) >= 1)
+
+        # Apply font_kerning change
+        label.font_kerning = new_font_kerning
+
+        # Verify all child Labels have the new font_kerning value
+        child_labels = find_labels_recursive(label)
+        for child_label in child_labels:
+            assert child_label.font_kerning == new_font_kerning, (
+                f"font_kerning not propagated to child Label. "
+                f"Expected {new_font_kerning}, got {child_label.font_kerning}"
+            )
+
+    @given(
+        markdown_text=simple_markdown_document(),
+        initial_font_blended=st.booleans(),
+        new_font_blended=st.booleans()
+    )
+    # Feature: optimize-rebuild-contract, Property 2: Style-only property updates apply values to all child Labels
+    # Finite strategy: 2 boolean options
+    @settings(max_examples=20, deadline=None)
+    def test_font_blended_value_propagates_to_all_children(
+        self, markdown_text, initial_font_blended, new_font_blended
+    ):
+        """font_blended Value Propagates to All Children After Change.
+
+        *For any* MarkdownLabel with non-empty content, and *for any* font_blended
+        value (True/False), changing font_blended SHALL apply the new value to
+        all child Label widgets.
+
+        **Validates: Requirements 1.6**
+        """
+        # Ensure we have non-empty content
+        assume(markdown_text and markdown_text.strip())
+        # Ensure we're actually changing the value
+        assume(initial_font_blended != new_font_blended)
+
+        # Create MarkdownLabel with initial font_blended
+        label = MarkdownLabel(text=markdown_text, font_blended=initial_font_blended)
+
+        # Ensure we have children to test
+        child_labels = find_labels_recursive(label)
+        assume(len(child_labels) >= 1)
+
+        # Apply font_blended change
+        label.font_blended = new_font_blended
+
+        # Verify all child Labels have the new font_blended value
+        child_labels = find_labels_recursive(label)
+        for child_label in child_labels:
+            assert child_label.font_blended == new_font_blended, (
+                f"font_blended not propagated to child Label. "
+                f"Expected {new_font_blended}, got {child_label.font_blended}"
+            )
+
+    @given(
+        markdown_text=simple_markdown_document(),
+        font_family=st.one_of(st.none(), st.text(min_size=1, max_size=20, alphabet=st.characters(
+            whitelist_categories=['L', 'N'],
+            blacklist_characters='[]&\n\r'
+        ))),
+        font_context=st.one_of(st.none(), st.text(min_size=1, max_size=20, alphabet=st.characters(
+            whitelist_categories=['L', 'N'],
+            blacklist_characters='[]&\n\r'
+        ))),
+        font_features=st.text(min_size=0, max_size=20, alphabet=st.characters(
+            whitelist_categories=['L', 'N', 'P'],
+            blacklist_characters='[]&\n\r'
+        )),
+        font_hinting=st.sampled_from([None, 'normal', 'light', 'mono']),
+        font_kerning=st.booleans(),
+        font_blended=st.booleans()
+    )
+    # Feature: optimize-rebuild-contract, Property 2: Style-only property updates apply values to all child Labels
+    # Mixed finite/complex strategy: 50 examples (8 finite combinations with 3 complex strategies)
+    @settings(max_examples=50, deadline=None)
+    def test_all_advanced_font_properties_propagate_to_children(
+        self, markdown_text, font_family, font_context, font_features,
+        font_hinting, font_kerning, font_blended
+    ):
+        """All Advanced Font Properties Propagate to Children After Change.
+
+        *For any* MarkdownLabel with non-empty content, and *for any* combination
+        of advanced font property values, changing those properties SHALL apply
+        the new values to all child Label widgets (with font_family excluded
+        from code blocks).
+
+        **Validates: Requirements 1.1-1.6**
+        """
+        # Ensure we have non-empty content
+        assume(markdown_text and markdown_text.strip())
+
+        # Create MarkdownLabel with default values
+        label = MarkdownLabel(text=markdown_text)
+
+        # Ensure we have children to test
+        child_labels = find_labels_recursive(label)
+        assume(len(child_labels) >= 1)
+
+        # Apply all advanced font property changes
+        label.font_family = font_family
+        label.font_context = font_context
+        label.font_features = font_features
+        label.font_hinting = font_hinting
+        label.font_kerning = font_kerning
+        label.font_blended = font_blended
+
+        # Verify all child Labels have the new property values
+        child_labels = find_labels_recursive(label)
+        non_code_labels = self._find_non_code_labels(label)
+        code_labels = self._find_code_block_labels(label)
+
+        # Check non-code labels (should have all properties including font_family)
+        for child_label in non_code_labels:
+            assert child_label.font_family == font_family, (
+                f"font_family not propagated to non-code Label. "
+                f"Expected {font_family!r}, got {child_label.font_family!r}"
+            )
+
+        # Check all labels for properties that apply to all (including code blocks)
+        for child_label in child_labels:
+            assert child_label.font_context == font_context, (
+                f"font_context not propagated to child Label. "
+                f"Expected {font_context!r}, got {child_label.font_context!r}"
+            )
+            assert child_label.font_features == font_features, (
+                f"font_features not propagated to child Label. "
+                f"Expected {font_features!r}, got {child_label.font_features!r}"
+            )
+            if font_hinting is not None:
+                assert child_label.font_hinting == font_hinting, (
+                    f"font_hinting not propagated to child Label. "
+                    f"Expected {font_hinting!r}, got {child_label.font_hinting!r}"
+                )
+            assert child_label.font_kerning == font_kerning, (
+                f"font_kerning not propagated to child Label. "
+                f"Expected {font_kerning}, got {child_label.font_kerning}"
+            )
+            assert child_label.font_blended == font_blended, (
+                f"font_blended not propagated to child Label. "
+                f"Expected {font_blended}, got {child_label.font_blended}"
+            )
+
+        # Verify code labels do NOT have font_family set (preserve monospace)
+        for child_label in code_labels:
+            assert child_label.font_family is None, (
+                f"font_family should NOT be propagated to code Label. "
+                f"Expected None, got {child_label.font_family!r}"
+            )

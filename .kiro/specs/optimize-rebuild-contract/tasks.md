@@ -77,7 +77,7 @@ This implementation plan reclassifies 14 properties from "structure" to "style-o
     - **Validates: Requirements 4.1, 4.4**
 
 - [ ] 5. Write property-based tests for value application
-  - [ ] 5.1 Write property test for advanced font properties applied to children
+  - [x] 5.1 Write property test for advanced font properties applied to children
     - **Property 2: Style-only property updates apply values to all child Labels**
     - Verify all child Labels have the new property value
     - **Validates: Requirements 1.1-1.6**
