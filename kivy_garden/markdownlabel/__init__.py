@@ -103,6 +103,11 @@ class MarkdownLabel(BoxLayout):
         'disabled_color',
         'base_direction',
         'text_padding',
+        'outline_color',
+        'disabled_outline_color',
+        'mipmap',
+        'text_language',
+        'limit_render_to_text_bbox',
     })
     """Properties that affect only visual styling and can be updated in-place.
 
@@ -119,11 +124,6 @@ class MarkdownLabel(BoxLayout):
         'strict_label_mode',
         'padding',
         'outline_width',
-        'outline_color',
-        'disabled_outline_color',
-        'mipmap',
-        'text_language',
-        'limit_render_to_text_bbox',
     })
     """Properties that affect widget structure and require a full rebuild.
 

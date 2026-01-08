@@ -34,6 +34,11 @@ STYLE_ONLY_PROPERTIES = [
     'disabled',
     'disabled_color',
     'base_direction',
+    'outline_color',
+    'disabled_outline_color',
+    'mipmap',
+    'text_language',
+    'limit_render_to_text_bbox',
 ]
 
 # Structure Properties for Testing
