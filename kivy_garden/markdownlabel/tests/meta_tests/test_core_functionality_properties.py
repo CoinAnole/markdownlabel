@@ -426,7 +426,8 @@ class TestFixedListPropertyTestsConverted:
         error_messages = []
         if missing_from_list:
             error_messages.append(
-                f"Test files exist but are missing from TEST_MODULES in conftest.py: {sorted(missing_from_list)}"
+                "Test files exist but are missing from TEST_MODULES in "
+                f"conftest.py: {sorted(missing_from_list)}"
             )
         if extra_in_list:
             error_messages.append(

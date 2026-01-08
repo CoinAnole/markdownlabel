@@ -184,7 +184,7 @@ class TestTextureModeLinksHandling:
 
         # Verify refs were collected (not empty)
         assert label._aggregated_refs, \
-            f"Expected _aggregated_refs to be populated, got empty dict"
+            "Expected _aggregated_refs to be populated, got empty dict"
 
         # Check that the expected refs are present
         for ref in expected_refs:

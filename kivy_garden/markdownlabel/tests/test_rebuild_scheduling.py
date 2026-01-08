@@ -14,7 +14,6 @@ from kivy_garden.markdownlabel import MarkdownLabel
 from kivy_garden.markdownlabel.tests.test_utils import (
     collect_widget_ids,
     st_alphanumeric_text,
-    st_font_size,
     st_font_name,
 )
 
