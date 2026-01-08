@@ -10,7 +10,7 @@ from hypothesis import given, strategies as st, settings, assume
 
 from kivy_garden.markdownlabel import MarkdownLabel
 from .test_utils import (
-    simple_markdown_document, markdown_heading
+    simple_markdown_document, markdown_heading, collect_widget_ids
 )
 
 
@@ -512,18 +512,23 @@ class TestStrictLabelModeSizingBehavior:
     @given(simple_markdown_document())
     # Mixed finite/complex strategy: 20 examples (5 finite × 4 complex samples)
     @settings(max_examples=20, deadline=None)
-    def test_strict_mode_updates_value(self, markdown_text):
+    def test_strict_mode_change_triggers_rebuild(self, markdown_text):
         """Changing strict_label_mode triggers widget rebuild."""
         assume(markdown_text.strip())
 
         label = MarkdownLabel(text=markdown_text, strict_label_mode=False)
-        initial_children = list(label.children)
+        ids_before = collect_widget_ids(label, exclude_root=True)
 
         # Toggle strict_label_mode
         label.strict_label_mode = True
+        label.force_rebuild()
 
         # Widget tree should be rebuilt (children may be different objects)
-        # We verify by checking that the label still has children
+        ids_after = collect_widget_ids(label, exclude_root=True)
+        assert ids_before != ids_after, \
+            "Widget tree should rebuild after strict_label_mode toggle"
+
+        # Verify the label still has children
         assert len(label.children) >= 1, \
             "Expected at least 1 child after strict_label_mode toggle"
 

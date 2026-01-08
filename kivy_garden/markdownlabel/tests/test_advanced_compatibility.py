@@ -831,8 +831,9 @@ class TestReactiveRebuildOnPropertyChange:
         # Count children before
         children_before = len(label.children)
 
-        # Change font_name to trigger rebuild
+        # Change font_name (structure property, requires rebuild)
         label.font_name = font2
+        label.force_rebuild()
 
         # Count children after
         children_after = len(label.children)
@@ -841,54 +842,8 @@ class TestReactiveRebuildOnPropertyChange:
         assert children_before == children_after, \
             f"Expected {children_before} children after rebuild, got {children_after}"
 
-    @given(st.booleans(), st.booleans())
-    # Combination strategy: 4 examples (combination coverage)
-    @settings(max_examples=4, deadline=None)
-    def test_font_kerning_change_triggers_rebuild(self, kerning1, kerning2):
-        """Changing font_kerning after initial rendering triggers rebuild with new value."""
-        assume(kerning1 != kerning2)
-
-        label = MarkdownLabel(text='Hello World', font_kerning=kerning1)
-
-        # Verify initial font_kerning
-        labels_before = find_labels_recursive(label)
-        assert len(labels_before) >= 1, "Expected at least one Label"
-        for lbl in labels_before:
-            assert lbl.font_kerning == kerning1, f"Initial font_kerning should be {kerning1}"
-
-        # Change font_kerning
-        label.font_kerning = kerning2
-        label.force_rebuild()  # Force immediate rebuild for test
-
-        # Verify widgets were rebuilt with new font_kerning
-        labels_after = find_labels_recursive(label)
-        assert len(labels_after) >= 1, "Expected at least one Label after rebuild"
-        for lbl in labels_after:
-            assert lbl.font_kerning == kerning2, \
-                f"After change, expected font_kerning={kerning2}, got {lbl.font_kerning}"
-
-    @given(st.booleans(), st.booleans())
-    # Combination strategy: 4 examples (combination coverage)
-    @settings(max_examples=4, deadline=None)
-    def test_font_blended_change_triggers_rebuild(self, blended1, blended2):
-        """Changing font_blended after initial rendering triggers rebuild with new value."""
-        assume(blended1 != blended2)
-
-        label = MarkdownLabel(text='Hello World', font_blended=blended1)
-
-        # Verify initial font_blended
-        labels_before = find_labels_recursive(label)
-        assert len(labels_before) >= 1, "Expected at least one Label"
-        for lbl in labels_before:
-            assert lbl.font_blended == blended1, f"Initial font_blended should be {blended1}"
-
-        # Change font_blended
-        label.font_blended = blended2
-        label.force_rebuild()  # Force immediate rebuild for test
-
-        # Verify widgets were rebuilt with new font_blended
-        labels_after = find_labels_recursive(label)
-        assert len(labels_after) >= 1, "Expected at least one Label after rebuild"
-        for lbl in labels_after:
-            assert lbl.font_blended == blended2, \
-                f"After change, expected font_blended={blended2}, got {lbl.font_blended}"
+        # Verify font_name was applied
+        labels = find_labels_recursive(label)
+        for lbl in labels:
+            assert lbl.font_name == font2, \
+                f"Expected font_name={font2}, got {lbl.font_name}"

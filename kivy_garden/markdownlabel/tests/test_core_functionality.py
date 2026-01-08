@@ -17,7 +17,8 @@ from .test_utils import (
     markdown_paragraph,
     markdown_link,
     simple_markdown_document,
-    st_alphanumeric_text
+    st_alphanumeric_text,
+    collect_widget_ids
 )
 
 
@@ -77,6 +78,12 @@ class TestMarkdownToWidgetTreeGeneration:
         assert len(label.children) >= 1, \
             f"Expected at least 1 child for paragraph: {paragraph!r}"
 
+        # The child should be a Label
+        # Note: Kivy children are in reverse order
+        paragraph_widget = label.children[-1]
+        assert isinstance(paragraph_widget, Label), \
+            f"Expected Label, got {type(paragraph_widget)}"
+
     @pytest.mark.property
     @given(st.integers(min_value=1, max_value=5))
     # Small finite strategy: 5 examples (input space size: 5)
@@ -114,19 +121,24 @@ class TestMarkdownTextPropertyUpdates:
     # Complex strategy: 50 examples (adequate coverage)
     @settings(max_examples=50, deadline=None)
     def test_text_change_updates_widgets(self, text1, text2):
-        """Changing text property updates the widget tree."""
+        """Changing text property rebuilds the widget tree with new content."""
         assume(text1.strip() and text2.strip())
         assume(text1 != text2)
 
         label = MarkdownLabel(text=text1)
-        initial_children = len(label.children)
+        ids_before = collect_widget_ids(label, exclude_root=True)
 
-        # Change text
+        # Change text - use force_rebuild() for immediate update since
+        # text changes now use deferred rebuilds
         label.text = text2
+        label.force_rebuild()
 
-        # Widget tree should be rebuilt
-        # We can't easily compare exact structure, but we can verify
-        # that the label's text property reflects the new value
+        # Widget tree should be rebuilt (different widget objects)
+        ids_after = collect_widget_ids(label, exclude_root=True)
+        assert ids_before != ids_after, \
+            "Widget tree should be rebuilt after text change"
+
+        # Verify the label's text property reflects the new value
         assert label.text == text2, \
             f"Expected text to be {text2!r}, got {label.text!r}"
 
@@ -186,6 +198,7 @@ class TestMarkdownTextPropertyUpdates:
     def test_ast_updates_with_text(self, text1, text2):
         """AST tokens update when text changes."""
         assume(text1.strip() and text2.strip())
+        assume(text1 != text2)
 
         label = MarkdownLabel(text=text1)
         ast1 = label.get_ast()
@@ -196,11 +209,14 @@ class TestMarkdownTextPropertyUpdates:
         label.force_rebuild()
         ast2 = label.get_ast()
 
-        # If texts are different, ASTs should be different
-        if text1 != text2:
-            # At minimum, the AST should be updated (not necessarily different
-            # if the texts parse to the same structure)
-            assert label.text == text2
+        # Verify the text property was updated
+        assert label.text == text2, \
+            f"Expected text to be {text2!r}, got {label.text!r}"
+
+        # Verify AST was updated (compare string representations since
+        # AST objects may not be directly comparable)
+        assert str(ast1) != str(ast2) or text1 == text2, \
+            "AST should change when text changes to different content"
 
 
 # *For any* Markdown link [text](url), the rendered Kivy markup SHALL contain

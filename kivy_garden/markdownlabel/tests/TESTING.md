@@ -225,18 +225,24 @@ These properties update existing widgets without rebuilding:
 
 - `color` - Updates Label.color on existing Labels
 - `font_size` / `base_font_size` - Updates Label.font_size on existing Labels  
-- `font_name` - Updates Label.font_name on existing Labels
 - `line_height` - Updates Label.line_height on existing Labels
 - `halign`, `valign` - Updates alignment on existing Labels
-- `text_size` - Updates Label.text_size on existing Labels
-- `padding` - Updates container padding
+- `disabled`, `disabled_color` - Updates disabled state/color on existing Labels
+- `base_direction` - Updates text direction on existing Labels
+- `text_padding` - Updates Label.padding on existing Labels
 
 ### Structure Properties
 
 These properties trigger a complete widget tree rebuild:
 
 - `text` - Changes the markdown content structure
+- `font_name` - Changes the font used for rendering (affects text metrics)
+- `text_size` - Changes the text size constraints (affects wrapping)
 - `render_mode` - Changes between widgets/texture rendering
+- `link_style` - Changes link styling (affects markup generation)
+- `strict_label_mode` - Changes label mode behavior
+- `padding` - Changes container padding (BoxLayout padding)
+- `outline_width`, `outline_color` - Changes outline rendering
 - Properties that affect parsing or widget hierarchy
 
 ### Testing Rebuild Behavior
