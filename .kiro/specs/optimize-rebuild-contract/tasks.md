@@ -19,7 +19,7 @@ This implementation plan reclassifies 14 properties from "structure" to "style-o
     - Verify only `text`, `link_style`, `render_mode`, `strict_label_mode` remain
     - _Requirements: 5.5, 5.6_
 
-- [ ] 2. Extend _update_styles_in_place method
+- [x] 2. Extend _update_styles_in_place method
   - [x] 2.1 Add advanced font property updates
     - Update `font_family` on non-code Labels (check `_is_code` marker)
     - Update `font_context` on all Labels (with None check)
@@ -52,7 +52,7 @@ This implementation plan reclassifies 14 properties from "structure" to "style-o
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 4. Write property-based tests for widget identity preservation
-  - [ ] 4.1 Write property test for advanced font properties preserving widget identity
+  - [x] 4.1 Write property test for advanced font properties preserving widget identity
     - **Property 1: Style-only property updates preserve widget identity**
     - Test `font_family`, `font_context`, `font_features`, `font_hinting`, `font_kerning`, `font_blended`
     - Verify widget IDs unchanged after property change

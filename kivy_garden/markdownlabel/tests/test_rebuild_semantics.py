@@ -925,3 +925,340 @@ class TestRootIDPreservationPBT:
             f"Root MarkdownLabel ID changed after mixed property updates. "
             f"Before: {root_id_before}, After: {id(label)}"
         )
+
+
+# =============================================================================
+# Advanced Font Properties Widget Identity Preservation Tests
+# =============================================================================
+# These tests validate Property 1 from the design document:
+# "Style-only property updates preserve widget identity"
+# Specifically for the newly reclassified advanced font properties:
+# font_family, font_context, font_features, font_hinting, font_kerning, font_blended
+# =============================================================================
+
+
+@pytest.mark.property
+@pytest.mark.slow
+class TestAdvancedFontPropertyIdentityPreservationPBT:
+    """Property-based tests for advanced font property identity preservation.
+
+    These tests verify that changing advanced font properties (font_family,
+    font_context, font_features, font_hinting, font_kerning, font_blended)
+    preserves all widget object IDs in the subtree.
+
+    **Property 1: Style-only property updates preserve widget identity**
+    **Validates: Requirements 1.1-1.7**
+    """
+
+    @given(
+        markdown_text=simple_markdown_document(),
+        font_family=st.one_of(st.none(), st.text(min_size=1, max_size=30, alphabet=st.characters(
+            whitelist_categories=['L', 'N'],
+            blacklist_characters='[]&\n\r'
+        ))),
+        font_context=st.one_of(st.none(), st.text(min_size=1, max_size=30, alphabet=st.characters(
+            whitelist_categories=['L', 'N'],
+            blacklist_characters='[]&\n\r'
+        ))),
+        font_features=st.text(min_size=0, max_size=30, alphabet=st.characters(
+            whitelist_categories=['L', 'N', 'P'],
+            blacklist_characters='[]&\n\r'
+        )),
+        font_hinting=st.sampled_from([None, 'normal', 'light', 'mono']),
+        font_kerning=st.booleans(),
+        font_blended=st.booleans()
+    )
+    # Feature: optimize-rebuild-contract, Property 1: Style-only property updates preserve widget identity
+    # Mixed finite/complex strategy: 50 examples (8 finite combinations with 3 complex strategies)
+    @settings(max_examples=50, deadline=None)
+    def test_advanced_font_properties_preserve_widget_identity(
+        self, markdown_text, font_family, font_context, font_features,
+        font_hinting, font_kerning, font_blended
+    ):
+        """Advanced Font Properties Preserve Widget Identity.
+
+        *For any* MarkdownLabel with non-empty content, and *for any* advanced
+        font property (font_family, font_context, font_features, font_hinting,
+        font_kerning, font_blended), changing that property SHALL preserve all
+        widget object IDs in the subtree (the set of IDs before equals the set
+        of IDs after).
+
+        **Validates: Requirements 1.1-1.7**
+        """
+        # Ensure we have non-empty content
+        assume(markdown_text and markdown_text.strip())
+
+        # Create MarkdownLabel with initial content
+        label = MarkdownLabel(text=markdown_text)
+
+        # Ensure we have children to test
+        assume(len(label.children) > 0)
+
+        # Capture widget IDs before changes
+        ids_before = collect_widget_ids(label)
+
+        # Apply all advanced font property changes
+        label.font_family = font_family
+        label.font_context = font_context
+        label.font_features = font_features
+        label.font_hinting = font_hinting
+        label.font_kerning = font_kerning
+        label.font_blended = font_blended
+
+        # Capture widget IDs after changes
+        ids_after = collect_widget_ids(label)
+
+        # Assert: widget IDs should be unchanged
+        assert ids_before == ids_after, (
+            f"Widget IDs changed after advanced font property updates. "
+            f"Before: {len(ids_before)} widgets, After: {len(ids_after)} widgets"
+        )
+
+    @given(
+        markdown_text=simple_markdown_document(),
+        font_hinting=st.sampled_from([None, 'normal', 'light', 'mono'])
+    )
+    # Feature: optimize-rebuild-contract, Property 1: Style-only property updates preserve widget identity
+    # Finite strategy: 4 font_hinting options × complex markdown
+    @settings(max_examples=20, deadline=None)
+    def test_font_hinting_preserves_widget_identity(self, markdown_text, font_hinting):
+        """Font Hinting Preserves Widget Identity.
+
+        *For any* MarkdownLabel with non-empty content, and *for any* font_hinting
+        value (None, 'normal', 'light', 'mono'), changing font_hinting SHALL
+        preserve all widget object IDs.
+
+        **Validates: Requirements 1.4, 1.7**
+        """
+        # Ensure we have non-empty content
+        assume(markdown_text and markdown_text.strip())
+
+        # Create MarkdownLabel with initial content
+        label = MarkdownLabel(text=markdown_text)
+
+        # Ensure we have children to test
+        assume(len(label.children) > 0)
+
+        # Capture widget IDs before change
+        ids_before = collect_widget_ids(label)
+
+        # Apply font_hinting change
+        label.font_hinting = font_hinting
+
+        # Capture widget IDs after change
+        ids_after = collect_widget_ids(label)
+
+        # Assert: widget IDs should be unchanged
+        assert ids_before == ids_after, (
+            f"Widget IDs changed after font_hinting update to {font_hinting}. "
+            f"Before: {len(ids_before)} widgets, After: {len(ids_after)} widgets"
+        )
+
+    @given(
+        markdown_text=simple_markdown_document(),
+        font_kerning=st.booleans()
+    )
+    # Feature: optimize-rebuild-contract, Property 1: Style-only property updates preserve widget identity
+    # Finite strategy: 2 boolean options × complex markdown
+    @settings(max_examples=20, deadline=None)
+    def test_font_kerning_preserves_widget_identity(self, markdown_text, font_kerning):
+        """Font Kerning Preserves Widget Identity.
+
+        *For any* MarkdownLabel with non-empty content, and *for any* font_kerning
+        value (True/False), changing font_kerning SHALL preserve all widget
+        object IDs.
+
+        **Validates: Requirements 1.5, 1.7**
+        """
+        # Ensure we have non-empty content
+        assume(markdown_text and markdown_text.strip())
+
+        # Create MarkdownLabel with initial content
+        label = MarkdownLabel(text=markdown_text)
+
+        # Ensure we have children to test
+        assume(len(label.children) > 0)
+
+        # Capture widget IDs before change
+        ids_before = collect_widget_ids(label)
+
+        # Apply font_kerning change
+        label.font_kerning = font_kerning
+
+        # Capture widget IDs after change
+        ids_after = collect_widget_ids(label)
+
+        # Assert: widget IDs should be unchanged
+        assert ids_before == ids_after, (
+            f"Widget IDs changed after font_kerning update to {font_kerning}. "
+            f"Before: {len(ids_before)} widgets, After: {len(ids_after)} widgets"
+        )
+
+    @given(
+        markdown_text=simple_markdown_document(),
+        font_blended=st.booleans()
+    )
+    # Feature: optimize-rebuild-contract, Property 1: Style-only property updates preserve widget identity
+    # Finite strategy: 2 boolean options × complex markdown
+    @settings(max_examples=20, deadline=None)
+    def test_font_blended_preserves_widget_identity(self, markdown_text, font_blended):
+        """Font Blended Preserves Widget Identity.
+
+        *For any* MarkdownLabel with non-empty content, and *for any* font_blended
+        value (True/False), changing font_blended SHALL preserve all widget
+        object IDs.
+
+        **Validates: Requirements 1.6, 1.7**
+        """
+        # Ensure we have non-empty content
+        assume(markdown_text and markdown_text.strip())
+
+        # Create MarkdownLabel with initial content
+        label = MarkdownLabel(text=markdown_text)
+
+        # Ensure we have children to test
+        assume(len(label.children) > 0)
+
+        # Capture widget IDs before change
+        ids_before = collect_widget_ids(label)
+
+        # Apply font_blended change
+        label.font_blended = font_blended
+
+        # Capture widget IDs after change
+        ids_after = collect_widget_ids(label)
+
+        # Assert: widget IDs should be unchanged
+        assert ids_before == ids_after, (
+            f"Widget IDs changed after font_blended update to {font_blended}. "
+            f"Before: {len(ids_before)} widgets, After: {len(ids_after)} widgets"
+        )
+
+    @given(
+        markdown_text=simple_markdown_document(),
+        font_family=st.one_of(st.none(), st.text(min_size=1, max_size=30, alphabet=st.characters(
+            whitelist_categories=['L', 'N'],
+            blacklist_characters='[]&\n\r'
+        )))
+    )
+    # Feature: optimize-rebuild-contract, Property 1: Style-only property updates preserve widget identity
+    # Complex strategy: font_family can be None or text
+    @settings(max_examples=30, deadline=None)
+    def test_font_family_preserves_widget_identity(self, markdown_text, font_family):
+        """Font Family Preserves Widget Identity.
+
+        *For any* MarkdownLabel with non-empty content, and *for any* font_family
+        value (None or string), changing font_family SHALL preserve all widget
+        object IDs.
+
+        **Validates: Requirements 1.1, 1.7**
+        """
+        # Ensure we have non-empty content
+        assume(markdown_text and markdown_text.strip())
+
+        # Create MarkdownLabel with initial content
+        label = MarkdownLabel(text=markdown_text)
+
+        # Ensure we have children to test
+        assume(len(label.children) > 0)
+
+        # Capture widget IDs before change
+        ids_before = collect_widget_ids(label)
+
+        # Apply font_family change
+        label.font_family = font_family
+
+        # Capture widget IDs after change
+        ids_after = collect_widget_ids(label)
+
+        # Assert: widget IDs should be unchanged
+        assert ids_before == ids_after, (
+            f"Widget IDs changed after font_family update to {font_family}. "
+            f"Before: {len(ids_before)} widgets, After: {len(ids_after)} widgets"
+        )
+
+    @given(
+        markdown_text=simple_markdown_document(),
+        font_context=st.one_of(st.none(), st.text(min_size=1, max_size=30, alphabet=st.characters(
+            whitelist_categories=['L', 'N'],
+            blacklist_characters='[]&\n\r'
+        )))
+    )
+    # Feature: optimize-rebuild-contract, Property 1: Style-only property updates preserve widget identity
+    # Complex strategy: font_context can be None or text
+    @settings(max_examples=30, deadline=None)
+    def test_font_context_preserves_widget_identity(self, markdown_text, font_context):
+        """Font Context Preserves Widget Identity.
+
+        *For any* MarkdownLabel with non-empty content, and *for any* font_context
+        value (None or string), changing font_context SHALL preserve all widget
+        object IDs.
+
+        **Validates: Requirements 1.2, 1.7**
+        """
+        # Ensure we have non-empty content
+        assume(markdown_text and markdown_text.strip())
+
+        # Create MarkdownLabel with initial content
+        label = MarkdownLabel(text=markdown_text)
+
+        # Ensure we have children to test
+        assume(len(label.children) > 0)
+
+        # Capture widget IDs before change
+        ids_before = collect_widget_ids(label)
+
+        # Apply font_context change
+        label.font_context = font_context
+
+        # Capture widget IDs after change
+        ids_after = collect_widget_ids(label)
+
+        # Assert: widget IDs should be unchanged
+        assert ids_before == ids_after, (
+            f"Widget IDs changed after font_context update to {font_context}. "
+            f"Before: {len(ids_before)} widgets, After: {len(ids_after)} widgets"
+        )
+
+    @given(
+        markdown_text=simple_markdown_document(),
+        font_features=st.text(min_size=0, max_size=30, alphabet=st.characters(
+            whitelist_categories=['L', 'N', 'P'],
+            blacklist_characters='[]&\n\r'
+        ))
+    )
+    # Feature: optimize-rebuild-contract, Property 1: Style-only property updates preserve widget identity
+    # Complex strategy: font_features is a text string
+    @settings(max_examples=30, deadline=None)
+    def test_font_features_preserves_widget_identity(self, markdown_text, font_features):
+        """Font Features Preserves Widget Identity.
+
+        *For any* MarkdownLabel with non-empty content, and *for any* font_features
+        value (string), changing font_features SHALL preserve all widget
+        object IDs.
+
+        **Validates: Requirements 1.3, 1.7**
+        """
+        # Ensure we have non-empty content
+        assume(markdown_text and markdown_text.strip())
+
+        # Create MarkdownLabel with initial content
+        label = MarkdownLabel(text=markdown_text)
+
+        # Ensure we have children to test
+        assume(len(label.children) > 0)
+
+        # Capture widget IDs before change
+        ids_before = collect_widget_ids(label)
+
+        # Apply font_features change
+        label.font_features = font_features
+
+        # Capture widget IDs after change
+        ids_after = collect_widget_ids(label)
+
+        # Assert: widget IDs should be unchanged
+        assert ids_before == ids_after, (
+            f"Widget IDs changed after font_features update to '{font_features}'. "
+            f"Before: {len(ids_before)} widgets, After: {len(ids_after)} widgets"
+        )
