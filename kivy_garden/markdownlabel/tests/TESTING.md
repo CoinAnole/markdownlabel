@@ -248,6 +248,9 @@ These properties trigger a complete widget tree rebuild:
 - `render_mode` - Changes between widgets/texture rendering
 - `link_style` - Changes link styling (affects markup generation)
 - `strict_label_mode` - Changes label mode behavior (affects widget bindings)
+- `font_family`, `font_context`, `font_features`, `font_hinting`, `font_kerning`, `font_blended` - Advanced font properties
+- `unicode_errors`, `strip` - Text processing properties
+- `shorten`, `max_lines`, `shorten_from`, `split_str`, `ellipsis_options` - Truncation properties
 
 ### Testing Rebuild Behavior
 

@@ -23,14 +23,10 @@ These properties update existing widgets **without rebuilding** the widget tree:
 - `font_name` - Updates `Label.font_name` on all existing Labels (respects code block font settings)
 - `code_font_name` - Updates `Label.font_name` on code block Labels only
 - `line_height` - Updates `Label.line_height` on all existing Labels
-- `font_family` - Updates `Label.font_family` on non-code Labels
-- `font_context` - Updates `Label.font_context` on all Labels
-- `font_features` - Updates `Label.font_features` on all Labels
-- `font_hinting` - Updates `Label.font_hinting` on all Labels
-- `font_kerning` - Updates `Label.font_kerning` on all Labels
 
 ### Color Properties
 - `color` - Updates `Label.color` on all existing Labels (except code blocks)
+- `disabled` - Updates disabled state, switching between `color` and `disabled_color`
 - `disabled_color` - Updates `Label.disabled_color` when widget is disabled
 - `outline_color` - Updates `Label.outline_color` on all existing Labels
 - `disabled_outline_color` - Updates `Label.disabled_outline_color` when widget is disabled
@@ -45,15 +41,12 @@ These properties update existing widgets **without rebuilding** the widget tree:
 
 ### Container Properties
 - `padding` - Updates BoxLayout container padding without rebuilding child widgets
-- `spacing` - Updates container spacing without rebuilding child widgets
 - `text_padding` - Updates `Label.padding` on all existing Labels
 
 ### Advanced Label Properties
 - `mipmap` - Updates `Label.mipmap` on all existing Labels
 - `text_language` - Updates `Label.text_language` on all existing Labels
 - `limit_render_to_text_bbox` - Updates `Label.limit_render_to_text_bbox` on all existing Labels
-- `unicode_errors` - Updates `Label.unicode_errors` on all existing Labels
-- `strip` - Updates `Label.strip` on all existing Labels
 
 ## Structure Properties
 
@@ -71,6 +64,25 @@ These properties trigger a **complete widget tree rebuild**:
 
 ### Parser Configuration
 - `link_style` - Changes link rendering behavior, requires rebuild to regenerate markup
+
+### Advanced Font Properties
+- `font_family` - Changes font family for Labels
+- `font_context` - Changes font context for Labels
+- `font_features` - Changes OpenType font features
+- `font_hinting` - Changes font hinting mode
+- `font_kerning` - Changes font kerning setting
+- `font_blended` - Changes font blending setting
+
+### Text Processing Properties
+- `unicode_errors` - Changes unicode error handling mode
+- `strip` - Changes whitespace stripping behavior
+
+### Truncation Properties
+- `shorten` - Changes text shortening behavior
+- `max_lines` - Changes maximum lines limit
+- `shorten_from` - Changes truncation direction
+- `split_str` - Changes word boundary for shortening
+- `ellipsis_options` - Changes ellipsis rendering options
 
 ## Implementation Details
 
