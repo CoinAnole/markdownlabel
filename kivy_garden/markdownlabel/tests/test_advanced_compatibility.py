@@ -853,11 +853,6 @@ class TestReactiveRebuildOnPropertyChange:
         for lbl in labels_after:
             assert colors_equal(list(lbl.color), expected_color2), \
                 f"After change, expected color={expected_color2}, got {list(lbl.color)}"
-        labels_after = find_labels_recursive(label)
-        assert len(labels_after) >= 1, "Expected at least one Label after rebuild"
-        for lbl in labels_after:
-            assert colors_equal(list(lbl.color), expected_color2), \
-                f"After change, expected color={expected_color2}, got {list(lbl.color)}"
 
     @given(simple_markdown_document(), rebuild_font_names, rebuild_font_names)
     # Mixed finite/complex strategy: 18 examples (9 finite combinations × 2 complex samples)

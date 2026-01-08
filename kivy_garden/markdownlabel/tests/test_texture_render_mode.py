@@ -160,12 +160,14 @@ class TestTextureModeLinksHandling:
         )
         label.force_rebuild()
 
+        # Verify refs were collected (not empty)
+        assert label._aggregated_refs, \
+            f"Expected _aggregated_refs to be populated, got empty dict"
+
         # Check that the expected refs are present
-        # Note: refs may not be collected if texture rendering fails
-        if label._aggregated_refs:
-            for ref in expected_refs:
-                assert ref in label._aggregated_refs, \
-                    f"Expected ref '{ref}' in _aggregated_refs"
+        for ref in expected_refs:
+            assert ref in label._aggregated_refs, \
+                f"Expected ref '{ref}' in _aggregated_refs"
 
 
 # *For any* MarkdownLabel with render_mode='texture' and _aggregated_refs containing
