@@ -2465,3 +2465,155 @@ class TestAdvancedFontPropertyValuePropagationPBT:
                 f"font_family should NOT be propagated to code Label. "
                 f"Expected None, got {child_label.font_family!r}"
             )
+
+
+# =============================================================================
+# Text Processing Properties Value Propagation Tests
+# =============================================================================
+# These tests validate Property 2 from the design document:
+# "Style-only property updates apply values to all child Labels"
+# Specifically for the newly reclassified text processing properties:
+# unicode_errors, strip
+# =============================================================================
+
+
+@pytest.mark.property
+@pytest.mark.slow
+class TestTextProcessingPropertyValuePropagationPBT:
+    """Property-based tests for text processing property value propagation.
+
+    These tests verify that changing text processing properties (unicode_errors,
+    strip) applies the new values to all child Label widgets.
+
+    **Property 2: Style-only property updates apply values to all child Labels**
+    **Validates: Requirements 2.1-2.2**
+    """
+
+    @given(
+        markdown_text=simple_markdown_document(),
+        initial_unicode_errors=st.sampled_from(['strict', 'replace']),
+        new_unicode_errors=st.sampled_from(['strict', 'replace', 'ignore'])
+    )
+    # Feature: optimize-rebuild-contract, Property 2: Style-only property updates apply values to all child Labels
+    # Finite strategy: 3 unicode_errors options
+    @settings(max_examples=20, deadline=None)
+    def test_unicode_errors_value_propagates_to_all_children(
+        self, markdown_text, initial_unicode_errors, new_unicode_errors
+    ):
+        """unicode_errors Value Propagates to All Children After Change.
+
+        *For any* MarkdownLabel with non-empty content, and *for any* unicode_errors
+        value ('strict', 'replace', 'ignore'), changing unicode_errors SHALL
+        apply the new value to all child Label widgets.
+
+        **Validates: Requirements 2.1**
+        """
+        # Ensure we have non-empty content
+        assume(markdown_text and markdown_text.strip())
+        # Ensure we're actually changing the value
+        assume(initial_unicode_errors != new_unicode_errors)
+
+        # Create MarkdownLabel with initial unicode_errors
+        label = MarkdownLabel(text=markdown_text, unicode_errors=initial_unicode_errors)
+
+        # Ensure we have children to test
+        child_labels = find_labels_recursive(label)
+        assume(len(child_labels) >= 1)
+
+        # Apply unicode_errors change
+        label.unicode_errors = new_unicode_errors
+
+        # Verify all child Labels have the new unicode_errors value
+        child_labels = find_labels_recursive(label)
+        for child_label in child_labels:
+            assert child_label.unicode_errors == new_unicode_errors, (
+                f"unicode_errors not propagated to child Label. "
+                f"Expected {new_unicode_errors!r}, got {child_label.unicode_errors!r}"
+            )
+
+    @given(
+        markdown_text=simple_markdown_document(),
+        initial_strip=st.booleans(),
+        new_strip=st.booleans()
+    )
+    # Feature: optimize-rebuild-contract, Property 2: Style-only property updates apply values to all child Labels
+    # Finite strategy: 2 boolean options
+    @settings(max_examples=20, deadline=None)
+    def test_strip_value_propagates_to_all_children(
+        self, markdown_text, initial_strip, new_strip
+    ):
+        """strip Value Propagates to All Children After Change.
+
+        *For any* MarkdownLabel with non-empty content, and *for any* strip
+        value (True/False), changing strip SHALL apply the new value to all
+        child Label widgets.
+
+        **Validates: Requirements 2.2**
+        """
+        # Ensure we have non-empty content
+        assume(markdown_text and markdown_text.strip())
+        # Ensure we're actually changing the value
+        assume(initial_strip != new_strip)
+
+        # Create MarkdownLabel with initial strip
+        label = MarkdownLabel(text=markdown_text, strip=initial_strip)
+
+        # Ensure we have children to test
+        child_labels = find_labels_recursive(label)
+        assume(len(child_labels) >= 1)
+
+        # Apply strip change
+        label.strip = new_strip
+
+        # Verify all child Labels have the new strip value
+        child_labels = find_labels_recursive(label)
+        for child_label in child_labels:
+            assert child_label.strip == new_strip, (
+                f"strip not propagated to child Label. "
+                f"Expected {new_strip}, got {child_label.strip}"
+            )
+
+    @given(
+        markdown_text=simple_markdown_document(),
+        unicode_errors=st.sampled_from(['strict', 'replace', 'ignore']),
+        strip=st.booleans()
+    )
+    # Feature: optimize-rebuild-contract, Property 2: Style-only property updates apply values to all child Labels
+    # Finite strategy: 3 unicode_errors × 2 strip = 6 combinations with complex markdown
+    @settings(max_examples=30, deadline=None)
+    def test_all_text_processing_properties_propagate_to_children(
+        self, markdown_text, unicode_errors, strip
+    ):
+        """All Text Processing Properties Propagate to Children After Change.
+
+        *For any* MarkdownLabel with non-empty content, and *for any* combination
+        of text processing property values (unicode_errors, strip), changing
+        those properties SHALL apply the new values to all child Label widgets.
+
+        **Validates: Requirements 2.1-2.2**
+        """
+        # Ensure we have non-empty content
+        assume(markdown_text and markdown_text.strip())
+
+        # Create MarkdownLabel with default values
+        label = MarkdownLabel(text=markdown_text)
+
+        # Ensure we have children to test
+        child_labels = find_labels_recursive(label)
+        assume(len(child_labels) >= 1)
+
+        # Apply all text processing property changes
+        label.unicode_errors = unicode_errors
+        label.strip = strip
+
+        # Verify all child Labels have the new property values
+        child_labels = find_labels_recursive(label)
+        for child_label in child_labels:
+            assert child_label.unicode_errors == unicode_errors, (
+                f"unicode_errors not propagated to child Label. "
+                f"Expected {unicode_errors!r}, got {child_label.unicode_errors!r}"
+            )
+            assert child_label.strip == strip, (
+                f"strip not propagated to child Label. "
+                f"Expected {strip}, got {child_label.strip}"
+            )
