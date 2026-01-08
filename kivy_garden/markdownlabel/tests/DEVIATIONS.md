@@ -429,35 +429,25 @@ Violates [Rebuild Contract Testing](#rebuild-contract-testing) patterns.
 ## test_serialization.py
 
 - **Line 648** (`test_code_serialization_round_trip_property` method): Non-standard rationale in Hypothesis `@settings` comment `# Complex strategy: 20 examples (two complex strategies combined)`. Both strategies are `st.text()` (Complex/Infinite). Relevant code:
-```python
+  ```python
+  @given(
+      st.text(min_size=0, max_size=200),
+      st.text(
+          alphabet=st.characters(whitelist_categories=('L', 'N')),
+          min_size=0,
+          max_size=20
+      )
+  )
+  # Complex strategy: 20 examples (two complex strategies combined)
 
-@given(
-
-    st.text(min_size=0, max_size=200),
-
-    st.text(
-
-        alphabet=st.characters(whitelist_categories=('L', 'N')),
-
-        min_size=0,
-
-        max_size=20
-
-    )
-
-)
-
-# Complex strategy: 20 examples (two complex strategies combined)
-
-@settings(max_examples=20, deadline=None)
-
-```
-Violates [Property-Based Testing Optimization](#property-based-testing-optimization) > Comment Format Requirements: For Complex strategies, rationale must be `(adequate coverage)` or `(performance optimized)`; custom rationales not standardized.
+  @settings(max_examples=20, deadline=None)
+  ```
+  Violates [Property-Based Testing Optimization](#property-based-testing-optimization) > Comment Format Requirements: For Complex strategies, rationale must be `(adequate coverage)` or `(performance optimized)`; custom rationales not standardized.
 
 ## test_performance.py
 
 - **Lines 30, 56, 78, 175, 197, 216, 286, 316 (example Hypothesis tests)**: Missing `@pytest.mark.property` on property-based tests using Hypothesis. Example (lines 30-33):
-  ```
+  ```python
   @given(st_font_size(min_value=10, max_value=50),
          st_font_size(min_value=10, max_value=50))
   # Complex strategy: 20 examples (adequate coverage)
@@ -567,6 +557,32 @@ def capture_ref(instance, ref):
 label.bind(on_ref_press=capture_ref)
 ```
 Violates [Helper Functions](#helper-functions): "Always use helper functions from `test_utils.py` instead of duplicating code" and general best practices against code duplication.
+
+## test_texture_sizing.py
+
+- **Lines 73-88 (`test_heading_creates_label_widget`)**: Test name and docstring `"Heading content creates a Label widget that is included in texture_size calculation."` claim creation of Label widget, but assertion only `assert len(label.children) >= 1`; no verification that child is Label (e.g., `len(find_labels_recursive(label)) >= 1` or `isinstance(next(iter(label.children)), Label)`). Relevant code:
+  ```python
+  assert len(label.children) >= 1, \
+      f"Expected at least 1 child for heading, got {len(label.children)}"
+  ```
+  Violates [Test Naming Conventions](#test-naming-conventions): "Test method names should **accurately reflect what they assert**".
+
+- **Lines 90-107 (`test_paragraph_creates_label_widget`)**: Same violation as above for paragraph test. Docstring claims "Paragraph content creates a Label widget...", but only asserts `len(label.children) >= 1`.
+
+- **Lines 335-351 (`test_all_heading_levels_create_label_widgets`)**: Same violation as above. Claims "All heading levels create Label widgets...", asserts only `len(label.children) >= 1`.
+
+- **Lines 286-289 (`test_texture_size_updates_on_text_change`)**: Non-standard Hypothesis comment `# Complex strategy: 50 examples (two complex strategies combined)`. For two `simple_markdown_document()` (both Complex/Infinite strategies), rationale should be `(adequate coverage)` per standardized format. Relevant code:
+  ```python
+  @given(simple_markdown_document(), simple_markdown_document())
+  # Complex strategy: 50 examples (two complex strategies combined)
+  @settings(max_examples=50, deadline=None)
+  ```
+  Violates [Property-Based Testing Optimization](#property-based-testing-optimization) > Comment Format Requirements: "MUST include a standardized comment" with "exact rationale format".
+  
+  ## test_rtl_alignment.py
+  
+  No deviations found in test_rtl_alignment.py
+  
 
 
 
