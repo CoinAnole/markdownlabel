@@ -53,7 +53,7 @@ class TestMarkdownToWidgetTreeGeneration:
         """Heading Markdown produces a Label widget."""
         label = MarkdownLabel(text=heading)
 
-        # Should have exactly one child (the heading)
+        # Should have at least one child (Kivy may add blank_line widgets)
         assert len(label.children) >= 1, \
             f"Expected at least 1 child for heading: {heading!r}"
 
@@ -84,10 +84,7 @@ class TestMarkdownToWidgetTreeGeneration:
         assert isinstance(paragraph_widget, Label), \
             f"Expected Label, got {type(paragraph_widget)}"
 
-    @pytest.mark.property
-    @given(st.integers(min_value=1, max_value=5))
-    # Small finite strategy: 5 examples (input space size: 5)
-    @settings(max_examples=5, deadline=None)
+    @pytest.mark.parametrize("num_blocks", [1, 2, 3, 4, 5])
     def test_multiple_blocks_produce_multiple_widgets(self, num_blocks):
         """Multiple block elements produce multiple widgets."""
         # Create markdown with multiple paragraphs
@@ -120,8 +117,8 @@ class TestMarkdownTextPropertyUpdates:
     @given(markdown_heading(), markdown_paragraph())
     # Complex strategy: 50 examples (adequate coverage)
     @settings(max_examples=50, deadline=None)
-    def test_text_change_updates_widgets(self, text1, text2):
-        """Changing text property rebuilds the widget tree with new content."""
+    def test_text_change_triggers_rebuild_with_new_content(self, text1, text2):
+        """Changing text property triggers rebuild of the widget tree with new content."""
         assume(text1.strip() and text2.strip())
         assume(text1 != text2)
 

@@ -6,7 +6,7 @@ work correctly and are properly forwarded to child widgets.
 """
 
 import pytest
-from hypothesis import given, strategies as st, settings, assume
+from hypothesis import given, settings, assume
 
 from kivy_garden.markdownlabel import MarkdownLabel
 from .test_utils import (
@@ -368,10 +368,7 @@ Paragraph with text.
             assert padding_equal(list(lbl.padding), new_padding), \
                 f"After update, expected padding={new_padding}, got {list(lbl.padding)}"
 
-    @pytest.mark.property
-    @given(st.integers(min_value=1, max_value=5))
-    # Small finite strategy: 5 examples (input space size: 5)
-    @settings(max_examples=5, deadline=None)
+    @pytest.mark.parametrize("num_updates", [1, 2, 3, 4, 5])
     def test_multiple_text_padding_updates(self, num_updates):
         """Multiple text_padding updates all work correctly."""
         label = MarkdownLabel(text='Hello World')
@@ -546,79 +543,6 @@ Final paragraph.
                 f"Expected padding={padding}, got {list(lbl.padding)}"
             # Verify the label is still properly embedded in the widget tree
             assert lbl.parent is not None, "Label should have a parent widget"
-
-
-# *For any* MarkdownLabel with text_padding set to value P, all child Label widgets
-# SHALL have their padding property set to P.
-
-class TestTextPaddingAppliesToChildLabels:
-    """Property tests for text_padding applies to child Labels."""
-
-    @pytest.mark.property
-    @given(text_padding_strategy)
-    # Complex strategy: 20 examples (adequate coverage)
-    @settings(max_examples=20, deadline=None)
-    def test_text_padding_applied_to_paragraph_labels(self, padding):
-        """text_padding is applied to paragraph Labels."""
-        label = MarkdownLabel(text='Hello World', text_padding=padding)
-
-        labels = find_labels_recursive(label)
-        assert len(labels) >= 1, "Expected at least one Label"
-
-        # All labels should have the specified text_padding
-        for lbl in labels:
-            assert padding_equal(list(lbl.padding), padding), \
-                f"Expected padding={padding}, got {list(lbl.padding)}"
-
-    @pytest.mark.property
-    @given(text_padding_strategy)
-    # Complex strategy: 20 examples (adequate coverage)
-    @settings(max_examples=20, deadline=None)
-    def test_text_padding_applied_to_heading_labels(self, padding):
-        """text_padding is applied to heading Labels."""
-        label = MarkdownLabel(text='# Heading', text_padding=padding)
-
-        labels = find_labels_recursive(label)
-        assert len(labels) >= 1, "Expected at least one Label"
-
-        # All labels should have the specified text_padding
-        for lbl in labels:
-            assert padding_equal(list(lbl.padding), padding), \
-                f"Expected padding={padding}, got {list(lbl.padding)}"
-
-    @pytest.mark.property
-    @given(text_padding_strategy)
-    # Complex strategy: 20 examples (adequate coverage)
-    @settings(max_examples=20, deadline=None)
-    def test_text_padding_applied_to_list_labels(self, padding):
-        """text_padding is applied to list item Labels."""
-        markdown = '- Item 1\n- Item 2'
-        label = MarkdownLabel(text=markdown, text_padding=padding)
-
-        labels = find_labels_recursive(label)
-        assert len(labels) >= 2, "Expected at least 2 Labels for list items"
-
-        # All labels should have the specified text_padding
-        for lbl in labels:
-            assert padding_equal(list(lbl.padding), padding), \
-                f"Expected padding={padding}, got {list(lbl.padding)}"
-
-    @pytest.mark.property
-    @given(text_padding_strategy)
-    # Complex strategy: 20 examples (adequate coverage)
-    @settings(max_examples=20, deadline=None)
-    def test_text_padding_applied_to_table_labels(self, padding):
-        """text_padding is applied to table cell Labels."""
-        markdown = '| A | B |\n| --- | --- |\n| 1 | 2 |'
-        label = MarkdownLabel(text=markdown, text_padding=padding)
-
-        labels = find_labels_recursive(label)
-        assert len(labels) >= 4, "Expected at least 4 Labels for table cells"
-
-        # All labels should have the specified text_padding
-        for lbl in labels:
-            assert padding_equal(list(lbl.padding), padding), \
-                f"Expected padding={padding}, got {list(lbl.padding)}"
 
 
 # *For any* MarkdownLabel with padding set to value P, the BoxLayout container (self)

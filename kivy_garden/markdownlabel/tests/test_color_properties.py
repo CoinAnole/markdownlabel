@@ -162,6 +162,10 @@ class TestColorPropertyForwarding:
         assert len(body_labels) >= 1, "Expected at least one body text label with specified color"
         assert len(code_labels) >= 1, "Expected at least one code label with light color"
 
+
+class TestLinkStyling:
+    """Tests for link styling behavior."""
+
     @pytest.mark.unit
     def test_links_unstyled_by_default(self):
         """Default links remain unstyled while keeping ref markup."""
