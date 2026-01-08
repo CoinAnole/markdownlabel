@@ -458,8 +458,8 @@ class TestAdvancedFontPropertyForwarding:
         st_alphanumeric_text(min_size=1, max_size=20),
         st.sampled_from([None, 'normal', 'light', 'mono']),
         st.booleans())
-    # Mixed finite/complex strategy: 20 examples (8 finite × 2.5 complex samples)
-    @settings(max_examples=20, deadline=None)
+    # Mixed finite/complex strategy: 24 examples (8 finite × 3 complex samples)
+    @settings(max_examples=24, deadline=None)
     def test_combined_font_properties_with_code_block(self, font_family, font_context,
                                                        font_hinting, font_kerning):
         """Combined font properties are correctly forwarded with code block exclusion."""
