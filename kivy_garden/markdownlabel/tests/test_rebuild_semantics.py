@@ -2617,3 +2617,321 @@ class TestTextProcessingPropertyValuePropagationPBT:
                 f"strip not propagated to child Label. "
                 f"Expected {strip}, got {child_label.strip}"
             )
+
+
+# =============================================================================
+# Truncation Properties Value Propagation Tests
+# =============================================================================
+# These tests validate Property 2 from the design document:
+# "Style-only property updates apply values to all child Labels"
+# Specifically for the newly reclassified truncation properties:
+# shorten, max_lines, shorten_from, split_str, ellipsis_options
+# =============================================================================
+
+
+@pytest.mark.property
+@pytest.mark.slow
+class TestTruncationPropertyValuePropagationPBT:
+    """Property-based tests for truncation property value propagation.
+
+    These tests verify that changing truncation properties (shorten, max_lines,
+    shorten_from, split_str, ellipsis_options) applies the new values to all
+    child Label widgets.
+
+    **Property 2: Style-only property updates apply values to all child Labels**
+    **Validates: Requirements 3.1-3.5**
+    """
+
+    @given(
+        markdown_text=simple_markdown_document(),
+        initial_shorten=st.booleans(),
+        new_shorten=st.booleans()
+    )
+    # Feature: optimize-rebuild-contract, Property 2: Style-only property updates apply values to all child Labels
+    # Finite strategy: 2 boolean options
+    @settings(max_examples=20, deadline=None)
+    def test_shorten_value_propagates_to_all_children(
+        self, markdown_text, initial_shorten, new_shorten
+    ):
+        """shorten Value Propagates to All Children After Change.
+
+        *For any* MarkdownLabel with non-empty content, and *for any* shorten
+        value (True/False), changing shorten SHALL apply the new value to all
+        child Label widgets.
+
+        **Validates: Requirements 3.1**
+        """
+        # Ensure we have non-empty content
+        assume(markdown_text and markdown_text.strip())
+        # Ensure we're actually changing the value
+        assume(initial_shorten != new_shorten)
+
+        # Create MarkdownLabel with initial shorten
+        label = MarkdownLabel(text=markdown_text, shorten=initial_shorten)
+
+        # Ensure we have children to test
+        child_labels = find_labels_recursive(label)
+        assume(len(child_labels) >= 1)
+
+        # Apply shorten change
+        label.shorten = new_shorten
+
+        # Verify all child Labels have the new shorten value
+        child_labels = find_labels_recursive(label)
+        for child_label in child_labels:
+            assert child_label.shorten == new_shorten, (
+                f"shorten not propagated to child Label. "
+                f"Expected {new_shorten}, got {child_label.shorten}"
+            )
+
+    @given(
+        markdown_text=simple_markdown_document(),
+        initial_max_lines=st.integers(min_value=1, max_value=5),
+        new_max_lines=st.integers(min_value=1, max_value=10)
+    )
+    # Feature: optimize-rebuild-contract, Property 2: Style-only property updates apply values to all child Labels
+    # Finite strategy: 10 integer options (1-10)
+    @settings(max_examples=30, deadline=None)
+    def test_max_lines_value_propagates_to_all_children(
+        self, markdown_text, initial_max_lines, new_max_lines
+    ):
+        """max_lines Value Propagates to All Children After Change.
+
+        *For any* MarkdownLabel with non-empty content, and *for any* max_lines
+        value (1-10), changing max_lines SHALL apply the new value to all
+        child Label widgets.
+
+        **Validates: Requirements 3.2**
+        """
+        # Ensure we have non-empty content
+        assume(markdown_text and markdown_text.strip())
+        # Ensure we're actually changing the value
+        assume(initial_max_lines != new_max_lines)
+
+        # Create MarkdownLabel with initial max_lines
+        label = MarkdownLabel(text=markdown_text, max_lines=initial_max_lines)
+
+        # Ensure we have children to test
+        child_labels = find_labels_recursive(label)
+        assume(len(child_labels) >= 1)
+
+        # Apply max_lines change
+        label.max_lines = new_max_lines
+
+        # Verify all child Labels have the new max_lines value
+        child_labels = find_labels_recursive(label)
+        for child_label in child_labels:
+            assert child_label.max_lines == new_max_lines, (
+                f"max_lines not propagated to child Label. "
+                f"Expected {new_max_lines}, got {child_label.max_lines}"
+            )
+
+    @given(
+        markdown_text=simple_markdown_document(),
+        initial_shorten_from=st.sampled_from(['left', 'center']),
+        new_shorten_from=st.sampled_from(['left', 'center', 'right'])
+    )
+    # Feature: optimize-rebuild-contract, Property 2: Style-only property updates apply values to all child Labels
+    # Finite strategy: 3 shorten_from options
+    @settings(max_examples=20, deadline=None)
+    def test_shorten_from_value_propagates_to_all_children(
+        self, markdown_text, initial_shorten_from, new_shorten_from
+    ):
+        """shorten_from Value Propagates to All Children After Change.
+
+        *For any* MarkdownLabel with non-empty content, and *for any* shorten_from
+        value ('left', 'center', 'right'), changing shorten_from SHALL apply
+        the new value to all child Label widgets.
+
+        **Validates: Requirements 3.3**
+        """
+        # Ensure we have non-empty content
+        assume(markdown_text and markdown_text.strip())
+        # Ensure we're actually changing the value
+        assume(initial_shorten_from != new_shorten_from)
+
+        # Create MarkdownLabel with initial shorten_from
+        label = MarkdownLabel(text=markdown_text, shorten_from=initial_shorten_from)
+
+        # Ensure we have children to test
+        child_labels = find_labels_recursive(label)
+        assume(len(child_labels) >= 1)
+
+        # Apply shorten_from change
+        label.shorten_from = new_shorten_from
+
+        # Verify all child Labels have the new shorten_from value
+        child_labels = find_labels_recursive(label)
+        for child_label in child_labels:
+            assert child_label.shorten_from == new_shorten_from, (
+                f"shorten_from not propagated to child Label. "
+                f"Expected {new_shorten_from!r}, got {child_label.shorten_from!r}"
+            )
+
+    @given(
+        markdown_text=simple_markdown_document(),
+        initial_split_str=st.just(' '),
+        new_split_str=st.text(min_size=0, max_size=5, alphabet=st.characters(
+            whitelist_categories=['L', 'N', 'P', 'Z'],
+            blacklist_characters='[]&\n\r'
+        ))
+    )
+    # Feature: optimize-rebuild-contract, Property 2: Style-only property updates apply values to all child Labels
+    # Complex strategy: split_str is a text string
+    @settings(max_examples=30, deadline=None)
+    def test_split_str_value_propagates_to_all_children(
+        self, markdown_text, initial_split_str, new_split_str
+    ):
+        """split_str Value Propagates to All Children After Change.
+
+        *For any* MarkdownLabel with non-empty content, and *for any* split_str
+        value (string), changing split_str SHALL apply the new value to all
+        child Label widgets.
+
+        **Validates: Requirements 3.4**
+        """
+        # Ensure we have non-empty content
+        assume(markdown_text and markdown_text.strip())
+        # Ensure we're actually changing the value
+        assume(initial_split_str != new_split_str)
+
+        # Create MarkdownLabel with initial split_str
+        label = MarkdownLabel(text=markdown_text, split_str=initial_split_str)
+
+        # Ensure we have children to test
+        child_labels = find_labels_recursive(label)
+        assume(len(child_labels) >= 1)
+
+        # Apply split_str change
+        label.split_str = new_split_str
+
+        # Verify all child Labels have the new split_str value
+        child_labels = find_labels_recursive(label)
+        for child_label in child_labels:
+            assert child_label.split_str == new_split_str, (
+                f"split_str not propagated to child Label. "
+                f"Expected {new_split_str!r}, got {child_label.split_str!r}"
+            )
+
+    @given(
+        markdown_text=simple_markdown_document(),
+        initial_ellipsis_options=st.just({}),
+        new_ellipsis_options=st.fixed_dictionaries({}, optional={
+            'color': st.tuples(
+                st.floats(min_value=0, max_value=1),
+                st.floats(min_value=0, max_value=1),
+                st.floats(min_value=0, max_value=1),
+                st.floats(min_value=0, max_value=1)
+            )
+        })
+    )
+    # Feature: optimize-rebuild-contract, Property 2: Style-only property updates apply values to all child Labels
+    # Complex strategy: ellipsis_options is a dictionary
+    @settings(max_examples=30, deadline=None)
+    def test_ellipsis_options_value_propagates_to_all_children(
+        self, markdown_text, initial_ellipsis_options, new_ellipsis_options
+    ):
+        """ellipsis_options Value Propagates to All Children After Change.
+
+        *For any* MarkdownLabel with non-empty content, and *for any* ellipsis_options
+        value (dictionary), changing ellipsis_options SHALL apply the new value
+        to all child Label widgets.
+
+        **Validates: Requirements 3.5**
+        """
+        # Ensure we have non-empty content
+        assume(markdown_text and markdown_text.strip())
+        # Ensure we're actually changing the value
+        assume(initial_ellipsis_options != new_ellipsis_options)
+
+        # Create MarkdownLabel with initial ellipsis_options
+        label = MarkdownLabel(text=markdown_text, ellipsis_options=initial_ellipsis_options)
+
+        # Ensure we have children to test
+        child_labels = find_labels_recursive(label)
+        assume(len(child_labels) >= 1)
+
+        # Apply ellipsis_options change
+        label.ellipsis_options = new_ellipsis_options
+
+        # Verify all child Labels have the new ellipsis_options value
+        child_labels = find_labels_recursive(label)
+        for child_label in child_labels:
+            assert child_label.ellipsis_options == new_ellipsis_options, (
+                f"ellipsis_options not propagated to child Label. "
+                f"Expected {new_ellipsis_options}, got {child_label.ellipsis_options}"
+            )
+
+    @given(
+        markdown_text=simple_markdown_document(),
+        shorten=st.booleans(),
+        max_lines=st.integers(min_value=1, max_value=10),
+        shorten_from=st.sampled_from(['left', 'center', 'right']),
+        split_str=st.text(min_size=0, max_size=5, alphabet=st.characters(
+            whitelist_categories=['L', 'N', 'P', 'Z'],
+            blacklist_characters='[]&\n\r'
+        )),
+        ellipsis_options=st.fixed_dictionaries({}, optional={
+            'color': st.tuples(
+                st.floats(min_value=0, max_value=1),
+                st.floats(min_value=0, max_value=1),
+                st.floats(min_value=0, max_value=1),
+                st.floats(min_value=0, max_value=1)
+            )
+        })
+    )
+    # Feature: optimize-rebuild-contract, Property 2: Style-only property updates apply values to all child Labels
+    # Mixed finite/complex strategy: 50 examples (2×10×3 = 60 finite combinations with 2 complex strategies)
+    @settings(max_examples=50, deadline=None)
+    def test_all_truncation_properties_propagate_to_children(
+        self, markdown_text, shorten, max_lines, shorten_from, split_str, ellipsis_options
+    ):
+        """All Truncation Properties Propagate to Children After Change.
+
+        *For any* MarkdownLabel with non-empty content, and *for any* combination
+        of truncation property values (shorten, max_lines, shorten_from, split_str,
+        ellipsis_options), changing those properties SHALL apply the new values
+        to all child Label widgets.
+
+        **Validates: Requirements 3.1-3.5**
+        """
+        # Ensure we have non-empty content
+        assume(markdown_text and markdown_text.strip())
+
+        # Create MarkdownLabel with default values
+        label = MarkdownLabel(text=markdown_text)
+
+        # Ensure we have children to test
+        child_labels = find_labels_recursive(label)
+        assume(len(child_labels) >= 1)
+
+        # Apply all truncation property changes
+        label.shorten = shorten
+        label.max_lines = max_lines
+        label.shorten_from = shorten_from
+        label.split_str = split_str
+        label.ellipsis_options = ellipsis_options
+
+        # Verify all child Labels have the new property values
+        child_labels = find_labels_recursive(label)
+        for child_label in child_labels:
+            assert child_label.shorten == shorten, (
+                f"shorten not propagated to child Label. "
+                f"Expected {shorten}, got {child_label.shorten}"
+            )
+            assert child_label.max_lines == max_lines, (
+                f"max_lines not propagated to child Label. "
+                f"Expected {max_lines}, got {child_label.max_lines}"
+            )
+            assert child_label.shorten_from == shorten_from, (
+                f"shorten_from not propagated to child Label. "
+                f"Expected {shorten_from!r}, got {child_label.shorten_from!r}"
+            )
+            assert child_label.split_str == split_str, (
+                f"split_str not propagated to child Label. "
+                f"Expected {split_str!r}, got {child_label.split_str!r}"
+            )
+            assert child_label.ellipsis_options == ellipsis_options, (
+                f"ellipsis_options not propagated to child Label. "
+                f"Expected {ellipsis_options}, got {child_label.ellipsis_options}"
+            )

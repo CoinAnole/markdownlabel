@@ -76,7 +76,7 @@ This implementation plan reclassifies 14 properties from "structure" to "style-o
     - Verify widget IDs unchanged after property change
     - **Validates: Requirements 4.1, 4.4**
 
-- [ ] 5. Write property-based tests for value application
+- [x] 5. Write property-based tests for value application
   - [x] 5.1 Write property test for advanced font properties applied to children
     - **Property 2: Style-only property updates apply values to all child Labels**
     - Verify all child Labels have the new property value
@@ -87,7 +87,7 @@ This implementation plan reclassifies 14 properties from "structure" to "style-o
     - Verify all child Labels have the new property value
     - **Validates: Requirements 2.1-2.2**
 
-  - [ ] 5.3 Write property test for truncation properties applied to children
+  - [x] 5.3 Write property test for truncation properties applied to children
     - **Property 2: Style-only property updates apply values to all child Labels**
     - Verify all child Labels have the new property value
     - **Validates: Requirements 3.1-3.5**
