@@ -1,13 +1,5 @@
 # Deviations
 
-## test_inline_renderer.py
-
-No deviations found in test_inline_renderer.py
-
-## test_kivy_renderer.py
-
-No deviations found in test_kivy_renderer.py
-
 ## test_core_functionality.py
 
 - **Lines 237, 258, 287, 307, 325**: Missing `@pytest.mark.property` on Hypothesis-based property tests (`test_link_url_in_ref_tag`, `test_various_urls_in_links`, `test_nested_lists_render_without_exception`, `test_nested_quotes_render_without_exception`, `test_mixed_nesting_renders_without_exception`). Only `@pytest.mark.needs_window` present. Relevant code: `@pytest.mark.needs_window\n@given(...)`. Violates [Test Types and Markers](#test-types-and-markers) section: Property-based tests using Hypothesis must be marked `@pytest.mark.property`.
@@ -334,7 +326,7 @@ Violates [Testing Structure Changes (Rebuild Required)](#testing-structure-chang
   Violates [Test Types and Markers](#test-types-and-markers).
 
 - **Lines 30-55 (`test_font_size_change_preserves_widget_tree`)**: Verifies no rebuild but lacks assertion that `font_size` change was applied to child Labels. Relevant code (lines 45-53):
-  ```
+  ```python
   label.font_size = new_size
   ids_after = collect_widget_ids(label)
   assert ids_before == ids_after
@@ -342,7 +334,7 @@ Violates [Testing Structure Changes (Rebuild Required)](#testing-structure-chang
   No `labels = find_labels_recursive(label)`; `assert lbl.font_size == new_size`. Violates [Rebuild Contract Testing](#rebuild-contract-testing) > Style-Only Changes example (lines 261-264).
 
 - **Lines 239-258 (`test_text_structure_property_rebuilds_tree`)**: Verifies rebuild but lacks post-rebuild content verification. Relevant code (lines 249-257):
-  ```
+  ```python
   label.text = 'Second paragraph with different content.'
   label.force_rebuild()
   ids_after = collect_widget_ids(label, exclude_root=True)
@@ -351,7 +343,7 @@ Violates [Testing Structure Changes (Rebuild Required)](#testing-structure-chang
   Missing `assert label.text == 'Second paragraph with different content.'`. Violates [Testing Structure Changes](#testing-structure-changes-rebuild-required) example (lines 284-285).
 
 - **Lines 259-278 (`test_font_name_structure_property_rebuilds_tree`)**: Wrongly expects rebuild for style-only `font_name` (lines 269-276):
-  ```
+  ```python
   label.font_name = 'RobotoMono-Regular'
   label.force_rebuild()
   assert ids_before != ids_after
@@ -359,16 +351,12 @@ Violates [Testing Structure Changes (Rebuild Required)](#testing-structure-chang
   `font_name` is style-only ([Style-Only Properties](##style-only-properties) lines 226-232). Should verify no rebuild and `lbl.font_name` updated. Naming also violates Rebuild Testing Names (lines 117-120).
 
 - **Lines 95, 336, 344, 351 (`test_color_change_updates_descendant_labels`, `test_disabled_color_switching`)**: Manual `list(child_label.color) == [...]` instead of `colors_equal()`. Example (line 95):
-  ```
+  ```python
   assert list(child_label.color) == new_color_list
   ```
   Violates [Helper Functions](#helper-functions).
 
 - **Line 213 (`test_line_height_change_updates_descendant_labels`)**: `child_label.line_height == new_line_height` without tolerance, should use `floats_equal()`. Violates [Helper Functions](#helper-functions).
-
-## test_rebuild_scheduling.py
-
-No deviations found in test_rebuild_scheduling.py
 
 ## test_rebuild_semantics.py
 
@@ -394,10 +382,6 @@ No deviations found in test_rebuild_scheduling.py
 
 - **Lines 44, 550-571 (`test_text_size_change_triggers_rebuild`)**: `text_size` wrongly in `STRUCTURE_PROPERTIES`, test asserts rebuild. But style-only: "`text_size` - Updates Label.text_size on existing Labels" (line 231). Same violations as `font_name`.
 
-## test_clipping_behavior.py
-
-No deviations found in test_clipping_behavior.py
-
 ## test_texture_render_mode.py
 
 - **Lines 113-129 (`test_aggregated_refs_populated_in_texture_mode`)**: Test name and docstring imply `_aggregated_refs` is populated (non-empty with link zones), but assertion only `assert hasattr(label, '_aggregated_refs')` (trivial check, attribute likely always exists even if empty dict). Comment notes "`refs may be empty if texture rendering failed`". Relevant code:
@@ -409,7 +393,6 @@ No deviations found in test_clipping_behavior.py
       "Expected _aggregated_refs attribute"
   ```
   Violates [Test Naming Conventions](#test-naming-conventions): "Test method names should **accurately reflect what they assert**" (cf. BAD example lines 146-151 claiming rebuild but testing value only).
-
 
 - **Lines 182-476 (`TestDeterministicTextureHitTesting` class methods)**: Exact duplication of `dispatched_refs = []` initialization and inline `def capture_ref(instance, ref): dispatched_refs.append(ref)` helper function across **six** test methods:
   - Lines 200-204 (`test_inside_zone_dispatch`)
@@ -449,14 +432,3 @@ No deviations found in test_clipping_behavior.py
   ```
   Violates [Property-Based Testing Optimization](#property-based-testing-optimization) > Comment Format Requirements: "MUST include a standardized comment" with "exact rationale format".
   
-## test_rtl_alignment.py
-  
-No deviations found in test_rtl_alignment.py
-  
-## test_shortening_and_coordinate.py
-  
-No deviations found in test_shortening_and_coordinate.py
-  
-## test_utils.py
-  
-No deviations found in test_utils.py
