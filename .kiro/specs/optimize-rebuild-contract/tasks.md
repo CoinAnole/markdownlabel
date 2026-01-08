@@ -6,15 +6,15 @@ This implementation plan reclassifies 14 properties from "structure" to "style-o
 
 ## Tasks
 
-- [ ] 1. Update property classification sets
-  - [ ] 1.1 Add reclassified properties to STYLE_ONLY_PROPERTIES
+- [x] 1. Update property classification sets
+  - [x] 1.1 Add reclassified properties to STYLE_ONLY_PROPERTIES
     - Add `font_family`, `font_context`, `font_features`, `font_hinting`, `font_kerning`, `font_blended` to the set
     - Add `unicode_errors`, `strip` to the set
     - Add `shorten`, `max_lines`, `shorten_from`, `split_str`, `ellipsis_options` to the set
     - Add `text_size` to the set
     - _Requirements: 5.1, 5.2, 5.3, 5.4_
 
-  - [ ] 1.2 Remove reclassified properties from STRUCTURE_PROPERTIES
+  - [x] 1.2 Remove reclassified properties from STRUCTURE_PROPERTIES
     - Remove all 14 reclassified properties from STRUCTURE_PROPERTIES
     - Verify only `text`, `link_style`, `render_mode`, `strict_label_mode` remain
     - _Requirements: 5.5, 5.6_

@@ -111,6 +111,24 @@ class MarkdownLabel(BoxLayout):
         'limit_render_to_text_bbox',
         'font_name',
         'code_font_name',
+        # Newly reclassified advanced font properties
+        'font_family',
+        'font_context',
+        'font_features',
+        'font_hinting',
+        'font_kerning',
+        'font_blended',
+        # Newly reclassified text processing properties
+        'unicode_errors',
+        'strip',
+        # Newly reclassified truncation properties
+        'shorten',
+        'max_lines',
+        'shorten_from',
+        'split_str',
+        'ellipsis_options',
+        # Newly reclassified sizing property
+        'text_size',
     })
     """Properties that affect only visual styling and can be updated in-place.
 
@@ -124,7 +142,7 @@ class MarkdownLabel(BoxLayout):
     STRUCTURE_PROPERTIES = frozenset({
         'text',
         'link_style',
-        'text_size',
+        'render_mode',
         'strict_label_mode',
     })
     """Properties that affect widget structure and require a full rebuild.
