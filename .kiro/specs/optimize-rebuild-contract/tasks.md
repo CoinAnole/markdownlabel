@@ -64,7 +64,7 @@ This implementation plan reclassifies 14 properties from "structure" to "style-o
     - Verify widget IDs unchanged after property change
     - **Validates: Requirements 2.1-2.3**
 
-  - [ ] 4.3 Write property test for truncation properties preserving widget identity
+  - [x] 4.3 Write property test for truncation properties preserving widget identity
     - **Property 1: Style-only property updates preserve widget identity**
     - Test `shorten`, `max_lines`, `shorten_from`, `split_str`, `ellipsis_options`
     - Verify widget IDs unchanged after property change

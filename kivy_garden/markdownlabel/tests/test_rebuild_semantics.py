@@ -1410,3 +1410,296 @@ class TestTextProcessingPropertyIdentityPreservationPBT:
             f"Widget IDs changed after strip update to {strip}. "
             f"Before: {len(ids_before)} widgets, After: {len(ids_after)} widgets"
         )
+
+
+# =============================================================================
+# Truncation Properties Widget Identity Preservation Tests
+# =============================================================================
+# These tests validate Property 1 from the design document:
+# "Style-only property updates preserve widget identity"
+# Specifically for the newly reclassified truncation properties:
+# shorten, max_lines, shorten_from, split_str, ellipsis_options
+# =============================================================================
+
+
+@pytest.mark.property
+@pytest.mark.slow
+class TestTruncationPropertyIdentityPreservationPBT:
+    """Property-based tests for truncation property identity preservation.
+
+    These tests verify that changing truncation properties (shorten, max_lines,
+    shorten_from, split_str, ellipsis_options) preserves all widget object IDs
+    in the subtree.
+
+    **Property 1: Style-only property updates preserve widget identity**
+    **Validates: Requirements 3.1-3.6**
+    """
+
+    @given(
+        markdown_text=simple_markdown_document(),
+        shorten=st.booleans(),
+        max_lines=st.integers(min_value=0, max_value=10),
+        shorten_from=st.sampled_from(['left', 'center', 'right']),
+        split_str=st.text(min_size=0, max_size=5, alphabet=st.characters(
+            whitelist_categories=['L', 'N', 'P', 'Z'],
+            blacklist_characters='[]&\n\r'
+        )),
+        ellipsis_options=st.fixed_dictionaries({}, optional={
+            'color': st.tuples(
+                st.floats(min_value=0, max_value=1),
+                st.floats(min_value=0, max_value=1),
+                st.floats(min_value=0, max_value=1),
+                st.floats(min_value=0, max_value=1)
+            )
+        })
+    )
+    # Feature: optimize-rebuild-contract, Property 1: Style-only property updates preserve widget identity
+    # Mixed finite/complex strategy: 50 examples (2×11×3 = 66 finite combinations with 2 complex strategies)
+    @settings(max_examples=50, deadline=None)
+    def test_truncation_properties_preserve_widget_identity(
+        self, markdown_text, shorten, max_lines, shorten_from, split_str, ellipsis_options
+    ):
+        """Truncation Properties Preserve Widget Identity.
+
+        *For any* MarkdownLabel with non-empty content, and *for any* truncation
+        property (shorten, max_lines, shorten_from, split_str, ellipsis_options),
+        changing that property SHALL preserve all widget object IDs in the subtree
+        (the set of IDs before equals the set of IDs after).
+
+        **Validates: Requirements 3.1-3.6**
+        """
+        # Ensure we have non-empty content
+        assume(markdown_text and markdown_text.strip())
+
+        # Create MarkdownLabel with initial content
+        label = MarkdownLabel(text=markdown_text)
+
+        # Ensure we have children to test
+        assume(len(label.children) > 0)
+
+        # Capture widget IDs before changes
+        ids_before = collect_widget_ids(label)
+
+        # Apply all truncation property changes
+        label.shorten = shorten
+        label.max_lines = max_lines
+        label.shorten_from = shorten_from
+        label.split_str = split_str
+        label.ellipsis_options = ellipsis_options
+
+        # Capture widget IDs after changes
+        ids_after = collect_widget_ids(label)
+
+        # Assert: widget IDs should be unchanged
+        assert ids_before == ids_after, (
+            f"Widget IDs changed after truncation property updates. "
+            f"Before: {len(ids_before)} widgets, After: {len(ids_after)} widgets"
+        )
+
+    @given(
+        markdown_text=simple_markdown_document(),
+        shorten=st.booleans()
+    )
+    # Feature: optimize-rebuild-contract, Property 1: Style-only property updates preserve widget identity
+    # Finite strategy: 2 boolean options × complex markdown
+    @settings(max_examples=20, deadline=None)
+    def test_shorten_preserves_widget_identity(self, markdown_text, shorten):
+        """Shorten Preserves Widget Identity.
+
+        *For any* MarkdownLabel with non-empty content, and *for any* shorten
+        value (True/False), changing shorten SHALL preserve all widget
+        object IDs.
+
+        **Validates: Requirements 3.1, 3.6**
+        """
+        # Ensure we have non-empty content
+        assume(markdown_text and markdown_text.strip())
+
+        # Create MarkdownLabel with initial content
+        label = MarkdownLabel(text=markdown_text)
+
+        # Ensure we have children to test
+        assume(len(label.children) > 0)
+
+        # Capture widget IDs before change
+        ids_before = collect_widget_ids(label)
+
+        # Apply shorten change
+        label.shorten = shorten
+
+        # Capture widget IDs after change
+        ids_after = collect_widget_ids(label)
+
+        # Assert: widget IDs should be unchanged
+        assert ids_before == ids_after, (
+            f"Widget IDs changed after shorten update to {shorten}. "
+            f"Before: {len(ids_before)} widgets, After: {len(ids_after)} widgets"
+        )
+
+    @given(
+        markdown_text=simple_markdown_document(),
+        max_lines=st.integers(min_value=0, max_value=10)
+    )
+    # Feature: optimize-rebuild-contract, Property 1: Style-only property updates preserve widget identity
+    # Finite strategy: 11 integer options (0-10) × complex markdown
+    @settings(max_examples=30, deadline=None)
+    def test_max_lines_preserves_widget_identity(self, markdown_text, max_lines):
+        """Max Lines Preserves Widget Identity.
+
+        *For any* MarkdownLabel with non-empty content, and *for any* max_lines
+        value (0-10), changing max_lines SHALL preserve all widget object IDs.
+
+        **Validates: Requirements 3.2, 3.6**
+        """
+        # Ensure we have non-empty content
+        assume(markdown_text and markdown_text.strip())
+
+        # Create MarkdownLabel with initial content
+        label = MarkdownLabel(text=markdown_text)
+
+        # Ensure we have children to test
+        assume(len(label.children) > 0)
+
+        # Capture widget IDs before change
+        ids_before = collect_widget_ids(label)
+
+        # Apply max_lines change
+        label.max_lines = max_lines
+
+        # Capture widget IDs after change
+        ids_after = collect_widget_ids(label)
+
+        # Assert: widget IDs should be unchanged
+        assert ids_before == ids_after, (
+            f"Widget IDs changed after max_lines update to {max_lines}. "
+            f"Before: {len(ids_before)} widgets, After: {len(ids_after)} widgets"
+        )
+
+    @given(
+        markdown_text=simple_markdown_document(),
+        shorten_from=st.sampled_from(['left', 'center', 'right'])
+    )
+    # Feature: optimize-rebuild-contract, Property 1: Style-only property updates preserve widget identity
+    # Finite strategy: 3 options × complex markdown
+    @settings(max_examples=20, deadline=None)
+    def test_shorten_from_preserves_widget_identity(self, markdown_text, shorten_from):
+        """Shorten From Preserves Widget Identity.
+
+        *For any* MarkdownLabel with non-empty content, and *for any* shorten_from
+        value ('left', 'center', 'right'), changing shorten_from SHALL preserve
+        all widget object IDs.
+
+        **Validates: Requirements 3.3, 3.6**
+        """
+        # Ensure we have non-empty content
+        assume(markdown_text and markdown_text.strip())
+
+        # Create MarkdownLabel with initial content
+        label = MarkdownLabel(text=markdown_text)
+
+        # Ensure we have children to test
+        assume(len(label.children) > 0)
+
+        # Capture widget IDs before change
+        ids_before = collect_widget_ids(label)
+
+        # Apply shorten_from change
+        label.shorten_from = shorten_from
+
+        # Capture widget IDs after change
+        ids_after = collect_widget_ids(label)
+
+        # Assert: widget IDs should be unchanged
+        assert ids_before == ids_after, (
+            f"Widget IDs changed after shorten_from update to {shorten_from}. "
+            f"Before: {len(ids_before)} widgets, After: {len(ids_after)} widgets"
+        )
+
+    @given(
+        markdown_text=simple_markdown_document(),
+        split_str=st.text(min_size=0, max_size=5, alphabet=st.characters(
+            whitelist_categories=['L', 'N', 'P', 'Z'],
+            blacklist_characters='[]&\n\r'
+        ))
+    )
+    # Feature: optimize-rebuild-contract, Property 1: Style-only property updates preserve widget identity
+    # Complex strategy: split_str is a text string
+    @settings(max_examples=30, deadline=None)
+    def test_split_str_preserves_widget_identity(self, markdown_text, split_str):
+        """Split Str Preserves Widget Identity.
+
+        *For any* MarkdownLabel with non-empty content, and *for any* split_str
+        value (string), changing split_str SHALL preserve all widget object IDs.
+
+        **Validates: Requirements 3.4, 3.6**
+        """
+        # Ensure we have non-empty content
+        assume(markdown_text and markdown_text.strip())
+
+        # Create MarkdownLabel with initial content
+        label = MarkdownLabel(text=markdown_text)
+
+        # Ensure we have children to test
+        assume(len(label.children) > 0)
+
+        # Capture widget IDs before change
+        ids_before = collect_widget_ids(label)
+
+        # Apply split_str change
+        label.split_str = split_str
+
+        # Capture widget IDs after change
+        ids_after = collect_widget_ids(label)
+
+        # Assert: widget IDs should be unchanged
+        assert ids_before == ids_after, (
+            f"Widget IDs changed after split_str update to '{split_str}'. "
+            f"Before: {len(ids_before)} widgets, After: {len(ids_after)} widgets"
+        )
+
+    @given(
+        markdown_text=simple_markdown_document(),
+        ellipsis_options=st.fixed_dictionaries({}, optional={
+            'color': st.tuples(
+                st.floats(min_value=0, max_value=1),
+                st.floats(min_value=0, max_value=1),
+                st.floats(min_value=0, max_value=1),
+                st.floats(min_value=0, max_value=1)
+            )
+        })
+    )
+    # Feature: optimize-rebuild-contract, Property 1: Style-only property updates preserve widget identity
+    # Complex strategy: ellipsis_options is a dictionary
+    @settings(max_examples=30, deadline=None)
+    def test_ellipsis_options_preserves_widget_identity(self, markdown_text, ellipsis_options):
+        """Ellipsis Options Preserves Widget Identity.
+
+        *For any* MarkdownLabel with non-empty content, and *for any* ellipsis_options
+        value (dictionary), changing ellipsis_options SHALL preserve all widget
+        object IDs.
+
+        **Validates: Requirements 3.5, 3.6**
+        """
+        # Ensure we have non-empty content
+        assume(markdown_text and markdown_text.strip())
+
+        # Create MarkdownLabel with initial content
+        label = MarkdownLabel(text=markdown_text)
+
+        # Ensure we have children to test
+        assume(len(label.children) > 0)
+
+        # Capture widget IDs before change
+        ids_before = collect_widget_ids(label)
+
+        # Apply ellipsis_options change
+        label.ellipsis_options = ellipsis_options
+
+        # Capture widget IDs after change
+        ids_after = collect_widget_ids(label)
+
+        # Assert: widget IDs should be unchanged
+        assert ids_before == ids_after, (
+            f"Widget IDs changed after ellipsis_options update to {ellipsis_options}. "
+            f"Before: {len(ids_before)} widgets, After: {len(ids_after)} widgets"
+        )
