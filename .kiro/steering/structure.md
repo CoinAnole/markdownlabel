@@ -16,6 +16,7 @@ kivy_garden/
     ├── rendering.py
     ├── _version.py
     ├── kivy_renderer.py
+    ├── kivy_renderer_tables.py
     ├── inline_renderer.py
     ├── markdown_serializer.py
     └── tests/
@@ -157,7 +158,8 @@ The codebase follows a strict three-layer architecture for converting Markdown t
 Tests are organized by **functionality**, not by implementation file:
 
 - `test_inline_renderer.py`: Property-based tests for InlineRenderer - verifying inline Markdown formatting is correctly converted to Kivy markup strings
-- `test_kivy_renderer.py`: Property-based tests and edge case coverage for KivyRenderer - verifying block-level Markdown elements are correctly converted to Kivy widgets, targeting implementation details for edge cases and internal methods
+- `test_kivy_renderer_blocks.py`: Property-based tests for KivyRenderer block elements (headings, paragraphs, lists, code, quotes, images)
+- `test_kivy_renderer_tables.py`: Property-based tests for KivyRenderer table rendering
 - `test_core_functionality.py`: Core functionality tests for MarkdownLabel widget - tests for fundamental markdown parsing, rendering, and widget tree generation functionality
 - `test_label_compatibility.py`: Label compatibility tests for MarkdownLabel widget - verifying MarkdownLabel maintains compatibility with Kivy Label API for basic properties like font_size aliases and no-op property acceptance
 - `test_font_properties.py`: Property-based tests for font-related properties - verifying font properties (font_name, line_height, font_size, etc.) are correctly forwarded to child Label widgets and font scaling behavior works correctly for headings
@@ -179,14 +181,17 @@ Tests are organized by **functionality**, not by implementation file:
 - `test_texture_render_mode.py`: Property-based tests for texture render mode in MarkdownLabel - tests for texture render mode feature including Image widget creation, render_mode property behavior, link zone aggregation, on_ref_press event dispatching, deterministic texture hit-testing, texture fallback branch, and auto render mode selection
 - `test_texture_sizing.py`: Property-based tests for MarkdownLabel texture size calculations - tests for texture size calculation behavior and logical test grouping validation
 - `test_rtl_alignment.py`: Property-based tests for RTL-aware auto alignment in MarkdownLabel - tests for RTL alignment behavior including auto alignment respecting base_direction, direction change updates, and explicit alignment overriding auto behavior
-- `test_shortening_and_coordinate.py`: Property-based tests for text shortening and coordinate translation features - tests for label compatibility features including text shortening property forwarding and coordinate translation for refs and anchors
+- `test_shortening_properties.py`: Property-based tests for text shortening property forwarding
+- `test_coordinate_translation.py`: Tests for coordinate translation for refs and anchors
 - `test_utils.py`: Shared test utilities and Hypothesis strategies for MarkdownLabel tests - common test utilities, Hypothesis strategies, and helper functions used across multiple test modules
 - `TESTING.md`: Comprehensive testing guidelines and property-based testing optimization
 - `meta_tests/`: Meta-testing infrastructure for test analysis and validation
   - `test_assertion_analyzer.py`: Tests for the assertion analyzer module - both unit tests and property-based tests for validating the assertion analyzer's ability to correctly identify assertion patterns and detect naming mismatches
   - `test_code_duplication_minimization.py`: Property-based tests for code duplication minimization validation - property tests that validate the refactoring successfully minimizes code duplication in the test suite
   - `test_comment_format.py`: Property-based tests for comment format specification and validation - tests the CommentFormatValidator's ability to correctly validate and parse standardized comment formats for max_examples documentation
-  - `test_comment_standardizer.py`: Property-based tests for comment standardization functionality - tests the CommentStandardizer's ability to generate and apply standardized comments for property-based tests with proper strategy documentation
+  - `test_comment_standardizer_boolean.py`: Tests for boolean strategy documentation in comment standardization
+  - `test_comment_standardizer_finite.py`: Tests for finite strategy documentation in comment standardization
+  - `test_comment_standardizer_performance.py`: Tests for performance rationale and integration in comment standardization
   - `test_core_functionality_properties.py`: Property-based tests for core functionality module refactoring - property-based tests that validate the refactoring process for the core functionality test module
   - `test_coverage_preservation.py`: Property-based tests for test coverage preservation validation - property tests that validate the refactoring preserves or improves test coverage metrics
   - `test_documentation_compliance.py`: Tests for documentation compliance of max_examples values - tests that custom max_examples values are properly documented according to the optimization guidelines
@@ -274,11 +279,12 @@ Key development documentation files:
 
 1. **MarkdownLabel extends BoxLayout**: Cannot extend Label directly because Markdown rendering requires multiple child widgets
 2. **Multiple inheritance pattern**: MarkdownLabel uses mixins (MarkdownLabelProperties, MarkdownLabelRendering) for clean separation of concerns
-3. **Nesting depth protection**: KivyRenderer limits nesting to prevent infinite recursion
-4. **Markup safety**: InlineRenderer must escape all user content to prevent markup injection
-5. **Label API compatibility**: MarkdownLabel exposes Label-compatible properties for easy migration from standard Kivy Labels
-6. **Namespace package structure**: Uses `find_namespace_packages` in setup.py to support `kivy_garden.*` namespace
-7. **Backward compatibility**: Split modules maintain full backward compatibility through re-exports (e.g., comment_manager.py)
+3. **Mixin-based renderers**: KivyRenderer uses mixins (e.g., KivyRendererTableMixin) to organize complex rendering logic by feature
+4. **Nesting depth protection**: KivyRenderer limits nesting to prevent infinite recursion
+5. **Markup safety**: InlineRenderer must escape all user content to prevent markup injection
+6. **Label API compatibility**: MarkdownLabel exposes Label-compatible properties for easy migration from standard Kivy Labels
+7. **Namespace package structure**: Uses `find_namespace_packages` in setup.py to support `kivy_garden.*` namespace
+8. **Backward compatibility**: Split modules maintain full backward compatibility through re-exports (e.g., comment_manager.py)
 
 ## File Splitting Refactoring
 

@@ -42,10 +42,14 @@ TEST_MODULES = [
     'test_rebuild_text_size_and_code_blocks.py',
     'test_rebuild_property_classification.py',
     'test_rtl_alignment.py',
-    'test_shortening_and_coordinate.py',
+    # test_shortening_and_coordinate.py was split into 2 files:
+    'test_shortening_properties.py',
+    'test_coordinate_translation.py',
     'test_texture_render_mode.py',
     'test_texture_sizing.py',
-    'test_kivy_renderer.py',
+    # test_kivy_renderer.py was split into 2 files:
+    'test_kivy_renderer_blocks.py',
+    'test_kivy_renderer_tables.py',
     'test_inline_renderer.py',
 ]
 

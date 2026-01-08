@@ -6,10 +6,13 @@ cell alignment, and table-specific features.
 """
 
 import pytest
+from unittest.mock import MagicMock, patch
 from hypothesis import given, strategies as st, settings
 
+from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.label import Label
+from kivy.uix.widget import Widget
 
 from kivy_garden.markdownlabel.kivy_renderer import KivyRenderer
 from .test_utils import table_token
