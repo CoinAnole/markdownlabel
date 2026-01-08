@@ -2935,3 +2935,223 @@ class TestTruncationPropertyValuePropagationPBT:
                 f"ellipsis_options not propagated to child Label. "
                 f"Expected {ellipsis_options}, got {child_label.ellipsis_options}"
             )
+
+
+# =============================================================================
+# Code Block Font Preservation Tests
+# =============================================================================
+# These tests validate Property 4 from the design document:
+# "Code blocks preserve monospace font when font_family changes"
+# Specifically verifying that code blocks keep their code_font_name when
+# font_family is changed on the MarkdownLabel.
+# =============================================================================
+
+
+@pytest.mark.property
+@pytest.mark.slow
+class TestCodeBlockFontPreservationPBT:
+    """Property-based tests for code block font preservation.
+
+    These tests verify that code blocks preserve their monospace font
+    (code_font_name) when font_family is changed on the MarkdownLabel.
+
+    **Property 4: Code blocks preserve monospace font when font_family changes**
+    **Validates: Requirements 6.2**
+    """
+
+    def _find_code_block_labels(self, widget):
+        """Find Labels that are inside code block containers.
+
+        Code block containers have a 'language_info' attribute or '_is_code' marker.
+        """
+        code_labels = []
+
+        def find_in_container(container):
+            if hasattr(container, 'language_info'):
+                # This is a code block container
+                for child in container.children:
+                    if isinstance(child, Label):
+                        code_labels.append(child)
+            if isinstance(container, Label) and hasattr(container, '_is_code') and container._is_code:
+                code_labels.append(container)
+            if hasattr(container, 'children'):
+                for child in container.children:
+                    find_in_container(child)
+
+        find_in_container(widget)
+        return code_labels
+
+    def _find_non_code_labels(self, widget):
+        """Find Labels that are NOT inside code block containers."""
+        all_labels = find_labels_recursive(widget)
+        code_labels = self._find_code_block_labels(widget)
+        return [lbl for lbl in all_labels if lbl not in code_labels]
+
+    @given(
+        font_family=st.text(min_size=1, max_size=30, alphabet=st.characters(
+            whitelist_categories=['L', 'N'],
+            blacklist_characters='[]&\n\r'
+        ))
+    )
+    # Feature: optimize-rebuild-contract, Property 4: Code blocks preserve monospace font when font_family changes
+    # Complex strategy: font_family is text
+    @settings(max_examples=30, deadline=None)
+    def test_code_blocks_preserve_code_font_name_when_font_family_changes(
+        self, font_family
+    ):
+        """Code Blocks Preserve Monospace Font When font_family Changes.
+
+        *For any* MarkdownLabel containing code blocks and *for any* font_family
+        value, changing font_family SHALL update non-code Labels but preserve
+        the code_font_name on code block Labels.
+
+        **Validates: Requirements 6.2**
+        """
+        # Create markdown with both regular text and code block
+        markdown = 'Regular paragraph\n\n```python\nprint("hello world")\n```\n\nMore text'
+        code_font = 'RobotoMono-Regular'
+
+        # Create MarkdownLabel with code block
+        label = MarkdownLabel(text=markdown, code_font_name=code_font)
+
+        # Find code block labels before change
+        code_labels_before = self._find_code_block_labels(label)
+        assume(len(code_labels_before) >= 1)
+
+        # Verify code blocks have code_font_name initially
+        for code_label in code_labels_before:
+            assert code_label.font_name == code_font, (
+                f"Code block should have code_font_name={code_font!r} initially, "
+                f"got {code_label.font_name!r}"
+            )
+
+        # Change font_family
+        label.font_family = font_family
+
+        # Find code block labels after change
+        code_labels_after = self._find_code_block_labels(label)
+
+        # Verify code blocks STILL have code_font_name (not affected by font_family)
+        for code_label in code_labels_after:
+            assert code_label.font_name == code_font, (
+                f"Code block should preserve code_font_name={code_font!r} after "
+                f"font_family change, got {code_label.font_name!r}"
+            )
+            # Also verify font_family is NOT set on code blocks
+            assert code_label.font_family is None, (
+                f"Code block should NOT have font_family set, "
+                f"got {code_label.font_family!r}"
+            )
+
+        # Verify non-code labels DO have font_family set
+        non_code_labels = self._find_non_code_labels(label)
+        for non_code_label in non_code_labels:
+            assert non_code_label.font_family == font_family, (
+                f"Non-code label should have font_family={font_family!r}, "
+                f"got {non_code_label.font_family!r}"
+            )
+
+    @given(
+        initial_font_family=st.one_of(st.none(), st.just('Roboto')),
+        new_font_family=st.text(min_size=1, max_size=30, alphabet=st.characters(
+            whitelist_categories=['L', 'N'],
+            blacklist_characters='[]&\n\r'
+        ))
+    )
+    # Feature: optimize-rebuild-contract, Property 4: Code blocks preserve monospace font when font_family changes
+    # Complex strategy: font_family transitions from None/Roboto to new value
+    @settings(max_examples=30, deadline=None)
+    def test_code_blocks_preserve_font_through_font_family_transitions(
+        self, initial_font_family, new_font_family
+    ):
+        """Code Blocks Preserve Font Through font_family Transitions.
+
+        *For any* MarkdownLabel containing code blocks and *for any* font_family
+        transition (from None or initial value to new value), code blocks SHALL
+        preserve their code_font_name throughout the transition.
+
+        **Validates: Requirements 6.2**
+        """
+        # Ensure we're actually changing the value
+        assume(initial_font_family != new_font_family)
+
+        # Create markdown with code block
+        markdown = '# Heading\n\n```\ncode block\n```\n\nParagraph'
+        code_font = 'RobotoMono-Regular'
+
+        # Create MarkdownLabel with initial font_family
+        label = MarkdownLabel(
+            text=markdown,
+            font_family=initial_font_family,
+            code_font_name=code_font
+        )
+
+        # Find code block labels
+        code_labels = self._find_code_block_labels(label)
+        assume(len(code_labels) >= 1)
+
+        # Verify code blocks have code_font_name initially
+        for code_label in code_labels:
+            assert code_label.font_name == code_font, (
+                f"Code block should have code_font_name={code_font!r} initially"
+            )
+
+        # Change font_family
+        label.font_family = new_font_family
+
+        # Verify code blocks STILL have code_font_name after transition
+        code_labels = self._find_code_block_labels(label)
+        for code_label in code_labels:
+            assert code_label.font_name == code_font, (
+                f"Code block should preserve code_font_name={code_font!r} after "
+                f"font_family transition from {initial_font_family!r} to {new_font_family!r}"
+            )
+
+    @given(
+        font_family=st.text(min_size=1, max_size=20, alphabet=st.characters(
+            whitelist_categories=['L', 'N'],
+            blacklist_characters='[]&\n\r'
+        )),
+        # Use only Kivy built-in fonts that are guaranteed to exist
+        code_font_name=st.sampled_from(['RobotoMono-Regular', 'Roboto', 'Roboto-Bold'])
+    )
+    # Feature: optimize-rebuild-contract, Property 4: Code blocks preserve monospace font when font_family changes
+    # Mixed finite/complex strategy: 15 examples (3 finite × 5 complex samples)
+    @settings(max_examples=15, deadline=None)
+    def test_code_blocks_preserve_custom_code_font_name(
+        self, font_family, code_font_name
+    ):
+        """Code Blocks Preserve Custom code_font_name When font_family Changes.
+
+        *For any* MarkdownLabel with a custom code_font_name and *for any*
+        font_family value, changing font_family SHALL preserve the custom
+        code_font_name on code block Labels.
+
+        **Validates: Requirements 6.2**
+        """
+        # Create markdown with code block
+        markdown = 'Text before\n\n```javascript\nconsole.log("test");\n```\n\nText after'
+
+        # Create MarkdownLabel with custom code_font_name
+        label = MarkdownLabel(text=markdown, code_font_name=code_font_name)
+
+        # Find code block labels
+        code_labels = self._find_code_block_labels(label)
+        assume(len(code_labels) >= 1)
+
+        # Verify code blocks have custom code_font_name initially
+        for code_label in code_labels:
+            assert code_label.font_name == code_font_name, (
+                f"Code block should have code_font_name={code_font_name!r} initially"
+            )
+
+        # Change font_family
+        label.font_family = font_family
+
+        # Verify code blocks STILL have custom code_font_name
+        code_labels = self._find_code_block_labels(label)
+        for code_label in code_labels:
+            assert code_label.font_name == code_font_name, (
+                f"Code block should preserve custom code_font_name={code_font_name!r} "
+                f"after font_family change to {font_family!r}"
+            )

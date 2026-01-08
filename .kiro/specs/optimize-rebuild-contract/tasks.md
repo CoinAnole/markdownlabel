@@ -93,7 +93,7 @@ This implementation plan reclassifies 14 properties from "structure" to "style-o
     - **Validates: Requirements 3.1-3.5**
 
 - [ ] 6. Write tests for special cases
-  - [ ] 6.1 Write property test for code block font preservation
+  - [x] 6.1 Write property test for code block font preservation
     - **Property 4: Code blocks preserve monospace font when font_family changes**
     - Create markdown with code blocks
     - Change font_family
