@@ -274,8 +274,8 @@ class TestStyleOnlyPropertyUpdates:
         assert ids_before != ids_after, \
             "Widget tree should be rebuilt after text change"
 
-    def test_font_name_structure_property_rebuilds_tree(self):
-        """Changing font_name (structure property) rebuilds the widget tree."""
+    def test_font_name_style_property_preserves_tree(self):
+        """Changing font_name (style-only property) preserves the widget tree."""
         # Create label with some content
         markdown = 'Paragraph text.'
         label = MarkdownLabel(text=markdown, font_name='Roboto')
@@ -283,16 +283,21 @@ class TestStyleOnlyPropertyUpdates:
         # Collect widget ids before change
         ids_before = collect_widget_ids(label, exclude_root=True)
 
-        # Change font_name (structure property)
+        # Change font_name (style-only property, no rebuild needed)
         label.font_name = 'RobotoMono-Regular'
-        label.force_rebuild()  # Force immediate rebuild for test
 
         # Collect widget ids after change
         ids_after = collect_widget_ids(label, exclude_root=True)
 
-        # Widget tree should be rebuilt (different widget objects)
-        assert ids_before != ids_after, \
-            "Widget tree should be rebuilt after font_name change"
+        # Widget tree should be preserved (same widget objects)
+        assert ids_before == ids_after, \
+            "Widget tree should be preserved after font_name change (style-only)"
+
+        # Verify font_name was applied
+        labels = find_labels_recursive(label)
+        for lbl in labels:
+            assert lbl.font_name == 'RobotoMono-Regular', \
+                f"Expected font_name='RobotoMono-Regular', got '{lbl.font_name}'"
 
     @pytest.mark.property
     @given(

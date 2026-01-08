@@ -13,6 +13,7 @@ import pytest
 from kivy_garden.markdownlabel import MarkdownLabel
 from kivy_garden.markdownlabel.tests.test_utils import (
     collect_widget_ids,
+    find_labels_recursive,
     st_alphanumeric_text,
     st_font_name,
 )
@@ -148,13 +149,12 @@ class TestDeferredRebuildScheduling:
         )
 
     @pytest.mark.parametrize('font_name', ["Roboto", "RobotoMono-Regular"])
-    def test_font_name_change_schedules_deferred_rebuild(self, font_name):
-        """font_name property change schedules deferred rebuild.
+    def test_font_name_change_updates_immediately_no_rebuild(self, font_name):
+        """font_name property change updates widgets in-place immediately (style-only).
 
-
-        Verifies deferral through observable widget identity:
-        - Widget IDs unchanged immediately after font_name property change (deferred)
-        - Widget IDs changed after force_rebuild() (rebuild occurred)
+        Verifies that font_name is a style-only property:
+        - Widget IDs unchanged after font_name property change (no rebuild)
+        - Font name is applied immediately to child Labels
         """
         # Use a different initial font to ensure the change is detected
         initial_font = "RobotoMono-Regular" if font_name != "RobotoMono-Regular" else "Roboto"
@@ -163,24 +163,20 @@ class TestDeferredRebuildScheduling:
 
         ids_before = collect_widget_ids(label, exclude_root=True)
 
-        # Change font_name - this is a structure property that triggers rebuild
+        # Change font_name - this is a style-only property that updates in-place
         label.font_name = font_name
 
-        # Immediately after setting font_name, widgets should be unchanged
-        # (rebuild hasn't executed yet because it's deferred)
-        ids_during = collect_widget_ids(label, exclude_root=True)
-        assert ids_before == ids_during, (
-            "Expected widgets unchanged immediately after font_name change (rebuild should be deferred)"
-        )
-
-        # Force the rebuild to execute
-        label.force_rebuild()
-
-        # After force_rebuild, widgets should have changed (rebuild occurred)
+        # Widget IDs should be unchanged (no rebuild, just in-place update)
         ids_after = collect_widget_ids(label, exclude_root=True)
-        assert ids_before != ids_after, (
-            "Expected widgets changed after force_rebuild (rebuild should have occurred)"
+        assert ids_before == ids_after, (
+            "Expected widgets unchanged after font_name change (style-only, no rebuild)"
         )
+
+        # Verify font_name was applied to child Labels
+        labels = find_labels_recursive(label)
+        for lbl in labels:
+            assert lbl.font_name == font_name, \
+                f"Expected font_name='{font_name}', got '{lbl.font_name}'"
 
     def test_rebuild_trigger_is_clock_trigger(self):
         """_rebuild_trigger is a Clock.create_trigger instance.

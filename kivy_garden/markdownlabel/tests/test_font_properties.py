@@ -108,8 +108,8 @@ class TestFontNamePropertyForwarding:
         ('Roboto-Bold', 'Roboto'), ('Roboto-Bold', 'Roboto-Italic'),
         ('Roboto-Italic', 'Roboto'), ('Roboto-Italic', 'Roboto-Bold')
     ])
-    def test_font_name_property_forwarding_triggers_rebuild(self, font1, font2):
-        """Changing font_name triggers widget rebuild with new font."""
+    def test_font_name_property_forwarding_preserves_widget_tree(self, font1, font2):
+        """Changing font_name preserves widget tree (style-only property)."""
         label = MarkdownLabel(text='Hello World', font_name=font1)
 
         # Collect widget IDs before change
@@ -120,15 +120,14 @@ class TestFontNamePropertyForwarding:
         for lbl in labels:
             assert lbl.font_name == font1
 
-        # Change font_name
+        # Change font_name (style-only, no rebuild needed)
         label.font_name = font2
-        label.force_rebuild()  # Force immediate rebuild for test
 
-        # Verify rebuild occurred
+        # Verify widget tree preserved (no rebuild)
         ids_after = collect_widget_ids(label)
-        assert ids_before != ids_after, "Widget tree should rebuild for font_name changes"
+        assert ids_before == ids_after, "Widget tree should be preserved for font_name changes (style-only)"
 
-        # Verify new font
+        # Verify new font was applied in-place
         labels = find_labels_recursive(label)
         for lbl in labels:
             assert lbl.font_name == font2, \

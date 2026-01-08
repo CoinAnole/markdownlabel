@@ -105,24 +105,27 @@ class MarkdownLabel(BoxLayout):
         'text_padding',
         'outline_color',
         'disabled_outline_color',
+        'outline_width',
         'mipmap',
         'text_language',
         'limit_render_to_text_bbox',
+        'font_name',
+        'code_font_name',
     })
     """Properties that affect only visual styling and can be updated in-place.
 
     Changes to these properties can update existing child widgets without
     rebuilding the entire widget tree, improving performance.
+
+    Note: base_font_size/font_size is also style-only but handled specially
+    via _update_font_sizes_in_place() to preserve heading scale factors.
     """
 
     STRUCTURE_PROPERTIES = frozenset({
         'text',
-        'font_name',
-        'code_font_name',
         'link_style',
         'text_size',
         'strict_label_mode',
-        'outline_width',
     })
     """Properties that affect widget structure and require a full rebuild.
 
@@ -940,8 +943,7 @@ class MarkdownLabel(BoxLayout):
         # Bind text property to rebuild widgets
         self.bind(text=self._on_text_changed)
 
-        # Bind forwarding properties to trigger widget rebuild
-        # Bind style-only properties (can be updated in-place)
+        # Bind style-only properties (can be updated in-place without rebuild)
         self.bind(base_font_size=self._make_style_callback('base_font_size'))
         self.bind(color=self._make_style_callback('color'))
         self.bind(line_height=self._make_style_callback('line_height'))
@@ -950,11 +952,8 @@ class MarkdownLabel(BoxLayout):
         self.bind(disabled=self._make_style_callback('disabled'))
         self.bind(disabled_color=self._make_style_callback('disabled_color'))
         self.bind(base_direction=self._make_style_callback('base_direction'))
-
-        # Bind structure properties (require full rebuild)
         self.bind(font_name=self._make_style_callback('font_name'))
-        self.bind(link_style=self._make_style_callback('link_style'))
-        self.bind(text_size=self._make_style_callback('text_size'))
+        self.bind(code_font_name=self._make_style_callback('code_font_name'))
         self.bind(padding=self._make_style_callback('padding'))
         self.bind(text_padding=self._make_style_callback('text_padding'))
         self.bind(outline_width=self._make_style_callback('outline_width'))
@@ -963,6 +962,10 @@ class MarkdownLabel(BoxLayout):
         self.bind(mipmap=self._make_style_callback('mipmap'))
         self.bind(text_language=self._make_style_callback('text_language'))
         self.bind(limit_render_to_text_bbox=self._make_style_callback('limit_render_to_text_bbox'))
+
+        # Bind structure properties (require full rebuild)
+        self.bind(link_style=self._make_style_callback('link_style'))
+        self.bind(text_size=self._make_style_callback('text_size'))
 
         # Bind other properties (require full rebuild)
         self.bind(unicode_errors=self._make_style_callback('unicode_errors'))
@@ -1013,13 +1016,13 @@ class MarkdownLabel(BoxLayout):
     def _on_style_changed(self, instance, value, prop_name=None):
         """Callback when a styling property changes.
 
-        For style-only properties (font_size, color, halign, valign,
-        line_height, disabled, disabled_color), updates are applied
-        in-place without rebuilding the widget tree.
+        For style-only properties (font_size, color, font_name, code_font_name,
+        halign, valign, line_height, disabled, disabled_color, outline_width,
+        etc.), updates are applied in-place without rebuilding the widget tree.
 
-        For structure properties (text, font_name, code_font_name,
-        text_size, strict_label_mode) and other properties,
-        a deferred widget rebuild is scheduled to batch multiple changes.
+        For structure properties (text, link_style, text_size, strict_label_mode)
+        and other properties, a deferred widget rebuild is scheduled to batch
+        multiple changes.
 
         Args:
             instance: The widget instance (self)
@@ -1099,9 +1102,10 @@ class MarkdownLabel(BoxLayout):
     def _update_styles_in_place(self):
         """Update style properties on existing child widgets without rebuild.
 
-        This method updates purely stylistic properties (color,
-        halign, valign, line_height, disabled state, text_padding) on all descendant Label
-        widgets without reconstructing the widget tree.
+        This method updates purely stylistic properties (color, font_name,
+        code_font_name, halign, valign, line_height, disabled state, text_padding,
+        outline_width, outline_color, etc.) on all descendant Label widgets
+        without reconstructing the widget tree.
 
         This is more efficient than a full rebuild when only visual styling
         changes, as it preserves widget identities and avoids the overhead
@@ -1109,7 +1113,7 @@ class MarkdownLabel(BoxLayout):
 
         Note:
             This method only updates properties that don't affect widget
-            structure. For structural changes (text, font_name, text_size,
+            structure. For structural changes (text, link_style, text_size,
             etc.), use _rebuild_widgets() instead. For font size changes,
             use _update_font_sizes_in_place() instead.
         """
@@ -1139,6 +1143,16 @@ class MarkdownLabel(BoxLayout):
                 widget.valign = self.valign
                 widget.line_height = self.line_height
                 widget.padding = effective_text_padding
+
+                # Update font_name based on whether this is a code label
+                if hasattr(widget, '_is_code') and widget._is_code:
+                    widget.font_name = self.code_font_name
+                else:
+                    widget.font_name = self.font_name
+
+                # Update outline properties
+                if hasattr(widget, 'outline_width'):
+                    widget.outline_width = self.outline_width
                 if hasattr(widget, 'outline_color'):
                     widget.outline_color = effective_outline_color
                 if hasattr(widget, 'disabled_outline_color'):

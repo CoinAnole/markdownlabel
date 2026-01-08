@@ -224,26 +224,30 @@ MarkdownLabel distinguishes between two types of property changes:
 These properties update existing widgets without rebuilding:
 
 - `color` - Updates Label.color on existing Labels
-- `font_size` / `base_font_size` - Updates Label.font_size on existing Labels  
+- `font_size` / `base_font_size` - Updates Label.font_size on existing Labels
+- `font_name` - Updates Label.font_name on existing Labels (non-code Labels)
+- `code_font_name` - Updates Label.font_name on code block Labels
 - `line_height` - Updates Label.line_height on existing Labels
 - `halign`, `valign` - Updates alignment on existing Labels
 - `disabled`, `disabled_color` - Updates disabled state/color on existing Labels
 - `base_direction` - Updates text direction on existing Labels
 - `text_padding` - Updates Label.padding on existing Labels
 - `padding` - Updates container padding (BoxLayout handles this automatically)
+- `outline_width` - Updates Label.outline_width on existing Labels
+- `outline_color`, `disabled_outline_color` - Updates outline colors on existing Labels
+- `mipmap` - Updates Label.mipmap on existing Labels
+- `text_language` - Updates Label.text_language on existing Labels
+- `limit_render_to_text_bbox` - Updates Label.limit_render_to_text_bbox on existing Labels
 
 ### Structure Properties
 
 These properties trigger a complete widget tree rebuild:
 
 - `text` - Changes the markdown content structure
-- `font_name` - Changes the font used for rendering (affects text metrics)
-- `text_size` - Changes the text size constraints (affects wrapping)
+- `text_size` - Changes the text size constraints (affects wrapping and bindings)
 - `render_mode` - Changes between widgets/texture rendering
 - `link_style` - Changes link styling (affects markup generation)
-- `strict_label_mode` - Changes label mode behavior
-- `outline_width` - Changes outline rendering
-- Properties that affect parsing or widget hierarchy
+- `strict_label_mode` - Changes label mode behavior (affects widget bindings)
 
 ### Testing Rebuild Behavior
 

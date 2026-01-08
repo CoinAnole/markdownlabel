@@ -528,28 +528,35 @@ class TestStructurePropertyRebuild:
         assert id(label) == root_id_before, \
             "Root MarkdownLabel ID should remain unchanged"
 
-    def test_font_name_change_triggers_rebuild(self):
-        """Changing font_name triggers widget rebuild with new widget instances."""
+    def test_font_name_change_preserves_widget_tree(self):
+        """Changing font_name preserves widget tree (style-only property)."""
         label = MarkdownLabel(text='# Heading\n\nParagraph', font_name='Roboto')
         root_id_before = id(label)
 
         # Capture children widget IDs before change
         children_ids_before = collect_widget_ids(label, exclude_root=True)
 
-        # Apply property change and force_rebuild()
+        # Apply property change (style-only, no rebuild needed)
         label.font_name = 'RobotoMono-Regular'
-        label.force_rebuild()
 
         # Capture children widget IDs after change
         children_ids_after = collect_widget_ids(label, exclude_root=True)
 
-        # Assert children widget IDs differ
-        assert children_ids_before != children_ids_after, \
-            "Children widget IDs should differ after font_name change"
+        # Assert children widget IDs are preserved (no rebuild)
+        assert children_ids_before == children_ids_after, \
+            "Children widget IDs should be preserved for font_name change (style-only)"
 
         # Assert root MarkdownLabel ID unchanged
         assert id(label) == root_id_before, \
             "Root MarkdownLabel ID should remain unchanged"
+
+        # Verify font_name was actually applied to child Labels
+        labels = find_labels_recursive(label)
+        for lbl in labels:
+            # Code labels keep their code_font_name, others get the new font_name
+            if not (hasattr(lbl, '_is_code') and lbl._is_code):
+                assert lbl.font_name == 'RobotoMono-Regular', \
+                    f"Expected font_name='RobotoMono-Regular', got '{lbl.font_name}'"
 
     def test_text_size_change_triggers_rebuild(self):
         """Changing text_size triggers widget rebuild with new widget instances."""
@@ -701,11 +708,11 @@ class TestStructurePropertyRebuildPBT:
     )
     # Mixed finite/complex strategy: 15 examples (3 finite × 5 complex samples)
     @settings(max_examples=15, deadline=None)
-    def test_font_name_change_triggers_rebuild_pbt(self, markdown_text, font_name):
+    def test_font_name_change_preserves_widget_tree_pbt(self, markdown_text, font_name):
         """
-        *For any* MarkdownLabel with non-empty content, and *for any* structure
-        property (font_name), changing that property and calling force_rebuild()
-        SHALL result in different widget object IDs for children.
+        *For any* MarkdownLabel with non-empty content, and *for any* font_name,
+        changing font_name SHALL preserve widget object IDs (style-only property)
+        while updating the font_name on child Labels.
         """
         # Ensure we have non-empty content
         assume(markdown_text and markdown_text.strip())
@@ -723,19 +730,25 @@ class TestStructurePropertyRebuildPBT:
         children_ids_before = collect_widget_ids(label, exclude_root=True)
         assume(len(children_ids_before) > 0)
 
-        # Apply property change and force_rebuild()
+        # Apply property change (style-only, no force_rebuild needed)
         label.font_name = font_name
-        label.force_rebuild()
 
         # Capture children widget IDs after change
         children_ids_after = collect_widget_ids(label, exclude_root=True)
 
-        # Assert: children widget IDs should differ
-        assert children_ids_before != children_ids_after, (
-            f"Children widget IDs should differ after font_name change. "
+        # Assert: children widget IDs should be preserved (style-only property)
+        assert children_ids_before == children_ids_after, (
+            f"Children widget IDs should be preserved for font_name change (style-only). "
             f"Before: {len(children_ids_before)} widgets, "
             f"After: {len(children_ids_after)} widgets"
         )
+
+        # Verify font_name was actually applied
+        labels = find_labels_recursive(label)
+        for lbl in labels:
+            if not (hasattr(lbl, '_is_code') and lbl._is_code):
+                assert lbl.font_name == font_name, \
+                    f"Expected font_name='{font_name}', got '{lbl.font_name}'"
 
     @given(
         markdown_text=simple_markdown_document(),

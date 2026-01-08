@@ -496,12 +496,11 @@ class TestReactiveRebuildOnPropertyChange:
     @given(rebuild_font_names, rebuild_font_names)
     # Combination strategy: 9 examples (combination coverage)
     @settings(max_examples=9, deadline=None)
-    def test_font_name_triggers_rebuild(self, font1, font2):
-        """Changing font_name after initial rendering rebuilds widgets with new font.
+    def test_font_name_updates_in_place(self, font1, font2):
+        """Changing font_name after initial rendering updates widgets in-place (style-only).
 
-        Validates: Requirement 1.2 - WHEN `font_name` changes after initial rendering
-        THEN the MarkdownLabel SHALL rebuild widgets with the new font applied.
-
+        Validates: font_name is a style-only property that updates existing widgets
+        without rebuilding the widget tree.
         """
         assume(font1 != font2)
 
@@ -516,17 +515,16 @@ class TestReactiveRebuildOnPropertyChange:
         for lbl in labels_before:
             assert lbl.font_name == font1, f"Initial font should be {font1}"
 
-        # Change font_name
+        # Change font_name (style-only, no rebuild needed)
         label.font_name = font2
-        label.force_rebuild()  # Force immediate rebuild for test
 
-        # Verify rebuild occurred
+        # Verify widget tree preserved (no rebuild)
         ids_after = collect_widget_ids(label, exclude_root=True)
-        assert ids_before != ids_after, "Widget tree should rebuild for font_name changes"
+        assert ids_before == ids_after, "Widget tree should be preserved for font_name changes (style-only)"
 
-        # Verify widgets were rebuilt with new font
+        # Verify font_name was updated in-place
         labels_after = find_labels_recursive(label)
-        assert len(labels_after) >= 1, "Expected at least one Label after rebuild"
+        assert len(labels_after) >= 1, "Expected at least one Label after update"
         for lbl in labels_after:
             assert lbl.font_name == font2, \
                 f"After change, expected font_name={font2}, got {lbl.font_name}"
@@ -646,12 +644,11 @@ class TestReactiveRebuildOnPropertyChange:
     # Mixed finite/complex strategy: 15 examples (3 finite × 5 complex samples)
     @settings(max_examples=15, deadline=None)
     def test_multiple_property_changes_apply_correctly(self, font_name, color, line_height):
-        """Multiple property changes apply correct values (rebuild for structure, in-place for style)."""
+        """Multiple property changes apply correct values (all style-only, no rebuild needed)."""
         label = MarkdownLabel(text='# Heading\n\nParagraph text')
 
-        # Change font_name (structure property - triggers rebuild)
+        # Change font_name (style-only property - no rebuild needed)
         label.font_name = font_name
-        label.force_rebuild()  # Force immediate rebuild for test
         labels = find_labels_recursive(label)
         for lbl in labels:
             assert lbl.font_name == font_name, \
@@ -855,8 +852,8 @@ class TestReactiveRebuildOnPropertyChange:
     @given(simple_markdown_document(), rebuild_font_names, rebuild_font_names)
     # Mixed finite/complex strategy: 18 examples (9 finite combinations × 2 complex samples)
     @settings(max_examples=18, deadline=None)
-    def test_rebuild_preserves_content_structure(self, markdown_text, font1, font2):
-        """Rebuilding widgets preserves the content structure."""
+    def test_font_name_change_preserves_widget_tree_and_structure(self, markdown_text, font1, font2):
+        """Changing font_name preserves widget tree and content structure (style-only)."""
         assume(markdown_text.strip())
         assume(font1 != font2)
 
@@ -865,25 +862,24 @@ class TestReactiveRebuildOnPropertyChange:
         # Count children before
         children_before = len(label.children)
 
-        # Collect widget IDs before change to verify rebuild
+        # Collect widget IDs before change
         ids_before = collect_widget_ids(label)
 
-        # Change font_name (structure property, requires rebuild)
+        # Change font_name (style-only property, no rebuild needed)
         label.font_name = font2
-        label.force_rebuild()
 
-        # Verify rebuild occurred
+        # Verify widget tree preserved (no rebuild)
         ids_after = collect_widget_ids(label)
-        assert ids_before != ids_after, "Widget tree should rebuild for font_name change"
+        assert ids_before == ids_after, "Widget tree should be preserved for font_name change (style-only)"
 
         # Count children after
         children_after = len(label.children)
 
         # Structure should be preserved (same number of children)
         assert children_before == children_after, \
-            f"Expected {children_before} children after rebuild, got {children_after}"
+            f"Expected {children_before} children, got {children_after}"
 
-        # Verify font_name was applied
+        # Verify font_name was applied in-place
         labels = find_labels_recursive(label)
         for lbl in labels:
             assert lbl.font_name == font2, \
