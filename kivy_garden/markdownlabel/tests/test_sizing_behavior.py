@@ -558,35 +558,5 @@ class TestStrictLabelModeSizingBehavior:
             assert label.size_hint_y == expected_size_hint_y, \
                 f"Expected size_hint_y={expected_size_hint_y}, got {label.size_hint_y}"
 
-    @pytest.mark.test_tests
-    def test_all_classes_test_related_functionality(self):
-        """All test classes in this module test related sizing functionality."""
-        import inspect
-        import kivy_garden.markdownlabel.tests.test_sizing_behavior as sizing_module
-
-        # Get all test classes and their methods
-        for name, obj in inspect.getmembers(sizing_module):
-            if (inspect.isclass(obj) and
-                name.startswith('Test') and
-                    obj.__module__ == sizing_module.__name__):
-
-                # Get test methods
-                test_methods = [method_name for method_name, method in inspect.getmembers(obj)
-                              if method_name.startswith('test_')]
-
-                if test_methods:  # Only check classes with test methods
-                    # Check that class docstring or name indicates sizing focus
-                    class_doc = obj.__doc__ or ""
-                    class_name_lower = name.lower()
-
-                    sizing_indicators = [
-                        'sizing', 'size', 'auto', 'height', 'strict', 'grouping'
-                    ]
-
-                    has_sizing_indicator = (
-                        any(indicator in class_name_lower for indicator in sizing_indicators) or
-                        any(indicator in class_doc.lower() for indicator in sizing_indicators)
-                    )
-
-                    assert has_sizing_indicator, \
-                        f"Test class {name} should focus on sizing behavior"
+# NOTE: Meta-test for class organization has been moved to
+# meta_tests/test_sizing_behavior_grouping.py

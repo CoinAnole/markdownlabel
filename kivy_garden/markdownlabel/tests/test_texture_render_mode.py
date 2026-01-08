@@ -120,11 +120,14 @@ class TestTextureModeLinksHandling:
         )
         label.force_rebuild()
 
-        # Check that aggregated refs were collected
-        # Note: The refs may be empty if texture rendering failed or
-        # if the link zones couldn't be calculated
+        # Check that aggregated refs attribute exists and is a dict
         assert hasattr(label, '_aggregated_refs'), \
             "Expected _aggregated_refs attribute"
+        assert isinstance(label._aggregated_refs, dict), \
+            f"Expected _aggregated_refs to be a dict, got {type(label._aggregated_refs)}"
+
+        # Note: The refs may be empty if texture rendering failed or
+        # if the link zones couldn't be calculated, but the attribute should exist
 
     @pytest.mark.unit
     def test_widgets_mode_no_aggregated_refs(self):

@@ -53,6 +53,7 @@ STRUCTURE_PROPERTIES = [
 ]
 
 
+@pytest.mark.test_tests
 class TestWidgetIdentityHelpers:
     """Tests for the collect_widget_ids helper function."""
 

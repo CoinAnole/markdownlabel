@@ -14,7 +14,9 @@ from .test_utils import (
     find_labels_recursive,
     collect_widget_ids,
     st_font_size,
-    st_rgba_color
+    st_rgba_color,
+    colors_equal,
+    floats_equal
 )
 
 
@@ -52,6 +54,13 @@ class TestStyleOnlyPropertyUpdates:
         # Widget tree structure should be preserved (same widget objects)
         assert ids_before == ids_after, \
             f"Widget tree changed after font_size update. Before: {len(ids_before)}, After: {len(ids_after)}"
+
+        # Verify the font_size change was actually applied to child Labels
+        child_labels = find_labels_recursive(label)
+        assert len(child_labels) >= 1, "Expected at least one child Label"
+        # Note: Heading labels have scaled font sizes, so we check base_font_size on the parent
+        assert floats_equal(label.base_font_size, new_size), \
+            f"Expected base_font_size={new_size}, got {label.base_font_size}"
 
     @pytest.mark.property
     @given(st_rgba_color())
@@ -95,7 +104,7 @@ class TestStyleOnlyPropertyUpdates:
         assert len(child_labels) >= 1, "Expected at least one child Label"
 
         for child_label in child_labels:
-            assert list(child_label.color) == new_color_list, \
+            assert colors_equal(list(child_label.color), new_color_list), \
                 f"Expected color {new_color_list}, got {list(child_label.color)}"
 
     @pytest.mark.parametrize('new_halign', ['left', 'center', 'right', 'justify'])
@@ -215,7 +224,7 @@ class TestStyleOnlyPropertyUpdates:
         assert len(child_labels) >= 1, "Expected at least one child Label"
 
         for child_label in child_labels:
-            assert child_label.line_height == new_line_height, \
+            assert floats_equal(child_label.line_height, new_line_height), \
                 f"Expected line_height {new_line_height}, got {child_label.line_height}"
 
     @pytest.mark.property
@@ -340,7 +349,7 @@ class TestStyleOnlyPropertyUpdates:
 
         # Initially should use normal color
         for child_label in child_labels:
-            assert list(child_label.color) == list(normal_color), \
+            assert colors_equal(list(child_label.color), list(normal_color)), \
                 f"Expected normal color {list(normal_color)}, got {list(child_label.color)}"
 
         # Enable disabled state
@@ -348,7 +357,7 @@ class TestStyleOnlyPropertyUpdates:
 
         # Should now use disabled_color
         for child_label in child_labels:
-            assert list(child_label.color) == list(disabled_color), \
+            assert colors_equal(list(child_label.color), list(disabled_color)), \
                 f"Expected disabled color {list(disabled_color)}, got {list(child_label.color)}"
 
         # Disable disabled state
@@ -356,5 +365,5 @@ class TestStyleOnlyPropertyUpdates:
 
         # Should return to normal color
         for child_label in child_labels:
-            assert list(child_label.color) == list(normal_color), \
+            assert colors_equal(list(child_label.color), list(normal_color)), \
                 f"Expected normal color {list(normal_color)}, got {list(child_label.color)}"

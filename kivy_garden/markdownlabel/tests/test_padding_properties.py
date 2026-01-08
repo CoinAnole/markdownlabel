@@ -132,15 +132,15 @@ class TestPaddingApplication:
 # *For any* MarkdownLabel with `text_padding` set to value P, all child Labels that display
 # text content SHALL have their `padding` property equal to P.
 
-class TestPaddingForwarding:
-    """Property tests for padding forwarding."""
+class TestTextPaddingForwarding:
+    """Property tests for text_padding forwarding to child Labels."""
 
     @pytest.mark.property
     @given(text_padding_strategy)
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
-    def test_padding_applied_to_paragraph(self, padding):
-        """padding is applied to paragraph Labels."""
+    def test_text_padding_applied_to_paragraph(self, padding):
+        """text_padding is applied to paragraph Labels."""
         label = MarkdownLabel(text='Hello World', text_padding=padding)
 
         labels = find_labels_recursive(label)
@@ -155,8 +155,8 @@ class TestPaddingForwarding:
     @given(text_padding_strategy)
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
-    def test_padding_applied_to_heading(self, padding):
-        """padding is applied to heading Labels."""
+    def test_text_padding_applied_to_heading(self, padding):
+        """text_padding is applied to heading Labels."""
         label = MarkdownLabel(text='# Heading', text_padding=padding)
 
         labels = find_labels_recursive(label)
@@ -171,8 +171,8 @@ class TestPaddingForwarding:
     @given(text_padding_strategy)
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
-    def test_padding_applied_to_list_items(self, padding):
-        """padding is applied to list item Labels."""
+    def test_text_padding_applied_to_list_items(self, padding):
+        """text_padding is applied to list item Labels."""
         markdown = '- Item 1\n- Item 2'
         label = MarkdownLabel(text=markdown, text_padding=padding)
 
@@ -188,8 +188,8 @@ class TestPaddingForwarding:
     @given(text_padding_strategy)
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
-    def test_padding_applied_to_table_cells(self, padding):
-        """padding is applied to table cell Labels."""
+    def test_text_padding_applied_to_table_cells(self, padding):
+        """text_padding is applied to table cell Labels."""
         markdown = '| A | B |\n| --- | --- |\n| 1 | 2 |'
         label = MarkdownLabel(text=markdown, text_padding=padding)
 
@@ -205,8 +205,8 @@ class TestPaddingForwarding:
     @given(text_padding_strategy)
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
-    def test_padding_applied_to_nested_structures(self, padding):
-        """padding is applied to Labels in nested structures (lists, tables, block quotes)."""
+    def test_text_padding_applied_to_nested_structures(self, padding):
+        """text_padding is applied to Labels in nested structures (lists, tables, block quotes)."""
         markdown = '''
 # Heading
 
@@ -236,7 +236,7 @@ Regular paragraph
     @given(text_padding_strategy, text_padding_strategy)
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
-    def test_padding_change_updates_in_place(self, padding1, padding2):
+    def test_text_padding_change_updates_in_place(self, padding1, padding2):
         """Changing text_padding updates child Labels in place without rebuild."""
         assume(not padding_equal(padding1, padding2))
 
@@ -280,14 +280,14 @@ Regular paragraph
 # *For any* MarkdownLabel, when `text_padding` is changed from value A to value B, all child Labels
 # SHALL be updated to reflect the new padding value B.
 
-class TestPaddingDynamicUpdates:
+class TestTextPaddingDynamicUpdates:
     """Property tests for text_padding dynamic updates."""
 
     @pytest.mark.property
     @given(text_padding_strategy, text_padding_strategy)
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
-    def test_padding_update_updates_in_place(self, initial_padding, new_padding):
+    def test_text_padding_update_updates_in_place(self, initial_padding, new_padding):
         """Updating text_padding on paragraph updates child Labels in place without rebuild."""
         assume(not padding_equal(initial_padding, new_padding))
 
@@ -319,7 +319,7 @@ class TestPaddingDynamicUpdates:
     @given(text_padding_strategy, text_padding_strategy)
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
-    def test_padding_update_updates_in_place_complex_content(self, initial_padding, new_padding):
+    def test_text_padding_update_updates_in_place_complex_content(self, initial_padding, new_padding):
         """Updating text_padding on complex content updates child Labels in place without rebuild."""
         assume(not padding_equal(initial_padding, new_padding))
 
@@ -364,8 +364,8 @@ Paragraph with text.
     @given(st.integers(min_value=1, max_value=5))
     # Small finite strategy: 5 examples (input space size: 5)
     @settings(max_examples=5, deadline=None)
-    def test_multiple_padding_updates(self, num_updates):
-        """Multiple padding updates all work correctly."""
+    def test_multiple_text_padding_updates(self, num_updates):
+        """Multiple text_padding updates all work correctly."""
         label = MarkdownLabel(text='Hello World')
 
         for i in range(num_updates):

@@ -679,10 +679,13 @@ class TestReactiveRebuildOnPropertyChange:
         ('right', 'left'), ('right', 'center'), ('right', 'justify'),
         ('justify', 'left'), ('justify', 'center'), ('justify', 'right')
     ])
-    def test_halign_updates_value(self, halign1, halign2):
-        """Changing halign after initial rendering updates value on existing widgets."""
+    def test_halign_updates_value_without_rebuild(self, halign1, halign2):
+        """Changing halign after initial rendering updates value on existing widgets without rebuild."""
 
         label = MarkdownLabel(text='Hello World', halign=halign1)
+
+        # Collect widget IDs before change
+        ids_before = collect_widget_ids(label, exclude_root=True)
 
         # Verify initial halign
         labels_before = find_labels_recursive(label)
@@ -693,9 +696,13 @@ class TestReactiveRebuildOnPropertyChange:
         # Change halign
         label.halign = halign2
 
-        # Verify widgets were rebuilt with new halign
+        # Verify NO rebuild occurred (style-only property)
+        ids_after = collect_widget_ids(label, exclude_root=True)
+        assert ids_before == ids_after, "Widget tree should NOT rebuild for halign changes"
+
+        # Verify widgets were updated with new halign
         labels_after = find_labels_recursive(label)
-        assert len(labels_after) >= 1, "Expected at least one Label after rebuild"
+        assert len(labels_after) >= 1, "Expected at least one Label after update"
         for lbl in labels_after:
             assert lbl.halign == halign2, \
                 f"After change, expected halign={halign2}, got {lbl.halign}"
@@ -706,10 +713,13 @@ class TestReactiveRebuildOnPropertyChange:
         ('center', 'bottom'), ('center', 'middle'), ('center', 'top'),
         ('top', 'bottom'), ('top', 'middle'), ('top', 'center')
     ])
-    def test_valign_updates_value(self, valign1, valign2):
-        """Changing valign after initial rendering updates value on existing widgets."""
+    def test_valign_updates_value_without_rebuild(self, valign1, valign2):
+        """Changing valign after initial rendering updates value on existing widgets without rebuild."""
 
         label = MarkdownLabel(text='Hello World', valign=valign1)
+
+        # Collect widget IDs before change
+        ids_before = collect_widget_ids(label, exclude_root=True)
 
         # Verify initial valign
         labels_before = find_labels_recursive(label)
@@ -720,9 +730,13 @@ class TestReactiveRebuildOnPropertyChange:
         # Change valign
         label.valign = valign2
 
-        # Verify widgets were rebuilt with new valign
+        # Verify NO rebuild occurred (style-only property)
+        ids_after = collect_widget_ids(label, exclude_root=True)
+        assert ids_before == ids_after, "Widget tree should NOT rebuild for valign changes"
+
+        # Verify widgets were updated with new valign
         labels_after = find_labels_recursive(label)
-        assert len(labels_after) >= 1, "Expected at least one Label after rebuild"
+        assert len(labels_after) >= 1, "Expected at least one Label after update"
         for lbl in labels_after:
             assert lbl.valign == valign2, \
                 f"After change, expected valign={valign2}, got {lbl.valign}"
@@ -737,6 +751,9 @@ class TestReactiveRebuildOnPropertyChange:
 
         label = MarkdownLabel(text='Hello World', unicode_errors=errors1)
 
+        # Collect widget IDs before change
+        ids_before = collect_widget_ids(label, exclude_root=True)
+
         # Verify initial unicode_errors
         labels_before = find_labels_recursive(label)
         assert len(labels_before) >= 1, "Expected at least one Label"
@@ -746,6 +763,10 @@ class TestReactiveRebuildOnPropertyChange:
         # Change unicode_errors
         label.unicode_errors = errors2
         label.force_rebuild()  # Force immediate rebuild for test
+
+        # Verify rebuild occurred
+        ids_after = collect_widget_ids(label, exclude_root=True)
+        assert ids_before != ids_after, "Widget tree should rebuild for unicode_errors changes"
 
         # Verify widgets were rebuilt with new unicode_errors
         labels_after = find_labels_recursive(label)
@@ -757,11 +778,14 @@ class TestReactiveRebuildOnPropertyChange:
     @given(st.booleans(), st.booleans())
     # Combination strategy: 4 examples (combination coverage)
     @settings(max_examples=4, deadline=None)
-    def test_strip_updates_value(self, strip1, strip2):
+    def test_strip_change_triggers_rebuild(self, strip1, strip2):
         """Changing strip after initial rendering triggers rebuild with new value."""
         assume(strip1 != strip2)
 
         label = MarkdownLabel(text='Hello World', strip=strip1)
+
+        # Collect widget IDs before change
+        ids_before = collect_widget_ids(label, exclude_root=True)
 
         # Verify initial strip
         labels_before = find_labels_recursive(label)
@@ -773,6 +797,10 @@ class TestReactiveRebuildOnPropertyChange:
         label.strip = strip2
         label.force_rebuild()  # Force immediate rebuild for test
 
+        # Verify rebuild occurred
+        ids_after = collect_widget_ids(label, exclude_root=True)
+        assert ids_before != ids_after, "Widget tree should rebuild for strip changes"
+
         # Verify widgets were rebuilt with new strip
         labels_after = find_labels_recursive(label)
         assert len(labels_after) >= 1, "Expected at least one Label after rebuild"
@@ -783,8 +811,8 @@ class TestReactiveRebuildOnPropertyChange:
     @given(st.booleans(), st.booleans())
     # Combination strategy: 4 examples (combination coverage)
     @settings(max_examples=4, deadline=None)
-    def test_disabled_change_updates_value(self, disabled1, disabled2):
-        """Changing disabled after initial rendering updates color value."""
+    def test_disabled_change_triggers_rebuild(self, disabled1, disabled2):
+        """Changing disabled after initial rendering triggers rebuild and updates color value."""
         assume(disabled1 != disabled2)
 
         regular_color = [1, 0, 0, 1]  # Red
@@ -797,6 +825,9 @@ class TestReactiveRebuildOnPropertyChange:
             disabled=disabled1
         )
 
+        # Collect widget IDs before change
+        ids_before = collect_widget_ids(label, exclude_root=True)
+
         expected_color1 = disabled_color if disabled1 else regular_color
 
         # Verify initial color based on disabled state
@@ -808,6 +839,11 @@ class TestReactiveRebuildOnPropertyChange:
 
         # Change disabled
         label.disabled = disabled2
+        label.force_rebuild()  # Force immediate rebuild for test
+
+        # Verify rebuild occurred
+        ids_after = collect_widget_ids(label, exclude_root=True)
+        assert ids_before != ids_after, "Widget tree should rebuild for disabled changes"
 
         expected_color2 = disabled_color if disabled2 else regular_color
 

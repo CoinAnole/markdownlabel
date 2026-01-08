@@ -12,7 +12,8 @@ from kivy_garden.markdownlabel import MarkdownLabel
 from .test_utils import (
     simple_markdown_document,
     st_alphanumeric_text,
-    st_rgba_color
+    st_rgba_color,
+    colors_equal
 )
 
 
@@ -276,7 +277,7 @@ class TestNoOpPropertyAcceptanceAndStorage:
         """Setting outline_color property accepts and stores the value."""
         label = MarkdownLabel(text='# Hello World', outline_color=value)
         # Compare colors with tolerance for floating point differences
-        assert all(abs(a - b) < 0.001 for a, b in zip(label.outline_color, value))
+        assert colors_equal(list(label.outline_color), list(value))
 
     @pytest.mark.property
     @given(st.one_of(st.none(), st_alphanumeric_text(min_size=1, max_size=10)))
@@ -328,7 +329,7 @@ class TestNoOpPropertyAcceptanceAndStorage:
 
         assert label.mipmap == mipmap
         assert label.outline_width == outline_width
-        assert all(abs(a - b) < 0.001 for a, b in zip(label.outline_color, outline_color))
+        assert colors_equal(list(label.outline_color), list(outline_color))
         assert label.text_language == text_language
         assert label.base_direction == base_direction
         assert label.ellipsis_options == ellipsis_options
@@ -361,7 +362,7 @@ class TestNoOpPropertyAcceptanceAndStorage:
         """Changing outline_color property after creation accepts and stores the value."""
         label = MarkdownLabel(text='# Hello')
         label.outline_color = value
-        assert all(abs(a - b) < 0.001 for a, b in zip(label.outline_color, value))
+        assert colors_equal(list(label.outline_color), list(value))
 
     @pytest.mark.property
     @given(st.one_of(st.none(), st_alphanumeric_text(min_size=1, max_size=10)))
@@ -427,88 +428,3 @@ class TestNoOpPropertyAcceptanceAndStorage:
         # The number of children should be the same regardless of no-op properties
         assert default_child_count == props_child_count, \
             f"Expected {default_child_count} children, got {props_child_count} with no-op props"
-
-
-# *For any* refactored test module, all imports should resolve successfully
-# and tests should execute without import errors
-
-class TestImportFunctionality:
-    """Property test for import functionality."""
-
-    @pytest.mark.test_tests
-    def test_label_compatibility_imports_resolve(self):
-        """Label compatibility module imports resolve successfully."""
-        try:
-            # Test that key classes are accessible
-            from kivy_garden.markdownlabel.tests.test_label_compatibility import (
-                TestFontSizeAliasBidirectionality,
-                TestNoOpPropertiesAcceptance,
-                TestNoOpPropertyAcceptanceAndStorage
-            )
-
-            # Verify classes exist and are classes
-            assert TestFontSizeAliasBidirectionality is not None
-            assert TestNoOpPropertiesAcceptance is not None
-            assert TestNoOpPropertyAcceptanceAndStorage is not None
-
-            # Verify they are actually classes
-            assert isinstance(TestFontSizeAliasBidirectionality, type)
-            assert isinstance(TestNoOpPropertiesAcceptance, type)
-            assert isinstance(TestNoOpPropertyAcceptanceAndStorage, type)
-
-        except ImportError as e:
-            pytest.fail(f"Import failed for test_label_compatibility: {e}")
-        except Exception as e:
-            pytest.fail(f"Unexpected error importing test_label_compatibility: {e}")
-
-    @pytest.mark.test_tests
-    def test_shared_utilities_imports_resolve(self):
-        """Shared test utilities imports resolve successfully."""
-        try:
-            # Test importing the utilities module
-            from kivy_garden.markdownlabel.tests.test_utils import (
-                markdown_heading,
-                markdown_paragraph,
-                simple_markdown_document,
-                find_labels_recursive,
-                colors_equal,
-                KIVY_FONTS,
-            )
-
-            # Verify key functions exist
-            assert callable(markdown_heading)
-            assert callable(markdown_paragraph)
-            assert callable(simple_markdown_document)
-            assert callable(find_labels_recursive)
-            assert callable(colors_equal)
-
-            # Verify constants exist
-            assert KIVY_FONTS is not None
-            assert isinstance(KIVY_FONTS, list)
-
-        except ImportError as e:
-            pytest.fail(f"Import failed for test_utils: {e}")
-        except Exception as e:
-            pytest.fail(f"Unexpected error importing test_utils: {e}")
-
-    @pytest.mark.test_tests
-    def test_cross_module_imports_work(self):
-        """Test modules can import from shared utilities."""
-        try:
-            # Import the label compatibility module which uses test_utils
-            from kivy_garden.markdownlabel.tests.test_label_compatibility import (
-                TestFontSizeAliasBidirectionality,
-            )
-
-            # Verify that the class can be instantiated (imports worked)
-            test_instance = TestFontSizeAliasBidirectionality()
-            assert test_instance is not None
-
-            # Verify that test methods exist (they use imported strategies)
-            assert hasattr(test_instance, 'test_font_size_sets_base_font_size')
-            assert callable(test_instance.test_font_size_sets_base_font_size)
-
-        except ImportError as e:
-            pytest.fail(f"Cross-module import failed: {e}")
-        except Exception as e:
-            pytest.fail(f"Unexpected error in cross-module import: {e}")

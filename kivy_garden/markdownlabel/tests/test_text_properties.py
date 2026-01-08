@@ -93,6 +93,10 @@ class TestTextSizeForwarding:
         labels = find_labels_recursive(label)
         assert len(labels) >= 1, "Expected at least one Label"
 
+        # Note: Child Labels' text_size width is bound dynamically to the parent's width,
+        # not directly set to the text_size value. The text_size property on MarkdownLabel
+        # affects layout constraints but child Labels use width binding for responsive layout.
+
 
 # *For any* MarkdownLabel with `text_size[1]` set to a non-None numeric value H,
 # all child Labels SHALL have their `text_size[1]` equal to H, and their `valign`
