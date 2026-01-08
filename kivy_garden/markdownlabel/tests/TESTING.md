@@ -238,19 +238,29 @@ These properties update existing widgets without rebuilding:
 - `mipmap` - Updates Label.mipmap on existing Labels
 - `text_language` - Updates Label.text_language on existing Labels
 - `limit_render_to_text_bbox` - Updates Label.limit_render_to_text_bbox on existing Labels
+- `font_family` - Updates Label.font_family on non-code Labels (code blocks preserve monospace font)
+- `font_context` - Updates Label.font_context on existing Labels
+- `font_features` - Updates Label.font_features on existing Labels
+- `font_hinting` - Updates Label.font_hinting on existing Labels
+- `font_kerning` - Updates Label.font_kerning on existing Labels
+- `font_blended` - Updates Label.font_blended on existing Labels
+- `unicode_errors` - Updates Label.unicode_errors on existing Labels
+- `strip` - Updates Label.strip on existing Labels
+- `shorten` - Updates Label.shorten on existing Labels
+- `max_lines` - Updates Label.max_lines on existing Labels (only if > 0)
+- `shorten_from` - Updates Label.shorten_from on existing Labels
+- `split_str` - Updates Label.split_str on existing Labels
+- `ellipsis_options` - Updates Label.ellipsis_options on existing Labels
+- `text_size` - Updates Label.text_size on existing Labels with binding management
 
 ### Structure Properties
 
 These properties trigger a complete widget tree rebuild:
 
 - `text` - Changes the markdown content structure
-- `text_size` - Changes the text size constraints (affects wrapping and bindings)
 - `render_mode` - Changes between widgets/texture rendering
 - `link_style` - Changes link styling (affects markup generation)
 - `strict_label_mode` - Changes label mode behavior (affects widget bindings)
-- `font_family`, `font_context`, `font_features`, `font_hinting`, `font_kerning`, `font_blended` - Advanced font properties
-- `unicode_errors`, `strip` - Text processing properties
-- `shorten`, `max_lines`, `shorten_from`, `split_str`, `ellipsis_options` - Truncation properties
 
 ### Testing Rebuild Behavior
 

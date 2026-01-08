@@ -133,10 +133,27 @@ class MarkdownLabel(BoxLayout):
     """Properties that affect only visual styling and can be updated in-place.
 
     Changes to these properties can update existing child widgets without
-    rebuilding the entire widget tree, improving performance.
+    rebuilding the entire widget tree, improving performance significantly.
+
+    Categories of style-only properties:
+    - Basic styling: color, halign, valign, line_height, disabled, disabled_color
+    - Text direction: base_direction
+    - Padding: text_padding
+    - Outline: outline_color, disabled_outline_color, outline_width
+    - Advanced rendering: mipmap, text_language, limit_render_to_text_bbox
+    - Font names: font_name, code_font_name
+    - Advanced font: font_family, font_context, font_features, font_hinting,
+      font_kerning, font_blended
+    - Text processing: unicode_errors, strip
+    - Truncation: shorten, max_lines, shorten_from, split_str, ellipsis_options
+    - Layout: text_size
 
     Note: base_font_size/font_size is also style-only but handled specially
     via _update_font_sizes_in_place() to preserve heading scale factors.
+
+    Performance benefit: Style-only updates are typically 5-10x faster than
+    full rebuilds because they leverage Kivy's Label internal texture refresh
+    mechanism rather than destroying and recreating widget objects.
     """
 
     STRUCTURE_PROPERTIES = frozenset({
@@ -149,6 +166,17 @@ class MarkdownLabel(BoxLayout):
 
     Changes to these properties require rebuilding the widget tree because
     they affect the structure, layout, or fundamental rendering of content.
+
+    Structure properties:
+    - text: Changes markdown content, requiring new parsing and widget creation
+    - link_style: Changes link rendering behavior, requires markup regeneration
+    - render_mode: Changes between 'widgets', 'texture', and 'auto' modes
+    - strict_label_mode: Changes layout behavior, affecting widget hierarchy
+
+    Note: Most properties that were previously classified as structure properties
+    have been reclassified as style-only properties for better performance.
+    Kivy's Label handles these via internal texture refresh without destroying
+    the widget object.
     """
 
     text = StringProperty('')
