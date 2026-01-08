@@ -58,7 +58,7 @@ This implementation plan reclassifies 14 properties from "structure" to "style-o
     - Verify widget IDs unchanged after property change
     - **Validates: Requirements 1.1-1.7**
 
-  - [ ] 4.2 Write property test for text processing properties preserving widget identity
+  - [x] 4.2 Write property test for text processing properties preserving widget identity
     - **Property 1: Style-only property updates preserve widget identity**
     - Test `unicode_errors`, `strip`
     - Verify widget IDs unchanged after property change

@@ -1262,3 +1262,151 @@ class TestAdvancedFontPropertyIdentityPreservationPBT:
             f"Widget IDs changed after font_features update to '{font_features}'. "
             f"Before: {len(ids_before)} widgets, After: {len(ids_after)} widgets"
         )
+
+
+# =============================================================================
+# Text Processing Properties Widget Identity Preservation Tests
+# =============================================================================
+# These tests validate Property 1 from the design document:
+# "Style-only property updates preserve widget identity"
+# Specifically for the newly reclassified text processing properties:
+# unicode_errors, strip
+# =============================================================================
+
+
+@pytest.mark.property
+@pytest.mark.slow
+class TestTextProcessingPropertyIdentityPreservationPBT:
+    """Property-based tests for text processing property identity preservation.
+
+    These tests verify that changing text processing properties (unicode_errors,
+    strip) preserves all widget object IDs in the subtree.
+
+    **Property 1: Style-only property updates preserve widget identity**
+    **Validates: Requirements 2.1-2.3**
+    """
+
+    @given(
+        markdown_text=simple_markdown_document(),
+        unicode_errors=st.sampled_from(['strict', 'replace', 'ignore']),
+        strip=st.booleans()
+    )
+    # Feature: optimize-rebuild-contract, Property 1: Style-only property updates preserve widget identity
+    # Finite strategy: 3 unicode_errors × 2 strip = 6 combinations with complex markdown
+    @settings(max_examples=30, deadline=None)
+    def test_text_processing_properties_preserve_widget_identity(
+        self, markdown_text, unicode_errors, strip
+    ):
+        """Text Processing Properties Preserve Widget Identity.
+
+        *For any* MarkdownLabel with non-empty content, and *for any* text
+        processing property (unicode_errors, strip), changing that property
+        SHALL preserve all widget object IDs in the subtree (the set of IDs
+        before equals the set of IDs after).
+
+        **Validates: Requirements 2.1-2.3**
+        """
+        # Ensure we have non-empty content
+        assume(markdown_text and markdown_text.strip())
+
+        # Create MarkdownLabel with initial content
+        label = MarkdownLabel(text=markdown_text)
+
+        # Ensure we have children to test
+        assume(len(label.children) > 0)
+
+        # Capture widget IDs before changes
+        ids_before = collect_widget_ids(label)
+
+        # Apply all text processing property changes
+        label.unicode_errors = unicode_errors
+        label.strip = strip
+
+        # Capture widget IDs after changes
+        ids_after = collect_widget_ids(label)
+
+        # Assert: widget IDs should be unchanged
+        assert ids_before == ids_after, (
+            f"Widget IDs changed after text processing property updates. "
+            f"Before: {len(ids_before)} widgets, After: {len(ids_after)} widgets"
+        )
+
+    @given(
+        markdown_text=simple_markdown_document(),
+        unicode_errors=st.sampled_from(['strict', 'replace', 'ignore'])
+    )
+    # Feature: optimize-rebuild-contract, Property 1: Style-only property updates preserve widget identity
+    # Finite strategy: 3 unicode_errors options × complex markdown
+    @settings(max_examples=20, deadline=None)
+    def test_unicode_errors_preserves_widget_identity(self, markdown_text, unicode_errors):
+        """Unicode Errors Preserves Widget Identity.
+
+        *For any* MarkdownLabel with non-empty content, and *for any* unicode_errors
+        value ('strict', 'replace', 'ignore'), changing unicode_errors SHALL
+        preserve all widget object IDs.
+
+        **Validates: Requirements 2.1, 2.3**
+        """
+        # Ensure we have non-empty content
+        assume(markdown_text and markdown_text.strip())
+
+        # Create MarkdownLabel with initial content
+        label = MarkdownLabel(text=markdown_text)
+
+        # Ensure we have children to test
+        assume(len(label.children) > 0)
+
+        # Capture widget IDs before change
+        ids_before = collect_widget_ids(label)
+
+        # Apply unicode_errors change
+        label.unicode_errors = unicode_errors
+
+        # Capture widget IDs after change
+        ids_after = collect_widget_ids(label)
+
+        # Assert: widget IDs should be unchanged
+        assert ids_before == ids_after, (
+            f"Widget IDs changed after unicode_errors update to {unicode_errors}. "
+            f"Before: {len(ids_before)} widgets, After: {len(ids_after)} widgets"
+        )
+
+    @given(
+        markdown_text=simple_markdown_document(),
+        strip=st.booleans()
+    )
+    # Feature: optimize-rebuild-contract, Property 1: Style-only property updates preserve widget identity
+    # Finite strategy: 2 boolean options × complex markdown
+    @settings(max_examples=20, deadline=None)
+    def test_strip_preserves_widget_identity(self, markdown_text, strip):
+        """Strip Preserves Widget Identity.
+
+        *For any* MarkdownLabel with non-empty content, and *for any* strip
+        value (True/False), changing strip SHALL preserve all widget
+        object IDs.
+
+        **Validates: Requirements 2.2, 2.3**
+        """
+        # Ensure we have non-empty content
+        assume(markdown_text and markdown_text.strip())
+
+        # Create MarkdownLabel with initial content
+        label = MarkdownLabel(text=markdown_text)
+
+        # Ensure we have children to test
+        assume(len(label.children) > 0)
+
+        # Capture widget IDs before change
+        ids_before = collect_widget_ids(label)
+
+        # Apply strip change
+        label.strip = strip
+
+        # Capture widget IDs after change
+        ids_after = collect_widget_ids(label)
+
+        # Assert: widget IDs should be unchanged
+        assert ids_before == ids_after, (
+            f"Widget IDs changed after strip update to {strip}. "
+            f"Before: {len(ids_before)} widgets, After: {len(ids_after)} widgets"
+        )
