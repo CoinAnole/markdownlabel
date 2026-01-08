@@ -26,6 +26,28 @@ from kivy_garden.markdownlabel import MarkdownLabel
 from .test_utils import find_labels_recursive, FakeTouch, find_images
 
 
+@pytest.fixture
+def ref_capture():
+    """Fixture providing a ref capture helper for on_ref_press event testing.
+
+    Returns a tuple of (dispatched_refs list, capture_ref callback function).
+    Bind capture_ref to on_ref_press to collect dispatched refs.
+
+    Usage:
+        def test_example(ref_capture):
+            dispatched_refs, capture_ref = ref_capture
+            label.bind(on_ref_press=capture_ref)
+            # ... trigger touch event ...
+            assert len(dispatched_refs) == 1
+    """
+    dispatched_refs = []
+
+    def capture_ref(instance, ref):
+        dispatched_refs.append(ref)
+
+    return dispatched_refs, capture_ref
+
+
 # *For any* MarkdownLabel with render_mode='texture' and non-empty text, the widget
 # tree SHALL contain an Image widget displaying the rendered content as a texture.
 
@@ -110,8 +132,8 @@ class TestTextureModeLinksHandling:
     """Property tests for texture mode link handling."""
 
     @pytest.mark.unit
-    def test_aggregated_refs_populated_in_texture_mode(self):
-        """In texture mode, _aggregated_refs is populated with link zones."""
+    def test_aggregated_refs_attribute_exists_in_texture_mode(self):
+        """In texture mode, _aggregated_refs attribute exists and is a dict."""
         label = MarkdownLabel(
             text='Click [here](http://example.com) for more info.',
             render_mode='texture',
@@ -184,8 +206,10 @@ class TestDeterministicTextureHitTesting:
     """
 
     @pytest.mark.unit
-    def test_inside_zone_dispatch(self):
+    def test_inside_zone_dispatch(self, ref_capture):
         """Touch inside ref zone dispatches on_ref_press and returns True."""
+        dispatched_refs, capture_ref = ref_capture
+
         # Create MarkdownLabel with render_mode='texture'
         label = MarkdownLabel(
             text='Test content',
@@ -200,12 +224,6 @@ class TestDeterministicTextureHitTesting:
         label._aggregated_refs = {
             'http://example.com': [(10, 10, 50, 20)],
         }
-
-        # Track dispatched refs
-        dispatched_refs = []
-
-        def capture_ref(instance, ref):
-            dispatched_refs.append(ref)
 
         # Bind on_ref_press to capture dispatched ref
         label.bind(on_ref_press=capture_ref)
@@ -294,8 +312,10 @@ class TestDeterministicTextureHitTesting:
             "Expected on_touch_down to return True"
 
     @pytest.mark.unit
-    def test_outside_zone_no_dispatch(self):
+    def test_outside_zone_no_dispatch(self, ref_capture):
         """Touch outside ref zones does not dispatch on_ref_press."""
+        dispatched_refs, capture_ref = ref_capture
+
         # Create MarkdownLabel with render_mode='texture'
         label = MarkdownLabel(
             text='Test content',
@@ -309,12 +329,6 @@ class TestDeterministicTextureHitTesting:
         label._aggregated_refs = {
             'http://example.com': [(10, 10, 50, 20)],
         }
-
-        # Track dispatched refs
-        dispatched_refs = []
-
-        def capture_ref(instance, ref):
-            dispatched_refs.append(ref)
 
         label.bind(on_ref_press=capture_ref)
 
@@ -396,8 +410,10 @@ class TestDeterministicTextureHitTesting:
             "Expected on_touch_down to return falsy value"
 
     @pytest.mark.unit
-    def test_multiple_zones_first_match(self):
+    def test_multiple_zones_first_match(self, ref_capture):
         """Multiple zones: first matching zone triggers dispatch."""
+        dispatched_refs, capture_ref = ref_capture
+
         # Create MarkdownLabel with render_mode='texture'
         label = MarkdownLabel(
             text='Test content',
@@ -414,12 +430,6 @@ class TestDeterministicTextureHitTesting:
             'http://first.com': [(10, 10, 100, 50)],
             'http://second.com': [(30, 20, 40, 30)],
         }
-
-        # Track dispatched refs
-        dispatched_refs = []
-
-        def capture_ref(instance, ref):
-            dispatched_refs.append(ref)
 
         label.bind(on_ref_press=capture_ref)
 
@@ -440,8 +450,10 @@ class TestDeterministicTextureHitTesting:
             "Expected on_touch_down to return True"
 
     @pytest.mark.unit
-    def test_multiple_zones_non_overlapping(self):
+    def test_multiple_zones_non_overlapping(self, ref_capture):
         """Multiple non-overlapping zones: correct zone triggers dispatch."""
+        dispatched_refs, capture_ref = ref_capture
+
         # Create MarkdownLabel with render_mode='texture'
         label = MarkdownLabel(
             text='Test content',
@@ -457,12 +469,6 @@ class TestDeterministicTextureHitTesting:
             'http://second.com': [(100, 10, 50, 30)],
             'http://third.com': [(200, 10, 50, 30)],
         }
-
-        # Track dispatched refs
-        dispatched_refs = []
-
-        def capture_ref(instance, ref):
-            dispatched_refs.append(ref)
 
         label.bind(on_ref_press=capture_ref)
 

@@ -261,7 +261,7 @@ class TestStylePropertyIdentityPreservationPBT:
         line_height=st.floats(min_value=0.5, max_value=3.0, allow_nan=False,
                                allow_infinity=False)
     )
-    # Complex combination strategy: 50 examples (120 finite combinations with 5 complex strategies)
+    # Mixed finite/complex strategy: 50 examples (120 finite combinations with 5 complex strategies)
     @settings(max_examples=50, deadline=None)
     def test_style_property_changes_preserve_widget_tree(
         self, markdown_text, base_font_size, color, halign, valign,
@@ -431,7 +431,7 @@ class TestStylePropertyPropagationPBT:
                                allow_infinity=False),
         base_direction=st.sampled_from([None, 'ltr', 'rtl', 'weak_ltr', 'weak_rtl'])
     )
-    # Complex combination strategy: 50 examples (60 finite combinations with 3 complex strategies)
+    # Mixed finite/complex strategy: 50 examples (60 finite combinations with 3 complex strategies)
     @settings(max_examples=50, deadline=None)
     def test_style_property_values_propagate_to_descendants(
         self, markdown_text, color, halign, valign, line_height, base_direction
@@ -796,7 +796,7 @@ class TestRootIDPreservationPBT:
                                allow_infinity=False),
         disabled=st.booleans()
     )
-    # Complex combination strategy: 50 examples (24 finite combinations with 4 complex strategies)
+    # Mixed finite/complex strategy: 50 examples (24 finite combinations with 4 complex strategies)
     @settings(max_examples=50, deadline=None)
     def test_root_id_preserved_across_style_property_changes(
         self, markdown_text, base_font_size, color, halign, valign,

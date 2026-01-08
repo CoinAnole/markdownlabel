@@ -24,7 +24,7 @@ class TestAutoSizingBehavior:
     @given(simple_markdown_document())
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
-    def test_auto_size_hint_enabled_sets_none(self, markdown_text):
+    def test_auto_size_height_enabled_sets_size_hint_y_none(self, markdown_text):
         """With auto_size_height=True, size_hint_y is None for auto-sizing."""
         label = MarkdownLabel(text=markdown_text, auto_size_height=True)
 
@@ -51,8 +51,8 @@ class TestAutoSizingBehavior:
         assert label.size_hint_y is None, \
             "size_hint_y should be None for auto-sizing"
 
-    def test_empty_label_has_zero_height(self):
-        """Empty MarkdownLabel has zero or minimal height."""
+    def test_empty_label_has_no_children(self):
+        """Empty MarkdownLabel has no children and auto-sizing enabled."""
         label = MarkdownLabel(text='', auto_size_height=True)
 
         assert label.size_hint_y is None, \
@@ -64,8 +64,8 @@ class TestAutoSizingBehavior:
     @given(st.integers(min_value=1, max_value=5))
     # Small finite strategy: 5 examples (input space size: 5)
     @settings(max_examples=5, deadline=None)
-    def test_more_content_means_more_height_potential(self, num_paragraphs):
-        """More content should result in more minimum height."""
+    def test_more_content_creates_more_children(self, num_paragraphs):
+        """More content should result in more child widgets."""
         text = '\n\n'.join([f'Paragraph number {i} with some text content.'
                            for i in range(num_paragraphs)])
 
@@ -73,7 +73,7 @@ class TestAutoSizingBehavior:
 
         # Verify auto-sizing is enabled
         assert label.size_hint_y is None
-        # Verify children exist
+        # Verify children exist proportional to content
         assert len(label.children) >= num_paragraphs
 
 

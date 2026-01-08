@@ -645,11 +645,11 @@ class TestReactiveRebuildOnPropertyChange:
     @given(rebuild_font_names, rebuild_colors, rebuild_line_heights)
     # Mixed finite/complex strategy: 15 examples (3 finite × 5 complex samples)
     @settings(max_examples=15, deadline=None)
-    def test_multiple_property_changes_rebuild_correctly(self, font_name, color, line_height):
-        """Multiple property changes each trigger rebuilds with correct values."""
+    def test_multiple_property_changes_apply_correctly(self, font_name, color, line_height):
+        """Multiple property changes apply correct values (rebuild for structure, in-place for style)."""
         label = MarkdownLabel(text='# Heading\n\nParagraph text')
 
-        # Change font_name
+        # Change font_name (structure property - triggers rebuild)
         label.font_name = font_name
         label.force_rebuild()  # Force immediate rebuild for test
         labels = find_labels_recursive(label)
@@ -657,17 +657,15 @@ class TestReactiveRebuildOnPropertyChange:
             assert lbl.font_name == font_name, \
                 f"After font_name change, expected {font_name}, got {lbl.font_name}"
 
-        # Change color
+        # Change color (style-only property - no rebuild needed)
         label.color = color
-        # Note: color is a style-only property, no rebuild needed
         labels = find_labels_recursive(label)
         for lbl in labels:
             assert colors_equal(list(lbl.color), color), \
                 f"After color change, expected {color}, got {list(lbl.color)}"
 
-        # Change line_height
+        # Change line_height (style-only property - no rebuild needed)
         label.line_height = line_height
-        # Note: line_height is a style-only property, no rebuild needed
         labels = find_labels_recursive(label)
         for lbl in labels:
             assert floats_equal(lbl.line_height, line_height), \
