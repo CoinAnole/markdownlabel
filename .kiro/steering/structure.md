@@ -12,6 +12,8 @@ inclusion: always
 kivy_garden/
 └── markdownlabel/
     ├── __init__.py
+    ├── properties.py
+    ├── rendering.py
     ├── _version.py
     ├── kivy_renderer.py
     ├── inline_renderer.py
@@ -69,6 +71,9 @@ kivy_garden/
             ├── __init__.py
             ├── assertion_analyzer.py
             ├── comment_manager.py
+            ├── comment_validation.py
+            ├── comment_analysis.py
+            ├── comment_standardization.py
             ├── duplicate_detector.py
             ├── file_analyzer.py
             ├── file_parser.py
@@ -101,7 +106,27 @@ The codebase follows a strict three-layer architecture for converting Markdown t
   - Manages parsing and rendering lifecycle
   - Exposes Kivy Label-compatible properties for easy migration
   - Dispatches `on_ref_press` events for link clicks
+  - Orchestrates properties and rendering mixins
 - **When modifying**: Ensure Label API compatibility is maintained
+
+#### MarkdownLabelProperties (`properties.py`)
+- **Role**: Property definitions and management mixin
+- **Responsibilities**:
+  - All Kivy property definitions
+  - Property getter/setter methods
+  - Aggregated property calculations (texture_size, refs, anchors)
+  - Property classification constants (STYLE_ONLY_PROPERTIES, STRUCTURE_PROPERTIES)
+- **When modifying**: Ensure property forwarding to child widgets is correct
+
+#### MarkdownLabelRendering (`rendering.py`)
+- **Role**: Rendering logic mixin
+- **Responsibilities**:
+  - Rendering logic methods
+  - Widget tree building
+  - Texture rendering
+  - Style update methods (_update_font_sizes_in_place, _update_styles_in_place)
+  - Helper methods for rendering
+- **When modifying**: Test widget tree generation and style propagation
 
 #### KivyRenderer (`kivy_renderer.py`)
 - **Role**: Block-level renderer (paragraphs, headings, lists, tables, code blocks, quotes)
@@ -179,7 +204,10 @@ Tests are organized by **functionality**, not by implementation file:
 - `modules/`: Test analysis and utility modules for code quality and duplication detection
   - `__init__.py`: Package initialization and public API exports for test analysis infrastructure - consolidating imports from all analysis modules into a single namespace for easy access
   - `assertion_analyzer.py`: Test assertion analyzer for identifying assertion patterns in test methods - analyzing test method bodies to distinguish between rebuild-related assertions and value-only assertions, detecting naming mismatches between test names and their assertion patterns
-  - `comment_manager.py`: Unified comment management module for property-based test documentation - consolidating comment format validation, analysis, and standardization functionality to ensure max_examples values are properly documented with standardized rationale
+  - `comment_manager.py`: Unified comment management module for property-based test documentation - consolidating comment format validation, analysis, and standardization functionality to ensure max_examples values are properly documented with standardized rationale. **Note**: This is now a backward compatibility layer that re-exports from the three split modules below.
+  - `comment_validation.py`: Comment format validation module - validating comment formats, generating standardized comments, and managing format registry for property-based test documentation
+  - `comment_analysis.py`: Comment analysis module - analyzing files and directories for comment compliance, detecting inconsistencies, and classifying strategy mismatches
+  - `comment_standardization.py`: Comment standardization module - automated comment generation, backup and rollback functionality, and batch processing for standardizing property-based test documentation
   - `duplicate_detector.py`: Duplicate helper function detector for test suite analysis - detecting duplicate helper function implementations across test files using body hashing and similarity scoring to generate consolidation reports
   - `file_analyzer.py`: Test file analyzer for Hypothesis test optimization - analyzing test files to identify property-based tests and their current max_examples usage, generating optimization recommendations based on strategy classification
   - `file_parser.py`: AST-based test file parser for analyzing test methods, classes, and helper functions - parsing Python test files to extract metadata about test methods, test classes, and helper functions for analysis
@@ -245,10 +273,64 @@ Key development documentation files:
 ## Key Architectural Constraints
 
 1. **MarkdownLabel extends BoxLayout**: Cannot extend Label directly because Markdown rendering requires multiple child widgets
-2. **Nesting depth protection**: KivyRenderer limits nesting to prevent infinite recursion
-3. **Markup safety**: InlineRenderer must escape all user content to prevent markup injection
-4. **Label API compatibility**: MarkdownLabel exposes Label-compatible properties for easy migration from standard Kivy Labels
-5. **Namespace package structure**: Uses `find_namespace_packages` in setup.py to support `kivy_garden.*` namespace
+2. **Multiple inheritance pattern**: MarkdownLabel uses mixins (MarkdownLabelProperties, MarkdownLabelRendering) for clean separation of concerns
+3. **Nesting depth protection**: KivyRenderer limits nesting to prevent infinite recursion
+4. **Markup safety**: InlineRenderer must escape all user content to prevent markup injection
+5. **Label API compatibility**: MarkdownLabel exposes Label-compatible properties for easy migration from standard Kivy Labels
+6. **Namespace package structure**: Uses `find_namespace_packages` in setup.py to support `kivy_garden.*` namespace
+7. **Backward compatibility**: Split modules maintain full backward compatibility through re-exports (e.g., comment_manager.py)
+
+## File Splitting Refactoring
+
+### MarkdownLabel Module Split
+
+The original monolithic `__init__.py` (1884 lines) was split into three focused modules:
+
+1. **`properties.py`** (312 lines): All Kivy property definitions, getters/setters, and property classification
+2. **`rendering.py`** (310 lines): Rendering logic, widget tree building, and style updates
+3. **`__init__.py`** (386 lines): Main class definition, initialization, event handling, and public API
+
+**Architecture**: Uses multiple inheritance with mixins:
+```python
+class MarkdownLabel(MarkdownLabelProperties, MarkdownLabelRendering, BoxLayout):
+    # Orchestration, initialization, and public API
+```
+
+**Benefits**:
+- Reduced main file from 1884 to 386 lines (-79.5%)
+- Clear separation of concerns: properties, rendering, orchestration
+- Easier navigation and maintenance
+- Better IDE performance with smaller files
+
+### Comment Manager Module Split
+
+The original monolithic `comment_manager.py` (1973 lines) was split into four focused modules:
+
+1. **`comment_validation.py`** (245 lines): Format validation and comment generation
+2. **`comment_analysis.py`** (726 lines): File/directory analysis and compliance checking
+3. **`comment_standardization.py`** (536 lines): Automated standardization and batch processing
+4. **`comment_manager.py`** (66 lines): Backward compatibility layer with re-exports
+
+**Architecture**: Clean separation with re-export compatibility layer:
+```python
+# comment_manager.py re-exports all public APIs
+from .comment_validation import CommentFormatValidator, ...
+from .comment_analysis import CommentAnalyzer, ...
+from .comment_standardization import CommentStandardizer, ...
+```
+
+**Benefits**:
+- Reduced main file from 1973 to 66 lines (-96.7%)
+- Clear separation: validation → analysis → standardization
+- Full backward compatibility for existing imports
+- Each module is self-contained and testable
+
+**Backward Compatibility**: All existing imports continue to work:
+```python
+# These still work after the split
+from kivy_garden.markdownlabel.tests.modules.comment_manager import CommentFormatValidator
+from kivy_garden.markdownlabel.tests.modules.comment_manager import CommentAnalyzer
+```
 
 ## Common Modification Patterns
 
@@ -260,8 +342,8 @@ Key development documentation files:
 5. Update documentation in `doc/source/`
 
 ### Adding a new Label-compatible property
-1. Add property to `MarkdownLabel` in `__init__.py`
-2. Forward to child Labels in rendering methods
+1. Add property to `MarkdownLabelProperties` in `properties.py`
+2. Forward to child Labels in rendering methods in `rendering.py`
 3. Add tests in appropriate `test_*_properties.py` file
 4. Document in API reference
 
