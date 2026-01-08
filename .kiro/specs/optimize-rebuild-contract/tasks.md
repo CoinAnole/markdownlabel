@@ -92,7 +92,7 @@ This implementation plan reclassifies 14 properties from "structure" to "style-o
     - Verify all child Labels have the new property value
     - **Validates: Requirements 3.1-3.5**
 
-- [ ] 6. Write tests for special cases
+- [x] 6. Write tests for special cases
   - [x] 6.1 Write property test for code block font preservation
     - **Property 4: Code blocks preserve monospace font when font_family changes**
     - Create markdown with code blocks
@@ -107,13 +107,13 @@ This implementation plan reclassifies 14 properties from "structure" to "style-o
     - Verify sets are mutually exclusive
     - **Validates: Requirements 5.1-5.6**
 
-  - [ ] 6.3 Write unit tests for text_size binding transitions
+  - [x] 6.3 Write unit tests for text_size binding transitions
     - Test transition from [None, None] to constrained value
     - Test transition from constrained value to [None, None]
     - Verify bindings work correctly after transition
     - **Validates: Requirements 4.2, 4.3**
 
-- [ ] 7. Checkpoint - Verify all tests pass
+- [x] 7. Checkpoint - Verify all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 8. Update documentation
