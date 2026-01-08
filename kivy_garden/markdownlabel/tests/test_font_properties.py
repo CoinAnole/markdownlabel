@@ -223,8 +223,8 @@ class TestLineHeightPropertyForwarding:
     @given(line_height_strategy, line_height_strategy)
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
-    def test_line_height_change_triggers_rebuild(self, lh1, lh2):
-        """Changing line_height triggers widget rebuild with new value."""
+    def test_line_height_change_preserves_widget_tree(self, lh1, lh2):
+        """Changing line_height updates value in place without rebuild (style-only property)."""
         assume(not floats_equal(lh1, lh2))
 
         label = MarkdownLabel(text='Hello World', line_height=lh1)
@@ -237,15 +237,14 @@ class TestLineHeightPropertyForwarding:
         for lbl in labels:
             assert floats_equal(lbl.line_height, lh1)
 
-        # Change line_height
+        # Change line_height (style-only property - no force_rebuild needed)
         label.line_height = lh2
-        label.force_rebuild()  # Force immediate rebuild for test
 
-        # Verify rebuild occurred
+        # Verify NO rebuild occurred (style-only property)
         ids_after = collect_widget_ids(label)
-        assert ids_before != ids_after, "Widget tree should rebuild for line_height changes"
+        assert ids_before == ids_after, "Widget tree should NOT rebuild for line_height changes"
 
-        # Verify new line_height
+        # Verify new line_height was applied in place
         labels = find_labels_recursive(label)
         for lbl in labels:
             assert floats_equal(lbl.line_height, lh2), \

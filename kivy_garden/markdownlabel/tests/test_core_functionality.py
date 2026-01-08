@@ -147,8 +147,8 @@ class TestMarkdownTextPropertyUpdates:
     @given(st.integers(min_value=1, max_value=3), st.integers(min_value=1, max_value=3))
     # Combination strategy: 9 examples (combination coverage)
     @settings(max_examples=9, deadline=None)
-    def test_different_block_counts_update_correctly(self, count1, count2):
-        """Changing from N blocks to M blocks updates widget count."""
+    def test_different_block_counts_trigger_rebuild(self, count1, count2):
+        """Changing from N blocks to M blocks triggers rebuild and updates widget count."""
         assume(count1 != count2)
 
         # Create markdown with count1 paragraphs
@@ -157,16 +157,23 @@ class TestMarkdownTextPropertyUpdates:
         text2 = '\n\n'.join([f'New para {i}' for i in range(count2)])
 
         label = MarkdownLabel(text=text1)
-        children_before = len(label.children)
+
+        # Collect widget IDs before change
+        ids_before = collect_widget_ids(label, exclude_root=True)
 
         # Change text - use force_rebuild() for immediate update since
         # text changes now use deferred rebuilds
         label.text = text2
         label.force_rebuild()
-        children_after = len(label.children)
+
+        # Verify rebuild occurred
+        ids_after = collect_widget_ids(label, exclude_root=True)
+        assert ids_before != ids_after, \
+            "Widget tree should rebuild after text change"
 
         # The number of children should change to reflect new content
         # (may include blank_line widgets, so we check >= count)
+        children_after = len(label.children)
         assert children_after >= count2, \
             f"Expected at least {count2} children after update, got {children_after}"
 
@@ -175,17 +182,25 @@ class TestMarkdownTextPropertyUpdates:
     @given(simple_markdown_document())
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
-    def test_clear_text_removes_widgets(self, markdown_text):
-        """Setting text to empty removes all widgets."""
+    def test_clear_text_triggers_rebuild_and_removes_widgets(self, markdown_text):
+        """Setting text to empty triggers rebuild and removes all widgets."""
         assume(markdown_text.strip())
 
         label = MarkdownLabel(text=markdown_text)
         assert len(label.children) > 0, "Should have children initially"
 
+        # Collect widget IDs before change
+        ids_before = collect_widget_ids(label, exclude_root=True)
+
         # Clear text - use force_rebuild() for immediate update since
         # text changes now use deferred rebuilds
         label.text = ''
         label.force_rebuild()
+
+        # Verify rebuild occurred (widget tree changed)
+        ids_after = collect_widget_ids(label, exclude_root=True)
+        assert ids_before != ids_after, \
+            "Widget tree should rebuild after clearing text"
 
         assert len(label.children) == 0, \
             f"Expected 0 children after clearing text, got {len(label.children)}"
@@ -195,19 +210,27 @@ class TestMarkdownTextPropertyUpdates:
     @given(simple_markdown_document(), simple_markdown_document())
     # Complex strategy: 50 examples (adequate coverage)
     @settings(max_examples=50, deadline=None)
-    def test_ast_updates_with_text(self, text1, text2):
-        """AST tokens update when text changes."""
+    def test_ast_updates_with_text_and_triggers_rebuild(self, text1, text2):
+        """AST tokens update and widget tree rebuilds when text changes."""
         assume(text1.strip() and text2.strip())
         assume(text1 != text2)
 
         label = MarkdownLabel(text=text1)
         ast1 = label.get_ast()
 
+        # Collect widget IDs before change
+        ids_before = collect_widget_ids(label, exclude_root=True)
+
         # Use force_rebuild() for immediate update since
         # text changes now use deferred rebuilds
         label.text = text2
         label.force_rebuild()
         ast2 = label.get_ast()
+
+        # Verify rebuild occurred
+        ids_after = collect_widget_ids(label, exclude_root=True)
+        assert ids_before != ids_after, \
+            "Widget tree should rebuild after text change"
 
         # Verify the text property was updated
         assert label.text == text2, \
