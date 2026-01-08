@@ -42,13 +42,13 @@ This implementation plan reclassifies 14 properties from "structure" to "style-o
     - Update `ellipsis_options` on all Labels (as dict copy)
     - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5, 6.5_
 
-  - [ ] 2.4 Add text_size update logic
+  - [x] 2.4 Add text_size update logic
     - Update `text_size` on all Labels based on current value
     - Handle `[None, None]`, `[width, None]`, `[None, height]`, `[width, height]` cases
     - Respect `strict_label_mode` for binding behavior
     - _Requirements: 4.1, 4.2, 4.3, 6.6_
 
-- [ ] 3. Checkpoint - Verify basic functionality
+- [x] 3. Checkpoint - Verify basic functionality
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 4. Write property-based tests for widget identity preservation

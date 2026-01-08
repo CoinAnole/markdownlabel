@@ -1126,7 +1126,7 @@ class MarkdownLabel(BoxLayout):
         font_context, font_features, font_hinting, font_kerning, font_blended,
         text processing properties like unicode_errors and strip,
         truncation properties like shorten, max_lines, shorten_from, split_str,
-        ellipsis_options, etc.) on all descendant Label widgets without
+        ellipsis_options, text_size, etc.) on all descendant Label widgets without
         reconstructing the widget tree.
 
         This is more efficient than a full rebuild when only visual styling
@@ -1141,6 +1141,13 @@ class MarkdownLabel(BoxLayout):
 
             font_family is only applied to non-code Labels to preserve
             monospace fonts in code blocks.
+
+            text_size updates handle all four cases:
+            - [None, None]: In strict_label_mode, no width constraint;
+              otherwise uses widget width for text wrapping
+            - [width, None]: Uses specified width, no height constraint
+            - [None, height]: Uses widget width with specified height
+            - [width, height]: Uses both specified dimensions
         """
         # Determine effective color based on disabled state
         effective_color = (
@@ -1227,6 +1234,31 @@ class MarkdownLabel(BoxLayout):
                     widget.shorten_from = self.shorten_from
                 if hasattr(widget, 'split_str'):
                     widget.split_str = self.split_str
+
+                # Update text_size property
+                # Handle all four cases: [None, None], [width, None],
+                # [None, height], [width, height]
+                if hasattr(widget, 'text_size'):
+                    text_width = self.text_size[0] if self.text_size else None
+                    text_height = self.text_size[1] if self.text_size else None
+
+                    if text_width is not None and text_height is not None:
+                        # Both width and height specified
+                        widget.text_size = (text_width, text_height)
+                    elif text_width is not None:
+                        # Only width specified - use width, keep height as None
+                        widget.text_size = (text_width, None)
+                    elif text_height is not None:
+                        # Only height specified - use widget's current width
+                        widget.text_size = (widget.width, text_height)
+                    else:
+                        # [None, None] - behavior depends on strict_label_mode
+                        if self.strict_label_mode:
+                            # Strict mode: no automatic width binding
+                            widget.text_size = (None, None)
+                        else:
+                            # Markdown-friendly mode: use widget width for wrapping
+                            widget.text_size = (widget.width, None)
 
             # Recursively update children
             if hasattr(widget, 'children'):
