@@ -24,6 +24,7 @@ from kivy.uix.label import Label
 
 from kivy_garden.markdownlabel import MarkdownLabel
 from .test_utils import (
+    collect_widget_ids,
     find_labels_recursive,
     find_labels_with_refs,
     find_labels_with_ref_markup,
@@ -339,9 +340,17 @@ Paragraph text
         for lbl in labels:
             assert lbl.shorten == shorten1
 
+        # Collect widget IDs before change to verify rebuild
+        ids_before = collect_widget_ids(label)
+
         # Change shorten
         label.shorten = shorten2
         label.force_rebuild()  # Force immediate rebuild for test
+
+        # Verify rebuild occurred (widget instances changed)
+        ids_after = collect_widget_ids(label)
+        assert ids_before != ids_after, \
+            "Expected widget tree rebuild when shorten property changed"
 
         # Verify new value
         labels = find_labels_recursive(label)
