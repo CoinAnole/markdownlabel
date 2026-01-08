@@ -34,7 +34,7 @@ This implementation plan reclassifies 14 properties from "structure" to "style-o
     - Update `strip` on all Labels
     - _Requirements: 2.1, 2.2, 6.4_
 
-  - [ ] 2.3 Add truncation property updates
+  - [x] 2.3 Add truncation property updates
     - Update `shorten` on all Labels
     - Update `max_lines` on all Labels (only if > 0)
     - Update `shorten_from` on all Labels

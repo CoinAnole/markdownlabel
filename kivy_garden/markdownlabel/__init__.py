@@ -1125,7 +1125,9 @@ class MarkdownLabel(BoxLayout):
         outline_width, outline_color, advanced font properties like font_family,
         font_context, font_features, font_hinting, font_kerning, font_blended,
         text processing properties like unicode_errors and strip,
-        etc.) on all descendant Label widgets without reconstructing the widget tree.
+        truncation properties like shorten, max_lines, shorten_from, split_str,
+        ellipsis_options, etc.) on all descendant Label widgets without
+        reconstructing the widget tree.
 
         This is more efficient than a full rebuild when only visual styling
         changes, as it preserves widget identities and avoids the overhead
@@ -1211,6 +1213,20 @@ class MarkdownLabel(BoxLayout):
                     widget.unicode_errors = self.unicode_errors
                 if hasattr(widget, 'strip'):
                     widget.strip = self.strip
+
+                # Update truncation properties
+                if hasattr(widget, 'shorten'):
+                    widget.shorten = self.shorten
+                if hasattr(widget, 'max_lines'):
+                    # Only set max_lines if > 0 (0 means no limit)
+                    if self.max_lines > 0:
+                        widget.max_lines = self.max_lines
+                    else:
+                        widget.max_lines = 0
+                if hasattr(widget, 'shorten_from'):
+                    widget.shorten_from = self.shorten_from
+                if hasattr(widget, 'split_str'):
+                    widget.split_str = self.split_str
 
             # Recursively update children
             if hasattr(widget, 'children'):
