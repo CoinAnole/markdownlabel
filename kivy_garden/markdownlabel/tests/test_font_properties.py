@@ -681,7 +681,7 @@ class TestHeadingScalePreservation:
         ),
         st_font_size(min_value=12, max_value=24)
     )
-    # Mixed finite/complex strategy: 20 examples (large finite lists × complex)
+    # Mixed finite/complex strategy: 20 examples (~57 finite list combinations × sampled)
     @settings(max_examples=20, deadline=None)
     def test_multiple_headings_preserve_relative_scales(self, heading_levels, base_size):
         """Multiple headings preserve correct relative scale factors."""
