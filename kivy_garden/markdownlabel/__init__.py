@@ -1122,8 +1122,10 @@ class MarkdownLabel(BoxLayout):
 
         This method updates purely stylistic properties (color, font_name,
         code_font_name, halign, valign, line_height, disabled state, text_padding,
-        outline_width, outline_color, etc.) on all descendant Label widgets
-        without reconstructing the widget tree.
+        outline_width, outline_color, advanced font properties like font_family,
+        font_context, font_features, font_hinting, font_kerning, font_blended,
+        text processing properties like unicode_errors and strip,
+        etc.) on all descendant Label widgets without reconstructing the widget tree.
 
         This is more efficient than a full rebuild when only visual styling
         changes, as it preserves widget identities and avoids the overhead
@@ -1131,9 +1133,12 @@ class MarkdownLabel(BoxLayout):
 
         Note:
             This method only updates properties that don't affect widget
-            structure. For structural changes (text, link_style, text_size,
-            etc.), use _rebuild_widgets() instead. For font size changes,
+            structure. For structural changes (text, link_style, etc.),
+            use _rebuild_widgets() instead. For font size changes,
             use _update_font_sizes_in_place() instead.
+
+            font_family is only applied to non-code Labels to preserve
+            monospace fonts in code blocks.
         """
         # Determine effective color based on disabled state
         effective_color = (
@@ -1167,6 +1172,21 @@ class MarkdownLabel(BoxLayout):
                     widget.font_name = self.code_font_name
                 else:
                     widget.font_name = self.font_name
+                    # font_family only applies to non-code Labels
+                    if hasattr(widget, 'font_family'):
+                        widget.font_family = self.font_family
+
+                # Update advanced font properties (all Labels)
+                if hasattr(widget, 'font_context'):
+                    widget.font_context = self.font_context
+                if hasattr(widget, 'font_features'):
+                    widget.font_features = self.font_features
+                if hasattr(widget, 'font_hinting'):
+                    widget.font_hinting = self.font_hinting
+                if hasattr(widget, 'font_kerning'):
+                    widget.font_kerning = self.font_kerning
+                if hasattr(widget, 'font_blended'):
+                    widget.font_blended = self.font_blended
 
                 # Update outline properties
                 if hasattr(widget, 'outline_width'):
@@ -1185,6 +1205,12 @@ class MarkdownLabel(BoxLayout):
                     widget.limit_render_to_text_bbox = self.limit_render_to_text_bbox
                 if hasattr(widget, 'ellipsis_options'):
                     widget.ellipsis_options = dict(self.ellipsis_options)
+
+                # Update text processing properties
+                if hasattr(widget, 'unicode_errors'):
+                    widget.unicode_errors = self.unicode_errors
+                if hasattr(widget, 'strip'):
+                    widget.strip = self.strip
 
             # Recursively update children
             if hasattr(widget, 'children'):

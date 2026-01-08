@@ -20,7 +20,7 @@ This implementation plan reclassifies 14 properties from "structure" to "style-o
     - _Requirements: 5.5, 5.6_
 
 - [ ] 2. Extend _update_styles_in_place method
-  - [ ] 2.1 Add advanced font property updates
+  - [x] 2.1 Add advanced font property updates
     - Update `font_family` on non-code Labels (check `_is_code` marker)
     - Update `font_context` on all Labels (with None check)
     - Update `font_features` on all Labels
@@ -29,7 +29,7 @@ This implementation plan reclassifies 14 properties from "structure" to "style-o
     - Update `font_blended` on all Labels
     - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 6.2, 6.3_
 
-  - [ ] 2.2 Add text processing property updates
+  - [x] 2.2 Add text processing property updates
     - Update `unicode_errors` on all Labels
     - Update `strip` on all Labels
     - _Requirements: 2.1, 2.2, 6.4_
