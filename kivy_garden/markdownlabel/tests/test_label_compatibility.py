@@ -22,6 +22,7 @@ from .test_utils import (
 class TestFontSizeAliasBidirectionality:
     """Property tests for font_size/base_font_size alias."""
 
+    @pytest.mark.property
     @given(st.floats(min_value=1, max_value=200, allow_nan=False, allow_infinity=False))
     # Complex strategy: 50 examples (adequate coverage)
     @settings(max_examples=50, deadline=None)
@@ -32,6 +33,7 @@ class TestFontSizeAliasBidirectionality:
         assert label.base_font_size == font_size_value, \
             f"Expected base_font_size={font_size_value}, got {label.base_font_size}"
 
+    @pytest.mark.property
     @given(st.floats(min_value=1, max_value=200, allow_nan=False, allow_infinity=False))
     # Complex strategy: 50 examples (adequate coverage)
     @settings(max_examples=50, deadline=None)
@@ -42,6 +44,7 @@ class TestFontSizeAliasBidirectionality:
         assert label.font_size == base_font_size_value, \
             f"Expected font_size={base_font_size_value}, got {label.font_size}"
 
+    @pytest.mark.property
     @given(st.floats(min_value=1, max_value=200, allow_nan=False, allow_infinity=False),
            st.floats(min_value=1, max_value=200, allow_nan=False, allow_infinity=False))
     # Complex strategy: 50 examples (adequate coverage)
@@ -54,6 +57,7 @@ class TestFontSizeAliasBidirectionality:
         assert label.base_font_size == new_value, \
             f"Expected base_font_size={new_value}, got {label.base_font_size}"
 
+    @pytest.mark.property
     @given(st.floats(min_value=1, max_value=200, allow_nan=False, allow_infinity=False),
            st.floats(min_value=1, max_value=200, allow_nan=False, allow_infinity=False))
     # Complex strategy: 50 examples (adequate coverage)
@@ -66,6 +70,7 @@ class TestFontSizeAliasBidirectionality:
         assert label.font_size == new_value, \
             f"Expected font_size={new_value}, got {label.font_size}"
 
+    @pytest.mark.property
     @given(st.floats(min_value=1, max_value=200, allow_nan=False, allow_infinity=False))
     # Complex strategy: 50 examples (adequate coverage)
     @settings(max_examples=50, deadline=None)
@@ -90,6 +95,7 @@ class TestFontSizeAliasBidirectionality:
 class TestNoOpPropertiesAcceptance:
     """Property tests for no-op properties acceptance."""
 
+    @pytest.mark.property
     @given(st.booleans())
     # Boolean strategy: 2 examples (True/False coverage)
     @settings(max_examples=2, deadline=None)
@@ -99,6 +105,7 @@ class TestNoOpPropertiesAcceptance:
         label = MarkdownLabel(text='# Hello World', bold=value)
         assert label.bold == value
 
+    @pytest.mark.property
     @given(st.booleans())
     # Boolean strategy: 2 examples (True/False coverage)
     @settings(max_examples=2, deadline=None)
@@ -107,6 +114,7 @@ class TestNoOpPropertiesAcceptance:
         label = MarkdownLabel(text='# Hello World', italic=value)
         assert label.italic == value
 
+    @pytest.mark.property
     @given(st.booleans())
     # Boolean strategy: 2 examples (True/False coverage)
     @settings(max_examples=2, deadline=None)
@@ -115,6 +123,7 @@ class TestNoOpPropertiesAcceptance:
         label = MarkdownLabel(text='# Hello World', underline=value)
         assert label.underline == value
 
+    @pytest.mark.property
     @given(st.booleans())
     # Boolean strategy: 2 examples (True/False coverage)
     @settings(max_examples=2, deadline=None)
@@ -123,6 +132,7 @@ class TestNoOpPropertiesAcceptance:
         label = MarkdownLabel(text='# Hello World', strikethrough=value)
         assert label.strikethrough == value
 
+    @pytest.mark.property
     @given(st.booleans())
     # Boolean strategy: 2 examples (True/False coverage)
     @settings(max_examples=2, deadline=None)
@@ -131,6 +141,7 @@ class TestNoOpPropertiesAcceptance:
         label = MarkdownLabel(text='# Hello World', markup=value)
         assert label.markup == value
 
+    @pytest.mark.property
     @given(st.booleans(), st.booleans(), st.booleans(), st.booleans(), st.booleans())
     # Combination strategy: 32 examples (combination coverage)
     @settings(max_examples=32, deadline=None)
@@ -150,6 +161,7 @@ class TestNoOpPropertiesAcceptance:
         assert label.strikethrough == strikethrough
         assert label.markup == markup
 
+    @pytest.mark.property
     @given(st.booleans(), st.booleans(), st.booleans(), st.booleans(), st.booleans(),
            simple_markdown_document())
     # Mixed finite/complex strategy: 50 examples (32 finite × 2 complex samples)
@@ -178,6 +190,7 @@ class TestNoOpPropertiesAcceptance:
         assert default_child_count == props_child_count, \
             f"Expected {default_child_count} children, got {props_child_count} with no-op props"
 
+    @pytest.mark.property
     @given(st.booleans())
     # Boolean strategy: 2 examples (True/False coverage)
     @settings(max_examples=2, deadline=None)
@@ -187,6 +200,7 @@ class TestNoOpPropertiesAcceptance:
         label.bold = value
         assert label.bold == value
 
+    @pytest.mark.property
     @given(st.booleans())
     # Boolean strategy: 2 examples (True/False coverage)
     @settings(max_examples=2, deadline=None)
@@ -196,6 +210,7 @@ class TestNoOpPropertiesAcceptance:
         label.italic = value
         assert label.italic == value
 
+    @pytest.mark.property
     @given(st.booleans())
     # Boolean strategy: 2 examples (True/False coverage)
     @settings(max_examples=2, deadline=None)
@@ -205,6 +220,7 @@ class TestNoOpPropertiesAcceptance:
         label.underline = value
         assert label.underline == value
 
+    @pytest.mark.property
     @given(st.booleans())
     # Boolean strategy: 2 examples (True/False coverage)
     @settings(max_examples=2, deadline=None)
@@ -214,6 +230,7 @@ class TestNoOpPropertiesAcceptance:
         label.strikethrough = value
         assert label.strikethrough == value
 
+    @pytest.mark.property
     @given(st.booleans())
     # Boolean strategy: 2 examples (True/False coverage)
     @settings(max_examples=2, deadline=None)
@@ -233,6 +250,7 @@ class TestNoOpPropertiesAcceptance:
 class TestNoOpPropertyAcceptanceAndStorage:
     """Property tests for no-op property acceptance and storage."""
 
+    @pytest.mark.property
     @given(st.booleans())
     # Boolean strategy: 2 examples (True/False coverage)
     @settings(max_examples=2, deadline=None)
@@ -241,6 +259,7 @@ class TestNoOpPropertyAcceptanceAndStorage:
         label = MarkdownLabel(text='# Hello World', mipmap=value)
         assert label.mipmap == value
 
+    @pytest.mark.property
     @given(st.floats(min_value=0, max_value=100, allow_nan=False, allow_infinity=False))
     # Complex strategy: 50 examples (adequate coverage)
     @settings(max_examples=50, deadline=None)
@@ -249,6 +268,7 @@ class TestNoOpPropertyAcceptanceAndStorage:
         label = MarkdownLabel(text='# Hello World', outline_width=value)
         assert label.outline_width == value
 
+    @pytest.mark.property
     @given(st_rgba_color())
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -258,6 +278,7 @@ class TestNoOpPropertyAcceptanceAndStorage:
         # Compare colors with tolerance for floating point differences
         assert all(abs(a - b) < 0.001 for a, b in zip(label.outline_color, value))
 
+    @pytest.mark.property
     @given(st.one_of(st.none(), st_alphanumeric_text(min_size=1, max_size=10)))
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -272,6 +293,7 @@ class TestNoOpPropertyAcceptanceAndStorage:
         label = MarkdownLabel(text='# Hello World', base_direction=value)
         assert label.base_direction == value
 
+    @pytest.mark.property
     @given(st.dictionaries(
         st_alphanumeric_text(min_size=1, max_size=10),
         st.one_of(st.booleans(), st.integers(), st.text(max_size=20))
@@ -311,6 +333,7 @@ class TestNoOpPropertyAcceptanceAndStorage:
         assert label.base_direction == base_direction
         assert label.ellipsis_options == ellipsis_options
 
+    @pytest.mark.property
     @given(st.booleans())
     # Boolean strategy: 2 examples (True/False coverage)
     @settings(max_examples=2, deadline=None)
@@ -320,6 +343,7 @@ class TestNoOpPropertyAcceptanceAndStorage:
         label.mipmap = value
         assert label.mipmap == value
 
+    @pytest.mark.property
     @given(st.floats(min_value=0, max_value=100, allow_nan=False, allow_infinity=False))
     # Complex strategy: 50 examples (adequate coverage)
     @settings(max_examples=50, deadline=None)
@@ -329,6 +353,7 @@ class TestNoOpPropertyAcceptanceAndStorage:
         label.outline_width = value
         assert label.outline_width == value
 
+    @pytest.mark.property
     @given(st_rgba_color())
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -338,6 +363,7 @@ class TestNoOpPropertyAcceptanceAndStorage:
         label.outline_color = value
         assert all(abs(a - b) < 0.001 for a, b in zip(label.outline_color, value))
 
+    @pytest.mark.property
     @given(st.one_of(st.none(), st_alphanumeric_text(min_size=1, max_size=10)))
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -354,6 +380,7 @@ class TestNoOpPropertyAcceptanceAndStorage:
         label.base_direction = value
         assert label.base_direction == value
 
+    @pytest.mark.property
     @given(st.dictionaries(
         st_alphanumeric_text(min_size=1, max_size=10),
         st.one_of(st.booleans(), st.integers(), st.text(max_size=20))
@@ -366,6 +393,7 @@ class TestNoOpPropertyAcceptanceAndStorage:
         label.ellipsis_options = value
         assert label.ellipsis_options == value
 
+    @pytest.mark.property
     @given(st.booleans(), st.floats(min_value=0, max_value=10),
            st_rgba_color(),
            st.one_of(st.none(), st.text(min_size=1, max_size=5)),

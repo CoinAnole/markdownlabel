@@ -237,6 +237,7 @@ class TestStylePropertyIdentityPreservation:
             "Widget IDs changed after multiple style property updates"
 
 
+@pytest.mark.property
 @pytest.mark.slow
 class TestStylePropertyIdentityPreservationPBT:
     """Property-based tests for style property identity preservation.
@@ -410,6 +411,7 @@ class TestStylePropertyPropagation:
                 f"Expected base_direction {new_base_direction}, got {child_label.base_direction}"
 
 
+@pytest.mark.property
 @pytest.mark.slow
 class TestStylePropertyPropagationPBT:
     """Property-based tests for style property propagation to descendants.
@@ -642,6 +644,7 @@ class TestStructurePropertyRebuild:
             "Root MarkdownLabel ID should remain unchanged"
 
 
+@pytest.mark.property
 @pytest.mark.slow
 class TestStructurePropertyRebuildPBT:
     """Property-based tests for structure property rebuild behavior.
@@ -777,6 +780,7 @@ class TestStructurePropertyRebuildPBT:
         )
 
 
+@pytest.mark.property
 @pytest.mark.slow
 class TestRootIDPreservationPBT:
     """Property-based tests for root widget ID preservation."""

@@ -27,6 +27,7 @@ class TestStyleOnlyPropertyUpdates:
     changes trigger a full rebuild.
     """
 
+    @pytest.mark.property
     @given(st_font_size(min_value=10, max_value=50),
            st_font_size(min_value=10, max_value=50))
     # Complex strategy: 20 examples (adequate coverage)
@@ -52,6 +53,7 @@ class TestStyleOnlyPropertyUpdates:
         assert ids_before == ids_after, \
             f"Widget tree changed after font_size update. Before: {len(ids_before)}, After: {len(ids_after)}"
 
+    @pytest.mark.property
     @given(st_rgba_color())
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -74,6 +76,7 @@ class TestStyleOnlyPropertyUpdates:
         assert ids_before == ids_after, \
             "Widget tree changed after color update"
 
+    @pytest.mark.property
     @given(st_rgba_color())
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -171,6 +174,7 @@ class TestStyleOnlyPropertyUpdates:
             assert child_label.valign == new_valign, \
                 f"Expected valign {new_valign}, got {child_label.valign}"
 
+    @pytest.mark.property
     @given(st.floats(min_value=0.5, max_value=3.0, allow_nan=False, allow_infinity=False))
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -193,6 +197,7 @@ class TestStyleOnlyPropertyUpdates:
         assert ids_before == ids_after, \
             "Widget tree changed after line_height update"
 
+    @pytest.mark.property
     @given(st.floats(min_value=0.5, max_value=3.0, allow_nan=False, allow_infinity=False))
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -213,6 +218,7 @@ class TestStyleOnlyPropertyUpdates:
             assert child_label.line_height == new_line_height, \
                 f"Expected line_height {new_line_height}, got {child_label.line_height}"
 
+    @pytest.mark.property
     @given(st.booleans())
     # Boolean strategy: 2 examples (True/False coverage)
     @settings(max_examples=2, deadline=None)
@@ -276,6 +282,7 @@ class TestStyleOnlyPropertyUpdates:
         assert ids_before != ids_after, \
             "Widget tree should be rebuilt after font_name change"
 
+    @pytest.mark.property
     @given(
         st_font_size(min_value=10, max_value=30),
         st_rgba_color(),
@@ -309,6 +316,7 @@ class TestStyleOnlyPropertyUpdates:
         assert ids_before == ids_after, \
             "Widget tree changed after multiple style updates"
 
+    @pytest.mark.property
     @given(
         st_rgba_color(),
         st_rgba_color()

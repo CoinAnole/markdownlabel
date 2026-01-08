@@ -233,6 +233,7 @@ class TestMarkdownLinkRendering:
         assert found_ref, \
             f"Expected to find [ref=...][/ref] markup in children for: {link_markdown!r}"
 
+    @pytest.mark.property
     @pytest.mark.needs_window
     @given(st_alphanumeric_text(min_size=1, max_size=20))
     # Complex strategy: 20 examples (adequate coverage)
@@ -254,6 +255,7 @@ class TestMarkdownLinkRendering:
 
         pytest.fail(f"Expected to find [ref={url}] in markup for: {markdown!r}")
 
+    @pytest.mark.property
     @pytest.mark.needs_window
     @given(st.from_regex(r'https?://[a-z]+\.[a-z]+/[a-z]+', fullmatch=True))
     # Complex strategy: 20 examples (adequate coverage)
@@ -284,6 +286,7 @@ class TestMarkdownLinkRendering:
 class TestMarkdownNestingStability:
     """Property tests for deep nesting stability."""
 
+    @pytest.mark.property
     @pytest.mark.needs_window
     @given(st.integers(min_value=1, max_value=15))
     # Medium finite strategy: 20 examples (adequate finite coverage)
@@ -303,6 +306,7 @@ class TestMarkdownNestingStability:
         except Exception as e:
             pytest.fail(f"Unexpected exception at depth {depth}: {e}")
 
+    @pytest.mark.property
     @pytest.mark.needs_window
     @given(st.integers(min_value=1, max_value=15))
     # Medium finite strategy: 20 examples (adequate finite coverage)
@@ -321,6 +325,7 @@ class TestMarkdownNestingStability:
         except Exception as e:
             pytest.fail(f"Unexpected exception at depth {depth}: {e}")
 
+    @pytest.mark.property
     @pytest.mark.needs_window
     @given(st.integers(min_value=1, max_value=15))
     # Medium finite strategy: 20 examples (adequate finite coverage)

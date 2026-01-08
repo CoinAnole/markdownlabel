@@ -2,8 +2,6 @@
 
 ## test_core_functionality.py
 
-- **Lines 237, 258, 287, 307, 325**: Missing `@pytest.mark.property` on Hypothesis-based property tests (`test_link_url_in_ref_tag`, `test_various_urls_in_links`, `test_nested_lists_render_without_exception`, `test_nested_quotes_render_without_exception`, `test_mixed_nesting_renders_without_exception`). Only `@pytest.mark.needs_window` present. Relevant code: `@pytest.mark.needs_window\n@given(...)`. Violates [Test Types and Markers](#test-types-and-markers) section: Property-based tests using Hypothesis must be marked `@pytest.mark.property`.
-
 - **Lines 67-80 (`test_paragraph_produces_label_widget`)**: Docstring states `"Paragraph Markdown produces a Label widget."`, but assertion only `assert len(label.children) >= 1` (no `isinstance(child, Label)` check, unlike similar `test_heading_produces_label_widget`). Violates [Test Naming Conventions](#test-naming-conventions): Docstrings must accurately reflect assertions.
 
 - **Lines 111-132 (`test_text_change_updates_widgets`)**: Docstring `"Changing text property updates the widget tree."` and method name imply widget tree verification, but only asserts `label.text == text2` (trivial setter check). `initial_children = len(label.children)` (line 122) collected but unused (dead code). Relevant code snippet:
@@ -39,20 +37,6 @@ Violates [Test Naming Conventions](#test-naming-conventions) and [Best Practices
   Violates [Test Naming Conventions](#test-naming-conventions) and [Best Practices](#best-practices).
 
 ## test_label_compatibility.py
-
-- **All Hypothesis-based test methods (e.g., lines 25, 36, 46, 58, 70, 94, 103, 111, 119, 127, 135, 155, 182, 191, 200, 209, 218, 237, 245, 253, 262, 281, 315, 324, 333, 342, 362, 375)**: Missing `@pytest.mark.property` marker on property-based tests using Hypothesis. Relevant code example (line 25):
-
-  ```python
-
-  @given(st.floats(min_value=1, max_value=200, allow_nan=False, allow_infinity=False))
-
-  # Complex strategy: 50 examples (adequate coverage)
-
-  @settings(max_examples=50, deadline=None)
-
-  ```
-
-  Violates [Test Types and Markers](#test-types-and-markers): Property-based tests using Hypothesis must be marked `@pytest.mark.property`.
 
 - **Lines 32, 42, 55, 67, 79, 84 (TestFontSizeAliasBidirectionality methods)**: Float equality assertions use direct `==` instead of `floats_equal()` helper from [`test_utils.py`](kivy_garden/markdownlabel/tests/test_utils.py). Example (line 32):
 
@@ -315,16 +299,6 @@ Violates [Testing Structure Changes (Rebuild Required)](#testing-structure-chang
 
 ## test_performance.py
 
-- **Lines 30, 56, 78, 175, 197, 216, 286, 316 (example Hypothesis tests)**: Missing `@pytest.mark.property` on property-based tests using Hypothesis. Example (lines 30-33):
-  ```python
-  @given(st_font_size(min_value=10, max_value=50),
-         st_font_size(min_value=10, max_value=50))
-  # Complex strategy: 20 examples (adequate coverage)
-  @settings(max_examples=20, deadline=None)
-  def test_font_size_change_preserves_widget_tree(self, initial_size, new_size):
-  ```
-  Violates [Test Types and Markers](#test-types-and-markers).
-
 - **Lines 30-55 (`test_font_size_change_preserves_widget_tree`)**: Verifies no rebuild but lacks assertion that `font_size` change was applied to child Labels. Relevant code (lines 45-53):
   ```python
   label.font_size = new_size
@@ -361,8 +335,6 @@ Violates [Testing Structure Changes (Rebuild Required)](#testing-structure-chang
 ## test_rebuild_semantics.py
 
 - **Lines 51-78 (`TestWidgetIdentityHelpers` class)**: Validates `test_utils.py` helper `collect_widget_ids()` but missing `@pytest.mark.test_tests`. Example: `class TestWidgetIdentityHelpers:\n    """Tests for the collect_widget_ids helper function."""\n    def test_collect_widget_ids_includes_root(self):`. Violates [Test Types and Markers](#test-types-and-markers) > #### Meta-Test Marking (lines 178-190): Tests validating test suite must use `@pytest.mark.test_tests`.
-
-- **Property-based test classes (lines 241 `TestStylePropertyIdentityPreservationPBT`, 414 `TestStylePropertyPropagationPBT`, 646 `TestStructurePropertyRebuildPBT`, 781 `TestRootIDPreservationPBT`)**: Missing `@pytest.mark.property`. Example line 241: `@pytest.mark.slow\nclass TestStylePropertyIdentityPreservationPBT:`. Violates [Test Types and Markers](#test-types-and-markers) (lines 167-176): Property-based tests using Hypothesis must be marked `@pytest.mark.property`.
 
 - **Lines 414-419 (`TestStylePropertyPropagationPBT` docstring)**: Malformed: `"""Property-based tests for style property propagation to descendants.\n\n    to Descendants**"""`. Violates [Test File Structure](#test-file-structure) > Standard Test File Template requiring proper docstrings.
 
