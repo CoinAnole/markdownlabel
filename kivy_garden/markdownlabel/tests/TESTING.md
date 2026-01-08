@@ -230,6 +230,7 @@ These properties update existing widgets without rebuilding:
 - `disabled`, `disabled_color` - Updates disabled state/color on existing Labels
 - `base_direction` - Updates text direction on existing Labels
 - `text_padding` - Updates Label.padding on existing Labels
+- `padding` - Updates container padding (BoxLayout handles this automatically)
 
 ### Structure Properties
 
@@ -241,8 +242,7 @@ These properties trigger a complete widget tree rebuild:
 - `render_mode` - Changes between widgets/texture rendering
 - `link_style` - Changes link styling (affects markup generation)
 - `strict_label_mode` - Changes label mode behavior
-- `padding` - Changes container padding (BoxLayout padding)
-- `outline_width`, `outline_color` - Changes outline rendering
+- `outline_width` - Changes outline rendering
 - Properties that affect parsing or widget hierarchy
 
 ### Testing Rebuild Behavior

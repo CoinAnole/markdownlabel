@@ -20,7 +20,6 @@ These properties update existing widgets **without rebuilding** the widget tree:
 
 ### Font Properties
 - `base_font_size` / `font_size` - Updates `Label.font_size` on all existing Labels
-- `font_name` - Updates `Label.font_name` on all existing Labels (except code blocks)
 - `line_height` - Updates `Label.line_height` on all existing Labels
 - `font_family` - Updates `Label.font_family` on non-code Labels
 - `font_context` - Updates `Label.font_context` on all Labels
@@ -35,10 +34,9 @@ These properties update existing widgets **without rebuilding** the widget tree:
 ### Text Layout Properties
 - `halign` - Updates `Label.halign` on all existing Labels
 - `valign` - Updates `Label.valign` on all existing Labels
-- `text_size` - Updates `Label.text_size` on all existing Labels
 
 ### Container Properties
-- `padding` - Updates container padding without rebuilding child widgets
+- `padding` - Updates BoxLayout container padding without rebuilding child widgets
 - `spacing` - Updates container spacing without rebuilding child widgets
 - `text_padding` - Updates `Label.padding` on all existing Labels
 
@@ -50,9 +48,16 @@ These properties trigger a **complete widget tree rebuild**:
 - `text` - Changes the markdown content, requiring new parsing and widget creation
 - `markup` - Changes how text is interpreted (markdown vs. plain text)
 
+### Font Properties
+- `font_name` - Changes the font used for rendering (affects text metrics and layout)
+
 ### Rendering Properties
 - `render_mode` - Changes between 'widgets', 'texture', and 'auto' rendering modes
 - `strict_label_mode` - Changes layout behavior, affecting widget hierarchy
+
+### Layout Properties
+- `text_size` - Changes the text size constraints (affects wrapping and layout)
+- `outline_width` - Changes outline rendering
 
 ### Parser Configuration
 - `code_font_name` - Affects code block rendering, requires rebuild to apply
@@ -198,8 +203,9 @@ def assert_no_rebuild(widget, change_func):
 - **Code blocks**: Use same font_size as other content
 
 #### `font_name`
-- **Type**: Style-only
-- **Behavior**: Updates `Label.font_name` on all Labels
+- **Type**: Structure (requires rebuild)
+- **Reason**: Font changes affect text metrics and layout calculations
+- **Behavior**: Triggers full widget tree rebuild
 - **Exception**: Code blocks preserve their `code_font_name` setting
 - **Fallback**: Uses system default if font not found
 
@@ -225,9 +231,10 @@ def assert_no_rebuild(widget, change_func):
 - **Performance**: May be deferred for rapid changes
 
 #### `text_size`
-- **Type**: Style-only
-- **Behavior**: Updates `Label.text_size` on all Labels
-- **Layout impact**: May trigger Kivy layout recalculation
+- **Type**: Structure (requires rebuild)
+- **Reason**: Changes text size constraints, affecting wrapping and layout
+- **Behavior**: Triggers full widget tree rebuild
+- **Layout impact**: Affects how text wraps and flows
 - **None handling**: `(None, None)` allows unlimited size
 
 #### `text_padding`

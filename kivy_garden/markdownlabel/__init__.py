@@ -122,7 +122,6 @@ class MarkdownLabel(BoxLayout):
         'link_style',
         'text_size',
         'strict_label_mode',
-        'padding',
         'outline_width',
     })
     """Properties that affect widget structure and require a full rebuild.
@@ -1019,7 +1018,7 @@ class MarkdownLabel(BoxLayout):
         in-place without rebuilding the widget tree.
 
         For structure properties (text, font_name, code_font_name,
-        text_size, strict_label_mode, padding) and other properties,
+        text_size, strict_label_mode) and other properties,
         a deferred widget rebuild is scheduled to batch multiple changes.
 
         Args:

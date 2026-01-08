@@ -97,8 +97,8 @@ class TestPaddingApplication:
     @given(padding_four, padding_four)
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
-    def test_padding_change_triggers_rebuild(self, padding1, padding2):
-        """Changing padding triggers rebuild and updates the container padding."""
+    def test_padding_change_preserves_widget_tree(self, padding1, padding2):
+        """Changing padding preserves widget tree (style-only property)."""
         assume(padding1 != padding2)
 
         label = MarkdownLabel(text='Hello World', padding=padding1)
@@ -110,15 +110,14 @@ class TestPaddingApplication:
         for i, (actual, exp) in enumerate(zip(label.padding, padding1)):
             assert abs(actual - exp) < 0.001
 
-        # Change padding (structure property - triggers rebuild)
+        # Change padding (style-only property - no rebuild needed)
         label.padding = padding2
-        label.force_rebuild()  # Force immediate rebuild for test
 
-        # Verify rebuild occurred (structure property)
+        # Verify NO rebuild occurred (style-only property)
         ids_after = collect_widget_ids(label)
-        assert ids_before != ids_after, "Widget tree should rebuild for padding changes"
+        assert ids_before == ids_after, "Widget tree should NOT rebuild for padding changes"
 
-        # Verify new padding
+        # Verify new padding applied to container
         for i, (actual, exp) in enumerate(zip(label.padding, padding2)):
             assert abs(actual - exp) < 0.001, \
                 f"After change, padding[{i}]: expected {exp}, got {actual}"
@@ -603,7 +602,7 @@ class TestPaddingAppliesToContainer:
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_padding_change_affects_container_only(self, new_padding):
-        """Changing padding triggers rebuild but affects only the container, not child Labels."""
+        """Changing padding preserves widget tree and affects only the container, not child Labels."""
         label = MarkdownLabel(text='Hello World', padding=[0, 0, 0, 0])
 
         # Collect widget IDs before change
@@ -612,15 +611,13 @@ class TestPaddingAppliesToContainer:
         # Get initial child Label padding (should be [0, 0, 0, 0] by default)
         labels = find_labels_recursive(label)
         assert len(labels) >= 1, "Expected at least one Label"
-        initial_child_padding = list(labels[0].padding)
 
-        # Change container padding (structure property - triggers rebuild)
+        # Change container padding (style-only property - no rebuild needed)
         label.padding = new_padding
-        label.force_rebuild()  # Force immediate rebuild for test
 
-        # Verify rebuild occurred (structure property)
+        # Verify NO rebuild occurred (style-only property)
         ids_after = collect_widget_ids(label)
-        assert ids_before != ids_after, "Widget tree should rebuild for padding changes"
+        assert ids_before == ids_after, "Widget tree should NOT rebuild for padding changes"
 
         # Container should have new padding
         assert padding_equal(list(label.padding), new_padding), \
