@@ -62,19 +62,27 @@ class TestDiscoveryPerformance:
         'test_text_properties.py',
         'test_padding_properties.py',
         'test_serialization.py',
-        'test_performance.py'
+        'test_performance.py',
+        'test_clipping_behavior.py',
+        'test_rebuild_scheduling.py',
+        'test_rebuild_semantics.py',
+        'test_rtl_alignment.py',
+        'test_shortening_and_coordinate.py',
+        'test_texture_render_mode.py',
+        'test_texture_sizing.py',
+        'test_kivy_renderer.py',
+        'test_inline_renderer.py'
     ])
     def test_individual_module_discovery_functionality(self, module_name):
         """Test that individual modules can be discovered correctly."""
         import subprocess
 
-        # Get the test directory path
-        test_dir = os.path.dirname(__file__)
+        # Get the test directory path (parent of meta_tests)
+        test_dir = os.path.dirname(os.path.dirname(__file__))
         module_path = os.path.join(test_dir, module_name)
 
-        # Skip if module doesn't exist
-        if not os.path.exists(module_path):
-            return
+        # Assert module exists instead of silently skipping
+        assert os.path.exists(module_path), f"Expected test module not found: {module_path}"
 
         # Run discovery for this specific module with stable configuration
         # Use -o addopts= to clear default addopts and keep discovery deterministic

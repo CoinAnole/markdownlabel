@@ -62,14 +62,20 @@ class TestNoTimingAssertions:
         'test_advanced_compatibility.py',
         'test_serialization.py',
         'test_performance.py',
-        'test_refactoring_properties.py',
-        'test_core_functionality_properties.py'
+        'test_clipping_behavior.py',
+        'test_rebuild_scheduling.py',
+        'test_rebuild_semantics.py',
+        'test_rtl_alignment.py',
+        'test_shortening_and_coordinate.py',
+        'test_texture_render_mode.py',
+        'test_texture_sizing.py',
+        'test_kivy_renderer.py',
+        'test_inline_renderer.py'
     ])
     def test_no_timing_assertions_in_test_files(self, module_name):
         """Test files should not contain timing assertions."""
         module_path = Path(f'kivy_garden/markdownlabel/tests/{module_name}')
-        if not module_path.exists():
-            return  # Skip non-existent modules
+        assert module_path.exists(), f"Expected test module not found: {module_path}"
 
         timing_patterns = self._check_file_for_timing_assertions(str(module_path))
 
@@ -152,14 +158,20 @@ class TestSubprocessPytestConfiguration:
         'test_advanced_compatibility.py',
         'test_serialization.py',
         'test_performance.py',
-        'test_refactoring_properties.py',
-        'test_core_functionality_properties.py'
+        'test_clipping_behavior.py',
+        'test_rebuild_scheduling.py',
+        'test_rebuild_semantics.py',
+        'test_rtl_alignment.py',
+        'test_shortening_and_coordinate.py',
+        'test_texture_render_mode.py',
+        'test_texture_sizing.py',
+        'test_kivy_renderer.py',
+        'test_inline_renderer.py'
     ])
     def test_subprocess_pytest_uses_stable_configuration(self, module_name):
         """Subprocess pytest calls should use stable configuration."""
         module_path = Path(f'kivy_garden/markdownlabel/tests/{module_name}')
-        if not module_path.exists():
-            return  # Skip non-existent modules
+        assert module_path.exists(), f"Expected test module not found: {module_path}"
 
         issues = self._check_file_for_subprocess_pytest_calls(str(module_path))
 
@@ -217,14 +229,21 @@ class TestNoSilentPassFileChecks:
         'test_advanced_compatibility.py',
         'test_serialization.py',
         'test_performance.py',
-        'test_refactoring_properties.py',
-        'test_core_functionality_properties.py'
+        'test_clipping_behavior.py',
+        'test_rebuild_scheduling.py',
+        'test_rebuild_semantics.py',
+        'test_rtl_alignment.py',
+        'test_shortening_and_coordinate.py',
+        'test_texture_render_mode.py',
+        'test_texture_sizing.py',
+        'test_kivy_renderer.py',
+        'test_inline_renderer.py',
+        
     ])
     def test_no_silent_pass_file_existence_checks(self, module_name):
         """Test files should not contain silent-pass file existence checks."""
         module_path = Path(f'kivy_garden/markdownlabel/tests/{module_name}')
-        if not module_path.exists():
-            return  # Skip non-existent modules
+        assert module_path.exists(), f"Expected test module not found: {module_path}"
 
         silent_pass_patterns = self._check_file_for_silent_pass_patterns(str(module_path))
 
@@ -279,14 +298,21 @@ class TestNoBroadExceptionHandling:
         'test_advanced_compatibility.py',
         'test_serialization.py',
         'test_performance.py',
-        'test_refactoring_properties.py',
-        'test_core_functionality_properties.py'
+        'test_clipping_behavior.py',
+        'test_rebuild_scheduling.py',
+        'test_rebuild_semantics.py',
+        'test_rtl_alignment.py',
+        'test_shortening_and_coordinate.py',
+        'test_texture_render_mode.py',
+        'test_texture_sizing.py',
+        'test_kivy_renderer.py',
+        'test_inline_renderer.py',
+        
     ])
     def test_no_broad_exception_handling(self, module_name):
         """Test files should not contain broad exception handling."""
         module_path = Path(f'kivy_garden/markdownlabel/tests/{module_name}')
-        if not module_path.exists():
-            return  # Skip non-existent modules
+        assert module_path.exists(), f"Expected test module not found: {module_path}"
 
         # Skip checking this test file itself since it contains pattern examples
         if module_name == 'test_core_functionality_properties.py':
@@ -400,8 +426,15 @@ class TestFixedListPropertyTestsConverted:
         'test_advanced_compatibility.py',
         'test_serialization.py',
         'test_performance.py',
-        'test_refactoring_properties.py',
-        'test_core_functionality_properties.py',
+        'test_clipping_behavior.py',
+        'test_rebuild_scheduling.py',
+        'test_rebuild_semantics.py',
+        'test_rtl_alignment.py',
+        'test_shortening_and_coordinate.py',
+        'test_texture_render_mode.py',
+        'test_texture_sizing.py',
+        'test_kivy_renderer.py',
+        'test_inline_renderer.py',
         'test_shortening_and_coordinate.py',
         'test_rtl_alignment.py',
         'test_rebuild_scheduling.py'
@@ -409,8 +442,7 @@ class TestFixedListPropertyTestsConverted:
     def test_fixed_list_property_tests_converted_to_parametrized(self, module_name):
         """Fixed-list property tests should be converted to parametrized tests."""
         module_path = Path(f'kivy_garden/markdownlabel/tests/{module_name}')
-        if not module_path.exists():
-            return  # Skip non-existent modules
+        assert module_path.exists(), f"Expected test module not found: {module_path}"
 
         # Skip this test file itself to avoid self-reference
         if module_name == 'test_core_functionality_properties.py':
@@ -441,8 +473,7 @@ class TestFixedListPropertyTestsConverted:
     def test_conversion_progress_tracking(self):
         """Track overall progress of fixed-list to parametrized conversion."""
         test_dir = Path('kivy_garden/markdownlabel/tests')
-        if not test_dir.exists():
-            return
+        assert test_dir.exists(), f"Expected test directory not found: {test_dir}"
 
         total_fixed_lists = 0
         total_parametrized = 0
@@ -565,14 +596,21 @@ class TestPerformanceTestsMarked:
         'test_advanced_compatibility.py',
         'test_serialization.py',
         'test_performance.py',
-        'test_refactoring_properties.py',
-        'test_core_functionality_properties.py'
+        'test_clipping_behavior.py',
+        'test_rebuild_scheduling.py',
+        'test_rebuild_semantics.py',
+        'test_rtl_alignment.py',
+        'test_shortening_and_coordinate.py',
+        'test_texture_render_mode.py',
+        'test_texture_sizing.py',
+        'test_kivy_renderer.py',
+        'test_inline_renderer.py',
+        
     ])
     def test_performance_indicators_are_marked(self, module_name):
         """Tests with performance indicators should be properly marked."""
         module_path = Path(f'kivy_garden/markdownlabel/tests/{module_name}')
-        if not module_path.exists():
-            return  # Skip non-existent modules
+        assert module_path.exists(), f"Expected test module not found: {module_path}"
 
         analysis = self._check_file_for_performance_test_markers(str(module_path))
 
@@ -638,8 +676,15 @@ class TestNoDuplicateEnvironmentSetup:
         'test_advanced_compatibility.py',
         'test_serialization.py',
         'test_performance.py',
-        'test_refactoring_properties.py',
-        'test_core_functionality_properties.py',
+        'test_clipping_behavior.py',
+        'test_rebuild_scheduling.py',
+        'test_rebuild_semantics.py',
+        'test_rtl_alignment.py',
+        'test_shortening_and_coordinate.py',
+        'test_texture_render_mode.py',
+        'test_texture_sizing.py',
+        'test_kivy_renderer.py',
+        'test_inline_renderer.py',
         'test_shortening_and_coordinate.py',
         'test_rtl_alignment.py',
         'test_rebuild_scheduling.py',
@@ -650,8 +695,7 @@ class TestNoDuplicateEnvironmentSetup:
     def test_no_duplicate_environment_setup(self, module_name):
         """Test files should not contain duplicate environment setup."""
         module_path = Path(f'kivy_garden/markdownlabel/tests/{module_name}')
-        if not module_path.exists():
-            return  # Skip non-existent modules
+        assert module_path.exists(), f"Expected test module not found: {module_path}"
 
         # Skip conftest.py as it's the centralized location for environment setup
         if module_name == 'conftest.py':
