@@ -428,12 +428,7 @@ Violates [Rebuild Contract Testing](#rebuild-contract-testing) patterns.
 
 ## test_serialization.py
 
-
-
 - **Line 648** (`test_code_serialization_round_trip_property` method): Non-standard rationale in Hypothesis `@settings` comment `# Complex strategy: 20 examples (two complex strategies combined)`. Both strategies are `st.text()` (Complex/Infinite). Relevant code:
-
-
-
 ```python
 
 @given(
@@ -457,9 +452,6 @@ Violates [Rebuild Contract Testing](#rebuild-contract-testing) patterns.
 @settings(max_examples=20, deadline=None)
 
 ```
-
-
-
 Violates [Property-Based Testing Optimization](#property-based-testing-optimization) > Comment Format Requirements: For Complex strategies, rationale must be `(adequate coverage)` or `(performance optimized)`; custom rationales not standardized.
 
 ## test_performance.py
@@ -534,5 +526,51 @@ No deviations found in test_rebuild_scheduling.py
 - **Lines 43, 527-547 (`test_font_name_change_triggers_rebuild`), 701-736 (`test_font_name_change_triggers_rebuild_pbt`)**: `font_name` wrongly in `STRUCTURE_PROPERTIES` and tested as triggering rebuild (`label.font_name = ...; label.force_rebuild(); assert children_ids_before != children_ids_after`). But style-only: "`font_name` - Updates Label.font_name on existing Labels" ([Rebuild Contract Testing](#rebuild-contract-testing) lines 226-232). Should preserve tree, no `force_rebuild()`. Naming `test_*_change_triggers_rebuild` violates contract. Also [Test Naming Conventions](#test-naming-conventions) > Rebuild Testing Names (lines 115-120).
 
 - **Lines 44, 550-571 (`test_text_size_change_triggers_rebuild`)**: `text_size` wrongly in `STRUCTURE_PROPERTIES`, test asserts rebuild. But style-only: "`text_size` - Updates Label.text_size on existing Labels" (line 231). Same violations as `font_name`.
+
+
+## test_clipping_behavior.py
+
+No deviations found in test_clipping_behavior.py
+
+
+## test_texture_render_mode.py
+
+
+
+
+- **Lines 113-129 (`test_aggregated_refs_populated_in_texture_mode`)**: Test name and docstring imply `_aggregated_refs` is populated (non-empty with link zones), but assertion only `assert hasattr(label, '_aggregated_refs')` (trivial check, attribute likely always exists even if empty dict). Comment notes "`refs may be empty if texture rendering failed`". Relevant code:
+```python
+# Check that aggregated refs were collected
+# Note: The refs may be empty if texture rendering failed or
+# if the link zones couldn't be calculated
+assert hasattr(label, '_aggregated_refs'), \
+    "Expected _aggregated_refs attribute"
+```
+Violates [Test Naming Conventions](#test-naming-conventions): "Test method names should **accurately reflect what they assert**" (cf. BAD example lines 146-151 claiming rebuild but testing value only).
+
+
+
+
+- **Lines 182-476 (`TestDeterministicTextureHitTesting` class methods)**: Exact duplication of `dispatched_refs = []` initialization and inline `def capture_ref(instance, ref): dispatched_refs.append(ref)` helper function across **six** test methods:
+  - Lines 200-204 (`test_inside_zone_dispatch`)
+  - Lines 270-273 (`test_property_inside_zone_dispatch`)
+  - Lines 309-313 (`test_outside_zone_no_dispatch`)
+  - Lines 371-375 (`test_property_outside_zone_no_dispatch`)
+  - Lines 416-418 (`test_multiple_zones_first_match`)
+  - Lines 459-462 (`test_multiple_zones_non_overlapping`)
+  
+Relevant duplicated code:
+```python
+dispatched_refs = []
+def capture_ref(instance, ref):
+    dispatched_refs.append(ref)
+label.bind(on_ref_press=capture_ref)
+```
+Violates [Helper Functions](#helper-functions): "Always use helper functions from `test_utils.py` instead of duplicating code" and general best practices against code duplication.
+
+
+
+
+
 
 
