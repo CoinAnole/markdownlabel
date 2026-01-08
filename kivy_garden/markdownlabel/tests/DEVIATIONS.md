@@ -1,41 +1,5 @@
 # Deviations
 
-## test_core_functionality.py
-
-- **Lines 67-80 (`test_paragraph_produces_label_widget`)**: Docstring states `"Paragraph Markdown produces a Label widget."`, but assertion only `assert len(label.children) >= 1` (no `isinstance(child, Label)` check, unlike similar `test_heading_produces_label_widget`). Violates [Test Naming Conventions](#test-naming-conventions): Docstrings must accurately reflect assertions.
-
-- **Lines 111-132 (`test_text_change_updates_widgets`)**: Docstring `"Changing text property updates the widget tree."` and method name imply widget tree verification, but only asserts `label.text == text2` (trivial setter check). `initial_children = len(label.children)` (line 122) collected but unused (dead code). Relevant code snippet:
-
-  ```python
-
-  initial_children = len(label.children)  # unused
-
-  label.text = text2
-
-  assert label.text == text2
-
-  ```
-
-Violates [Test Naming Conventions](#test-naming-conventions) and [Best Practices](#best-practices).
-
-- **Lines 182-204 (`test_ast_updates_with_text`)**: Docstring `"AST tokens update when text changes."` implies AST verification, but `ast1 = label.get_ast()` (line 191) and `ast2 = label.get_ast()` (line 197) unused. Only asserts `label.text == text2` if texts differ. Relevant code snippet:
-
-  ```python
-
-  ast1 = label.get_ast()  # unused
-
-  ...
-
-  ast2 = label.get_ast()  # unused
-
-  if text1 != text2:
-
-    assert label.text == text2
-
-  ```
-
-  Violates [Test Naming Conventions](#test-naming-conventions) and [Best Practices](#best-practices).
-
 ## test_label_compatibility.py
 
 - **Lines 32, 42, 55, 67, 79, 84 (TestFontSizeAliasBidirectionality methods)**: Float equality assertions use direct `==` instead of `floats_equal()` helper from [`test_utils.py`](kivy_garden/markdownlabel/tests/test_utils.py). Example (line 32):
@@ -114,17 +78,8 @@ Violates [Test Naming Conventions](#test-naming-conventions) and [Best Practices
             assert colors_equal(list(lbl.color), color2)
 
   ```
+
 ## test_text_properties.py
-
-- **Lines 270, 294, 320**: Unnecessary `label.force_rebuild()` calls in `TestTextSizeDynamicUpdates` class methods (`test_text_size_height_change_updates_labels`, `test_text_size_height_to_none_updates_labels`, `test_text_size_none_to_height_updates_labels`). `text_size` is listed as a style-only property ([`TESTING.md #Rebuild Contract Testing > Style-Only Properties`](kivy_garden/markdownlabel/tests/TESTING.md:231)). Guideline states: "When NOT to Use `force_rebuild()`: 1. **Testing style-only properties** — These update widgets in place without rebuilding, so no `force_rebuild()` is needed" ([`TESTING.md`](kivy_garden/markdownlabel/tests/TESTING.md:424-436)). Example relevant code (line 270):
-
-  ```python
-  label.text_size = [None, height2]
-
-  label.force_rebuild()  # Unnecessary for style-only property
-
-  ```
-  These tests should instead verify no rebuild occurs using `ids_before = collect_widget_ids(label)` before change, `assert_no_rebuild(label, ids_before)` after change (no `force_rebuild()`), and confirm child label values updated.
 
 - **Lines 84-96 (`test_text_size_with_width_passed_to_renderer`)**: Method docstring claims "`text_size` with width is passed to renderer and affects internal Labels", but assertions only verify `label.text_size[0] == width` and `len(labels) >= 1`; does **not** assert child Labels have `text_size[0] == width`. Violates "`Test method names should **accurately reflect what they assert`**" ([`TESTING.md #Test Naming Conventions`](kivy_garden/markdownlabel/tests/TESTING.md:111-152)). Relevant code:
 
@@ -166,18 +121,6 @@ Violates [Test Naming Conventions](#test-naming-conventions) and [Best Practices
 
 ## test_sizing_behavior.py
 
-- **Lines 515-529 (`test_strict_mode_updates_value`)**: Test name and docstring `"Changing strict_label_mode triggers widget rebuild."` claim rebuild verification, but no `collect_widget_ids()`, `assert_rebuild_occurred()`, `force_rebuild()`, or ID comparison. `initial_children = list(label.children)` (line 520) unused dead code. Assertion `len(label.children) >= 1` (lines 528-529) holds pre-toggle. Relevant code:
-
-  ```python
-  initial_children = list(label.children)  # unused (line 520)
-
-  label.strict_label_mode = True  # (line 523)
-
-  assert len(label.children) >= 1  # (lines 528-529)
-
-  ```
-  Violates [Rebuild Contract Testing](#rebuild-contract-testing) (requires ID collection/helpers for rebuild verification) and [Test Naming Conventions](#test-naming-conventions) (name/doc mismatch assertion).
-
 - **Lines 45-54 (`test_height_bound_to_minimum`)**: Docstring `"auto_size_height=True binds height to minimum_height."` claims height binding verification, but only asserts `label.size_hint_y is None` (line 53). No `height`/`minimum_height` check. Violates [Test Naming Conventions](#test-naming-conventions).
 
 - **Lines 67-79 (`test_more_content_means_more_height_potential`)**: Docstring `"More content should result in more minimum height."` but asserts `len(label.children) >= num_paragraphs` (line 77) and `size_hint_y is None` (line 75); no `minimum_height`/`height` comparison across content lengths. Violates [Test Naming Conventions](#test-naming-conventions).
@@ -189,36 +132,6 @@ Violates [Test Naming Conventions](#test-naming-conventions) and [Best Practices
 - **Multiple Hypothesis `@settings` comments (e.g., lines 88-89, 154-155, etc.)**: Classify `@given(simple_markdown_document())`/`markdown_heading()` as `"Mixed finite/complex strategy: 20 examples (5 finite × 4 complex samples)"` inconsistent with line 25 `"Complex strategy"` and guideline for single composite strategies (Complex/Infinite). `markdown_heading()` internal finite levels (6) vs comment "5 finite". Violates [Property-Based Testing Optimization](#property-based-testing-optimization) > Comment Format Requirements/Strategy Classifications.
 
 ## test_advanced_compatibility.py
-
-- **Lines 154-181, 847-869 (`test_font_kerning_change_triggers_rebuild`)** and **Lines 185-212, 871-894 (`test_font_blended_change_triggers_rebuild`)**: Exact duplicate test methods across `TestAdvancedFontPropertiesForwarding` and `TestReactiveRebuildOnPropertyChange` classes. 
-  ```python
-
-  @given(st.booleans(), st.booleans())
-
-  # Combination strategy: 4 examples (combination coverage)
-
-  @settings(max_examples=4, deadline=None)
-
-  def test_font_kerning_change_triggers_rebuild(self, kerning1, kerning2):
-
-    # Identical implementation duplicated
-
-  ``` 
-  Violates [Best Practices](#best-practices) against code duplication (cf. [Helper Functions](#helper-functions) "no duplication").
-
-- **Lines 824-844 (`test_rebuild_preserves_content_structure`)**: Structure property change (`font_name`) without `label.force_rebuild()` after change. Deferred rebuild not synchronized for verification. 
-  ```python
-
-  label.font_name = font2
-
-  # Missing: label.force_rebuild()
-
-  children_after = len(label.children)
-
-  assert children_before == children_after
-
-  ``` 
-  Violates [Using `force_rebuild()` in Tests](#using-force_rebuild-in-tests): Required for structure changes.
 
 - **Lines 682-702 (`test_halign_updates_value`)** and **Lines 709-729 (`test_valign_updates_value`)**: Style-only properties (`halign`, `valign` per Style-Only Properties list) missing no-rebuild verification. No `collect_widget_ids()`/`ids_before == ids_after`. 
   ```python
@@ -316,14 +229,6 @@ Violates [Testing Structure Changes (Rebuild Required)](#testing-structure-chang
   ```
   Missing `assert label.text == 'Second paragraph with different content.'`. Violates [Testing Structure Changes](#testing-structure-changes-rebuild-required) example (lines 284-285).
 
-- **Lines 259-278 (`test_font_name_structure_property_rebuilds_tree`)**: Wrongly expects rebuild for style-only `font_name` (lines 269-276):
-  ```python
-  label.font_name = 'RobotoMono-Regular'
-  label.force_rebuild()
-  assert ids_before != ids_after
-  ```
-  `font_name` is style-only ([Style-Only Properties](##style-only-properties) lines 226-232). Should verify no rebuild and `lbl.font_name` updated. Naming also violates Rebuild Testing Names (lines 117-120).
-
 - **Lines 95, 336, 344, 351 (`test_color_change_updates_descendant_labels`, `test_disabled_color_switching`)**: Manual `list(child_label.color) == [...]` instead of `colors_equal()`. Example (line 95):
   ```python
   assert list(child_label.color) == new_color_list
@@ -349,10 +254,6 @@ Violates [Testing Structure Changes (Rebuild Required)](#testing-structure-chang
   - Line 837: `# Mixed finite/complex strategy: 48 examples (24 finite combinations × 2 complex samples)` — Finite product miscounted (~8: 2×2×2).
   Example code (line 257): `@given(...)\n# Complex combination strategy...\n@settings(max_examples=50, deadline=None)`.
   Violates [Property-Based Testing Optimization](#property-based-testing-optimization) > Comment Format Requirements / Strategy Classifications (lines 563-692).
-
-- **Lines 43, 527-547 (`test_font_name_change_triggers_rebuild`), 701-736 (`test_font_name_change_triggers_rebuild_pbt`)**: `font_name` wrongly in `STRUCTURE_PROPERTIES` and tested as triggering rebuild (`label.font_name = ...; label.force_rebuild(); assert children_ids_before != children_ids_after`). But style-only: "`font_name` - Updates Label.font_name on existing Labels" ([Rebuild Contract Testing](#rebuild-contract-testing) lines 226-232). Should preserve tree, no `force_rebuild()`. Naming `test_*_change_triggers_rebuild` violates contract. Also [Test Naming Conventions](#test-naming-conventions) > Rebuild Testing Names (lines 115-120).
-
-- **Lines 44, 550-571 (`test_text_size_change_triggers_rebuild`)**: `text_size` wrongly in `STRUCTURE_PROPERTIES`, test asserts rebuild. But style-only: "`text_size` - Updates Label.text_size on existing Labels" (line 231). Same violations as `font_name`.
 
 ## test_texture_render_mode.py
 
@@ -403,4 +304,3 @@ Violates [Testing Structure Changes (Rebuild Required)](#testing-structure-chang
   @settings(max_examples=50, deadline=None)
   ```
   Violates [Property-Based Testing Optimization](#property-based-testing-optimization) > Comment Format Requirements: "MUST include a standardized comment" with "exact rationale format".
-  
