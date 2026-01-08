@@ -51,7 +51,7 @@ This implementation plan reclassifies 14 properties from "structure" to "style-o
 - [x] 3. Checkpoint - Verify basic functionality
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 4. Write property-based tests for widget identity preservation
+- [x] 4. Write property-based tests for widget identity preservation
   - [x] 4.1 Write property test for advanced font properties preserving widget identity
     - **Property 1: Style-only property updates preserve widget identity**
     - Test `font_family`, `font_context`, `font_features`, `font_hinting`, `font_kerning`, `font_blended`
@@ -70,7 +70,7 @@ This implementation plan reclassifies 14 properties from "structure" to "style-o
     - Verify widget IDs unchanged after property change
     - **Validates: Requirements 3.1-3.6**
 
-  - [ ] 4.4 Write property test for text_size preserving widget identity
+  - [x] 4.4 Write property test for text_size preserving widget identity
     - **Property 3: text_size updates preserve widget identity**
     - Test various text_size transitions
     - Verify widget IDs unchanged after property change

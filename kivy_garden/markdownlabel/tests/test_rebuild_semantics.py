@@ -1703,3 +1703,353 @@ class TestTruncationPropertyIdentityPreservationPBT:
             f"Widget IDs changed after ellipsis_options update to {ellipsis_options}. "
             f"Before: {len(ids_before)} widgets, After: {len(ids_after)} widgets"
         )
+
+
+# =============================================================================
+# text_size Widget Identity Preservation Tests
+# =============================================================================
+# These tests validate Property 3 from the design document:
+# "text_size updates preserve widget identity"
+# Testing various text_size transitions including:
+# [None, None], [width, None], [None, height], [width, height]
+# =============================================================================
+
+
+@pytest.mark.property
+@pytest.mark.slow
+class TestTextSizePropertyIdentityPreservationPBT:
+    """Property-based tests for text_size property identity preservation.
+
+    These tests verify that changing text_size preserves all widget object IDs
+    in the subtree, regardless of the transition type.
+
+    **Property 3: text_size updates preserve widget identity**
+    **Validates: Requirements 4.1, 4.4**
+    """
+
+    @given(
+        markdown_text=simple_markdown_document(),
+        text_size=st.one_of(
+            # [None, None] - no constraints
+            st.just([None, None]),
+            # [width, None] - width constrained only
+            st.tuples(
+                st.floats(min_value=50, max_value=500, allow_nan=False, allow_infinity=False),
+                st.none()
+            ).map(list),
+            # [None, height] - height constrained only
+            st.tuples(
+                st.none(),
+                st.floats(min_value=50, max_value=500, allow_nan=False, allow_infinity=False)
+            ).map(list),
+            # [width, height] - both constrained
+            st.tuples(
+                st.floats(min_value=50, max_value=500, allow_nan=False, allow_infinity=False),
+                st.floats(min_value=50, max_value=500, allow_nan=False, allow_infinity=False)
+            ).map(list)
+        )
+    )
+    # Feature: optimize-rebuild-contract, Property 3: text_size updates preserve widget identity
+    # Mixed finite/complex strategy: 50 examples (4 text_size patterns with complex markdown)
+    @settings(max_examples=50, deadline=None)
+    def test_text_size_preserves_widget_identity(self, markdown_text, text_size):
+        """text_size Updates Preserve Widget Identity.
+
+        *For any* MarkdownLabel with non-empty content, and *for any* valid
+        text_size value (including [None, None], [width, None], [None, height],
+        [width, height]), changing text_size SHALL preserve all widget object
+        IDs in the subtree (the set of IDs before equals the set of IDs after).
+
+        **Validates: Requirements 4.1, 4.4**
+        """
+        # Ensure we have non-empty content
+        assume(markdown_text and markdown_text.strip())
+
+        # Create MarkdownLabel with initial content
+        label = MarkdownLabel(text=markdown_text)
+
+        # Ensure we have children to test
+        assume(len(label.children) > 0)
+
+        # Capture widget IDs before change
+        ids_before = collect_widget_ids(label)
+
+        # Apply text_size change
+        label.text_size = text_size
+
+        # Capture widget IDs after change
+        ids_after = collect_widget_ids(label)
+
+        # Assert: widget IDs should be unchanged
+        assert ids_before == ids_after, (
+            f"Widget IDs changed after text_size update to {text_size}. "
+            f"Before: {len(ids_before)} widgets, After: {len(ids_after)} widgets"
+        )
+
+    @given(
+        markdown_text=simple_markdown_document(),
+        initial_text_size=st.one_of(
+            st.just([None, None]),
+            st.tuples(
+                st.floats(min_value=50, max_value=500, allow_nan=False, allow_infinity=False),
+                st.none()
+            ).map(list),
+            st.tuples(
+                st.none(),
+                st.floats(min_value=50, max_value=500, allow_nan=False, allow_infinity=False)
+            ).map(list),
+            st.tuples(
+                st.floats(min_value=50, max_value=500, allow_nan=False, allow_infinity=False),
+                st.floats(min_value=50, max_value=500, allow_nan=False, allow_infinity=False)
+            ).map(list)
+        ),
+        final_text_size=st.one_of(
+            st.just([None, None]),
+            st.tuples(
+                st.floats(min_value=50, max_value=500, allow_nan=False, allow_infinity=False),
+                st.none()
+            ).map(list),
+            st.tuples(
+                st.none(),
+                st.floats(min_value=50, max_value=500, allow_nan=False, allow_infinity=False)
+            ).map(list),
+            st.tuples(
+                st.floats(min_value=50, max_value=500, allow_nan=False, allow_infinity=False),
+                st.floats(min_value=50, max_value=500, allow_nan=False, allow_infinity=False)
+            ).map(list)
+        )
+    )
+    # Feature: optimize-rebuild-contract, Property 3: text_size updates preserve widget identity
+    # Mixed finite/complex strategy: 50 examples (16 transition combinations with complex markdown)
+    @settings(max_examples=50, deadline=None)
+    def test_text_size_transitions_preserve_widget_identity(
+        self, markdown_text, initial_text_size, final_text_size
+    ):
+        """text_size Transitions Preserve Widget Identity.
+
+        *For any* MarkdownLabel with non-empty content, and *for any* transition
+        between text_size values (e.g., [None, None] to [width, None], or
+        [width, height] to [None, None]), the transition SHALL preserve all
+        widget object IDs in the subtree.
+
+        **Validates: Requirements 4.1, 4.4**
+        """
+        # Ensure we have non-empty content
+        assume(markdown_text and markdown_text.strip())
+
+        # Create MarkdownLabel with initial text_size
+        label = MarkdownLabel(text=markdown_text, text_size=initial_text_size)
+
+        # Ensure we have children to test
+        assume(len(label.children) > 0)
+
+        # Capture widget IDs before transition
+        ids_before = collect_widget_ids(label)
+
+        # Apply text_size transition
+        label.text_size = final_text_size
+
+        # Capture widget IDs after transition
+        ids_after = collect_widget_ids(label)
+
+        # Assert: widget IDs should be unchanged
+        assert ids_before == ids_after, (
+            f"Widget IDs changed after text_size transition from {initial_text_size} "
+            f"to {final_text_size}. "
+            f"Before: {len(ids_before)} widgets, After: {len(ids_after)} widgets"
+        )
+
+    @given(markdown_text=simple_markdown_document())
+    # Feature: optimize-rebuild-contract, Property 3: text_size updates preserve widget identity
+    # Complex strategy: markdown text only
+    @settings(max_examples=30, deadline=None)
+    def test_text_size_none_to_constrained_preserves_widget_identity(self, markdown_text):
+        """text_size [None, None] to Constrained Preserves Widget Identity.
+
+        *For any* MarkdownLabel with non-empty content, transitioning text_size
+        from [None, None] to a constrained value SHALL preserve all widget
+        object IDs.
+
+        **Validates: Requirements 4.1, 4.4**
+        """
+        # Ensure we have non-empty content
+        assume(markdown_text and markdown_text.strip())
+
+        # Create MarkdownLabel with [None, None] text_size
+        label = MarkdownLabel(text=markdown_text, text_size=[None, None])
+
+        # Ensure we have children to test
+        assume(len(label.children) > 0)
+
+        # Capture widget IDs before change
+        ids_before = collect_widget_ids(label)
+
+        # Transition to constrained text_size
+        label.text_size = [200, None]
+
+        # Capture widget IDs after change
+        ids_after = collect_widget_ids(label)
+
+        # Assert: widget IDs should be unchanged
+        assert ids_before == ids_after, (
+            f"Widget IDs changed after text_size transition from [None, None] to [200, None]. "
+            f"Before: {len(ids_before)} widgets, After: {len(ids_after)} widgets"
+        )
+
+    @given(markdown_text=simple_markdown_document())
+    # Feature: optimize-rebuild-contract, Property 3: text_size updates preserve widget identity
+    # Complex strategy: markdown text only
+    @settings(max_examples=30, deadline=None)
+    def test_text_size_constrained_to_none_preserves_widget_identity(self, markdown_text):
+        """text_size Constrained to [None, None] Preserves Widget Identity.
+
+        *For any* MarkdownLabel with non-empty content, transitioning text_size
+        from a constrained value to [None, None] SHALL preserve all widget
+        object IDs.
+
+        **Validates: Requirements 4.1, 4.4**
+        """
+        # Ensure we have non-empty content
+        assume(markdown_text and markdown_text.strip())
+
+        # Create MarkdownLabel with constrained text_size
+        label = MarkdownLabel(text=markdown_text, text_size=[200, None])
+
+        # Ensure we have children to test
+        assume(len(label.children) > 0)
+
+        # Capture widget IDs before change
+        ids_before = collect_widget_ids(label)
+
+        # Transition to [None, None]
+        label.text_size = [None, None]
+
+        # Capture widget IDs after change
+        ids_after = collect_widget_ids(label)
+
+        # Assert: widget IDs should be unchanged
+        assert ids_before == ids_after, (
+            f"Widget IDs changed after text_size transition from [200, None] to [None, None]. "
+            f"Before: {len(ids_before)} widgets, After: {len(ids_after)} widgets"
+        )
+
+    @given(
+        markdown_text=simple_markdown_document(),
+        width=st.floats(min_value=50, max_value=500, allow_nan=False, allow_infinity=False)
+    )
+    # Feature: optimize-rebuild-contract, Property 3: text_size updates preserve widget identity
+    # Complex strategy: width float with complex markdown
+    @settings(max_examples=30, deadline=None)
+    def test_text_size_width_only_preserves_widget_identity(self, markdown_text, width):
+        """text_size [width, None] Preserves Widget Identity.
+
+        *For any* MarkdownLabel with non-empty content, and *for any* width value,
+        setting text_size to [width, None] SHALL preserve all widget object IDs.
+
+        **Validates: Requirements 4.1, 4.4**
+        """
+        # Ensure we have non-empty content
+        assume(markdown_text and markdown_text.strip())
+
+        # Create MarkdownLabel with initial content
+        label = MarkdownLabel(text=markdown_text)
+
+        # Ensure we have children to test
+        assume(len(label.children) > 0)
+
+        # Capture widget IDs before change
+        ids_before = collect_widget_ids(label)
+
+        # Apply text_size with width only
+        label.text_size = [width, None]
+
+        # Capture widget IDs after change
+        ids_after = collect_widget_ids(label)
+
+        # Assert: widget IDs should be unchanged
+        assert ids_before == ids_after, (
+            f"Widget IDs changed after text_size update to [{width}, None]. "
+            f"Before: {len(ids_before)} widgets, After: {len(ids_after)} widgets"
+        )
+
+    @given(
+        markdown_text=simple_markdown_document(),
+        height=st.floats(min_value=50, max_value=500, allow_nan=False, allow_infinity=False)
+    )
+    # Feature: optimize-rebuild-contract, Property 3: text_size updates preserve widget identity
+    # Complex strategy: height float with complex markdown
+    @settings(max_examples=30, deadline=None)
+    def test_text_size_height_only_preserves_widget_identity(self, markdown_text, height):
+        """text_size [None, height] Preserves Widget Identity.
+
+        *For any* MarkdownLabel with non-empty content, and *for any* height value,
+        setting text_size to [None, height] SHALL preserve all widget object IDs.
+
+        **Validates: Requirements 4.1, 4.4**
+        """
+        # Ensure we have non-empty content
+        assume(markdown_text and markdown_text.strip())
+
+        # Create MarkdownLabel with initial content
+        label = MarkdownLabel(text=markdown_text)
+
+        # Ensure we have children to test
+        assume(len(label.children) > 0)
+
+        # Capture widget IDs before change
+        ids_before = collect_widget_ids(label)
+
+        # Apply text_size with height only
+        label.text_size = [None, height]
+
+        # Capture widget IDs after change
+        ids_after = collect_widget_ids(label)
+
+        # Assert: widget IDs should be unchanged
+        assert ids_before == ids_after, (
+            f"Widget IDs changed after text_size update to [None, {height}]. "
+            f"Before: {len(ids_before)} widgets, After: {len(ids_after)} widgets"
+        )
+
+    @given(
+        markdown_text=simple_markdown_document(),
+        width=st.floats(min_value=50, max_value=500, allow_nan=False, allow_infinity=False),
+        height=st.floats(min_value=50, max_value=500, allow_nan=False, allow_infinity=False)
+    )
+    # Feature: optimize-rebuild-contract, Property 3: text_size updates preserve widget identity
+    # Complex strategy: width and height floats with complex markdown
+    @settings(max_examples=30, deadline=None)
+    def test_text_size_both_constrained_preserves_widget_identity(
+        self, markdown_text, width, height
+    ):
+        """text_size [width, height] Preserves Widget Identity.
+
+        *For any* MarkdownLabel with non-empty content, and *for any* width and
+        height values, setting text_size to [width, height] SHALL preserve all
+        widget object IDs.
+
+        **Validates: Requirements 4.1, 4.4**
+        """
+        # Ensure we have non-empty content
+        assume(markdown_text and markdown_text.strip())
+
+        # Create MarkdownLabel with initial content
+        label = MarkdownLabel(text=markdown_text)
+
+        # Ensure we have children to test
+        assume(len(label.children) > 0)
+
+        # Capture widget IDs before change
+        ids_before = collect_widget_ids(label)
+
+        # Apply text_size with both width and height
+        label.text_size = [width, height]
+
+        # Capture widget IDs after change
+        ids_after = collect_widget_ids(label)
+
+        # Assert: widget IDs should be unchanged
+        assert ids_before == ids_after, (
+            f"Widget IDs changed after text_size update to [{width}, {height}]. "
+            f"Before: {len(ids_before)} widgets, After: {len(ids_after)} widgets"
+        )
