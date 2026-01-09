@@ -453,11 +453,6 @@ def test_file_{i}_function(value):
                 if os.path.exists(file_path):
                     os.unlink(file_path)
 
-    def test_backup_and_rollback_functionality(self):
-        """Test backup creation and rollback capability."""
-        # Backup functionality no longer exercised in tests.
-        assert True
-
     def test_standardization_tool_integration_compatibility(self):
         """Test integration with existing optimization tools."""
         # Create a file with standardized comments

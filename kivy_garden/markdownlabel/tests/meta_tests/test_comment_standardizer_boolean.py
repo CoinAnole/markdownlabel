@@ -35,8 +35,8 @@ class TestBooleanStrategyDocumentation:
             whitelist_categories=('Lu', 'Ll', 'Nd', 'Pc')
         )).map(lambda x: f"test_{x}")
     )
-    # Complex strategy: 2 examples (low max=2 acceptable for meta-test)
-    @settings(max_examples=2, deadline=None)
+    # Complex strategy: 10 examples (adequate coverage)
+    @settings(max_examples=10, deadline=None)
     def test_boolean_strategy_comments_reference_true_false_coverage(
         self, max_examples, function_name
     ):
