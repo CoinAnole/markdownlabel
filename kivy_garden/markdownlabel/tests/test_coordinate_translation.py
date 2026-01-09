@@ -31,6 +31,7 @@ from .test_utils import (
 class TestCoordinateTranslation:
     """Property tests for coordinate translation of refs and anchors."""
 
+    @pytest.mark.property
     @given(st_alphanumeric_text(min_size=1, max_size=20))
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -62,6 +63,7 @@ class TestCoordinateTranslation:
         assert found_url, \
             f"Expected [ref={url}] in Label markup"
 
+    @pytest.mark.property
     @given(st.lists(
         st_alphanumeric_text(min_size=1, max_size=10),
         min_size=2, max_size=4
@@ -172,7 +174,7 @@ class TestCoordinateTranslation:
                     assert expected_box in aggregated_refs[url], \
                         f"Expected translated box {expected_box} in aggregated refs"
 
-    def test_refs_translation_with_nested_list_markup(self):
+    def test_nested_list_produces_correct_ref_markup(self):
         """Links in nested content (lists) produce correct ref markup."""
         markdown = '''- [Link 1](https://example1.com)
 - [Link 2](https://example2.com)
@@ -192,7 +194,7 @@ class TestCoordinateTranslation:
                '[ref=https://example2.com]' in all_markup, \
             "Expected ref markup for list links"
 
-    def test_refs_translation_with_table_markup(self):
+    def test_table_produces_correct_ref_markup(self):
         """Links in table content produce correct ref markup."""
         markdown = '''| Column A | Column B |
 | --- | --- |
@@ -212,7 +214,7 @@ class TestCoordinateTranslation:
                    for lbl in labels_with_markup)
         assert found, "Expected ref markup for table link"
 
-    def test_refs_translation_with_blockquote_markup(self):
+    def test_blockquote_produces_correct_ref_markup(self):
         """Links in blockquote content produce correct ref markup."""
         markdown = '> [Quoted link](https://example.com)'
 
@@ -230,6 +232,7 @@ class TestCoordinateTranslation:
                    for lbl in labels_with_markup)
         assert found, "Expected ref markup for blockquote link"
 
+    @pytest.mark.property
     @given(st_alphanumeric_text(min_size=1, max_size=10),
            st_alphanumeric_text(min_size=1, max_size=10))
     # Complex strategy: 20 examples (adequate coverage)
@@ -266,6 +269,7 @@ class TestCoordinateTranslation:
             found_old = any(f'[ref={url1}]' in lbl.text for lbl in labels2)
             assert not found_old, f"Did not expect [ref={url1}] in updated markup"
 
+    @pytest.mark.property
     @given(st.floats(min_value=0, max_value=100),
            st.floats(min_value=0, max_value=100),
            st.floats(min_value=0, max_value=100),
@@ -298,6 +302,7 @@ class TestCoordinateTranslation:
         assert translated_box[2] == x2 + offset_x
         assert translated_box[3] == y2 + offset_y
 
+    @pytest.mark.property
     @given(st.floats(min_value=0, max_value=100),
            st.floats(min_value=0, max_value=100))
     # Complex strategy: 20 examples (adequate coverage)
@@ -590,6 +595,7 @@ class TestDeterministicRefsTranslation:
             assert abs(expected - actual) < 0.001, \
                 f"Fallback box coord {i}: expected {expected}, got {actual}"
 
+    @pytest.mark.property
     @given(
         # Parent container offset
         st.floats(min_value=0, max_value=100, allow_nan=False, allow_infinity=False),
@@ -925,6 +931,7 @@ class TestDeterministicAnchorsTranslation:
         assert abs(expected_pos[1] - actual_pos[1]) < 0.001, \
             f"Fallback anchor Y: expected {expected_pos[1]}, got {actual_pos[1]}"
 
+    @pytest.mark.property
     @given(
         # Parent container offset
         st.floats(min_value=0, max_value=100, allow_nan=False, allow_infinity=False),
