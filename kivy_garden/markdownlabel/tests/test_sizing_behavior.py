@@ -22,7 +22,7 @@ class TestAutoSizingBehavior:
 
     @pytest.mark.property
     @given(simple_markdown_document())
-    # Complex strategy: 20 examples (variable-length document with complex text)
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_auto_size_height_enabled_sets_size_hint_y_none(self, markdown_text):
         """With auto_size_height=True, size_hint_y is None for auto-sizing."""
@@ -40,7 +40,7 @@ class TestAutoSizingBehavior:
 
     @pytest.mark.property
     @given(markdown_heading())
-    # Complex strategy: 20 examples (6 heading levels × complex text content)
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_height_bound_to_minimum(self, heading):
         """auto_size_height=True enables height binding via size_hint_y=None.
@@ -94,7 +94,7 @@ class TestAutoSizeHeightTrueBehavior:
 
     @pytest.mark.property
     @given(simple_markdown_document())
-    # Complex strategy: 20 examples (variable-length document with complex text)
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_auto_size_height_true_sets_size_hint_y_none(self, markdown_text):
         """When auto_size_height=True, size_hint_y should be None."""
@@ -105,7 +105,7 @@ class TestAutoSizeHeightTrueBehavior:
 
     @pytest.mark.property
     @given(simple_markdown_document())
-    # Complex strategy: 20 examples (variable-length document with complex text)
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_auto_size_height_true_binds_height_to_minimum(self, markdown_text):
         """auto_size_height=True enables height binding via size_hint_y=None.
@@ -165,7 +165,7 @@ class TestAutoSizeHeightFalseBehavior:
 
     @pytest.mark.property
     @given(simple_markdown_document())
-    # Complex strategy: 20 examples (variable-length document with complex text)
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_auto_size_height_false_preserves_default_size_hint_y(self, markdown_text):
         """When auto_size_height=False, default size_hint_y=1 is preserved."""
@@ -180,7 +180,7 @@ class TestAutoSizeHeightFalseBehavior:
     @pytest.mark.property
     @given(simple_markdown_document(),
            st.floats(min_value=0.1, max_value=2.0, allow_nan=False, allow_infinity=False))
-    # Complex strategy: 50 examples (two complex inputs: document + float)
+    # Complex strategy: 50 examples (adequate coverage)
     @settings(max_examples=50, deadline=None)
     def test_auto_size_height_false_preserves_user_size_hint_y(self, markdown_text, user_size_hint_y):
         """When auto_size_height=False, user-specified size_hint_y is preserved."""
@@ -198,7 +198,7 @@ class TestAutoSizeHeightFalseBehavior:
 
     @pytest.mark.property
     @given(simple_markdown_document())
-    # Complex strategy: 20 examples (variable-length document with complex text)
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_auto_size_height_false_no_height_binding(self, markdown_text):
         """When auto_size_height=False, height is not bound to minimum_height."""
@@ -229,7 +229,7 @@ class TestAutoSizeHeightDynamicToggling:
 
     @pytest.mark.property
     @given(simple_markdown_document())
-    # Complex strategy: 20 examples (variable-length document with complex text)
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_toggle_true_to_false_restores_size_hint_y(self, markdown_text):
         """Toggling auto_size_height from True to False restores size_hint_y."""
@@ -251,7 +251,7 @@ class TestAutoSizeHeightDynamicToggling:
 
     @pytest.mark.property
     @given(simple_markdown_document())
-    # Complex strategy: 20 examples (variable-length document with complex text)
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_toggle_false_to_true_sets_size_hint_y_none(self, markdown_text):
         """Toggling auto_size_height from False to True sets size_hint_y=None."""
@@ -274,7 +274,7 @@ class TestAutoSizeHeightDynamicToggling:
     @pytest.mark.property
     @given(simple_markdown_document(),
            st.floats(min_value=0.1, max_value=2.0, allow_nan=False, allow_infinity=False))
-    # Complex strategy: 50 examples (two complex inputs: document + float)
+    # Complex strategy: 50 examples (adequate coverage)
     @settings(max_examples=50, deadline=None)
     def test_toggle_preserves_user_size_hint_y(self, markdown_text, user_size_hint_y):
         """Toggling preserves the original user-specified size_hint_y value."""
@@ -308,7 +308,7 @@ class TestAutoSizeHeightDynamicToggling:
 
     @pytest.mark.property
     @given(simple_markdown_document())
-    # Complex strategy: 20 examples (variable-length document with complex text)
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_multiple_toggles_maintain_consistency(self, markdown_text):
         """Multiple toggles maintain consistent behavior."""
@@ -342,7 +342,7 @@ class TestStrictLabelModeSizingBehavior:
 
     @pytest.mark.property
     @given(simple_markdown_document())
-    # Complex strategy: 20 examples (variable-length document with complex text)
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_strict_mode_preserves_default_size_hint_y(self, markdown_text):
         """When strict_label_mode=True, default size_hint_y=1 is preserved."""
@@ -357,7 +357,7 @@ class TestStrictLabelModeSizingBehavior:
     @pytest.mark.property
     @given(simple_markdown_document(),
            st.floats(min_value=0.1, max_value=2.0, allow_nan=False, allow_infinity=False))
-    # Complex strategy: 50 examples (two complex inputs: document + float)
+    # Complex strategy: 50 examples (adequate coverage)
     @settings(max_examples=50, deadline=None)
     def test_strict_mode_preserves_user_size_hint_y(self, markdown_text, user_size_hint_y):
         """When strict_label_mode=True, user-specified size_hint_y is preserved."""
@@ -375,7 +375,7 @@ class TestStrictLabelModeSizingBehavior:
 
     @pytest.mark.property
     @given(simple_markdown_document())
-    # Complex strategy: 20 examples (variable-length document with complex text)
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_strict_mode_height_not_bound_to_minimum(self, markdown_text):
         """When strict_label_mode=True, height is not bound to minimum_height."""
@@ -426,7 +426,7 @@ class TestStrictLabelModeSizingBehavior:
 
     @pytest.mark.property
     @given(simple_markdown_document())
-    # Complex strategy: 20 examples (variable-length document with complex text)
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_strict_mode_toggle_from_false_to_true(self, markdown_text):
         """Toggling strict_label_mode from False to True disables auto-sizing."""
@@ -449,7 +449,7 @@ class TestStrictLabelModeSizingBehavior:
 
     @pytest.mark.property
     @given(simple_markdown_document())
-    # Complex strategy: 20 examples (variable-length document with complex text)
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_strict_mode_toggle_from_true_to_false(self, markdown_text):
         """Toggling strict_label_mode from True to False enables auto-sizing."""
@@ -473,7 +473,7 @@ class TestStrictLabelModeSizingBehavior:
     @pytest.mark.property
     @given(simple_markdown_document(),
            st.floats(min_value=0.1, max_value=2.0, allow_nan=False, allow_infinity=False))
-    # Complex strategy: 50 examples (two complex inputs: document + float)
+    # Complex strategy: 50 examples (adequate coverage)
     @settings(max_examples=50, deadline=None)
     def test_strict_mode_toggle_preserves_user_size_hint_y(self, markdown_text, user_size_hint_y):
         """Toggling strict_label_mode preserves user-specified size_hint_y."""
@@ -500,7 +500,7 @@ class TestStrictLabelModeSizingBehavior:
 
     @pytest.mark.property
     @given(simple_markdown_document())
-    # Complex strategy: 20 examples (variable-length document with complex text)
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_strict_mode_overrides_auto_size_height(self, markdown_text):
         """strict_label_mode=True overrides auto_size_height=True behavior."""
@@ -517,7 +517,7 @@ class TestStrictLabelModeSizingBehavior:
 
     @pytest.mark.property
     @given(simple_markdown_document())
-    # Complex strategy: 20 examples (variable-length document with complex text)
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_strict_mode_ignores_auto_size_height_changes(self, markdown_text):
         """When strict_label_mode=True, auto_size_height changes are ignored."""
@@ -535,7 +535,7 @@ class TestStrictLabelModeSizingBehavior:
 
     @pytest.mark.property
     @given(simple_markdown_document())
-    # Complex strategy: 20 examples (variable-length document with complex text)
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_strict_mode_change_triggers_rebuild(self, markdown_text):
         """Changing strict_label_mode triggers widget rebuild."""
@@ -559,7 +559,7 @@ class TestStrictLabelModeSizingBehavior:
 
     @pytest.mark.property
     @given(simple_markdown_document())
-    # Complex strategy: 20 examples (variable-length document with complex text)
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_multiple_strict_mode_toggles_maintain_consistency(self, markdown_text):
         """Multiple strict_label_mode toggles maintain consistent behavior."""

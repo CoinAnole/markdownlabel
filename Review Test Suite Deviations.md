@@ -8,7 +8,7 @@ Based on my analysis of the test files and the TESTING.md guidelines, here's my 
 
 **Identified:** [test_direction_change_preserves_widget_identities](cci:1://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_rtl_alignment.py:271:4-299:63) does not follow `test_*_preserves_widget_tree_*` pattern
 
-**Verdict: ✅ LEGITIMATE - Worth Fixing (Low Priority)**
+**Verdict: ✅ RESOLVED**
 
 Looking at lines 280-300, the test name uses [_preserves_widget_identities](cci:1://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_rtl_alignment.py:271:4-299:63) while the TESTING.md section on "Rebuild Testing Names" (lines 117-119) recommends `test_*_preserves_widget_tree_*` for tests that verify NO rebuild occurred. The test does exactly that (verifies `ids_before == ids_after`), so renaming to `test_direction_change_preserves_widget_tree` or similar would improve consistency.
 
@@ -16,7 +16,7 @@ Looking at lines 280-300, the test name uses [_preserves_widget_identities](cci:
 
 **Identified:** Testing private method
 
-**Verdict: ✅ LEGITIMATE - Worth Fixing (Medium Priority)**
+**Verdict: ✅ RESOLVED**
 
 Looking at lines 477-493, the test calls `label._get_effective_halign()` directly. Per TESTING.md's "Best Practices" (mentioned but not shown fully), tests should verify **observable behavior**, not implementation details. The private method `_get_effective_halign()` could be refactored without breaking the public API, so this test creates brittleness. The test should instead verify the effective alignment through the child Label widgets' `halign` property—which is already done in the first assertion.
 
@@ -28,7 +28,7 @@ Looking at lines 477-493, the test calls `label._get_effective_halign()` directl
 
 **Identified:** `"(two complex strategies combined)"` instead of recommended rationale
 
-**Verdict: ✅ LEGITIMATE - Worth Fixing (Low Priority)**
+**Verdict: ✅ RESOLVED**
 
 Looking at lines 648-649:
 
@@ -46,7 +46,7 @@ Per TESTING.md (lines 675-680), the recommended format for complex strategies is
 
 **Identified:** Property-based tests lack the `@pytest.mark.property` marker
 
-**Verdict: ✅ LEGITIMATE - Worth Fixing (Medium Priority)**
+**Verdict: ✅ RESOLVED**
 
 Examining the file, I see tests using `@given()` decorators (lines 29, 43, 57, etc.) but missing `@pytest.mark.property`. Per TESTING.md lines 168, property-based tests with Hypothesis should have this marker to allow selective test execution.
 
@@ -54,7 +54,7 @@ Examining the file, I see tests using `@given()` decorators (lines 29, 43, 57, e
 
 **Identified:** Test expects rebuild for style-only [shorten](cci:1://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_shortening_properties.py:42:4-54:70) property, uses `force_rebuild()`, and has misleading name
 
-**Verdict: ✅ LEGITIMATE - Worth Fixing (High Priority)**
+**Verdict: ✅ RESOLVED**
 
 This is a significant deviation. Looking at lines 318-346:
 
@@ -82,7 +82,7 @@ The test should:
 
 **Identified:** [test_empty_ellipsis_options_not_forwarded](cci:1://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_shortening_properties.py:262:4-272:78) claims "not forwarded" but asserts forwarding works
 
-**Verdict: ✅ LEGITIMATE - Worth Fixing (Low Priority)**
+**Verdict: ✅ RESOLVED**
 
 Looking at lines 263-274:
 
@@ -105,7 +105,7 @@ The test name says "not forwarded" but the assertion actually verifies that `{}`
 
 **Identified:** Non-standard comment rationales
 
-**Verdict: ✅ LEGITIMATE - Worth Fixing (Low Priority, Batch Fix)**
+**Verdict: ✅ RESOLVED**
 
 Looking at examples:
 
@@ -176,7 +176,7 @@ Looking at the tests, they call `label._get_effective_render_mode()` to verify t
 
 **Identified:** Claims like "creates Label widget" but no `isinstance(widget, Label)` assertion
 
-**Verdict: ✅ LEGITIMATE - Worth Fixing (Low Priority)**
+**Verdict: ✅ RESOLVED**
 
 Example from lines 76-87:
 
@@ -194,7 +194,7 @@ The tests verify children exist and texture_size works, but the docstrings claim
 
 **Identified:** `"(two complex strategies combined)"`
 
-**Verdict: ✅ LEGITIMATE - Worth Fixing (Low Priority)**
+**Verdict: ✅ RESOLVED**
 
 Same as the serialization file - should use standard rationale format.
 
@@ -204,19 +204,10 @@ Same as the serialization file - should use standard rationale format.
 
 | Priority   | Count | Category                                                                                                                                                                                                                                                                               |
 | ---------- | ----- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **High**   | 2     | Incorrect rebuild contract tests ([shorten](cci:1://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_shortening_properties.py:42:4-54:70))                                                                                                          |
-| **Medium** | 3     | Missing markers, private method testing                                                                                                                                                                                                                                                |
-| **Low**    | ~20   | Comment format, naming conventions, docstring accuracy                                                                                                                                                                                                                                 |
+| **High**   | 0     | All resolved                                                                                                                                                                                                                                                                           |
+| **Medium** | 0     | All resolved                                                                                                                                                                                                                                                                           |
+| **Low**    | 0     | All resolved                                                                                                                                                                                                                                                                           |
 
 ## Recommended Fix Order
 
-1. **High Priority:** Fix the remaining tests that incorrectly expect rebuilds for style-only properties ([shorten](cci:1://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_shortening_properties.py:42:4-54:70)). This represents incorrect test semantics.
-
-2. **Medium Priority:** Add missing `@pytest.mark.property` markers to enable proper test categorization.
-
-3. **Low Priority:** Batch-update comment rationales to match the standard format (can be automated with the standardization tools mentioned in TESTING.md).
-
-4. **RESOLVED:**
-    - Documented `_get_effective_render_mode()` and similar methods as acceptable testing exceptions.
-    - Resolved [text_size](cci:1://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_text_properties.py:45:4-64:85) investigation: confirmed synchronous updates and removed `force_rebuild()`.
-    - Fixed [unicode_errors](cci:1://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_text_properties.py:336:4-342:83) and [strip](cci:1://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_text_properties.py:461:4-467:62) rebuild contract deviations.
+1. **RESOLVED:** All identified deviations have been addressed.

@@ -645,7 +645,7 @@ class TestCodeFenceCollisionProperty:
             max_size=20
         )
     )
-    # Complex strategy: 20 examples (two complex strategies combined)
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_code_serialization_round_trip_property(self, code_content, language):
         """**Feature: test-improvements, Code serialization round-trip**

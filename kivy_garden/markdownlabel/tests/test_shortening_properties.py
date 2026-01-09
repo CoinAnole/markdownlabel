@@ -26,6 +26,7 @@ from .test_utils import (
 class TestShorteningPropertyForwarding:
     """Property tests for shortening property forwarding."""
 
+    @pytest.mark.property
     @given(st.booleans())
     # Boolean strategy: 2 examples (True/False coverage)
     @settings(max_examples=2, deadline=None)
@@ -121,6 +122,7 @@ class TestShorteningPropertyForwarding:
             assert lbl.shorten_from == shorten_from_value, \
                 f"Expected shorten_from={shorten_from_value}, got {lbl.shorten_from}"
 
+    @pytest.mark.property
     @given(st.text(min_size=0, max_size=5, alphabet='abc '))
     # Complex strategy: 30 examples (adequate coverage)
     @settings(max_examples=30, deadline=None)
@@ -135,6 +137,7 @@ class TestShorteningPropertyForwarding:
             assert lbl.split_str == split_str_value, \
                 f"Expected split_str={split_str_value!r}, got {lbl.split_str!r}"
 
+    @pytest.mark.property
     @given(st.text(min_size=0, max_size=5, alphabet='abc '))
     # Complex strategy: 30 examples (adequate coverage)
     @settings(max_examples=30, deadline=None)
@@ -149,6 +152,7 @@ class TestShorteningPropertyForwarding:
             assert lbl.split_str == split_str_value, \
                 f"Expected split_str={split_str_value!r}, got {lbl.split_str!r}"
 
+    @pytest.mark.property
     @given(st.integers(min_value=0, max_value=10))
     # Medium finite strategy: 11 examples (adequate finite coverage)
     @settings(max_examples=11, deadline=None)
@@ -165,6 +169,7 @@ class TestShorteningPropertyForwarding:
                     f"Expected max_lines={max_lines_value}, got {lbl.max_lines}"
             # When max_lines=0, it may not be set on child Labels (default behavior)
 
+    @pytest.mark.property
     @given(st.integers(min_value=1, max_value=10))
     # Small finite strategy: 10 examples (input space size: 10)
     @settings(max_examples=10, deadline=None)
@@ -194,6 +199,7 @@ class TestShorteningPropertyForwarding:
             assert lbl.max_lines == max_lines_value, \
                 f"Expected max_lines={max_lines_value}, got {lbl.max_lines}"
 
+    @pytest.mark.property
     @given(st.fixed_dictionaries({
         'markup_color': st_rgba_color()
     }))
@@ -260,8 +266,8 @@ class TestShorteningPropertyForwarding:
             assert lbl.ellipsis_options == ellipsis_opts, \
                 f"Expected ellipsis_options={ellipsis_opts}, got {lbl.ellipsis_options}"
 
-    def test_empty_ellipsis_options_not_forwarded(self):
-        """Empty ellipsis_options dict is not forwarded (default behavior)."""
+    def test_empty_ellipsis_options_forwards_default_value(self):
+        """Empty ellipsis_options dict results in default behavior."""
         label = MarkdownLabel(text='Hello World', ellipsis_options={})
 
         labels = find_labels_recursive(label)
@@ -272,6 +278,7 @@ class TestShorteningPropertyForwarding:
             assert lbl.ellipsis_options == {}, \
                 f"Expected empty ellipsis_options, got {lbl.ellipsis_options}"
 
+    @pytest.mark.property
     @given(st.booleans(), st.sampled_from(['left', 'center', 'right']),
            st.text(min_size=0, max_size=3, alphabet='ab '),
            st.integers(min_value=1, max_value=5))
@@ -312,11 +319,12 @@ Paragraph text
             assert lbl.max_lines == max_lines_val, \
                 f"Expected max_lines={max_lines_val}, got {lbl.max_lines}"
 
+    @pytest.mark.property
     @given(st.booleans(), st.booleans())
     # Combination strategy: 2 examples (combination coverage)
     @settings(max_examples=2, deadline=None)
-    def test_shorten_change_triggers_rebuild(self, shorten1, shorten2):
-        """Changing shorten triggers widget rebuild with new value."""
+    def test_shorten_change_preserves_widget_tree(self, shorten1, shorten2):
+        """Changing shorten updates widgets in-place (no rebuild)."""
         from hypothesis import assume
         assume(shorten1 != shorten2)
 
@@ -327,17 +335,16 @@ Paragraph text
         for lbl in labels:
             assert lbl.shorten == shorten1
 
-        # Collect widget IDs before change to verify rebuild
+        # Collect widget IDs before change
         ids_before = collect_widget_ids(label)
 
         # Change shorten
         label.shorten = shorten2
-        label.force_rebuild()  # Force immediate rebuild for test
 
-        # Verify rebuild occurred (widget instances changed)
+        # Verify no rebuild occurred (style-only change)
         ids_after = collect_widget_ids(label)
-        assert ids_before != ids_after, \
-            "Expected widget tree rebuild when shorten property changed"
+        assert ids_before == ids_after, \
+            "Expected existing widgets to be preserved (no rebuild) when shorten property changed"
 
         # Verify new value
         labels = find_labels_recursive(label)

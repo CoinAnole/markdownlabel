@@ -277,7 +277,7 @@ class TestDirectionChangeUpdatesAlignment:
     )
     # Combination strategy: 6 examples (combination coverage)
     @settings(max_examples=6, deadline=None)
-    def test_direction_change_preserves_widget_identities(self, initial_direction, new_direction):
+    def test_direction_change_preserves_widget_tree(self, initial_direction, new_direction):
         """Direction change preserves widget identities (no rebuild)."""
         label = MarkdownLabel(
             text='Hello World',
@@ -486,8 +486,8 @@ class TestExplicitAlignmentOverridesAuto:
         assert label.halign == explicit_halign, \
             f"Expected MarkdownLabel.halign={explicit_halign}, got {label.halign}"
 
-        # The _get_effective_halign method should return the explicit value
-        # Documented Exception: Verifying internal alignment selection logic
-        effective_halign = label._get_effective_halign()
-        assert effective_halign == explicit_halign, \
-            f"Expected _get_effective_halign()={explicit_halign}, got {effective_halign}"
+        # Verify derived alignment on children (public observable behavior)
+        labels = find_labels_recursive(label)
+        for lbl in labels:
+            assert lbl.halign == explicit_halign, \
+                f"Expected child halign={explicit_halign}, got {lbl.halign}"
