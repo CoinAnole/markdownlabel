@@ -125,6 +125,15 @@ Test method names should **accurately reflect what they assert**:
 - `test_*_forwards_to_*` - For tests that verify property forwarding
 - `test_*_applied_to_*` - For tests that verify property application
 
+#### Hybrid Names (Acceptable)
+
+Tests that verify multiple behaviors can use combined naming patterns:
+
+- `test_*_updates_value_without_rebuild` - Tests both value update AND no rebuild (acceptable)
+- `test_*_change_preserves_*` - Tests change AND preservation (acceptable)
+
+The key requirement is that the name **accurately describes what the test asserts**, not that it follows one specific pattern.
+
 #### Examples:
 
 ```python
@@ -140,6 +149,15 @@ def test_color_updates_value_immediately(self):
     """Test that color changes update Label.color immediately."""
     label.color = [1, 0, 0, 1]
     labels = find_labels_recursive(label)
+    assert all(l.color == [1, 0, 0, 1] for l in labels)  # Verifies value change
+
+# ALSO GOOD: Hybrid name that describes both behaviors
+def test_color_updates_value_without_rebuild(self):
+    """Test that color changes update value AND preserve widget tree."""
+    ids_before = collect_widget_ids(label)
+    label.color = [1, 0, 0, 1]
+    ids_after = collect_widget_ids(label)
+    assert ids_before == ids_after  # Verifies no rebuild
     assert all(l.color == [1, 0, 0, 1] for l in labels)  # Verifies value change
 
 # BAD: Name doesn't match assertion
@@ -759,18 +777,26 @@ Following these guidelines typically results in:
 
 ### When to Use Hypothesis vs. @pytest.mark.parametrize
 
-Choosing between Hypothesis and `@pytest.mark.parametrize` depends on the **number of dimensions** and the **size of the input space**.
+Choosing between Hypothesis and `@pytest.mark.parametrize` depends on the **number of dimensions** and the **size of the input space**. **These are recommendations, not requirements** — both approaches are valid for small finite cases.
 
-#### Single Dimension: Prefer @pytest.mark.parametrize
+#### Single Dimension: Prefer @pytest.mark.parametrize (But Hypothesis is Fine)
 
-For a single finite enumeration (≤10 items), `@pytest.mark.parametrize` is cleaner and guarantees full coverage:
+For a single finite enumeration (≤10 items), `@pytest.mark.parametrize` is slightly cleaner and guarantees full coverage, but Hypothesis with appropriate `max_examples` achieves the same result:
 
 ```python
-# ✅ GOOD: Single dimension, small enumeration - use parametrize
+# ✅ PREFERRED: Single dimension, small enumeration - use parametrize
 @pytest.mark.parametrize('halign', ['left', 'center', 'right', 'justify'])
 def test_alignment_behavior(halign):
     label = MarkdownLabel(text='Test', halign=halign)
     assert label.halign == halign
+
+# ✅ ALSO ACCEPTABLE: Hypothesis with max_examples matching space size
+@given(st.booleans())
+# Boolean strategy: 2 examples (True/False coverage)
+@settings(max_examples=2, deadline=None)
+def test_boolean_property(value):
+    label = MarkdownLabel(text='Test', strict_label_mode=value)
+    assert label.strict_label_mode == value
 ```
 
 #### Multiple Dimensions: Beware the Cartesian Product
@@ -805,7 +831,7 @@ def test_alignment_with_direction_and_heading(halign, direction, heading_level):
 
 | Scenario | Recommendation | Rationale |
 |----------|---------------|-----------|
-| Single enum, ≤10 values | `@pytest.mark.parametrize` | Full coverage, explicit test cases |
+| Single enum, ≤10 values | Either (parametrize preferred) | Both achieve full coverage |
 | Single enum, >10 values | Hypothesis `sampled_from` | Avoid excessive test count |
 | 2 enums, product ≤20 | Either approach works | Parametrize gives full coverage |
 | 2+ enums, product >20 | Hypothesis | Sampling avoids test explosion |
@@ -1129,18 +1155,44 @@ These guidelines aim to improve code quality and maintainability. Use judgment w
 - **Local helpers** specific to one test file's domain don't need to be in test_utils.py
 - **Manual widget traversal** is fine when shared helpers don't fit the use case
 - **Test naming** should be clear, but perfect naming is subjective
+- **Hypothesis vs. parametrize** — both are valid for small finite cases
+- **Imports inside test methods** are unusual but not prohibited
+- **Public constants** like `KivyRenderer.HEADING_SIZES` are not "implementation details"
+- **Documented widget attributes** like `language_info` on code blocks are public API
 
 The goal is readable, maintainable tests — not rigid adherence to rules.
 
 ### Testing Exceptions
 
-While testing should generally focus on observable behavior, certain private methods and attributes are documented as **acceptable exceptions** for testing internal state that has no public equivalent:
+While testing should generally focus on observable behavior, certain private methods and attributes are documented as **acceptable exceptions** for testing internal state that has no public equivalent.
+
+#### Specifically Documented Exceptions
 
 - `_get_effective_render_mode()`: Allowed for verifying auto-selection logic for texture vs. widget rendering.
 - `_aggregated_refs`: Allowed for verifying internal link coordinate maps in texture render mode.
 - `_get_effective_halign()`: (Historical exception) Note: Prefer verifying alignment through child `Label.halign` properties where possible.
 
-When using these exceptions, add a brief comment in the test explaining why direct access is necessary.
+#### Coverage-Focused Tests (Edge Cases Class)
+
+Tests in explicitly-named edge case classes (e.g., `TestKivyRendererEdgeCases`, `TestDeepNestingTruncation`) may access private methods when:
+
+1. The class name or docstring clearly indicates it's for **code coverage** or **edge cases**
+2. The behavior cannot be easily triggered through public API (e.g., nesting depth limits)
+3. The test documents *why* direct access is necessary
+
+Examples of acceptable private method access in edge case tests:
+- `renderer._nesting_depth` — triggering max nesting without deeply nested actual content
+- `renderer._render_token()` — testing fallback behavior for unknown token types  
+- `renderer._escape_markup()` — verifying escape logic in isolation
+
+#### When Direct Access Is NOT Acceptable
+
+Avoid private method testing when:
+- A **public API equivalent exists** (use `renderer.render([token])` instead of `renderer._unknown(token)`)
+- The test is in a **behavioral test class** (not an edge case/coverage class)
+- The **docstring doesn't explain** why direct access is necessary
+
+When using exceptions, add a brief comment in the test explaining why direct access is necessary.
 
 
 ### Performance Considerations
