@@ -523,39 +523,27 @@ class TestFontSizeImmediateUpdates:
         # Create label with initial font size
         label = MarkdownLabel(text=markdown_text, base_font_size=initial_size)
 
-        # Collect all Label widgets and their expected font sizes
-        def collect_labels_and_scales(widget, labels_info=None):
-            if labels_info is None:
-                labels_info = []
-
-            if isinstance(widget, Label):
-                # Get the font scale factor (default to 1.0 if not set)
-                scale = getattr(widget, '_font_scale', 1.0)
-                labels_info.append((widget, scale))
-
-            if hasattr(widget, 'children'):
-                for child in widget.children:
-                    collect_labels_and_scales(child, labels_info)
-
-            return labels_info
-
-        labels_before = collect_labels_and_scales(label)
+        # Collect all Label widgets and their initial font sizes
+        labels_before = find_labels_recursive(label)
         assume(len(labels_before) > 0)  # Need at least one Label to test
+
+        # Calculate scale factors from initial font sizes
+        # Note: scale = label_font_size / initial_base_font_size
+        font_scales = {id(lbl): lbl.font_size / initial_size for lbl in labels_before}
 
         # Change base_font_size
         label.base_font_size = new_size
 
-        # Collect labels after change
-        labels_after = collect_labels_and_scales(label)
-
-        # Verify all Labels have updated font_size
-        for label_widget, scale in labels_after:
+        # Verify all Labels have updated font_size correctly
+        labels_after = find_labels_recursive(label)
+        for label_widget in labels_after:
+            scale = font_scales[id(label_widget)]
             expected_font_size = new_size * scale
             actual_font_size = label_widget.font_size
 
             assert abs(actual_font_size - expected_font_size) < 0.1, \
-                f"Label font_size not updated: expected {expected_font_size}, " \
-                f"got {actual_font_size} (scale={scale})"
+                f"Label font_size not updated correctly: expected {expected_font_size}, " \
+                f"got {actual_font_size} (calculated scale={scale})"
 
     @pytest.mark.property
     @given(
@@ -574,13 +562,9 @@ class TestFontSizeImmediateUpdates:
         label = MarkdownLabel(text=heading_text, base_font_size=initial_size)
 
         # Find the heading Label
-        heading_label = None
-        for child in label.children:
-            if isinstance(child, Label) and hasattr(child, '_font_scale'):
-                heading_label = child
-                break
-
-        assume(heading_label is not None)
+        labels = find_labels_recursive(label)
+        assume(len(labels) > 0)
+        heading_label = labels[0]
 
         # Get expected scale from KivyRenderer.HEADING_SIZES
         from kivy_garden.markdownlabel.kivy_renderer import KivyRenderer
@@ -648,22 +632,19 @@ class TestHeadingScalePreservation:
         label = MarkdownLabel(text=heading_text, base_font_size=base_size)
 
         # Find the heading Label
-        heading_label = None
-        for child in label.children:
-            if isinstance(child, Label) and hasattr(child, '_font_scale'):
-                heading_label = child
-                break
-
-        assume(heading_label is not None)
+        labels = find_labels_recursive(label)
+        assume(len(labels) > 0)
+        heading_label = labels[0]
 
         # Get expected scale from KivyRenderer.HEADING_SIZES
         from kivy_garden.markdownlabel.kivy_renderer import KivyRenderer
         expected_scale = KivyRenderer.HEADING_SIZES.get(heading_level, 1.0)
 
-        # Verify the scale factor is stored correctly
-        actual_scale = getattr(heading_label, '_font_scale', 1.0)
+        # Verify the behavioral scale factor (font_size / base_font_size)
+        actual_scale = heading_label.font_size / base_size
         assert abs(actual_scale - expected_scale) < 0.01, \
-            f"Heading scale factor incorrect: expected {expected_scale}, got {actual_scale}"
+            f"Heading scale factor incorrect: expected {expected_scale}, " \
+            f"got {actual_scale} (font_size={heading_label.font_size}, base={base_size})"
 
         # Verify the computed font_size matches base_font_size * scale
         expected_font_size = base_size * expected_scale
@@ -691,21 +672,18 @@ class TestHeadingScalePreservation:
 
         label = MarkdownLabel(text=markdown_text, base_font_size=base_size)
 
-        # Collect all heading Labels with their levels
-        heading_labels = []
-        for child in label.children:
-            if isinstance(child, Label) and hasattr(child, '_font_scale'):
-                # Try to determine heading level from font scale
-                scale = getattr(child, '_font_scale', 1.0)
-                heading_labels.append((child, scale))
-
+        # Collect all heading Labels
+        heading_labels = find_labels_recursive(label)
         assume(len(heading_labels) >= 2)  # Need multiple headings to test relative scales
 
         # Get expected scales from KivyRenderer.HEADING_SIZES
         from kivy_garden.markdownlabel.kivy_renderer import KivyRenderer
 
         # Verify each heading has correct scale and font size
-        for heading_label, actual_scale in heading_labels:
+        for heading_label in heading_labels:
+            # Calculate actual scale factor from behavior
+            actual_scale = heading_label.font_size / base_size
+
             # Find which heading level this corresponds to
             expected_level = None
             for level, expected_scale in KivyRenderer.HEADING_SIZES.items():
@@ -714,7 +692,8 @@ class TestHeadingScalePreservation:
                     break
 
             assert expected_level is not None, \
-                f"Could not match scale {actual_scale} to any heading level"
+                f"Could not match behavior (font_size={heading_label.font_size}, " \
+                f"base={base_size}, scale={actual_scale}) to any heading level"
 
             # Verify font_size matches base_size * scale
             expected_font_size = base_size * actual_scale
@@ -738,13 +717,9 @@ class TestHeadingScalePreservation:
         label = MarkdownLabel(text=heading_text, base_font_size=initial_size)
 
         # Find heading Label
-        heading_label = None
-        for child in label.children:
-            if isinstance(child, Label) and hasattr(child, '_font_scale'):
-                heading_label = child
-                break
-
-        assume(heading_label is not None)
+        labels = find_labels_recursive(label)
+        assume(len(labels) > 0)
+        heading_label = labels[0]
 
         # Get expected scale
         from kivy_garden.markdownlabel.kivy_renderer import KivyRenderer
@@ -757,8 +732,8 @@ class TestHeadingScalePreservation:
         # Change base_font_size
         label.base_font_size = new_size
 
-        # Verify scale factor is still preserved
-        actual_scale = getattr(heading_label, '_font_scale', 1.0)
+        # Verify scale factor is still preserved (via behavioral calculation)
+        actual_scale = heading_label.font_size / new_size
         assert abs(actual_scale - expected_scale) < 0.01, \
             f"Scale factor changed after base_font_size update: expected {expected_scale}, got {actual_scale}"
 
