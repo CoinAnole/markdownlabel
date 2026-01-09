@@ -1,288 +1,253 @@
-# Review of DEVIATIONS.md (Test Files #6-10)
+# Review of DEVIATIONS.md
 
-I've examined the code in each of the five test files mentioned in the DEVIATIONS.md review. Here's my assessment of whether the identified deviations are **legitimate** and **worth fixing**.
+Based on my analysis of the test files and the TESTING.md guidelines, here's my assessment of each deviation:
 
----
+## test_rtl_alignment.py
 
-## 6. **test_rebuild_advanced_properties.py**
+### Deviation 1: Line 280 - Method name pattern
 
-### Deviation from DEVIATIONS.md:
+**Identified:** [test_direction_change_preserves_widget_identities](cci:1://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_rtl_alignment.py:271:4-299:63) does not follow `test_*_preserves_widget_tree_*` pattern
 
-> - Line 130: Incorrect strategy classification "Finite strategy" instead of "Mixed finite/complex strategy" (includes complex markdown_text strategy)
-> - Lines 418-419: Incorrect strategy classification "Finite strategy" instead of "Mixed finite/complex strategy" (includes complex markdown_text strategy)
+**Verdict: ✅ LEGITIMATE - Worth Fixing (Low Priority)**
 
-### My Verification:
+Looking at lines 280-300, the test name uses [_preserves_widget_identities](cci:1://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_rtl_alignment.py:271:4-299:63) while the TESTING.md section on "Rebuild Testing Names" (lines 117-119) recommends `test_*_preserves_widget_tree_*` for tests that verify NO rebuild occurred. The test does exactly that (verifies `ids_before == ids_after`), so renaming to `test_direction_change_preserves_widget_tree` or similar would improve consistency.
 
-**Line 130 (actual code):**
+### Deviation 2: Lines 477-492 - Tests private method `_get_effective_halign()`
 
-```python
-# Finite strategy: 3 unicode_errors × 2 strip = 6 combinations with complex markdown
-```
+**Identified:** Testing private method
 
-**Lines 418-419 (actual code):**
+**Verdict: ✅ LEGITIMATE - Worth Fixing (Medium Priority)**
 
-```python
-# Finite strategy: 3 unicode_errors × 2 strip = 6 combinations with
-# complex markdown
-```
-
-**Analysis:** Looking at the `@given` decorator at lines 124-128 and 411-414:
-
-- `markdown_text=simple_markdown_document()` — **This is a complex strategy** (generates variable markdown documents)
-- `unicode_errors=st.sampled_from(...)` — Finite (3 values)
-- `strip=st.booleans()` — Finite (2 values)
-
-Per TESTING.md (lines 689-693), when at least one strategy is finite AND at least one is complex/infinite, the correct classification is `"Mixed finite/complex strategy"`.
-
-| **Legitimacy**   | **Worth Fixing?**                                                                                                                                       |
-| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| ✅ **Legitimate** | ⚠️ **Low Priority** — This is a documentation/comment issue, not a behavioral issue. The `max_examples=30` value is reasonable. Fix it when convenient. |
+Looking at lines 477-493, the test calls `label._get_effective_halign()` directly. Per TESTING.md's "Best Practices" (mentioned but not shown fully), tests should verify **observable behavior**, not implementation details. The private method `_get_effective_halign()` could be refactored without breaking the public API, so this test creates brittleness. The test should instead verify the effective alignment through the child Label widgets' `halign` property—which is already done in the first assertion.
 
 ---
 
-## 7. **test_rebuild_identity_preservation.py**
+## test_serialization.py
 
-### Deviations from DEVIATIONS.md:
+### Deviation 1: Line 649 - Non-standard rationale
 
-> - Line 232: Non-standard phrasing in standardized max_examples comment
-> - Line 294: Non-standard phrasing in standardized max_examples comment  
-> - Line 336: Inaccurate finite count (actual 8 finite combinations from 2×2×2, reported 24)
+**Identified:** `"(two complex strategies combined)"` instead of recommended rationale
 
-### My Verification:
+**Verdict: ✅ LEGITIMATE - Worth Fixing (Low Priority)**
 
-**Line 232:**
+Looking at lines 648-649:
 
 ```python
-# Mixed finite/complex strategy: 50 examples (120 finite combinations with 5 complex strategies)
+# Complex strategy: 20 examples (two complex strategies combined)
 ```
 
-The expected format is `"[finite_size] finite × [samples] complex samples"`. The phrasing "120 finite combinations with 5 complex strategies" deviates from the template.
-
-**Line 294:**
-
-```python
-# Mixed finite/complex strategy: 50 examples (24 finite combinations with 4 complex strategies)
-```
-
-Same issue — non-standard phrasing.
-
-**Line 336:**
-
-```python
-# Mixed finite/complex strategy: 48 examples (24 finite combinations × 2 complex samples)
-```
-
-Looking at the `@given` decorator (lines 328-335):
-
-- `initial_text`, `new_text` — **complex** (2)
-- `font_name=st_font_name()` — likely **small finite** (need to check, but let's assume 3)
-- [link_style](cci:1://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_rebuild_structure_changes.py:108:4-132:59) — 2 values
-- [strict_label_mode](cci:1://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_rebuild_structure_changes.py:134:4-155:59) — 2 values  
-- [render_mode](cci:1://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_rebuild_structure_changes.py:157:4-178:59) — 2 values
-
-If we have `link_style=2 × strict_label_mode=2 × render_mode=2 = 8` finite combinations, then saying "24" is incorrect. However, this depends on what [st_font_name()](cci:1://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_rebuild_structure_changes.py:55:4-83:85) returns.
-
-**Analysis:**
-
-| Deviation                | **Legitimacy**   | **Worth Fixing?**                                                    |
-| ------------------------ | ---------------- | -------------------------------------------------------------------- |
-| Lines 232, 294: Phrasing | ✅ **Legitimate** | ⚠️ **Low Priority** — Cosmetic; comment style doesn't match template |
-| Line 336: Count error    | ✅ **Legitimate** | ⭐ **Medium Priority** — Inaccurate documentation is misleading       |
+Per TESTING.md (lines 675-680), the recommended format for complex strategies is `"Complex strategy: [N] examples (adequate coverage)"` or `"(performance optimized)"`. The phrase `"(two complex strategies combined)"` doesn't follow the standard rationale format. This should be either `"(adequate coverage)"` or `"(performance optimized)"`.
 
 ---
 
-## 8. **test_rebuild_structure_changes.py**
+## test_shortening_properties.py
 
-### Deviations from DEVIATIONS.md:
+### Deviation 1: Lines 26-346 - Missing @pytest.mark.property
 
-> - Lines 23-181: Class [TestStructurePropertyRebuild](cci:2://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_rebuild_structure_changes.py:22:0-178:59) mixes style-only properties ([font_name](cci:1://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_rebuild_structure_changes.py:55:4-83:85), [text_size](cci:1://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_rebuild_structure_changes.py:85:4-106:59)) with structure properties
-> - Lines 27, 87-108: Class docstring lists [text_size](cci:1://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_rebuild_structure_changes.py:85:4-106:59) as structure property; [test_text_size_change_triggers_rebuild](cci:1://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_rebuild_structure_changes.py:85:4-106:59) incorrectly expects rebuild
-> - Lines 56-86, 237-277: Uses private attribute `_is_code` to identify code labels
-> - Line 191: Incorrect strategy classification "Mixed finite/complex strategy: 50 examples (complex samples)" for two complex strategies
+**Identified:** Property-based tests lack the `@pytest.mark.property` marker
 
-### My Verification:
+**Verdict: ✅ LEGITIMATE - Worth Fixing (Medium Priority)**
 
-**Lines 23-30 (class docstring):**
+Examining the file, I see tests using `@given()` decorators (lines 29, 43, 57, etc.) but missing `@pytest.mark.property`. Per TESTING.md lines 168, property-based tests with Hypothesis should have this marker to allow selective test execution.
 
-```python
-class TestStructurePropertyRebuild:
-    """Tests for structure property changes rebuilding the widget tree.
+### Deviation 2: Lines 318-346 - [test_shorten_change_triggers_rebuild](cci:1://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_shortening_properties.py:314:4-345:79)
 
-    These tests verify that changing structure properties (text, font_name,
-    text_size, link_style, strict_label_mode, render_mode) rebuilds the widget
-    tree with new widget instances...
-    """
-```
+**Identified:** Test expects rebuild for style-only [shorten](cci:1://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_shortening_properties.py:42:4-54:70) property, uses `force_rebuild()`, and has misleading name
 
-Per TESTING.md, [text_size](cci:1://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_rebuild_structure_changes.py:85:4-106:59) is a **style-only property** (line 271), and [font_name](cci:1://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_rebuild_structure_changes.py:55:4-83:85) is also **style-only** (lines 234-235). The class incorrectly lists them as structure properties.
+**Verdict: ✅ LEGITIMATE - Worth Fixing (High Priority)**
 
-**Lines 86-107 ([test_text_size_change_triggers_rebuild](cci:1://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_rebuild_structure_changes.py:85:4-106:59)):**
+This is a significant deviation. Looking at lines 318-346:
 
 ```python
-def test_text_size_change_triggers_rebuild(self):
-    """Changing text_size triggers widget rebuild with new widget instances."""
+def test_shorten_change_triggers_rebuild(self, shorten1, shorten2):
+    """Changing shorten triggers widget rebuild with new value."""
     ...
-    label.text_size = [200, None]
-    label.force_rebuild()
+    label.force_rebuild()  # Force immediate rebuild for test
     ...
-    assert children_ids_before != children_ids_after  # EXPECTS REBUILD
+    assert ids_before != ids_after, \
+        "Expected widget tree rebuild when shorten property changed"
 ```
 
-This **expects a rebuild** for [text_size](cci:1://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_rebuild_structure_changes.py:85:4-106:59), but per TESTING.md, [text_size](cci:1://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_rebuild_structure_changes.py:85:4-106:59) is style-only and should **NOT trigger a rebuild**. This is a **semantic error in the test**, not just a naming issue.
+According to TESTING.md lines 263-268, [shorten](cci:1://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_shortening_properties.py:42:4-54:70) is explicitly listed as a **style-only property** under "Truncation Properties":
 
-**Lines 56-84 and 236-276:** Uses `hasattr(lbl, '_is_code') and lbl._is_code` to identify code labels.
+> - [shorten](cci:1://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_shortening_properties.py:42:4-54:70) - Updates Label.shorten on existing Labels
+
+The test should:
+
+1. NOT call `force_rebuild()` (per TESTING.md lines 467-475)
+2. Assert `ids_before == ids_after` (no rebuild)
+3. Be renamed to `test_shorten_change_preserves_widget_tree` (per naming conventions)
+
+### Deviation 3: Lines 263-274 - Misleading test name
+
+**Identified:** [test_empty_ellipsis_options_not_forwarded](cci:1://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_shortening_properties.py:262:4-272:78) claims "not forwarded" but asserts forwarding works
+
+**Verdict: ✅ LEGITIMATE - Worth Fixing (Low Priority)**
+
+Looking at lines 263-274:
 
 ```python
-if not (hasattr(lbl, '_is_code') and lbl._is_code):
+def test_empty_ellipsis_options_not_forwarded(self):
+    """Empty ellipsis_options dict is not forwarded (default behavior)."""
+    ...
+    for lbl in labels:
+        assert lbl.ellipsis_options == {}, \
+            f"Expected empty ellipsis_options, got {lbl.ellipsis_options}"
 ```
 
-This accesses a private attribute (`_is_code`), which violates the "no implementation testing" guideline.
-
-**Line 191:**
-
-```python
-# Mixed finite/complex strategy: 50 examples (complex samples)
-```
-
-The test uses `initial_text=simple_markdown_document()` and `new_text=simple_markdown_document()` — both complex strategies. Per TESTING.md, this should be classified as `"Complex strategy"` (lines 675-687), not "Mixed finite/complex".
-
-| Deviation                                                                                                                                                                 | **Legitimacy**   | **Worth Fixing?**                                                      |
-| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------- | ---------------------------------------------------------------------- |
-| Mixing style/structure properties                                                                                                                                         | ✅ **Legitimate** | ⭐ **Medium Priority** — Confuses readers about property classification |
-| [text_size](cci:1://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_rebuild_structure_changes.py:85:4-106:59) incorrectly expects rebuild | ✅ **Legitimate** | 🔴 **HIGH PRIORITY** — **Semantic bug!** Test asserts wrong behavior   |
-| Using `_is_code` private attribute                                                                                                                                        | ✅ **Legitimate** | ⭐ **Medium Priority** — Implementation coupling is fragile             |
-| Strategy classification error                                                                                                                                             | ✅ **Legitimate** | ⚠️ **Low Priority** — Cosmetic                                         |
+The test name says "not forwarded" but the assertion actually verifies that `{}` IS forwarded (and equals `{}`). More accurate would be `test_empty_ellipsis_options_forwards_default_value` or similar.
 
 ---
 
-## 9. **test_rebuild_style_propagation.py**
+## test_sizing_behavior.py
 
-### Deviations from DEVIATIONS.md:
+### Deviations: Lines 25, 43, 97, 108, 168, 183, 201, 232, 255, 277, 346, 361, 379, 430, 453, 477, 504, 539, 563
 
-> - Lines 23-208: Tests verify style property value propagation but do not verify widget tree preservation (no rebuild)
-> - Line 147: Standardized comment rationale does not match required format
+**Identified:** Non-standard comment rationales
 
-### My Verification:
+**Verdict: ✅ LEGITIMATE - Worth Fixing (Low Priority, Batch Fix)**
 
-**Lines 23-131 (class [TestStylePropertyPropagation](cci:2://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_rebuild_style_propagation.py:22:0-129:97)):**
-Looking at, e.g., [test_color_propagates_to_descendants](cci:1://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_rebuild_style_propagation.py:30:4-44:76) (lines 31-45):
+Looking at examples:
 
-```python
-def test_color_propagates_to_descendants(self):
-    """Color value propagates to all descendant Labels."""
-    label = MarkdownLabel(...)
-    label.color = new_color
-    # Verifies value propagation...
-    # BUT NO collect_widget_ids() or assert_no_rebuild()!
-```
+- Line 25: `"(variable-length document with complex text)"`
+- Line 183: `"(two complex inputs: document + float)"`
 
-Per TESTING.md (lines 284-304), style-only tests should:
-
-1. Collect widget IDs before change
-2. Verify no rebuild occurred (`ids_before == ids_after`)
-3. Verify the style change was applied
-
-The tests in this class **only do step 3** — they verify value propagation but skip rebuild verification.
-
-**Line 147:**
-
-```python
-# Mixed finite/complex strategy: 50 examples (60 finite combinations with 3 complex strategies)
-```
-
-Expected format: `"[finite_size] finite × [samples] complex samples"` (e.g., "60 finite × 5 complex samples").
-
-| Deviation                    | **Legitimacy**   | **Worth Fixing?**                                                                |
-| ---------------------------- | ---------------- | -------------------------------------------------------------------------------- |
-| Missing rebuild verification | ✅ **Legitimate** | ⭐ **Medium Priority** — Tests are incomplete; they should also verify no rebuild |
-| Comment format               | ✅ **Legitimate** | ⚠️ **Low Priority** — Cosmetic                                                   |
+These should use standard rationales from TESTING.md. For single complex strategies: `"(adequate coverage)"`. For combinations of two complex/infinite strategies, this is actually a valid pattern - the document + float combination is a legitimate "Complex strategy" scenario. However, the phrasing should match the template more closely.
 
 ---
 
-## 10. **test_rebuild_text_size_and_code_blocks.py**
+## test_text_properties.py
 
-### Deviations from DEVIATIONS.md:
+### Deviations: Lines 272, 296, 322 - `force_rebuild()` after style-only changes
 
-> - Lines 62-64: Non-standardized multi-line comment
-> - Lines 255-259: Non-standardized multi-line comment; rationale "(font_family is text)" doesn't match template
-> - Line 105: Missing `@pytest.mark.unit` marker on [TestTextSizeBindingTransitions](cci:2://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_rebuild_text_size_and_code_blocks.py:104:0-200:70) class
-> - Lines 139-140: Meaningless assertion `assert child_label.text_size is not None`
-> - Lines 163-169: No actual assertion in [test_text_size_width_constrained_to_none_updates_bindings](cci:1://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_rebuild_text_size_and_code_blocks.py:141:4-167:42)
+**Identified:** Using `force_rebuild()` after [text_size](cci:1://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_text_properties.py:45:4-64:85) changes
 
-### My Verification:
+**Verdict: ⚠️ BORDERLINE - Needs Investigation**
 
-**Lines 62-64:**
+Looking at the tests:
 
 ```python
-# Feature: optimize-rebuild-contract, Property 3: text_size updates preserve widget identity
-# Mixed finite/complex strategy: 50 examples (4 text_size patterns with complex markdown)
+# Line 272
+label.text_size = [None, height2]
+label.force_rebuild()  # Force immediate rebuild for test
 ```
 
-The phrasing "4 text_size patterns with complex markdown" doesn't follow the `"[finite_size] finite × [samples] complex samples"` template.
+[text_size](cci:1://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_text_properties.py:45:4-64:85) IS listed in TESTING.md line 271 as a style-only property:
 
-**Lines 255-259:**
+> - [text_size](cci:1://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_text_properties.py:45:4-64:85) - Updates Label.text_size on existing Labels with binding management
+
+However, looking at the implementation context, [text_size](cci:1://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_text_properties.py:45:4-64:85) changes may involve binding updates that require some processing. The tests are verifying that this property IS UPDATED (not that a rebuild occurs), and `force_rebuild()` ensures synchronous execution for test determinism. This is a **gray area** - the `force_rebuild()` may be unnecessary if the property truly updates in-place immediately.
+
+**Recommendation:** Investigate if [text_size](cci:1://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_text_properties.py:45:4-64:85) updates happen synchronously; if so, remove `force_rebuild()`.
+
+### Deviations: Lines 421, 422, 435, 438-439 - [unicode_errors](cci:1://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_text_properties.py:336:4-342:83) treated as structure property
+
+**Identified:** Test claims [unicode_errors](cci:1://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_text_properties.py:336:4-342:83) triggers rebuild
+
+**Verdict: ✅ LEGITIMATE - Worth Fixing (High Priority)**
+
+Looking at lines 421-445:
 
 ```python
-# Feature: optimize-rebuild-contract, Property 4: Code blocks preserve
-# monospace font when font_family changes
-# Complex strategy: font_family is text
+def test_unicode_errors_change_triggers_rebuild(self, errors1, errors2):
+    """Changing unicode_errors triggers widget rebuild with new value."""
+    ...
+    label.force_rebuild()  # Force immediate rebuild for test
+    ...
+    assert ids_before != ids_after, "Widget tree should rebuild for unicode_errors changes"
 ```
 
-The rationale "font_family is text" is descriptive but doesn't match expected "(adequate coverage)" or "(performance optimized)".
+TESTING.md lines 260-261 explicitly list [unicode_errors](cci:1://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_text_properties.py:336:4-342:83) as style-only:
 
-**Line 105:** The class [TestTextSizeBindingTransitions](cci:2://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_rebuild_text_size_and_code_blocks.py:104:0-200:70) should have `@pytest.mark.unit` per TESTING.md line 170.
+> - [unicode_errors](cci:1://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_text_properties.py:336:4-342:83) - Updates Label.unicode_errors on existing Labels
 
-**Lines 139-140:**
+This test incorrectly expects a rebuild. Should be renamed to `test_unicode_errors_change_preserves_widget_tree` and assert `ids_before == ids_after`.
 
-```python
-assert child_label.text_size is not None, \
-    "Child Label text_size should not be None after transition"
-```
+### Deviations: Lines 539, 540, 553, 556-557 - [strip](cci:1://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_text_properties.py:461:4-467:62) treated as structure property
 
-`Label.text_size` is a `ListProperty`, which is **always** a list (never `None`). This assertion is **meaningless** — it will always pass.
+**Identified:** Test claims [strip](cci:1://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_text_properties.py:461:4-467:62) triggers rebuild
 
-**Lines 163-169:**
+**Verdict: ✅ LEGITIMATE - Worth Fixing (High Priority)**
 
-```python
-for child_label in child_labels:
-    # text_size should be updated (not still [200, None])
-    if child_label.text_size[0] is not None:
-        # Width should be widget width, not the old 200
-        # (unless widget width happens to be 200)
-        pass  # Binding is working
-```
+Same issue as above. TESTING.md lines 261 lists [strip](cci:1://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_text_properties.py:461:4-467:62) as style-only:
 
-This is **not an assertion** — it's a pass statement with a comment. The test **verifies nothing**.
+> - [strip](cci:1://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_text_properties.py:461:4-467:62) - Updates Label.strip on existing Labels
 
-| Deviation                            | **Legitimacy**   | **Worth Fixing?**                                     |
-| ------------------------------------ | ---------------- | ----------------------------------------------------- |
-| Lines 62-64, 255-259: Comment format | ✅ **Legitimate** | ⚠️ **Low Priority** — Cosmetic                        |
-| Line 105: Missing marker             | ✅ **Legitimate** | ⚠️ **Low Priority** — Easy fix                        |
-| Lines 139-140: Meaningless assertion | ✅ **Legitimate** | 🔴 **HIGH PRIORITY** — Test provides false confidence |
-| Lines 163-169: No assertion          | ✅ **Legitimate** | 🔴 **HIGH PRIORITY** — Test is broken (tests nothing) |
+The test should verify NO rebuild (preserve widget tree).
 
 ---
 
-# Summary Table
+## test_texture_render_mode.py
 
-| File                                                                                                                                                                              | Deviation                                                                                                                                                                     | Legitimate? | Priority |
-| --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- | -------- |
-| [test_rebuild_advanced_properties.py](cci:7://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_rebuild_advanced_properties.py:0:0-0:0)             | Incorrect strategy classification                                                                                                                                             | ✅           | ⚠️ Low   |
-| [test_rebuild_identity_preservation.py](cci:7://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_rebuild_identity_preservation.py:0:0-0:0)         | Non-standard comment phrasing                                                                                                                                                 | ✅           | ⚠️ Low   |
-| [test_rebuild_identity_preservation.py](cci:7://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_rebuild_identity_preservation.py:0:0-0:0)         | Inaccurate finite count                                                                                                                                                       | ✅           | ⭐ Medium |
-| [test_rebuild_structure_changes.py](cci:7://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_rebuild_structure_changes.py:0:0-0:0)                 | Mixes style/structure properties                                                                                                                                              | ✅           | ⭐ Medium |
-| [test_rebuild_structure_changes.py](cci:7://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_rebuild_structure_changes.py:0:0-0:0)                 | **[text_size](cci:1://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_rebuild_structure_changes.py:85:4-106:59) test expects wrong behavior** | ✅           | 🔴 HIGH  |
-| [test_rebuild_structure_changes.py](cci:7://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_rebuild_structure_changes.py:0:0-0:0)                 | Uses `_is_code` private attribute                                                                                                                                             | ✅           | ⭐ Medium |
-| [test_rebuild_structure_changes.py](cci:7://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_rebuild_structure_changes.py:0:0-0:0)                 | Incorrect strategy type                                                                                                                                                       | ✅           | ⚠️ Low   |
-| [test_rebuild_style_propagation.py](cci:7://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_rebuild_style_propagation.py:0:0-0:0)                 | Missing rebuild verification                                                                                                                                                  | ✅           | ⭐ Medium |
-| [test_rebuild_style_propagation.py](cci:7://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_rebuild_style_propagation.py:0:0-0:0)                 | Comment format                                                                                                                                                                | ✅           | ⚠️ Low   |
-| [test_rebuild_text_size_and_code_blocks.py](cci:7://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_rebuild_text_size_and_code_blocks.py:0:0-0:0) | Comment format issues                                                                                                                                                         | ✅           | ⚠️ Low   |
-| [test_rebuild_text_size_and_code_blocks.py](cci:7://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_rebuild_text_size_and_code_blocks.py:0:0-0:0) | Missing `@pytest.mark.unit`                                                                                                                                                   | ✅           | ⚠️ Low   |
-| [test_rebuild_text_size_and_code_blocks.py](cci:7://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_rebuild_text_size_and_code_blocks.py:0:0-0:0) | **Meaningless assertion**                                                                                                                                                     | ✅           | 🔴 HIGH  |
-| [test_rebuild_text_size_and_code_blocks.py](cci:7://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_rebuild_text_size_and_code_blocks.py:0:0-0:0) | **No assertion (broken test)**                                                                                                                                                | ✅           | 🔴 HIGH  |
+### Deviations: Lines 146-149, 167, 187-193 - Accessing [_aggregated_refs](cci:1://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_texture_render_mode.py:153:4-167:92)
+
+**Identified:** Testing private attribute [_aggregated_refs](cci:1://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_texture_render_mode.py:153:4-167:92)
+
+**Verdict: ⚠️ CONTEXT-DEPENDENT - May Be Acceptable**
+
+This is a nuanced case. The tests are verifying internal state required for texture-mode link handling. However, there's no public API to verify this behavior otherwise. Options:
+
+1. Accept as necessary for testing texture mode internals
+2. Create a public API method like `get_link_zones()` for testing
+
+**Recommendation:** Document this as a known exception or consider exposing a test-friendly API.
+
+### Deviations: Lines 581, 596, 610, 624, 644, 660, 673 - Calling `_get_effective_render_mode()`
+
+**Identified:** Testing private method
+
+**Verdict: ⚠️ CONTEXT-DEPENDENT - May Be Acceptable**
+
+Looking at the tests, they call `label._get_effective_render_mode()` to verify the auto mode selection logic. This is similar to the previous case - without exposing this as a public API, there's no way to test the auto-selection behavior.
+
+**Recommendation:** Consider renaming to `get_effective_render_mode()` as a public API if this is user-relevant behavior, or document the exception.
 
 ---
 
-# Conclusion
+## test_texture_sizing.py
 
-**All deviations identified in DEVIATIONS.md for files #6-10 are legitimate.** The review document accurately identifies real issues.
+### Deviations: Lines 76, 93, 109, 124, 158, 253, 271, 338, 353 - Docstrings claim specific widget types but assertions don't verify
+
+**Identified:** Claims like "creates Label widget" but no `isinstance(widget, Label)` assertion
+
+**Verdict: ✅ LEGITIMATE - Worth Fixing (Low Priority)**
+
+Example from lines 76-87:
+
+```python
+def test_heading_creates_label_widget(self, heading):
+    """Heading content creates a Label widget that is included in texture_size calculation."""
+    ...
+    assert len(label.children) >= 1, ...
+    # No assertion that children are Label widgets!
+```
+
+The tests verify children exist and texture_size works, but the docstrings claim "creates Label widget" or "creates BoxLayout container" without actually asserting the widget types. Either add type assertions or update docstrings to match what's actually verified.
+
+### Deviation: Line 287 - Non-standard comment rationale
+
+**Identified:** `"(two complex strategies combined)"`
+
+**Verdict: ✅ LEGITIMATE - Worth Fixing (Low Priority)**
+
+Same as the serialization file - should use standard rationale format.
+
+---
+
+# Summary
+
+| Priority   | Count | Category                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| ---------- | ----- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **High**   | 4     | Incorrect rebuild contract tests ([unicode_errors](cci:1://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_text_properties.py:336:4-342:83), [strip](cci:1://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_text_properties.py:461:4-467:62), [shorten](cci:1://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_shortening_properties.py:42:4-54:70)) |
+| **Medium** | 3     | Missing markers, private method testing                                                                                                                                                                                                                                                                                                                                                                                                                |
+| **Low**    | ~20   | Comment format, naming conventions, docstring accuracy                                                                                                                                                                                                                                                                                                                                                                                                 |
+
+## Recommended Fix Order
+
+1. **High Priority:** Fix the tests that incorrectly expect rebuilds for style-only properties ([shorten](cci:1://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_shortening_properties.py:42:4-54:70), [unicode_errors](cci:1://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_text_properties.py:336:4-342:83), [strip](cci:1://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_text_properties.py:461:4-467:62)). This represents incorrect test semantics.
+
+2. **Medium Priority:** Add missing `@pytest.mark.property` markers to enable proper test categorization.
+
+3. **Low Priority:** Batch-update comment rationales to match the standard format (can be automated with the standardization tools mentioned in TESTING.md).
+
+4. **Consider:** Whether to expose `_get_effective_render_mode()` and similar methods as public APIs for testing, or document them as acceptable testing exceptions.
