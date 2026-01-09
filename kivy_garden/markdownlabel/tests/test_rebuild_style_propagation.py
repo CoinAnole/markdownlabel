@@ -16,7 +16,9 @@ from .test_utils import (
     find_labels_recursive,
     colors_equal,
     floats_equal,
-    st_rgba_color
+    st_rgba_color,
+    collect_widget_ids,
+    assert_no_rebuild
 )
 
 
@@ -31,10 +33,14 @@ class TestStylePropertyPropagation:
     def test_color_propagates_to_descendants(self):
         """Color value propagates to all descendant Labels."""
         label = MarkdownLabel(text='# Heading\n\nParagraph text', color=[1, 1, 1, 1])
+        ids_before = collect_widget_ids(label, exclude_root=True)
 
         # Change color
         new_color = [0.5, 0.5, 0.5, 1]
         label.color = new_color
+
+        # Verify no rebuild occurred
+        assert_no_rebuild(label, ids_before)
 
         # Verify all descendant Labels have the new color
         child_labels = find_labels_recursive(label)
@@ -47,10 +53,14 @@ class TestStylePropertyPropagation:
     def test_halign_propagates_to_descendants(self):
         """Halign value propagates to all descendant Labels."""
         label = MarkdownLabel(text='# Heading\n\nParagraph text', halign='left')
+        ids_before = collect_widget_ids(label, exclude_root=True)
 
         # Change halign
         new_halign = 'center'
         label.halign = new_halign
+
+        # Verify no rebuild occurred
+        assert_no_rebuild(label, ids_before)
 
         # Verify all descendant Labels have the new halign
         child_labels = find_labels_recursive(label)
@@ -63,10 +73,14 @@ class TestStylePropertyPropagation:
     def test_valign_propagates_to_descendants(self):
         """Valign value propagates to all descendant Labels."""
         label = MarkdownLabel(text='# Heading\n\nParagraph text', valign='bottom')
+        ids_before = collect_widget_ids(label, exclude_root=True)
 
         # Change valign
         new_valign = 'top'
         label.valign = new_valign
+
+        # Verify no rebuild occurred
+        assert_no_rebuild(label, ids_before)
 
         # Verify all descendant Labels have the new valign
         child_labels = find_labels_recursive(label)
@@ -79,10 +93,14 @@ class TestStylePropertyPropagation:
     def test_line_height_propagates_to_descendants(self):
         """Line_height value propagates to all descendant Labels."""
         label = MarkdownLabel(text='# Heading\n\nParagraph text', line_height=1.0)
+        ids_before = collect_widget_ids(label, exclude_root=True)
 
         # Change line_height
         new_line_height = 1.5
         label.line_height = new_line_height
+
+        # Verify no rebuild occurred
+        assert_no_rebuild(label, ids_before)
 
         # Verify all descendant Labels have the new line_height
         child_labels = find_labels_recursive(label)
@@ -100,9 +118,13 @@ class TestStylePropertyPropagation:
             disabled_color=[0.5, 0.5, 0.5, 0.5],
             disabled=False
         )
+        ids_before = collect_widget_ids(label, exclude_root=True)
 
         # Enable disabled state
         label.disabled = True
+
+        # Verify no rebuild occurred
+        assert_no_rebuild(label, ids_before)
 
         # Verify all descendant Labels have the disabled_color
         child_labels = find_labels_recursive(label)
@@ -116,10 +138,14 @@ class TestStylePropertyPropagation:
     def test_base_direction_propagates_to_descendants(self):
         """Base_direction value propagates to all descendant Labels."""
         label = MarkdownLabel(text='# Heading\n\nParagraph text', base_direction=None)
+        ids_before = collect_widget_ids(label, exclude_root=True)
 
         # Change base_direction
         new_base_direction = 'rtl'
         label.base_direction = new_base_direction
+
+        # Verify no rebuild occurred
+        assert_no_rebuild(label, ids_before)
 
         # Verify all descendant Labels have the new base_direction
         child_labels = find_labels_recursive(label)
@@ -144,7 +170,7 @@ class TestStylePropertyPropagationPBT:
                                allow_infinity=False),
         base_direction=st.sampled_from([None, 'ltr', 'rtl', 'weak_ltr', 'weak_rtl'])
     )
-    # Mixed finite/complex strategy: 50 examples (60 finite combinations with 3 complex strategies)
+    # Mixed finite/complex strategy: 50 examples (60 finite × 3 complex samples)
     @settings(max_examples=50, deadline=None)
     def test_style_property_values_propagate_to_descendants(
         self, markdown_text, color, halign, valign, line_height, base_direction
@@ -165,13 +191,19 @@ class TestStylePropertyPropagationPBT:
         child_labels = find_labels_recursive(label)
         assume(len(child_labels) >= 1)
 
+        # Capture IDs before
+        ids_before = collect_widget_ids(label, exclude_root=True)
+
         # Apply style property changes
         color_list = list(color)
         label.color = color_list
         label.halign = halign
         label.valign = valign
-        label.line_height = line_height
         label.base_direction = base_direction
+        label.line_height = line_height
+
+        # Verify no rebuild occurred
+        assert_no_rebuild(label, ids_before)
 
         # Verify all descendant Labels have the new property values
         child_labels = find_labels_recursive(label)

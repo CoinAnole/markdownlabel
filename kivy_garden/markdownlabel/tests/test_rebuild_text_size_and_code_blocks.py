@@ -60,7 +60,7 @@ class TestTextSizePropertyIdentityPreservationPBT:
         )
     )
     # Feature: optimize-rebuild-contract, Property 3: text_size updates preserve widget identity
-    # Mixed finite/complex strategy: 50 examples (4 text_size patterns with complex markdown)
+    # Mixed finite/complex strategy: 50 examples (4 finite × 1 complex strategy)
     @settings(max_examples=50, deadline=None)
     def test_text_size_preserves_widget_identity(self, markdown_text, text_size):
         """text_size Updates Preserve Widget Identity.
@@ -136,7 +136,7 @@ class TestTextSizeBindingTransitions:
         # Verify child Labels have updated text_size
         for child_label in child_labels:
             # The text_size width should be 200
-            assert child_label.text_size is not None
+            # The text_size width should be 200
             assert child_label.text_size[0] == 200, \
                 f"Child Label text_size width should be 200, got {child_label.text_size[0]}"
 
@@ -163,15 +163,14 @@ class TestTextSizeBindingTransitions:
         # In non-strict mode, text_size should use widget width for wrapping
         for child_label in child_labels:
             # text_size should be updated (not still [200, None])
-            if child_label.text_size[0] is not None:
-                # Width should be widget width, not the old 200
-                assert child_label.text_size[0] != 200, \
-                    "Child Label text_size width should have updated from 200"
+            # Width should be widget width, not the old 200
+            assert child_label.text_size[0] != 200, \
+                "Child Label text_size width should have updated from 200"
 
-                # In non-strict mode, it should likely match the widget width
-                assert child_label.text_size[0] == child_label.width, \
-                    (f"Child Label text_size width {child_label.text_size[0]} "
-                     f"should match widget width {child_label.width}")
+            # In non-strict mode, it should likely match the widget width
+            assert child_label.text_size[0] == child_label.width, \
+                (f"Child Label text_size width {child_label.text_size[0]} "
+                 f"should match widget width {child_label.width}")
 
     def test_text_size_transition_preserves_widget_identity(self):
         """text_size transitions preserve widget identity.
@@ -260,7 +259,7 @@ class TestCodeBlockFontPreservationPBT:
     )
     # Feature: optimize-rebuild-contract, Property 4: Code blocks preserve
     # monospace font when font_family changes
-    # Complex strategy: font_family is text
+    # Complex strategy: font_family (adequate coverage)
     @settings(max_examples=30, deadline=None)
     def test_code_blocks_preserve_code_font_name_when_font_family_changes(
         self, font_family

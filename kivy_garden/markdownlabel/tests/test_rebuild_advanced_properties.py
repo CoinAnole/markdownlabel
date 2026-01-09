@@ -127,7 +127,7 @@ class TestTextProcessingPropertyIdentityPreservationPBT:
         strip=st.booleans()
     )
     # Feature: optimize-rebuild-contract, Property 1: Style-only property updates preserve widget identity
-    # Finite strategy: 3 unicode_errors × 2 strip = 6 combinations with complex markdown
+    # Mixed finite/complex strategy: 3 unicode_errors × 2 strip = 6 combinations with complex markdown
     @settings(max_examples=30, deadline=None)
     def test_text_processing_properties_preserve_widget_identity(
         self, markdown_text, unicode_errors, strip
@@ -415,7 +415,7 @@ class TestTextProcessingPropertyValuePropagationPBT:
     )
     # Feature: optimize-rebuild-contract, Property 2: Style-only property
     # updates apply values to all child Labels
-    # Finite strategy: 3 unicode_errors × 2 strip = 6 combinations with
+    # Mixed finite/complex strategy: 3 unicode_errors × 2 strip = 6 combinations with
     # complex markdown
     @settings(max_examples=30, deadline=None)
     def test_all_text_processing_properties_propagate_to_children(
