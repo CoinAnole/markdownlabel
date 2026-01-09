@@ -273,7 +273,7 @@ class TestStylePropertyIdentityPreservationPBT:
         line_height=st.floats(min_value=0.5, max_value=3.0, allow_nan=False,
                                allow_infinity=False)
     )
-    # Mixed finite/complex strategy: 50 examples (120 finite × 5 complex samples)
+    # Mixed finite/complex strategy: 50 examples (sampling from 120 finite combinations)
     @settings(max_examples=50, deadline=None)
     def test_style_property_changes_preserve_widget_tree(
         self, markdown_text, base_font_size, color, halign, valign,
@@ -335,7 +335,7 @@ class TestRootIDPreservationPBT:
                                allow_infinity=False),
         disabled=st.booleans()
     )
-    # Mixed finite/complex strategy: 50 examples (24 finite × 4 complex samples)
+    # Mixed finite/complex strategy: 50 examples (24 finite × 2 complex samples)
     @settings(max_examples=50, deadline=None)
     def test_root_id_preserved_across_style_property_changes(
         self, markdown_text, base_font_size, color, halign, valign,
@@ -372,15 +372,14 @@ class TestRootIDPreservationPBT:
     @given(
         initial_text=simple_markdown_document(),
         new_text=simple_markdown_document(),
-        font_name=st_font_name(),
         link_style=st.sampled_from(['unstyled', 'styled']),
         strict_label_mode=st.booleans(),
         render_mode=st.sampled_from(['widgets', 'auto'])
     )
-    # Mixed finite/complex strategy: 48 examples (24 finite × 2 complex samples)
+    # Mixed finite/complex strategy: 48 examples (8 finite × 6 complex samples)
     @settings(max_examples=48, deadline=None)
     def test_root_id_preserved_across_structure_property_changes(
-        self, initial_text, new_text, font_name, link_style,
+        self, initial_text, new_text, link_style,
         strict_label_mode, render_mode
     ):
         """Root Widget ID Preserved Across Structure Property Changes.
@@ -400,7 +399,6 @@ class TestRootIDPreservationPBT:
 
         # Apply structure property changes and force_rebuild()
         label.text = new_text
-        label.font_name = font_name
         label.link_style = link_style
         label.strict_label_mode = strict_label_mode
         label.render_mode = render_mode
@@ -456,7 +454,7 @@ class TestRootIDPreservationPBT:
         markdown_text=simple_markdown_document(),
         font_name=st_font_name()
     )
-    # Mixed finite/complex strategy: 15 examples (3 finite × 5 complex samples)
+    # Mixed finite/complex strategy: 15 examples (3 finite font names × 5 complex samples)
     @settings(max_examples=15, deadline=None)
     def test_font_name_change_preserves_widget_tree(self, markdown_text, font_name):
         """Font Name Change Preserves Widget Tree.

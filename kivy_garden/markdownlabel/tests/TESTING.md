@@ -158,12 +158,6 @@ def test_heading_level(level): ...
 def test_boolean_with_text(flag, text): ...
 ```
 
-### Performance Impact
-
-- Boolean tests: 98% time reduction (100 → 2 examples)
-- Small finite tests: 80-95% time reduction
-- Medium finite tests: 50-80% time reduction
-
 ## Hypothesis vs. @pytest.mark.parametrize
 
 | Scenario | Recommendation |

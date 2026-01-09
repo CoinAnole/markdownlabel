@@ -255,13 +255,37 @@ class TestNestedListIndentation:
         token = create_nested_list(1, depth)
         widget = renderer.list(token, None)
 
-        # Check that the outer list has padding
-        assert widget.padding[0] > 0, "List should have left padding"
+        # Verify indentation accumulation by traversing the nested structure
+        current_list = widget
+        
+        for i in range(depth):
+            # 1. Verify this is a List with padding
+            assert isinstance(current_list, BoxLayout), f"Level {i+1}: Expected BoxLayout"
+            # Lists in KivyRenderer get padding (default 20 approx)
+            assert hasattr(current_list, 'padding'), f"Level {i+1}: Should have padding"
+            assert current_list.padding[0] == 20, \
+                f"Level {i+1}: Expected padding 20, got {current_list.padding[0]}"
 
-        # The padding should be based on list depth (20 * depth)
-        expected_padding = 20  # First level padding
-        assert widget.padding[0] == expected_padding, \
-            f"Expected padding {expected_padding}, got {widget.padding[0]}"
+            if i < depth - 1:
+                # Traverse to next nested list
+                # Current List -> [ListItem] (since we generate 1 item)
+                assert len(current_list.children) >= 1, f"Level {i+1}: List empty"
+                
+                # Find the ListItem (it's a BoxLayout)
+                # In our test structure, the list has 1 child.
+                list_item = current_list.children[0]
+                assert isinstance(list_item, BoxLayout), f"Level {i+1}: Expected ListItem BoxLayout"
+                
+                # ListItem children: [NestedList, Paragraph] (order varies)
+                # We look for the child that is the Nested List (BoxLayout with padding 20)
+                next_list = None
+                for child in list_item.children:
+                    if isinstance(child, BoxLayout) and hasattr(child, 'padding') and child.padding[0] == 20:
+                        next_list = child
+                        break
+                
+                assert next_list is not None, f"Level {i+1}: Could not find nested List in Item"
+                current_list = next_list
 
 
 # *For any* Markdown code block (fenced or indented), the rendered widget SHALL
