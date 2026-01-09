@@ -487,6 +487,7 @@ class TestExplicitAlignmentOverridesAuto:
             f"Expected MarkdownLabel.halign={explicit_halign}, got {label.halign}"
 
         # The _get_effective_halign method should return the explicit value
+        # Documented Exception: Verifying internal alignment selection logic
         effective_halign = label._get_effective_halign()
         assert effective_halign == explicit_halign, \
             f"Expected _get_effective_halign()={explicit_halign}, got {effective_halign}"

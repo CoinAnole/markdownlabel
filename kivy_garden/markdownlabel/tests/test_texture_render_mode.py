@@ -143,6 +143,7 @@ class TestTextureModeLinksHandling:
         label.force_rebuild()
 
         # Check that aggregated refs attribute exists and is a dict
+        # Documented Exception: Verifying internal link zones in texture mode
         assert hasattr(label, '_aggregated_refs'), \
             "Expected _aggregated_refs attribute"
         assert isinstance(label._aggregated_refs, dict), \
@@ -164,6 +165,7 @@ class TestTextureModeLinksHandling:
 
         # In widgets mode, aggregated refs should be empty
         # (links are handled by individual Label widgets)
+        # Documented Exception: Verifying internal link zones in texture mode
         assert label._aggregated_refs == {}, \
             f"Expected empty _aggregated_refs in widgets mode, got {label._aggregated_refs}"
 
@@ -183,6 +185,7 @@ class TestTextureModeLinksHandling:
         label.force_rebuild()
 
         # Verify refs were collected (not empty)
+        # Documented Exception: Verifying internal link zones in texture mode
         assert label._aggregated_refs, \
             "Expected _aggregated_refs to be populated, got empty dict"
 
@@ -219,8 +222,7 @@ class TestDeterministicTextureHitTesting:
             pos=(0, 0)
         )
 
-        # Manually set _aggregated_refs with known zones
-        # Zone format: (x, y, width, height) in local coordinates
+        # Documented Exception: Verifying internal link zones in texture mode
         label._aggregated_refs = {
             'http://example.com': [(10, 10, 50, 20)],
         }
@@ -283,7 +285,7 @@ class TestDeterministicTextureHitTesting:
             pos=(0, 0)
         )
 
-        # Manually set _aggregated_refs with the generated zone
+        # Documented Exception: Verifying internal link zones in texture mode
         label._aggregated_refs = {
             ref_name: [(zx, zy, zw, zh)],
         }
@@ -325,7 +327,7 @@ class TestDeterministicTextureHitTesting:
             pos=(0, 0)
         )
 
-        # Manually set _aggregated_refs with known zones
+        # Documented Exception: Verifying internal link zones in texture mode
         label._aggregated_refs = {
             'http://example.com': [(10, 10, 50, 20)],
         }
@@ -381,7 +383,7 @@ class TestDeterministicTextureHitTesting:
             pos=(0, 0)
         )
 
-        # Manually set _aggregated_refs with the generated zone
+        # Documented Exception: Verifying internal link zones in texture mode
         label._aggregated_refs = {
             ref_name: [(zx, zy, zw, zh)],
         }
@@ -426,6 +428,7 @@ class TestDeterministicTextureHitTesting:
         # Set up multiple overlapping ref zones
         # Zone 1: (10, 10, 100, 50) - larger zone
         # Zone 2: (30, 20, 40, 30) - smaller zone inside zone 1
+        # Documented Exception: Verifying internal link zones in texture mode
         label._aggregated_refs = {
             'http://first.com': [(10, 10, 100, 50)],
             'http://second.com': [(30, 20, 40, 30)],
@@ -463,7 +466,7 @@ class TestDeterministicTextureHitTesting:
             pos=(0, 0)
         )
 
-        # Set up multiple non-overlapping ref zones
+        # Documented Exception: Verifying internal link zones in texture mode
         label._aggregated_refs = {
             'http://first.com': [(10, 10, 50, 30)],
             'http://second.com': [(100, 10, 50, 30)],
@@ -578,6 +581,7 @@ class TestAutoRenderModeSelection:
             strict_label_mode=False
         )
 
+        # Documented Exception: Verifying auto-selection logic
         effective_mode = label._get_effective_render_mode()
         assert effective_mode == 'widgets', \
             f"Expected 'widgets' for simple content, got '{effective_mode}'"
@@ -593,6 +597,7 @@ class TestAutoRenderModeSelection:
             height=100
         )
 
+        # Documented Exception: Verifying auto-selection logic
         effective_mode = label._get_effective_render_mode()
         assert effective_mode == 'texture', \
             f"Expected 'texture' with strict_label_mode and height constraint, got '{effective_mode}'"
@@ -607,6 +612,7 @@ class TestAutoRenderModeSelection:
             text_size=[400, 100]
         )
 
+        # Documented Exception: Verifying auto-selection logic
         effective_mode = label._get_effective_render_mode()
         assert effective_mode == 'texture', \
             f"Expected 'texture' with strict_label_mode and text_size height, got '{effective_mode}'"
@@ -621,6 +627,7 @@ class TestAutoRenderModeSelection:
             text_size=[400, 100]  # Even with height constraint
         )
 
+        # Documented Exception: Verifying auto-selection logic
         effective_mode = label._get_effective_render_mode()
         assert effective_mode == 'widgets', \
             f"Expected 'widgets' without strict_label_mode, got '{effective_mode}'"
@@ -641,6 +648,7 @@ class TestAutoRenderModeSelection:
             size_hint_y=size_hint_y
         )
 
+        # Documented Exception: Verifying auto-selection logic
         effective_mode = label._get_effective_render_mode()
         assert effective_mode == expected, \
             f"Expected '{expected}' for strict_mode={strict_mode}, " \
@@ -657,6 +665,7 @@ class TestAutoRenderModeSelection:
             height=100
         )
 
+        # Documented Exception: Verifying auto-selection logic
         effective_mode = label._get_effective_render_mode()
         assert effective_mode == 'widgets', \
             f"Expected 'widgets' when explicitly set, got '{effective_mode}'"
@@ -670,6 +679,7 @@ class TestAutoRenderModeSelection:
             strict_label_mode=False
         )
 
+        # Documented Exception: Verifying auto-selection logic
         effective_mode = label._get_effective_render_mode()
         assert effective_mode == 'texture', \
             f"Expected 'texture' when explicitly set, got '{effective_mode}'"
