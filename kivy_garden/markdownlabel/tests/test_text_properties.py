@@ -269,7 +269,7 @@ class TestTextSizeDynamicUpdates:
 
         # Change text_size height
         label.text_size = [None, height2]
-        label.force_rebuild()  # Force immediate rebuild for test
+        # Updates are synchronous, no force_rebuild needed
 
         # Verify new height
         labels = find_labels_recursive(label)
@@ -293,7 +293,7 @@ class TestTextSizeDynamicUpdates:
 
         # Change text_size height to None
         label.text_size = [None, None]
-        label.force_rebuild()  # Force immediate rebuild for test
+        # Updates are synchronous, no force_rebuild needed
 
         # Verify height is now None
         labels = find_labels_recursive(label)
@@ -319,7 +319,7 @@ class TestTextSizeDynamicUpdates:
 
         # Change text_size height to specific value
         label.text_size = [None, height]
-        label.force_rebuild()  # Force immediate rebuild for test
+        # Updates are synchronous, no force_rebuild needed
 
         # Verify new height
         labels = find_labels_recursive(label)
@@ -418,8 +418,8 @@ class TestUnicodeErrorsForwarding:
         ('ignore', 'strict'),
         ('ignore', 'replace'),
     ])
-    def test_unicode_errors_change_triggers_rebuild(self, errors1, errors2):
-        """Changing unicode_errors triggers widget rebuild with new value."""
+    def test_unicode_errors_change_preserves_widget_tree(self, errors1, errors2):
+        """Changing unicode_errors updates in-place without rebuilding widget tree."""
         label = MarkdownLabel(text='Hello World', unicode_errors=errors1)
 
         # Collect widget IDs before change
@@ -432,11 +432,11 @@ class TestUnicodeErrorsForwarding:
 
         # Change unicode_errors
         label.unicode_errors = errors2
-        label.force_rebuild()  # Force immediate rebuild for test
+        # Updates are synchronous, no force_rebuild needed
 
-        # Verify rebuild occurred
+        # Verify NO rebuild occurred
         ids_after = collect_widget_ids(label)
-        assert ids_before != ids_after, "Widget tree should rebuild for unicode_errors changes"
+        assert ids_before == ids_after, "Widget tree should be preserved for unicode_errors changes"
 
         # Verify new unicode_errors
         labels = find_labels_recursive(label)
@@ -536,8 +536,8 @@ class TestStripForwarding:
                 f"Expected strip={strip_value}, got {lbl.strip}"
 
     @pytest.mark.parametrize("strip1,strip2", [(True, False), (False, True)])
-    def test_strip_change_triggers_rebuild(self, strip1, strip2):
-        """Changing strip triggers widget rebuild with new value."""
+    def test_strip_change_preserves_widget_tree(self, strip1, strip2):
+        """Changing strip updates in-place without rebuilding widget tree."""
         label = MarkdownLabel(text='Hello World', strip=strip1)
 
         # Collect widget IDs before change
@@ -550,11 +550,11 @@ class TestStripForwarding:
 
         # Change strip
         label.strip = strip2
-        label.force_rebuild()  # Force immediate rebuild for test
+        # Updates are synchronous, no force_rebuild needed
 
-        # Verify rebuild occurred
+        # Verify NO rebuild occurred
         ids_after = collect_widget_ids(label)
-        assert ids_before != ids_after, "Widget tree should rebuild for strip changes"
+        assert ids_before == ids_after, "Widget tree should be preserved for strip changes"
 
         # Verify new strip
         labels = find_labels_recursive(label)
