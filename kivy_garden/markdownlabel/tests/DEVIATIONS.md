@@ -13,7 +13,6 @@ Deviations from [TESTING.md](TESTING.md) guidelines.
 ## kivy_garden/markdownlabel/tests/test_rebuild_scheduling.py
 - Line 73: Docstring incorrectly classifies mixed changes (including style-only font_name) as "structure property changes"
 - Line 85: Inline comment incorrectly labels property changes including font_name as "structure property changes"
-- Line 182-211: Testing private _rebuild_trigger attribute without listed documented exception
 
 ## kivy_garden/markdownlabel/tests/test_serialization.py
 - Line 718: Testing private method `_serialize_token` without documented exception

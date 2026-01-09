@@ -12,7 +12,6 @@ I've examined each deviation identified in the [DEVIATIONS.md](cci:7://file:///h
 | test_kivy_renderer_tables.py | 254-297 | Test name doesn't match assertions | **Yes** | Yes | Low |
 | test_rebuild_scheduling.py | 73 | Incorrect docstring (font_name as structure) | **Yes** | Yes | Medium |
 | test_rebuild_scheduling.py | 85 | Incorrect comment (font_name as structure) | **Yes** | Yes | Medium |
-| test_rebuild_scheduling.py | 182-211 | Private [_rebuild_trigger](cci:1://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_rebuild_scheduling.py:180:4-209:9) attribute | **No** | No | N/A |
 | test_serialization.py | 718 | Private `_serialize_token` method | **Partially** | Consider | Low |
 | test_serialization.py | 754, 765 | Private [_serialize_list_item](cci:1://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_serialization.py:743:4-753:64) method | **Partially** | Consider | Low |
 | test_texture_render_mode.py | 513-517, 544-548 | Monkeypatching `_render_as_texture` | **Partially** | Consider | Low |
@@ -136,38 +135,7 @@ However, reviewing the test logic, it's actually testing that [text](cci:1://fil
 
 ---
 
-### 5. [test_rebuild_scheduling.py](cci:7://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_rebuild_scheduling.py:0:0-0:0) (Lines 182-211)
-
-**Deviation:** Testing private [_rebuild_trigger](cci:1://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_rebuild_scheduling.py:180:4-209:9) attribute without documented exception
-
-**Code Review:**
-```python
-def test_rebuild_trigger_is_clock_trigger(self):
-    """_rebuild_trigger is a Clock.create_trigger instance.
-
-    **ARCHITECTURAL DOCUMENTATION TEST**
-
-    This test intentionally accesses internal state (_rebuild_trigger) to document
-    and verify a critical architectural decision: MarkdownLabel uses Kivy's Clock
-    system for deferred rebuilds rather than synchronous rebuilds.
-    ...
-    """
-```
-
-**Verdict: NOT LEGITIMATE** ❌
-
-The test **already includes a documented exception** explaining why it accesses [_rebuild_trigger](cci:1://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_rebuild_scheduling.py:180:4-209:9). The docstring clearly states:
-- It's an "ARCHITECTURAL DOCUMENTATION TEST"
-- It "intentionally accesses internal state"
-- Why this access is necessary (documenting Clock usage for deferral)
-
-This follows the [TESTING.md](cci:7://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/TESTING.md:0:0-0:0) guidelines at lines 255-258, which allow private method access when the test "documents why direct access is necessary."
-
-**Recommendation:** **No fix needed.** This deviation entry in [DEVIATIONS.md](cci:7://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/DEVIATIONS.md:0:0-0:0) is incorrect—the test is properly documented.
-
----
-
-### 6. [test_serialization.py](cci:7://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_serialization.py:0:0-0:0) (Lines 718, 754, 765)
+### 5. [test_serialization.py](cci:7://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_serialization.py:0:0-0:0) (Lines 718, 754, 765)
 
 **Deviation:** Testing private methods `_serialize_token` and [_serialize_list_item](cci:1://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_serialization.py:743:4-753:64) without documented exception
 
@@ -202,7 +170,7 @@ assert serializer._serialize_token(token) == ''
 
 ---
 
-### 7. [test_texture_render_mode.py](cci:7://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_texture_render_mode.py:0:0-0:0) (Lines 513-517, 544-548)
+### 6. [test_texture_render_mode.py](cci:7://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_texture_render_mode.py:0:0-0:0) (Lines 513-517, 544-548)
 
 **Deviation:** Monkeypatching private `_render_as_texture` without documented exception
 
@@ -249,6 +217,3 @@ monkeypatch.setattr(...)
 ### Low Priority (Test Quality)
 5. **test_kivy_renderer_blocks.py lines 502-508** — Strengthen assertions to actually verify alt text content
 6. **test_kivy_renderer_tables.py lines 254-297** — Fix docstring/assertions mismatch
-
-### Should Be Removed from DEVIATIONS.md
-7. **test_rebuild_scheduling.py lines 182-211** — This is NOT a deviation; the test already properly documents its exception
