@@ -24,7 +24,7 @@ class TestStructurePropertyRebuild:
     """Tests for structure property changes rebuilding the widget tree.
 
     These tests verify that changing structure properties (text, font_name,
-    text_size, link_style, strict_label_mode, render_mode) rebuilds the widget
+    link_style, strict_label_mode, render_mode) rebuilds the widget
     tree with new widget instances, while the root MarkdownLabel ID remains
     unchanged.
 
@@ -83,24 +83,23 @@ class TestStructurePropertyRebuild:
                 assert lbl.font_name == 'RobotoMono-Regular', \
                     f"Expected font_name='RobotoMono-Regular', got '{lbl.font_name}'"
 
-    def test_text_size_change_triggers_rebuild(self):
-        """Changing text_size triggers widget rebuild with new widget instances."""
+    def test_text_size_change_preserves_widget_tree(self):
+        """Changing text_size preserves widget tree (style-only property)."""
         label = MarkdownLabel(text='# Heading\n\nParagraph', text_size=[None, None])
         root_id_before = id(label)
 
         # Capture children widget IDs before change
         children_ids_before = collect_widget_ids(label, exclude_root=True)
 
-        # Apply property change and force_rebuild()
+        # Apply property change (style-only, no rebuild needed)
         label.text_size = [200, None]
-        label.force_rebuild()
 
         # Capture children widget IDs after change
         children_ids_after = collect_widget_ids(label, exclude_root=True)
 
-        # Assert children widget IDs differ
-        assert children_ids_before != children_ids_after, \
-            "Children widget IDs should differ after text_size change"
+        # Assert children widget IDs are preserved (no rebuild)
+        assert children_ids_before == children_ids_after, \
+            "Children widget IDs should be preserved for text_size change (style-only)"
 
         # Assert root MarkdownLabel ID unchanged
         assert id(label) == root_id_before, \

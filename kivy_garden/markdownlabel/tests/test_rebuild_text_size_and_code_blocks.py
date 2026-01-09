@@ -102,6 +102,7 @@ class TestTextSizePropertyIdentityPreservationPBT:
 # =============================================================================
 
 
+@pytest.mark.unit
 class TestTextSizeBindingTransitions:
     """Unit tests for text_size binding transitions.
 
@@ -132,12 +133,12 @@ class TestTextSizeBindingTransitions:
         label.text_size = [200, None]
 
         # Verify child Labels have updated text_size
+        # Verify child Labels have updated text_size
         for child_label in child_labels:
-            # The text_size width should be 200 or bound to update to 200
-            # Note: In non-strict mode, width may be bound to widget width
-            # but the constraint should be applied
-            assert child_label.text_size is not None, \
-                "Child Label text_size should not be None after transition"
+            # The text_size width should be 200
+            assert child_label.text_size is not None
+            assert child_label.text_size[0] == 200, \
+                f"Child Label text_size width should be 200, got {child_label.text_size[0]}"
 
     def test_text_size_width_constrained_to_none_updates_bindings(self):
         """Transition from [width, None] to [None, None] updates bindings correctly.
@@ -164,8 +165,13 @@ class TestTextSizeBindingTransitions:
             # text_size should be updated (not still [200, None])
             if child_label.text_size[0] is not None:
                 # Width should be widget width, not the old 200
-                # (unless widget width happens to be 200)
-                pass  # Binding is working
+                assert child_label.text_size[0] != 200, \
+                    "Child Label text_size width should have updated from 200"
+
+                # In non-strict mode, it should likely match the widget width
+                assert child_label.text_size[0] == child_label.width, \
+                    (f"Child Label text_size width {child_label.text_size[0]} "
+                     f"should match widget width {child_label.width}")
 
     def test_text_size_transition_preserves_widget_identity(self):
         """text_size transitions preserve widget identity.
