@@ -7,14 +7,13 @@ of KivyRenderer to improve code coverage for edge cases and internal methods.
 """
 
 import pytest
-from unittest.mock import MagicMock, patch
 from hypothesis import given, strategies as st, settings, assume
 
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label import Label
 from kivy.uix.widget import Widget
 from kivy.uix.image import AsyncImage
-from kivy.uix.gridlayout import GridLayout
+from kivy.graphics import Rectangle, Line
 
 from kivy_garden.markdownlabel.kivy_renderer import KivyRenderer
 from .test_utils import (
@@ -23,8 +22,7 @@ from .test_utils import (
     list_token,
     code_block_token,
     block_quote_token,
-    image_token,
-    table_token
+    image_token
 )
 
 
@@ -317,7 +315,7 @@ class TestCodeBlockStyling:
         widget = renderer.block_code(token, None)
 
         # Check that canvas.before has instructions (background)
-        assert hasattr(widget, '_bg_rect'), "Code block should have background rectangle"
+        assert any(isinstance(instr, Rectangle) for instr in widget.canvas.before.children)
 
 
 # *For any* fenced code block with a language identifier, the rendered widget
@@ -397,7 +395,7 @@ class TestBlockQuoteStructure:
         widget = renderer.block_quote(token, None)
 
         # Check that canvas.before has border line
-        assert hasattr(widget, '_border_line'), "Block quote should have border line"
+        assert any(isinstance(instr, Line) for instr in widget.canvas.before.children)
 
 
 # *For any* Markdown thematic break (---, ***, ___), the rendered widget tree
@@ -430,7 +428,7 @@ class TestThematicBreakRendering:
         widget = renderer.thematic_break(token, None)
 
         # Check that canvas has line instruction
-        assert hasattr(widget, '_hr_line'), "Thematic break should have horizontal line"
+        assert any(isinstance(instr, Line) for instr in widget.canvas.children)
 
 
 # *For any* Markdown image ![alt](url), the rendered widget tree SHALL contain
@@ -477,4 +475,3 @@ class TestImageWidgetCreation:
 
 # *For any* Markdown table with R rows and C columns, the rendered GridLayout
 # SHALL have cols=C and contain exactly R×C Label widgets.
-
