@@ -75,6 +75,7 @@ class MarkdownLabel(MarkdownLabelProperties, MarkdownLabelRendering, BoxLayout):
 - Tests grouped by **functionality**: `test_font_properties.py`, `test_rebuild_*`, etc.
 - Property-based tests use Hypothesis with documented `max_examples`
 - **Read `tests/TESTING.md`** for comprehensive testing guidelines and optimization rules
+- Documented exceptions for private method testing (e.g., `_get_effective_render_mode()`) are allowed when no public API equivalent exists
 - Meta-tests in `tests/meta_tests/` validate test infrastructure
 
 ## External Dependencies

@@ -1132,6 +1132,17 @@ These guidelines aim to improve code quality and maintainability. Use judgment w
 
 The goal is readable, maintainable tests — not rigid adherence to rules.
 
+### Testing Exceptions
+
+While testing should generally focus on observable behavior, certain private methods and attributes are documented as **acceptable exceptions** for testing internal state that has no public equivalent:
+
+- `_get_effective_render_mode()`: Allowed for verifying auto-selection logic for texture vs. widget rendering.
+- `_aggregated_refs`: Allowed for verifying internal link coordinate maps in texture render mode.
+- `_get_effective_halign()`: (Historical exception) Note: Prefer verifying alignment through child `Label.halign` properties where possible.
+
+When using these exceptions, add a brief comment in the test explaining why direct access is necessary.
+
+
 ### Performance Considerations
 
 - **Mark slow tests** with `@pytest.mark.slow`

@@ -183,24 +183,17 @@ The test should verify NO rebuild (preserve widget tree).
 
 **Identified:** Testing private attribute [_aggregated_refs](cci:1://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_texture_render_mode.py:153:4-167:92)
 
-**Verdict: ⚠️ CONTEXT-DEPENDENT - May Be Acceptable**
+**Verdict: ✅ RESOLVED - Documented Exception**
 
-This is a nuanced case. The tests are verifying internal state required for texture-mode link handling. However, there's no public API to verify this behavior otherwise. Options:
-
-1. Accept as necessary for testing texture mode internals
-2. Create a public API method like `get_link_zones()` for testing
-
-**Recommendation:** Document this as a known exception or consider exposing a test-friendly API.
+This is a nuanced case. The tests are verifying internal state required for texture-mode link handling. However, there's no public API to verify this behavior otherwise. This has been documented as an acceptable testing exception in `TESTING.md` (see "Testing Exceptions").
 
 ### Deviations: Lines 581, 596, 610, 624, 644, 660, 673 - Calling `_get_effective_render_mode()`
 
 **Identified:** Testing private method
 
-**Verdict: ⚠️ CONTEXT-DEPENDENT - May Be Acceptable**
+**Verdict: ✅ RESOLVED - Documented Exception**
 
-Looking at the tests, they call `label._get_effective_render_mode()` to verify the auto mode selection logic. This is similar to the previous case - without exposing this as a public API, there's no way to test the auto-selection behavior.
-
-**Recommendation:** Consider renaming to `get_effective_render_mode()` as a public API if this is user-relevant behavior, or document the exception.
+Looking at the tests, they call `label._get_effective_render_mode()` to verify the auto mode selection logic. This is similar to the previous case - without exposing this as a public API, there's no way to test the auto-selection behavior. This has been documented as an acceptable testing exception in `TESTING.md` (see "Testing Exceptions").
 
 ---
 
@@ -250,4 +243,4 @@ Same as the serialization file - should use standard rationale format.
 
 3. **Low Priority:** Batch-update comment rationales to match the standard format (can be automated with the standardization tools mentioned in TESTING.md).
 
-4. **Consider:** Whether to expose `_get_effective_render_mode()` and similar methods as public APIs for testing, or document them as acceptable testing exceptions.
+4. **RESOLVED:** Documented `_get_effective_render_mode()` and similar methods as acceptable testing exceptions in `TESTING.md` and `.kiro/steering/structure.md`.
