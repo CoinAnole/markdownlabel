@@ -10,8 +10,9 @@ import tempfile
 from hypothesis import given, strategies as st, settings
 
 from kivy_garden.markdownlabel.tests.modules.comment_manager import (
-    CommentStandardizer, StrategyType, CommentFormatValidator, CommentAnalyzer
+    CommentStandardizer, CommentFormatValidator
 )
+
 
 @pytest.mark.test_tests
 class TestFiniteStrategyDocumentation:
@@ -300,5 +301,3 @@ def test_already_standardized(flag):
 
         finally:
             self.standardizer.backup_dir = original_backup_dir
-
-

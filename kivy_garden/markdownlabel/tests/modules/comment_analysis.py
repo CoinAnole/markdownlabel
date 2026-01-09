@@ -4,7 +4,6 @@ This module provides tools for analyzing test files for comment format
 compliance and consistency.
 """
 
-import ast
 import os
 import re
 from dataclasses import dataclass, field

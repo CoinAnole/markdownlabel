@@ -10,13 +10,14 @@ import tempfile
 from hypothesis import given, strategies as st, settings
 
 from kivy_garden.markdownlabel.tests.modules.comment_manager import (
-    CommentStandardizer, StrategyType, CommentFormatValidator, CommentAnalyzer
+    CommentStandardizer, CommentFormatValidator, CommentAnalyzer
 )
 from kivy_garden.markdownlabel.tests.modules.optimization_detector import (
     OptimizationDetector as PerformanceRationaleDetector,
     OptimizationCommentGenerator as PerformanceCommentGenerator,
     OptimizationType as PerformanceReason
 )
+
 
 @pytest.mark.test_tests
 class TestPerformanceRationaleDocumentation:

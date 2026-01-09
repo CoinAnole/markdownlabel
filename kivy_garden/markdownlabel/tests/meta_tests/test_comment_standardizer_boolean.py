@@ -12,11 +12,6 @@ from hypothesis import given, strategies as st, settings
 from kivy_garden.markdownlabel.tests.modules.comment_manager import (
     CommentStandardizer, StrategyType, CommentFormatValidator, CommentAnalyzer
 )
-from kivy_garden.markdownlabel.tests.modules.optimization_detector import (
-    OptimizationDetector as PerformanceRationaleDetector,
-    OptimizationCommentGenerator as PerformanceCommentGenerator,
-    OptimizationType as PerformanceReason
-)
 
 
 @pytest.mark.test_tests
@@ -264,7 +259,6 @@ def test_boolean_integration(flag):
 
         try:
             # First analyze without standardization
-            from kivy_garden.markdownlabel.tests.modules.comment_manager import CommentAnalyzer
             analyzer = CommentAnalyzer()
 
             initial_analysis = analyzer.analyze_file(temp_file)
@@ -292,5 +286,3 @@ def test_boolean_integration(flag):
         finally:
             if os.path.exists(temp_file):
                 os.unlink(temp_file)
-
-
