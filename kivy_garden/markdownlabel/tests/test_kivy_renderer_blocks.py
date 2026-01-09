@@ -7,6 +7,7 @@ of KivyRenderer to improve code coverage for edge cases and internal methods.
 """
 
 import pytest
+from unittest.mock import MagicMock, patch
 from hypothesis import given, strategies as st, settings, assume
 
 from kivy.uix.boxlayout import BoxLayout
@@ -473,5 +474,251 @@ class TestImageWidgetCreation:
         assert hasattr(widget, 'alt_text'), "Image should have alt_text attribute"
 
 
-# *For any* Markdown table with R rows and C columns, the rendered GridLayout
-# SHALL have cols=C and contain exactly R×C Label widgets.
+class TestDeepNestingTruncation:
+    """Tests for deep nesting truncation placeholder behavior."""
+
+    def test_truncation_placeholder_when_nesting_exceeds_max(self):
+        """When nesting depth exceeds max, _render_token returns placeholder.
+
+        Requirement 7.1: WHEN rendering content that exceeds _max_nesting_depth,
+        THE KivyRenderer SHALL return a truncation placeholder widget.
+        """
+        renderer = KivyRenderer()
+
+        # Manually set nesting depth beyond the maximum
+        renderer._nesting_depth = renderer._max_nesting_depth + 1
+
+        # Create a simple token to render
+        token = {
+            'type': 'paragraph',
+            'children': [{'type': 'text', 'raw': 'This should be truncated'}]
+        }
+
+        # Render the token - should return truncation placeholder
+        widget = renderer._render_token(token, None)
+
+        assert isinstance(widget, Label), \
+            f"Expected Label placeholder, got {type(widget)}"
+        assert 'content truncated' in widget.text.lower(), \
+            f"Placeholder text should contain 'content truncated', got: {widget.text}"
+
+    def test_truncation_placeholder_text_format(self):
+        """Truncation placeholder has expected text format.
+
+        Requirement 7.2: THE truncation placeholder SHALL be a Label widget
+        with text containing "content truncated".
+        """
+        renderer = KivyRenderer()
+
+        # Manually set nesting depth beyond the maximum
+        renderer._nesting_depth = renderer._max_nesting_depth + 1
+
+        # Any token type should trigger truncation
+        token = {'type': 'heading', 'children': [], 'attrs': {'level': 1}}
+
+        widget = renderer._render_token(token, None)
+
+        assert isinstance(widget, Label), \
+            f"Expected Label, got {type(widget)}"
+        assert 'content truncated' in widget.text.lower(), \
+            f"Expected 'content truncated' in text, got: {widget.text}"
+        assert 'deep nesting' in widget.text.lower(), \
+            f"Expected 'deep nesting' in text, got: {widget.text}"
+
+    def test_truncation_placeholder_styling(self):
+        """Truncation placeholder has appropriate styling (gray, italic)."""
+        renderer = KivyRenderer()
+
+        # Manually set nesting depth beyond the maximum
+        renderer._nesting_depth = renderer._max_nesting_depth + 1
+
+        token = {'type': 'paragraph', 'children': []}
+
+        widget = renderer._render_token(token, None)
+
+        assert isinstance(widget, Label), \
+            f"Expected Label, got {type(widget)}"
+        # Check gray color (approximately [0.6, 0.6, 0.6, 1])
+        assert widget.color[0] < 0.7 and widget.color[0] > 0.5, \
+            f"Expected gray color, got: {widget.color}"
+        assert widget.italic is True, \
+            f"Expected italic=True, got: {widget.italic}"
+
+    def test_normal_nesting_does_not_truncate(self):
+        """Normal nesting depth does not trigger truncation."""
+        renderer = KivyRenderer()
+
+        # Keep nesting depth at or below maximum
+        renderer._nesting_depth = renderer._max_nesting_depth
+
+        token = {
+            'type': 'paragraph',
+            'children': [{'type': 'text', 'raw': 'Normal content'}]
+        }
+
+        widget = renderer._render_token(token, None)
+
+        assert isinstance(widget, Label), \
+            f"Expected Label, got {type(widget)}"
+        # Should NOT be a truncation placeholder
+        assert 'content truncated' not in widget.text.lower(), \
+            f"Should not truncate at max depth, got: {widget.text}"
+        assert 'Normal content' in widget.text, \
+            f"Expected normal content, got: {widget.text}"
+
+
+class TestKivyRendererEdgeCases:
+    """Tests for KivyRenderer edge cases and internal methods."""
+
+    @pytest.fixture
+    def renderer(self):
+        """Create a KivyRenderer instance."""
+        label = MagicMock()
+        label.padding = [10, 10, 10, 10]
+        renderer = KivyRenderer(label)
+        renderer.base_font_size = 15.0
+        return renderer
+
+    def test_render_list_item_nested_structures(self, renderer):
+        """Test _render_list_item with nested lists to hit specific branches."""
+        token = {
+            'type': 'list_item',
+            'children': [
+                {
+                    'type': 'list',
+                    'children': [
+                        {
+                            'type': 'list_item',
+                            'children': [
+                                {
+                                    'type': 'block_text',
+                                    'children': [{'type': 'text', 'raw': 'nested'}]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+
+        with patch.object(renderer, 'list') as mock_list:
+            mock_list.return_value = BoxLayout()
+            container = (
+                BoxLayout() if not hasattr(renderer, '_render_list_item')
+                else renderer._render_list_item(token, False, 0)
+            )
+            assert mock_list.called
+
+    def test_image_on_texture_callback(self, renderer):
+        """Test the on_texture callback in image rendering."""
+        renderer.label = MagicMock()
+        token = {
+            'type': 'image',
+            'attrs': {'url': 'http://example.com/test.png'},
+            'children': [{'type': 'text', 'raw': 'Alt Text'}]
+        }
+
+        with patch('kivy_garden.markdownlabel.kivy_renderer.AsyncImage') as MockAsyncImage:
+            mock_image = MockAsyncImage.return_value
+            mock_image.texture = MagicMock()
+            mock_image.texture.size = (100, 50)
+            mock_image.texture.width = 100
+            mock_image.texture.height = 50
+            mock_image.width = 100
+
+            renderer.image(token)
+
+            assert mock_image.bind.called
+            args, kwargs = mock_image.bind.call_args
+            assert 'texture' in kwargs
+            callback = kwargs['texture']
+
+            callback(mock_image, mock_image.texture)
+            assert mock_image.height == 50
+
+    def test_block_code_update_bg_logic(self, renderer):
+        """Test the update_bg function inner logic in block_code."""
+        token = {
+            'type': 'block_code',
+            'raw': 'print("hello")',
+            'attrs': {'info': 'python'}
+        }
+
+        with patch('kivy_garden.markdownlabel.kivy_renderer.Color'), \
+             patch('kivy_garden.markdownlabel.kivy_renderer.Rectangle') as MockRect:
+            container = renderer.block_code(token)
+            container.pos = (10, 10)
+            container.size = (100, 100)
+            assert MockRect.called
+            rect_instance = MockRect.return_value
+            assert rect_instance.pos == container.pos
+            assert rect_instance.size == container.size
+
+    def test_block_quote_update_border_logic(self, renderer):
+        """Test the update_border function inner logic in block_quote."""
+        token = {
+            'type': 'block_quote',
+            'children': [{'type': 'paragraph', 'children': [{'type': 'text', 'raw': 'Quote'}]}]
+        }
+
+        with patch('kivy_garden.markdownlabel.kivy_renderer.Color'), \
+             patch('kivy_garden.markdownlabel.kivy_renderer.Line') as MockLine:
+            container = renderer.block_quote(token)
+            container.pos = (20, 20)
+            container.size = (200, 50)
+            assert MockLine.called
+
+    def test_deep_nesting_truncation_method(self, renderer):
+        """Test that deeply nested structures are truncated to prevent infinite recursion."""
+        renderer._nesting_depth = 11
+        token = {'type': 'paragraph', 'children': []}
+        result = renderer._render_token(token)
+        assert result is not None
+        assert isinstance(result, Label)
+        assert result.text == '[...content truncated due to deep nesting...]'
+
+    def test_unknown_token_render(self, renderer):
+        """Test that unknown token types return None."""
+        token = {'type': 'unknown_thing'}
+        assert renderer._render_token(token) is None
+
+    def test_list_item_direct_call(self, renderer):
+        """Test direct call to list_item method."""
+        token_para = {
+            'type': 'list_item',
+            'children': [{
+                'type': 'paragraph',
+                'children': [{'type': 'text', 'raw': 'item'}]
+            }]
+        }
+        widget = renderer.list_item(token_para)
+        assert isinstance(widget, BoxLayout)
+        assert len(widget.children) > 0
+
+    def test_list_item_text_token(self, renderer):
+        """Test block_text token rendering."""
+        token = {'type': 'block_text', 'children': [{'type': 'text', 'raw': 'item'}]}
+        widget = renderer.block_text(token)
+        assert isinstance(widget, Label)
+        assert widget.text == 'item'
+
+    def test_text_size_binding_strict_mode(self, renderer):
+        """Test text_size binding in strict label mode."""
+        renderer = KivyRenderer(strict_label_mode=True, text_size=[None, None])
+        label = Label()
+        renderer._apply_text_size_binding(label)
+        assert label.text_size == [None, None] or label.text_size == (None, None)
+
+    def test_text_size_binding_height_only(self, renderer):
+        """Test text_size binding with height constraint."""
+        renderer = KivyRenderer(text_size=[None, 100])
+        label = Label(width=200)
+        renderer._apply_text_size_binding(label)
+        assert label.text_size[1] == 100
+
+    def test_blank_line(self, renderer):
+        """Test blank_line token rendering."""
+        token = {'type': 'blank_line'}
+        widget = renderer.blank_line(token)
+        assert isinstance(widget, Widget)
+        assert widget.height == renderer.base_font_size
