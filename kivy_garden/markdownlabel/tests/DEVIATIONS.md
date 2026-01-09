@@ -3,16 +3,15 @@
 Generated from analysis against TESTING.md guidelines.
 
 ## test_advanced_compatibility.py
-
-- Lines 154-181: test_font_kerning_change_triggers_rebuild incorrectly uses force_rebuild() and asserts rebuild occurred for style-only property (Rebuild Contract Testing: style-only (no rebuild, no force_rebuild))
-- Lines 185-212: test_font_blended_change_triggers_rebuild incorrectly uses force_rebuild() and asserts rebuild occurred for style-only property (Rebuild Contract Testing: style-only (no rebuild, no force_rebuild))
-- Lines 297-301, 323-327, 350-354, 374-378, 390-394, 401-405: Uses implementation-dependent check ('Mono' in str(font_name)) to skip code blocks (Best Practices: no implementation testing)
-- Lines 358-407: test_disabled_change_triggers_rebuild incorrectly uses force_rebuild() and asserts rebuild occurred for style-only property (Rebuild Contract Testing: style-only (no rebuild, no force_rebuild))
-- Lines 609-642: test_text_size_updates_value fails to verify text_size updated on internal Labels (Rebuild Contract Testing: updates Label.text_size on existing Labels)
-- Lines 744-772: test_unicode_errors_change_triggers_rebuild incorrectly uses force_rebuild() and asserts rebuild occurred for style-only property (Rebuild Contract Testing: style-only (no rebuild, no force_rebuild))
-- Lines 776-805: test_strip_change_triggers_rebuild incorrectly uses force_rebuild() and asserts rebuild occurred for style-only property (Rebuild Contract Testing: style-only (no rebuild, no force_rebuild))
-- Lines 809-851: test_disabled_change_triggers_rebuild incorrectly uses force_rebuild() and asserts rebuild occurred for style-only property (Rebuild Contract Testing: style-only (no rebuild, no force_rebuild))
-- Lines 497-531, 535-569, 571-607, 677-704, 711-738: No-rebuild tests use naming not matching recommended patterns like test_*_preserves_widget_tree_* (Test Naming Conventions)
+- [x] Lines 154-181: test_font_kerning_change_triggers_rebuild incorrectly uses force_rebuild() and asserts rebuild occurred for style-only property (FIXED: Renamed to test_font_kerning_change_preserves_widget_tree, removed force_rebuild, asserted widget tree preserved)
+- [x] Lines 185-212: test_font_blended_change_triggers_rebuild incorrectly uses force_rebuild() and asserts rebuild occurred for style-only property (FIXED: Renamed to test_font_blended_change_preserves_widget_tree, removed force_rebuild, asserted widget tree preserved)
+- [x] Lines 297-301, 323-327, 350-354, 374-378, 390-394, 401-405: Uses implementation-dependent check ('Mono' in str(font_name)) to skip code blocks (FIXED: Replaced with getattr(lbl, '_is_code', False))
+- [x] Lines 358-407: test_disabled_change_triggers_rebuild incorrectly uses force_rebuild() and asserts rebuild occurred for style-only property (FIXED: Renamed to test_disabled_change_preserves_widget_tree, removed force_rebuild, asserted widget tree preserved)
+- [x] Lines 609-642: test_text_size_updates_value fails to verify text_size updated on internal Labels (FIXED: Renamed and added verification of internal Label properties)
+- [x] Lines 744-772: test_unicode_errors_change_triggers_rebuild incorrectly uses force_rebuild() and asserts rebuild occurred for style-only property (FIXED: Renamed and updated assertions)
+- [x] Lines 776-805: test_strip_change_triggers_rebuild incorrectly uses force_rebuild() and asserts rebuild occurred for style-only property (FIXED: Renamed and updated assertions)
+- [x] Lines 809-851: test_disabled_change_triggers_rebuild (complex) incorrectly uses force_rebuild() and asserts rebuild occurred for style-only property (FIXED: Renamed and updated assertions)
+- [x] Lines 497-531, 535-569, 571-607, 677-704, 711-738: No-rebuild tests use naming not matching recommended patterns (FIXED: Renamed all to follow test_*_preserves_widget_tree pattern)
 
 ## test_coordinate_translation.py
 

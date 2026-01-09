@@ -151,8 +151,8 @@ class TestAdvancedFontPropertiesForwarding:
     @given(st.booleans(), st.booleans())
     # Combination strategy: 4 examples (combination coverage)
     @settings(max_examples=4, deadline=None)
-    def test_font_kerning_change_triggers_rebuild(self, kerning1, kerning2):
-        """Changing font_kerning triggers widget rebuild with new value."""
+    def test_font_kerning_change_preserves_widget_tree(self, kerning1, kerning2):
+        """Changing font_kerning updates value without rebuilding widgets."""
         assume(kerning1 != kerning2)
 
         label = MarkdownLabel(text='Hello World', font_kerning=kerning1)
@@ -167,11 +167,10 @@ class TestAdvancedFontPropertiesForwarding:
 
         # Change value
         label.font_kerning = kerning2
-        label.force_rebuild()  # Force immediate rebuild for test
 
-        # Verify rebuild occurred
+        # Verify widget tree preserved (style-only property)
         ids_after = collect_widget_ids(label, exclude_root=True)
-        assert ids_before != ids_after, "Widget tree should rebuild for font_kerning changes"
+        assert ids_before == ids_after, "Widget tree should be preserved for font_kerning changes"
 
         # Verify new value
         labels = find_labels_recursive(label)
@@ -182,8 +181,8 @@ class TestAdvancedFontPropertiesForwarding:
     @given(st.booleans(), st.booleans())
     # Combination strategy: 4 examples (combination coverage)
     @settings(max_examples=4, deadline=None)
-    def test_font_blended_change_triggers_rebuild(self, blended1, blended2):
-        """Changing font_blended triggers widget rebuild with new value."""
+    def test_font_blended_change_preserves_widget_tree(self, blended1, blended2):
+        """Changing font_blended updates value without rebuilding widgets."""
         assume(blended1 != blended2)
 
         label = MarkdownLabel(text='Hello World', font_blended=blended1)
@@ -198,11 +197,10 @@ class TestAdvancedFontPropertiesForwarding:
 
         # Change value
         label.font_blended = blended2
-        label.force_rebuild()  # Force immediate rebuild for test
 
-        # Verify rebuild occurred
+        # Verify widget tree preserved (style-only property)
         ids_after = collect_widget_ids(label, exclude_root=True)
-        assert ids_before != ids_after, "Widget tree should rebuild for font_blended changes"
+        assert ids_before == ids_after, "Widget tree should be preserved for font_blended changes"
 
         # Verify new value
         labels = find_labels_recursive(label)
@@ -295,7 +293,7 @@ class TestDisabledColorApplication:
 
         for lbl in labels:
             # Skip code block labels which have their own color
-            if hasattr(lbl, 'font_name') and 'Mono' in str(lbl.font_name):
+            if getattr(lbl, '_is_code', False):
                 continue
             assert colors_equal(lbl.color, disabled_color), \
                 f"Expected disabled_color={disabled_color}, got {list(lbl.color)}"
@@ -322,7 +320,7 @@ class TestDisabledColorApplication:
 
         for lbl in labels:
             # Skip code block labels which have their own color
-            if hasattr(lbl, 'font_name') and 'Mono' in str(lbl.font_name):
+            if getattr(lbl, '_is_code', False):
                 continue
             assert colors_equal(lbl.color, regular_color), \
                 f"Expected color={regular_color}, got {list(lbl.color)}"
@@ -349,13 +347,13 @@ class TestDisabledColorApplication:
 
         for lbl in labels:
             # Skip code block labels which have their own color
-            if hasattr(lbl, 'font_name') and 'Mono' in str(lbl.font_name):
+            if getattr(lbl, '_is_code', False):
                 continue
             assert colors_equal(lbl.color, expected_color), \
                 f"Expected color={expected_color}, got {list(lbl.color)}"
 
-    def test_disabled_change_triggers_rebuild(self):
-        """Changing disabled property triggers widget rebuild."""
+    def test_disabled_change_preserves_widget_tree(self):
+        """Changing disabled property updates values without rebuilding widgets."""
         regular_color = [1, 0, 0, 1]  # Red
         disabled_color = [0.5, 0.5, 0.5, 0.3]  # Gray semi-transparent
 
@@ -372,35 +370,33 @@ class TestDisabledColorApplication:
         # Verify initial state uses regular color
         labels = find_labels_recursive(label)
         for lbl in labels:
-            if hasattr(lbl, 'font_name') and 'Mono' in str(lbl.font_name):
+            if getattr(lbl, '_is_code', False):
                 continue
             assert colors_equal(lbl.color, regular_color), \
                 f"Initially expected color={regular_color}, got {list(lbl.color)}"
 
         # Change to disabled
         label.disabled = True
-        label.force_rebuild()  # Force immediate rebuild for test
 
-        # Verify rebuild occurred
+        # Verify widget tree preserved (style-only property)
         ids_after = collect_widget_ids(label, exclude_root=True)
-        assert ids_before != ids_after, "Widget tree should rebuild for disabled changes"
+        assert ids_before == ids_after, "Widget tree should be preserved for disabled changes"
 
         # Verify disabled state uses disabled_color
         labels = find_labels_recursive(label)
         for lbl in labels:
-            if hasattr(lbl, 'font_name') and 'Mono' in str(lbl.font_name):
+            if getattr(lbl, '_is_code', False):
                 continue
             assert colors_equal(lbl.color, disabled_color), \
                 f"After disabling, expected disabled_color={disabled_color}, got {list(lbl.color)}"
 
         # Change back to enabled
         label.disabled = False
-        label.force_rebuild()  # Force immediate rebuild for test
 
         # Verify enabled state uses regular color again
         labels = find_labels_recursive(label)
         for lbl in labels:
-            if hasattr(lbl, 'font_name') and 'Mono' in str(lbl.font_name):
+            if getattr(lbl, '_is_code', False):
                 continue
             assert colors_equal(lbl.color, regular_color), \
                 f"After re-enabling, expected color={regular_color}, got {list(lbl.color)}"
@@ -496,8 +492,8 @@ class TestReactiveRebuildOnPropertyChange:
     @given(rebuild_font_names, rebuild_font_names)
     # Combination strategy: 9 examples (combination coverage)
     @settings(max_examples=9, deadline=None)
-    def test_font_name_updates_in_place(self, font1, font2):
-        """Changing font_name after initial rendering updates widgets in-place (style-only).
+    def test_font_name_change_preserves_widget_tree(self, font1, font2):
+        """Changing font_name after initial rendering preserves widgets in-place (style-only).
 
         Validates: font_name is a style-only property that updates existing widgets
         without rebuilding the widget tree.
@@ -532,8 +528,8 @@ class TestReactiveRebuildOnPropertyChange:
     @given(rebuild_colors, rebuild_colors)
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
-    def test_color_updates_value(self, color1, color2):
-        """Changing color after initial rendering updates color without rebuilding widgets.
+    def test_color_change_preserves_widget_tree(self, color1, color2):
+        """Changing color after initial rendering preserves widgets without rebuild.
 
         Validates: Requirement 3.3 - WHEN `color` changes after initial rendering
         THEN the MarkdownLabel SHALL update color on existing widgets without rebuild.
@@ -570,8 +566,8 @@ class TestReactiveRebuildOnPropertyChange:
     @given(rebuild_line_heights, rebuild_line_heights)
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
-    def test_line_height_updates_value(self, lh1, lh2):
-        """Changing line_height after initial rendering updates value without rebuilding widgets.
+    def test_line_height_change_preserves_widget_tree(self, lh1, lh2):
+        """Changing line_height after initial rendering preserves widgets without rebuild.
 
         Validates: Requirement 4.2 - WHEN `line_height` changes after initial rendering
         THEN the MarkdownLabel SHALL update line_height on existing widgets without rebuild.
@@ -608,8 +604,8 @@ class TestReactiveRebuildOnPropertyChange:
     @given(rebuild_text_size_widths, rebuild_text_size_widths)
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
-    def test_text_size_updates_value(self, width1, width2):
-        """Changing text_size after initial rendering updates value without rebuilding widgets.
+    def test_text_size_change_preserves_widget_tree(self, width1, width2):
+        """Changing text_size after initial rendering preserves widgets without rebuild.
 
         Validates: Requirement 9.3 - WHEN `text_size` width changes
         THEN the MarkdownLabel SHALL update text_size on existing widgets without rebuild.
@@ -636,9 +632,12 @@ class TestReactiveRebuildOnPropertyChange:
         assert label.text_size[0] == width2, \
             f"After change, expected text_size[0]={width2}, got {label.text_size[0]}"
 
-        # Verify widgets still exist after update
+        # Verify widgets still exist and have updated text_size (Requirement 9.3)
         labels_after = find_labels_recursive(label)
         assert len(labels_after) >= 1, "Expected at least one Label after update"
+        for lbl in labels_after:
+            assert lbl.text_size[0] == width2, \
+                f"Expected internal Label text_size[0]={width2}, got {lbl.text_size[0]}"
 
     @given(rebuild_font_names, rebuild_colors, rebuild_line_heights)
     # Mixed finite/complex strategy: 15 examples (3 finite × 5 complex samples)
@@ -674,8 +673,8 @@ class TestReactiveRebuildOnPropertyChange:
         ('right', 'left'), ('right', 'center'), ('right', 'justify'),
         ('justify', 'left'), ('justify', 'center'), ('justify', 'right')
     ])
-    def test_halign_updates_value_without_rebuild(self, halign1, halign2):
-        """Changing halign after initial rendering updates value on existing widgets without rebuild."""
+    def test_halign_change_preserves_widget_tree(self, halign1, halign2):
+        """Changing halign after initial rendering preserves existing widgets without rebuild."""
 
         label = MarkdownLabel(text='Hello World', halign=halign1)
 
@@ -708,8 +707,8 @@ class TestReactiveRebuildOnPropertyChange:
         ('center', 'bottom'), ('center', 'middle'), ('center', 'top'),
         ('top', 'bottom'), ('top', 'middle'), ('top', 'center')
     ])
-    def test_valign_updates_value_without_rebuild(self, valign1, valign2):
-        """Changing valign after initial rendering updates value on existing widgets without rebuild."""
+    def test_valign_change_preserves_widget_tree(self, valign1, valign2):
+        """Changing valign after initial rendering preserves existing widgets without rebuild."""
 
         label = MarkdownLabel(text='Hello World', valign=valign1)
 
@@ -741,8 +740,8 @@ class TestReactiveRebuildOnPropertyChange:
         ('replace', 'strict'), ('replace', 'ignore'),
         ('ignore', 'strict'), ('ignore', 'replace')
     ])
-    def test_unicode_errors_change_triggers_rebuild(self, errors1, errors2):
-        """Changing unicode_errors after initial rendering triggers rebuild with new value."""
+    def test_unicode_errors_change_preserves_widget_tree(self, errors1, errors2):
+        """Changing unicode_errors updates values without rebuilding widgets."""
 
         label = MarkdownLabel(text='Hello World', unicode_errors=errors1)
 
@@ -757,15 +756,14 @@ class TestReactiveRebuildOnPropertyChange:
 
         # Change unicode_errors
         label.unicode_errors = errors2
-        label.force_rebuild()  # Force immediate rebuild for test
 
-        # Verify rebuild occurred
+        # Verify widget tree preserved (style-only property)
         ids_after = collect_widget_ids(label, exclude_root=True)
-        assert ids_before != ids_after, "Widget tree should rebuild for unicode_errors changes"
+        assert ids_before == ids_after, "Widget tree should be preserved for unicode_errors changes"
 
-        # Verify widgets were rebuilt with new unicode_errors
+        # Verify widgets were updated with new unicode_errors
         labels_after = find_labels_recursive(label)
-        assert len(labels_after) >= 1, "Expected at least one Label after rebuild"
+        assert len(labels_after) >= 1, "Expected at least one Label after update"
         for lbl in labels_after:
             assert lbl.unicode_errors == errors2, \
                 f"After change, expected unicode_errors={errors2}, got {lbl.unicode_errors}"
@@ -773,8 +771,8 @@ class TestReactiveRebuildOnPropertyChange:
     @given(st.booleans(), st.booleans())
     # Combination strategy: 4 examples (combination coverage)
     @settings(max_examples=4, deadline=None)
-    def test_strip_change_triggers_rebuild(self, strip1, strip2):
-        """Changing strip after initial rendering triggers rebuild with new value."""
+    def test_strip_change_preserves_widget_tree(self, strip1, strip2):
+        """Changing strip updates value without rebuilding widgets."""
         assume(strip1 != strip2)
 
         label = MarkdownLabel(text='Hello World', strip=strip1)
@@ -790,15 +788,14 @@ class TestReactiveRebuildOnPropertyChange:
 
         # Change strip
         label.strip = strip2
-        label.force_rebuild()  # Force immediate rebuild for test
 
-        # Verify rebuild occurred
+        # Verify widget tree preserved (style-only property)
         ids_after = collect_widget_ids(label, exclude_root=True)
-        assert ids_before != ids_after, "Widget tree should rebuild for strip changes"
+        assert ids_before == ids_after, "Widget tree should be preserved for strip changes"
 
-        # Verify widgets were rebuilt with new strip
+        # Verify widgets were updated with new strip
         labels_after = find_labels_recursive(label)
-        assert len(labels_after) >= 1, "Expected at least one Label after rebuild"
+        assert len(labels_after) >= 1, "Expected at least one Label after update"
         for lbl in labels_after:
             assert lbl.strip == strip2, \
                 f"After change, expected strip={strip2}, got {lbl.strip}"
@@ -806,8 +803,8 @@ class TestReactiveRebuildOnPropertyChange:
     @given(st.booleans(), st.booleans())
     # Combination strategy: 4 examples (combination coverage)
     @settings(max_examples=4, deadline=None)
-    def test_disabled_change_triggers_rebuild(self, disabled1, disabled2):
-        """Changing disabled after initial rendering triggers rebuild and updates color value."""
+    def test_disabled_change_preserves_widget_tree_complex(self, disabled1, disabled2):
+        """Changing disabled updates values without rebuilding widgets (complex test)."""
         assume(disabled1 != disabled2)
 
         regular_color = [1, 0, 0, 1]  # Red
@@ -834,17 +831,16 @@ class TestReactiveRebuildOnPropertyChange:
 
         # Change disabled
         label.disabled = disabled2
-        label.force_rebuild()  # Force immediate rebuild for test
 
-        # Verify rebuild occurred
+        # Verify widget tree preserved (style-only property)
         ids_after = collect_widget_ids(label, exclude_root=True)
-        assert ids_before != ids_after, "Widget tree should rebuild for disabled changes"
+        assert ids_before == ids_after, "Widget tree should be preserved for disabled changes"
 
         expected_color2 = disabled_color if disabled2 else regular_color
 
-        # Verify widgets were rebuilt with correct color
+        # Verify widgets were updated with correct color
         labels_after = find_labels_recursive(label)
-        assert len(labels_after) >= 1, "Expected at least one Label after rebuild"
+        assert len(labels_after) >= 1, "Expected at least one Label after update"
         for lbl in labels_after:
             assert colors_equal(list(lbl.color), expected_color2), \
                 f"After change, expected color={expected_color2}, got {list(lbl.color)}"
