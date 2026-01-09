@@ -19,7 +19,7 @@ from kivy.properties import (
 
 class MarkdownLabelProperties:
     """Mixin class containing all property definitions for MarkdownLabel.
-    
+
     This class is designed to be mixed into the main MarkdownLabel class
     to provide all property definitions in a separate, organized module.
     """
@@ -126,7 +126,9 @@ class MarkdownLabelProperties:
     outline_color = ColorProperty([0, 0, 0, 1])
     disabled_outline_color = ColorProperty([0, 0, 0, 1])
     mipmap = BooleanProperty(False)
-    base_direction = OptionProperty(None, options=['ltr', 'rtl', 'weak_rtl', 'weak_ltr', None], allownone=True)
+    base_direction = OptionProperty(
+        None, options=['ltr', 'rtl', 'weak_rtl', 'weak_ltr', None], allownone=True
+    )
     text_language = StringProperty(None, allownone=True)
     limit_render_to_text_bbox = BooleanProperty(False)
 

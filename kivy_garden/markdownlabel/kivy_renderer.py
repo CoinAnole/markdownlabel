@@ -12,7 +12,6 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label import Label
 from kivy.uix.widget import Widget
 from kivy.uix.image import AsyncImage
-from kivy.uix.gridlayout import GridLayout
 from kivy.graphics import Color, Rectangle, Line
 
 from .inline_renderer import InlineRenderer
@@ -934,4 +933,3 @@ class KivyRenderer(KivyRendererTableMixin):
             Small spacer widget
         """
         return Widget(size_hint_y=None, height=5)
-

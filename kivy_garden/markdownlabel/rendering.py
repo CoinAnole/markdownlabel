@@ -13,7 +13,7 @@ from kivy.graphics import Fbo, ClearColor, ClearBuffers
 
 class MarkdownLabelRendering:
     """Mixin class containing rendering logic for MarkdownLabel.
-    
+
     This class is designed to be mixed into the main MarkdownLabel class
     to provide rendering functionality in a separate, organized module.
     """
