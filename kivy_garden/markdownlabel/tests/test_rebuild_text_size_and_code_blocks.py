@@ -60,7 +60,7 @@ class TestTextSizePropertyIdentityPreservationPBT:
         )
     )
     # Feature: optimize-rebuild-contract, Property 3: text_size updates preserve widget identity
-    # Mixed finite/complex strategy: 50 examples (4 finite × 1 complex strategy)
+    # Mixed finite/complex strategy: 50 examples (4 finite × 12 complex samples)
     @settings(max_examples=50, deadline=None)
     def test_text_size_preserves_widget_identity(self, markdown_text, text_size):
         """text_size Updates Preserve Widget Identity.
@@ -257,9 +257,7 @@ class TestCodeBlockFontPreservationPBT:
             blacklist_characters='[]&\n\r'
         ))
     )
-    # Feature: optimize-rebuild-contract, Property 4: Code blocks preserve
-    # monospace font when font_family changes
-    # Complex strategy: font_family (adequate coverage)
+    # Complex strategy: 30 examples (adequate coverage)
     @settings(max_examples=30, deadline=None)
     def test_code_blocks_preserve_code_font_name_when_font_family_changes(
         self, font_family

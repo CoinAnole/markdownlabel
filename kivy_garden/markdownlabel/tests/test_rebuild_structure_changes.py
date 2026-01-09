@@ -18,6 +18,7 @@ from .test_utils import (
 )
 
 
+@pytest.mark.unit
 class TestStructurePropertyRebuild:
     """Tests for structure property changes rebuilding the widget tree.
 
@@ -133,7 +134,7 @@ class TestStructurePropertyRebuildPBT:
         initial_text=simple_markdown_document(),
         new_text=simple_markdown_document()
     )
-    # Mixed finite/complex strategy: 50 examples (complex samples)
+    # Complex strategy: 50 examples (adequate coverage)
     @settings(max_examples=50, deadline=None)
     def test_text_change_triggers_rebuild_pbt(self, initial_text, new_text):
         """Structure Property Changes Trigger Rebuild (text).

@@ -22,6 +22,7 @@ from .test_utils import (
 )
 
 
+@pytest.mark.unit
 class TestStylePropertyPropagation:
     """Tests for style property value propagation to descendant Labels.
 

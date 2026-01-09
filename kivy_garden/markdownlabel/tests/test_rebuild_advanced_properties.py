@@ -58,8 +58,8 @@ class TestAdvancedFontPropertyIdentityPreservationPBT:
         font_blended=st.booleans()
     )
     # Feature: optimize-rebuild-contract, Property 1: Style-only property updates preserve widget identity
-    # Mixed finite/complex strategy: 50 examples (8 finite combinations with 3 complex strategies)
-    @settings(max_examples=50, deadline=None)
+    # Mixed finite/complex strategy: 48 examples (8 finite × 6 complex samples)
+    @settings(max_examples=48, deadline=None)
     def test_advanced_font_properties_preserve_widget_identity(
         self, markdown_text, font_family, font_context, font_features,
         font_hinting, font_kerning, font_blended
@@ -127,7 +127,7 @@ class TestTextProcessingPropertyIdentityPreservationPBT:
         strip=st.booleans()
     )
     # Feature: optimize-rebuild-contract, Property 1: Style-only property updates preserve widget identity
-    # Mixed finite/complex strategy: 3 unicode_errors × 2 strip = 6 combinations with complex markdown
+    # Mixed finite/complex strategy: 30 examples (6 finite × 5 complex samples)
     @settings(max_examples=30, deadline=None)
     def test_text_processing_properties_preserve_widget_identity(
         self, markdown_text, unicode_errors, strip
@@ -204,8 +204,8 @@ class TestTruncationPropertyIdentityPreservationPBT:
         })
     )
     # Feature: optimize-rebuild-contract, Property 1: Style-only property updates preserve widget identity
-    # Mixed finite/complex strategy: 50 examples (2×11×3 = 66 finite combinations with 2 complex strategies)
-    @settings(max_examples=50, deadline=None)
+    # Mixed finite/complex strategy: 66 examples (66 finite × 1 complex samples)
+    @settings(max_examples=66, deadline=None)
     def test_truncation_properties_preserve_widget_identity(
         self, markdown_text, shorten, max_lines, shorten_from, split_str, ellipsis_options
     ):
@@ -313,9 +313,8 @@ class TestAdvancedFontPropertyValuePropagationPBT:
     )
     # Feature: optimize-rebuild-contract, Property 2: Style-only property
     # updates apply values to all child Labels
-    # Mixed finite/complex strategy: 50 examples (8 finite combinations with
-    # 3 complex strategies)
-    @settings(max_examples=50, deadline=None)
+    # Mixed finite/complex strategy: 48 examples (8 finite × 6 complex samples)
+    @settings(max_examples=48, deadline=None)
     def test_all_advanced_font_properties_propagate_to_children(
         self, markdown_text, font_family, font_context, font_features,
         font_hinting, font_kerning, font_blended
@@ -415,8 +414,7 @@ class TestTextProcessingPropertyValuePropagationPBT:
     )
     # Feature: optimize-rebuild-contract, Property 2: Style-only property
     # updates apply values to all child Labels
-    # Mixed finite/complex strategy: 3 unicode_errors × 2 strip = 6 combinations with
-    # complex markdown
+    # Mixed finite/complex strategy: 30 examples (6 finite × 5 complex samples)
     @settings(max_examples=30, deadline=None)
     def test_all_text_processing_properties_propagate_to_children(
         self, markdown_text, unicode_errors, strip
@@ -494,9 +492,8 @@ class TestTruncationPropertyValuePropagationPBT:
     )
     # Feature: optimize-rebuild-contract, Property 2: Style-only property
     # updates apply values to all child Labels
-    # Mixed finite/complex strategy: 50 examples (2×10×3 = 60 finite
-    # combinations with 2 complex strategies)
-    @settings(max_examples=50, deadline=None)
+    # Mixed finite/complex strategy: 60 examples (60 finite × 1 complex samples)
+    @settings(max_examples=60, deadline=None)
     def test_all_truncation_properties_propagate_to_children(
         self, markdown_text, shorten, max_lines, shorten_from, split_str, ellipsis_options
     ):

@@ -23,6 +23,7 @@ from .test_utils import (
 )
 
 
+@pytest.mark.unit
 @pytest.mark.test_tests
 class TestWidgetIdentityHelpers:
     """Tests for the collect_widget_ids helper function."""
@@ -52,6 +53,7 @@ class TestWidgetIdentityHelpers:
             assert id(child) in ids
 
 
+@pytest.mark.unit
 class TestStylePropertyIdentityPreservation:
     """Tests for style property changes preserving widget identities.
 
