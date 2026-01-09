@@ -122,58 +122,31 @@ These should use standard rationales from TESTING.md. For single complex strateg
 
 **Identified:** Using `force_rebuild()` after [text_size](cci:1://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_text_properties.py:45:4-64:85) changes
 
-**Verdict: ⚠️ BORDERLINE - Needs Investigation**
+**Verdict: ✅ RESOLVED**
 
-Looking at the tests:
+Investigation confirmed that [text_size](cci:1://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_text_properties.py:45:4-64:85) updates happen synchronously within the Kivy property binding system. The `force_rebuild()` calls have been removed as they are unnecessary for synchronous verification.
 
-```python
-# Line 272
-label.text_size = [None, height2]
-label.force_rebuild()  # Force immediate rebuild for test
-```
-
-[text_size](cci:1://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_text_properties.py:45:4-64:85) IS listed in TESTING.md line 271 as a style-only property:
-
-> - [text_size](cci:1://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_text_properties.py:45:4-64:85) - Updates Label.text_size on existing Labels with binding management
-
-However, looking at the implementation context, [text_size](cci:1://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_text_properties.py:45:4-64:85) changes may involve binding updates that require some processing. The tests are verifying that this property IS UPDATED (not that a rebuild occurs), and `force_rebuild()` ensures synchronous execution for test determinism. This is a **gray area** - the `force_rebuild()` may be unnecessary if the property truly updates in-place immediately.
-
-**Recommendation:** Investigate if [text_size](cci:1://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_text_properties.py:45:4-64:85) updates happen synchronously; if so, remove `force_rebuild()`.
+**Action:** Removed `force_rebuild()` from lines 272, 296, and 322.
 
 ### Deviations: Lines 421, 422, 435, 438-439 - [unicode_errors](cci:1://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_text_properties.py:336:4-342:83) treated as structure property
 
 **Identified:** Test claims [unicode_errors](cci:1://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_text_properties.py:336:4-342:83) triggers rebuild
 
-**Verdict: ✅ LEGITIMATE - Worth Fixing (High Priority)**
+**Verdict: ✅ RESOLVED**
 
-Looking at lines 421-445:
+[unicode_errors](cci:1://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_text_properties.py:336:4-342:83) is a style-only property and should NOT trigger a rebuild. The test was incorrectly asserting `ids_before != ids_after`.
 
-```python
-def test_unicode_errors_change_triggers_rebuild(self, errors1, errors2):
-    """Changing unicode_errors triggers widget rebuild with new value."""
-    ...
-    label.force_rebuild()  # Force immediate rebuild for test
-    ...
-    assert ids_before != ids_after, "Widget tree should rebuild for unicode_errors changes"
-```
-
-TESTING.md lines 260-261 explicitly list [unicode_errors](cci:1://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_text_properties.py:336:4-342:83) as style-only:
-
-> - [unicode_errors](cci:1://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_text_properties.py:336:4-342:83) - Updates Label.unicode_errors on existing Labels
-
-This test incorrectly expects a rebuild. Should be renamed to `test_unicode_errors_change_preserves_widget_tree` and assert `ids_before == ids_after`.
+**Action:** Renamed test to `test_unicode_errors_change_preserves_widget_tree`, removed `force_rebuild()`, and updated assertion to `assert ids_before == ids_after`.
 
 ### Deviations: Lines 539, 540, 553, 556-557 - [strip](cci:1://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_text_properties.py:461:4-467:62) treated as structure property
 
 **Identified:** Test claims [strip](cci:1://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_text_properties.py:461:4-467:62) triggers rebuild
 
-**Verdict: ✅ LEGITIMATE - Worth Fixing (High Priority)**
+**Verdict: ✅ RESOLVED**
 
-Same issue as above. TESTING.md lines 261 lists [strip](cci:1://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_text_properties.py:461:4-467:62) as style-only:
+[strip](cci:1://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_text_properties.py:461:4-467:62) is a style-only property and should NOT trigger a rebuild.
 
-> - [strip](cci:1://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_text_properties.py:461:4-467:62) - Updates Label.strip on existing Labels
-
-The test should verify NO rebuild (preserve widget tree).
+**Action:** Renamed test to `test_strip_change_preserves_widget_tree`, removed `force_rebuild()`, and updated assertion to `assert ids_before == ids_after`.
 
 ---
 
@@ -229,18 +202,21 @@ Same as the serialization file - should use standard rationale format.
 
 # Summary
 
-| Priority   | Count | Category                                                                                                                                                                                                                                                                                                                                                                                                                                               |
-| ---------- | ----- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **High**   | 4     | Incorrect rebuild contract tests ([unicode_errors](cci:1://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_text_properties.py:336:4-342:83), [strip](cci:1://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_text_properties.py:461:4-467:62), [shorten](cci:1://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_shortening_properties.py:42:4-54:70)) |
-| **Medium** | 3     | Missing markers, private method testing                                                                                                                                                                                                                                                                                                                                                                                                                |
-| **Low**    | ~20   | Comment format, naming conventions, docstring accuracy                                                                                                                                                                                                                                                                                                                                                                                                 |
+| Priority   | Count | Category                                                                                                                                                                                                                                                                               |
+| ---------- | ----- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **High**   | 2     | Incorrect rebuild contract tests ([shorten](cci:1://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_shortening_properties.py:42:4-54:70))                                                                                                          |
+| **Medium** | 3     | Missing markers, private method testing                                                                                                                                                                                                                                                |
+| **Low**    | ~20   | Comment format, naming conventions, docstring accuracy                                                                                                                                                                                                                                 |
 
 ## Recommended Fix Order
 
-1. **High Priority:** Fix the tests that incorrectly expect rebuilds for style-only properties ([shorten](cci:1://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_shortening_properties.py:42:4-54:70), [unicode_errors](cci:1://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_text_properties.py:336:4-342:83), [strip](cci:1://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_text_properties.py:461:4-467:62)). This represents incorrect test semantics.
+1. **High Priority:** Fix the remaining tests that incorrectly expect rebuilds for style-only properties ([shorten](cci:1://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_shortening_properties.py:42:4-54:70)). This represents incorrect test semantics.
 
 2. **Medium Priority:** Add missing `@pytest.mark.property` markers to enable proper test categorization.
 
 3. **Low Priority:** Batch-update comment rationales to match the standard format (can be automated with the standardization tools mentioned in TESTING.md).
 
-4. **RESOLVED:** Documented `_get_effective_render_mode()` and similar methods as acceptable testing exceptions in `TESTING.md` and `.kiro/steering/structure.md`.
+4. **RESOLVED:**
+    - Documented `_get_effective_render_mode()` and similar methods as acceptable testing exceptions.
+    - Resolved [text_size](cci:1://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_text_properties.py:45:4-64:85) investigation: confirmed synchronous updates and removed `force_rebuild()`.
+    - Fixed [unicode_errors](cci:1://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_text_properties.py:336:4-342:83) and [strip](cci:1://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_text_properties.py:461:4-467:62) rebuild contract deviations.
