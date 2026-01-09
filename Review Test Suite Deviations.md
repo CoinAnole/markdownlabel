@@ -68,7 +68,7 @@ However, `max_examples=2` is extremely low for complex strategies (the guideline
 
 ### Deviation: Complex strategies with `max_examples=2` violates "right-size max_examples based on strategy type"
 
-**Assessment: ✅ LEGITIMATE, HIGH priority**
+**Assessment: ✅ LEGITIMATE, HIGH priority (COMPLETED)**
 
 **Evidence:** The strategy uses:
 - `st.integers(min_value=1, max_value=100).filter()` - Complex
@@ -76,7 +76,7 @@ However, `max_examples=2` is extremely low for complex strategies (the guideline
 
 Per [TESTING.md](cci:7://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/TESTING.md:0:0-0:0) line 139, Complex/Infinite strategies require 10-50 examples. Using `max_examples=2` for complex strategies is a clear violation.
 
-**Worth fixing:** Yes, this should be increased to at least 10 examples.
+**Worth fixing:** Yes. (Fixed: increased max_examples to 10)
 
 ---
 
@@ -167,7 +167,7 @@ So it's `5 * 3 = 15 finite` × `1 complex sample`. The format "15 finite combina
 
 ### Deviation: Test name claims "execution_time" specific but assertion is generic
 
-**Assessment: ✅ LEGITIMATE, MEDIUM priority**
+**Assessment: ⚠️ PARTIALLY LEGITIMATE, LOW priority**
 
 **Evidence:** The test is named [test_execution_time_performance_rationale_documented](cci:1://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer_performance.py:38:4-106:36) and the docstring says "Execution time performance rationale is properly documented" (line 52).
 
@@ -183,7 +183,7 @@ Looking at the assertions (lines 78-103), they do check for `performance_rationa
 
 ### Deviation: [test_backup_and_rollback_functionality](cci:1://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer_performance.py:455:4-458:19) only asserts `True`
 
-**Assessment: ✅ LEGITIMATE, HIGH priority**
+**Assessment: ✅ LEGITIMATE, HIGH priority (COMPLETED)**
 
 **Evidence:** At lines 456-459:
 ```python
@@ -195,7 +195,7 @@ def test_backup_and_rollback_functionality(self):
 
 This is exactly the pattern warned against in [TESTING.md](cci:7://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/TESTING.md:0:0-0:0) line 231: "❌ Claim to test rebuilds without verifying them". The test claims to test functionality but has no actual assertions.
 
-**Worth fixing:** Yes, either remove the test or implement actual backup/rollback testing.
+**Worth fixing:** Yes. (Fixed: Removed empty test)
 
 ---
 
@@ -370,13 +370,13 @@ Per [TESTING.md](cci:7://file:///home/coinanole/repos/markdownlabel/kivy_garden/
 | [test_comment_format.py](cci:7://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/meta_tests/test_comment_format.py:0:0-0:0) | Private method access | ✅ Yes | Low | Yes (add comment) |
 | [test_comment_format.py](cci:7://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/meta_tests/test_comment_format.py:0:0-0:0) (402) | Strategy misclassification | ✅ Yes | Medium | Yes |
 | [test_comment_standardizer_boolean.py](cci:7://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer_boolean.py:0:0-0:0) (38) | Non-standard rationale | ✅ Yes | Medium | Yes |
-| [test_comment_standardizer_boolean.py](cci:7://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer_boolean.py:0:0-0:0) (29-40) | Low max_examples for complex | ✅ Yes | **High** | Yes |
+| [test_comment_standardizer_boolean.py](cci:7://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer_boolean.py:0:0-0:0) (29-40) | Low max_examples for complex | ✅ Yes | **Done** | Yes |
 | [test_comment_standardizer_finite.py](cci:7://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer_finite.py:0:0-0:0) (37) | Classification format | ✅ Yes | Medium | Yes |
 | [test_comment_standardizer_finite.py](cci:7://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer_finite.py:0:0-0:0) (39-42) | Docstring imprecision | ⚠️ Partial | Low | Optional |
 | [test_comment_standardizer_finite.py](cci:7://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer_finite.py:0:0-0:0) (120-121) | Truncation without rationale | ❌ No | - | No |
 | [test_comment_standardizer_performance.py](cci:7://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer_performance.py:0:0-0:0) (47) | Comment format | ✅ Yes | Low | Yes |
 | [test_comment_standardizer_performance.py](cci:7://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer_performance.py:0:0-0:0) (49-52) | Generic assertion | ⚠️ Partial | Low | Optional |
-| [test_comment_standardizer_performance.py](cci:7://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer_performance.py:0:0-0:0) (456-459) | Empty test | ✅ Yes | **High** | Yes |
+| [test_comment_standardizer_performance.py](cci:7://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer_performance.py:0:0-0:0) (456-459) | Empty test | ✅ Yes | **Done** | Yes |
 | [test_coverage_preservation.py](cci:7://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/meta_tests/test_coverage_preservation.py:0:0-0:0) (183-184) | Strategy misclassification | ✅ Yes | Medium | Yes |
 | [test_file_analyzer.py](cci:7://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/meta_tests/test_file_analyzer.py:0:0-0:0) (294-296, 466-475) | Missing marker | ✅ Yes | Medium | Yes |
 | [test_file_analyzer.py](cci:7://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/meta_tests/test_file_analyzer.py:0:0-0:0) (305) | Private method | ✅ Yes | Low | Yes (add comment) |
@@ -392,9 +392,9 @@ Per [TESTING.md](cci:7://file:///home/coinanole/repos/markdownlabel/kivy_garden/
 
 ## Recommendations
 
-### High Priority Fixes (Should address immediately):
-1. **[test_comment_standardizer_boolean.py](cci:7://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer_boolean.py:0:0-0:0) (29-40)**: Increase [max_examples](cci:1://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/meta_tests/test_comment_format.py:125:4-138:80) from 2 to at least 10 for complex strategies
-2. **[test_comment_standardizer_performance.py](cci:7://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer_performance.py:0:0-0:0) (456-459)**: Either implement actual backup/rollback tests or remove the empty test
+### High Priority Fixes (DONE):
+1. ~~**[test_comment_standardizer_boolean.py](cci:7://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer_boolean.py:0:0-0:0) (29-40)**: Increase [max_examples](cci:1://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/meta_tests/test_comment_format.py:125:4-138:80) from 2 to at least 10 for complex strategies~~
+2. ~~**[test_comment_standardizer_performance.py](cci:7://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer_performance.py:0:0-0:0) (456-459)**: Either implement actual backup/rollback tests or remove the empty test~~
 
 ### Medium Priority Fixes:
 1. Add `@pytest.mark.property` markers to all tests using `@given()`
