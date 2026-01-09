@@ -70,7 +70,7 @@ class TestBatchedRebuilds:
     # Mixed finite/complex strategy: 16 examples (2 finite × 8 complex samples)
     @settings(max_examples=16, deadline=None)
     def test_mixed_property_changes_batch_rebuilds(self, text, font_name):
-        """Mixed structure property changes batch into single rebuild.
+        """Structure property changes (text) batch with style-only changes (font_name).
 
 
         Verifies batching through observable widget identity:
@@ -82,9 +82,9 @@ class TestBatchedRebuilds:
 
         ids_before = collect_widget_ids(label, exclude_root=True)
 
-        # Make multiple structure property changes (should be batched/deferred)
+        # Make mixed property changes: text (rebuilds) and font_name (style-only)
         label.text = text
-        label.font_name = font_name
+        label.font_name = font_name  # Note: font_name is style-only and doesn't trigger rebuild
 
         # Before force_rebuild, widgets should be unchanged (rebuild is deferred)
         ids_during = collect_widget_ids(label, exclude_root=True)

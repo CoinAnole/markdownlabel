@@ -714,7 +714,8 @@ class TestMarkdownSerializerEdgeCases:
         serializer = MarkdownSerializer()
         # Token with unknown type
         token = {'type': 'unknown_thing', 'raw': 'content'}
-        # _serialize_token returns '' for unknown
+        # Edge case: Testing unknown token handling requires direct call since
+        # mistune parser never produces unknown token types
         assert serializer._serialize_token(token) == ''
 
     @pytest.mark.unit
@@ -750,7 +751,8 @@ class TestMarkdownSerializerEdgeCases:
             'type': 'list_item',
             'children': [{'type': 'unknown_block', 'raw': 'ignore me'}]
         }
-        # It calls _serialize_token which returns '' so result is empty string
+        # Edge case: Testing list item with unknown children requires direct call
+        # because such tokens are not naturally produced by the parser
         assert serializer._serialize_list_item(item_token) == ''
 
     @pytest.mark.unit
@@ -762,6 +764,8 @@ class TestMarkdownSerializerEdgeCases:
             'type': 'list_item',
             'children': [{'type': 'blank_line'}]
         }
+        # Edge case: Testing list item empty serialization requires direct call
+        # since blank_line inner tokens are typically handled at block level
         assert serializer._serialize_list_item(item_token) == ''
 
     @pytest.mark.unit

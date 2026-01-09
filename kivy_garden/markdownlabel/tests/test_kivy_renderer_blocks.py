@@ -506,6 +506,11 @@ class TestImageWidgetCreation:
 
         assert hasattr(widget, 'alt_text'), "Image should have alt_text attribute"
 
+        # Verify the actual content of alt_text matches children's raw text
+        expected_alt = token.get('children', [{}])[0].get('raw', '') if token.get('children') else ''
+        assert widget.alt_text == expected_alt, \
+            f"Expected alt_text='{expected_alt}', got '{widget.alt_text}'"
+
 
 class TestDeepNestingTruncation:
     """Tests for deep nesting truncation placeholder behavior."""

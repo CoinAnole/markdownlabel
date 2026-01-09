@@ -4,17 +4,17 @@ I've examined each deviation identified in the [DEVIATIONS.md](cci:7://file:///h
 
 ## Summary Table
 
-| File | Line(s) | Deviation | Legitimate? | Worth Fixing? | Priority |
-|------|---------|-----------|-------------|---------------|----------|
-| test_kivy_renderer_blocks.py | 502-508 | Test naming doesn't match assertions | **Yes** | Yes | Low |
-| test_kivy_renderer_tables.py | 140-155 | Private method `_render_table_cell` | **Partially** | Consider | Medium |
-| test_kivy_renderer_tables.py | 211-225 | Private method `_render_table_cell` | **Partially** | Consider | Medium |
-| test_kivy_renderer_tables.py | 254-297 | Test name doesn't match assertions | **Yes** | Yes | Low |
-| test_rebuild_scheduling.py | 73 | Incorrect docstring (font_name as structure) | **Yes** | Yes | Medium |
-| test_rebuild_scheduling.py | 85 | Incorrect comment (font_name as structure) | **Yes** | Yes | Medium |
-| test_serialization.py | 718 | Private `_serialize_token` method | **Partially** | Consider | Low |
-| test_serialization.py | 754, 765 | Private [_serialize_list_item](cci:1://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/test_serialization.py:743:4-753:64) method | **Partially** | Consider | Low |
-| test_texture_render_mode.py | 513-517, 544-548 | Monkeypatching `_render_as_texture` | **Partially** | Consider | Low |
+| File | Line(s) | Deviation | Legitimate? | Worth Fixing? | Priority | Status |
+|------|---------|-----------|-------------|---------------|----------|--------|
+| test_kivy_renderer_blocks.py | 502-508 | Test naming doesn't match assertions | **Yes** | Yes | Low | **Resolved** |
+| test_kivy_renderer_tables.py | 140-155 | Private method `_render_table_cell` | **Partially** | Consider | Medium | **Resolved** |
+| test_kivy_renderer_tables.py | 211-225 | Private method `_render_table_cell` | **Partially** | Consider | Medium | **Resolved** |
+| test_kivy_renderer_tables.py | 254-297 | Test name doesn't match assertions | **Yes** | Yes | Low | **Resolved** |
+| test_rebuild_scheduling.py | 73 | Incorrect docstring (font_name as structure) | **Yes** | Yes | Medium | **Resolved** |
+| test_rebuild_scheduling.py | 85 | Incorrect comment (font_name as structure) | **Yes** | Yes | Medium | **Resolved** |
+| test_serialization.py | 718 | Private `_serialize_token` method | **Partially** | Consider | Low | **Resolved** |
+| test_serialization.py | 754, 765 | Private `_serialize_list_item` method | **Partially** | Consider | Low | **Resolved** |
+| test_texture_render_mode.py | 513-517, 544-548 | Monkeypatching `_render_as_texture` | **Partially** | Consider | Low | **Resolved** |
 
 ---
 

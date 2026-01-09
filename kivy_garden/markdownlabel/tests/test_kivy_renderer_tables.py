@@ -147,6 +147,8 @@ class TestTableAlignmentApplication:
             'attrs': {'align': alignment, 'head': False}
         }
 
+        # Edge case: Testing alignment application requires direct call to
+        # _render_table_cell to isolate specific alignment values
         widget = renderer._render_table_cell(cell_token, None, is_head=False)
 
         assert isinstance(widget, Label), f"Expected Label, got {type(widget)}"
@@ -218,6 +220,8 @@ class TestTableAlignmentApplication:
             'attrs': {'align': alignment, 'head': False}
         }
 
+        # Edge case: Testing fallback behavior requires direct call to
+        # _render_table_cell to isolate invalid input handling
         widget = renderer._render_table_cell(cell_token, None, is_head=False)
 
         assert widget.halign == 'left', \
@@ -282,7 +286,11 @@ class TestTableEdgeCases:
                             'type': 'table_row',
                             'children': [
                                 {'type': 'table_cell', 'children': [{'type': 'text', 'raw': 'R1C1'}]},
-                                {'type': 'table_cell', 'children': [{'type': 'text', 'raw': 'R1C2'}]}
+                                {
+                                    'type': 'table_cell',
+                                    'children': [{'type': 'text', 'raw': 'R1C2'}],
+                                    'attrs': {'align': 'right'}
+                                }
                             ]
                         }
                     ]
@@ -295,3 +303,25 @@ class TestTableEdgeCases:
         # Should be GridLayout or similar
         assert table_widget is not None
         assert isinstance(table_widget, GridLayout)
+
+        # Verify cell alignments and header status
+        # Note: children are in reverse order of addition
+        cells = list(reversed(table_widget.children))
+
+        # Header row
+        assert cells[0].text == 'H1'
+        assert cells[0].halign == 'left'
+        assert cells[0].is_header is True
+
+        assert cells[1].text == 'H2'
+        assert cells[1].halign == 'center'
+        assert cells[1].is_header is True
+
+        # Body row
+        assert cells[2].text == 'R1C1'
+        assert cells[2].halign == 'left'  # Default
+        assert cells[2].is_header is False
+
+        assert cells[3].text == 'R1C2'
+        assert cells[3].halign == 'right'
+        assert cells[3].is_header is False

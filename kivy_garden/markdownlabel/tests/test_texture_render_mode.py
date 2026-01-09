@@ -510,6 +510,8 @@ class TestTextureFallbackBranch:
         content is always displayed.
         """
         # Monkeypatch _render_as_texture to return None (simulate failure)
+        # Testing Exception: Fallback behavior requires simulating texture failure
+        # which cannot be triggered through public API
         monkeypatch.setattr(
             MarkdownLabel,
             '_render_as_texture',
@@ -541,6 +543,8 @@ class TestTextureFallbackBranch:
     def test_texture_fallback_preserves_content(self, monkeypatch):
         """Fallback to widgets mode preserves all content."""
         # Monkeypatch _render_as_texture to return None
+        # Testing Exception: Fallback behavior requires simulating texture failure
+        # which cannot be triggered through public API
         monkeypatch.setattr(
             MarkdownLabel,
             '_render_as_texture',
