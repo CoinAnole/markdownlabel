@@ -827,9 +827,6 @@ class TestInlineRendererEdgeCases:
         result = renderer.render([token])
         assert result == 'some text &bl;b&br;'
 
-        # Test direct _unknown call
-        assert renderer._unknown(token) == 'some text &bl;b&br;'
-
     def test_image_rendering(self):
         """Test that image tokens render alt text in inline context."""
         renderer = InlineRenderer()

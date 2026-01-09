@@ -139,21 +139,22 @@ class TestAutoSizeHeightTrueBehavior:
     @given(st.floats(min_value=0.1, max_value=2.0, allow_nan=False, allow_infinity=False))
     # Complex strategy: 50 examples (adequate coverage)
     @settings(max_examples=50, deadline=None)
-    def test_auto_size_height_true_ignores_user_size_hint_y(self, user_size_hint_y):
-        """When auto_size_height=True, user-provided size_hint_y is overridden."""
+    def test_auto_size_height_true_overrides_user_size_hint_y(self, user_size_hint_y):
+        """When auto_size_height=True, user-provided size_hint_y is overridden but restorable."""
         label = MarkdownLabel(
             text="Test content",
             auto_size_height=True,
             size_hint_y=user_size_hint_y
         )
 
-        # Should override user's size_hint_y
+        # Should override user's size_hint_y initially
         assert label.size_hint_y is None, \
             f"Expected size_hint_y=None to override user value {user_size_hint_y}, got {label.size_hint_y}"
 
-        # But should store the user value for later restoration
-        assert label._user_size_hint_y == user_size_hint_y, \
-            f"Expected _user_size_hint_y={user_size_hint_y}, got {label._user_size_hint_y}"
+        # Verify restoration behavior (observable behavior)
+        label.auto_size_height = False
+        assert label.size_hint_y == user_size_hint_y, \
+            f"Expected size_hint_y to restore to {user_size_hint_y}, got {label.size_hint_y}"
 
 
 # *For any* MarkdownLabel with `auto_size_height=False`, the widget SHALL preserve

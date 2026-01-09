@@ -41,6 +41,7 @@ class TestShorteningPropertyForwarding:
             assert lbl.shorten == shorten_value, \
                 f"Expected shorten={shorten_value}, got {lbl.shorten}"
 
+    @pytest.mark.property
     @given(st.booleans())
     # Boolean strategy: 2 examples (True/False coverage)
     @settings(max_examples=2, deadline=None)
@@ -55,6 +56,7 @@ class TestShorteningPropertyForwarding:
             assert lbl.shorten == shorten_value, \
                 f"Expected shorten={shorten_value}, got {lbl.shorten}"
 
+    @pytest.mark.property
     @given(st.booleans())
     # Boolean strategy: 2 examples (True/False coverage)
     @settings(max_examples=2, deadline=None)
@@ -70,6 +72,7 @@ class TestShorteningPropertyForwarding:
             assert lbl.shorten == shorten_value, \
                 f"Expected shorten={shorten_value}, got {lbl.shorten}"
 
+    @pytest.mark.property
     @given(st.booleans())
     # Boolean strategy: 2 examples (True/False coverage)
     @settings(max_examples=2, deadline=None)
@@ -184,6 +187,7 @@ class TestShorteningPropertyForwarding:
             assert lbl.max_lines == max_lines_value, \
                 f"Expected max_lines={max_lines_value}, got {lbl.max_lines}"
 
+    @pytest.mark.property
     @given(st.integers(min_value=1, max_value=10))
     # Small finite strategy: 10 examples (input space size: 10)
     @settings(max_examples=10, deadline=None)
@@ -216,6 +220,7 @@ class TestShorteningPropertyForwarding:
             assert lbl.ellipsis_options == ellipsis_opts, \
                 f"Expected ellipsis_options={ellipsis_opts}, got {lbl.ellipsis_options}"
 
+    @pytest.mark.property
     @given(st.fixed_dictionaries({
         'markup_color': st_rgba_color()
     }))
@@ -232,6 +237,7 @@ class TestShorteningPropertyForwarding:
             assert lbl.ellipsis_options == ellipsis_opts, \
                 f"Expected ellipsis_options={ellipsis_opts}, got {lbl.ellipsis_options}"
 
+    @pytest.mark.property
     @given(st.fixed_dictionaries({
         'markup_color': st_rgba_color()
     }))
@@ -249,6 +255,7 @@ class TestShorteningPropertyForwarding:
             assert lbl.ellipsis_options == ellipsis_opts, \
                 f"Expected ellipsis_options={ellipsis_opts}, got {lbl.ellipsis_options}"
 
+    @pytest.mark.property
     @given(st.fixed_dictionaries({
         'markup_color': st_rgba_color()
     }))

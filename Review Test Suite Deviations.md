@@ -86,7 +86,7 @@ Looking at lines 821-832 and 846-852, these tests directly call private methods 
 
 **Update:** 
 - ✅ `_escape_markup` is now acceptable under "Coverage-Focused Tests" guidance in edge case classes.
-- ⚠️ Line 831 (`renderer._unknown(token)`) is still redundant since line 827 already tests via public API.
+- ✅ Line 831 (`renderer._unknown(token)`) was redundant and has been removed.
 
 ---
 
@@ -108,7 +108,7 @@ This only checks the **outer list** padding, not the nested lists. To verify "in
 
 **Recommendation:** Medium priority. Either fix the test to verify nested indentation increases, or rename to `test_nested_list_has_left_padding`.
 
-**Update:** ⚠️ Still needs fixing — name/assertion mismatch is a real issue.
+**Update:** ✅ Fixed. The test now correctly traverses nested lists to verify indentation accumulation at each level.
 
 ### Lines 477-569: `TestDeepNestingTruncation` class uses private `_nesting_depth` and `_render_token`
 **Deviation:** Directly sets `renderer._nesting_depth` and calls `renderer._render_token`.
@@ -194,7 +194,7 @@ These are factual errors:
 
 **Recommendation:** High priority. Fix the comments to accurately reflect the rationale.
 
-**Update:** ⚠️ Still needs fixing — these are factual errors in comments.
+**Update:** ✅ Fixed. Math rationales now correctly reflect sampling from finite spaces (e.g., "sampling from 120 finite combinations").
 
 ### Line 380: `font_name` misclassified as structure property
 **Deviation:** Test claims "structure property changes" but includes `font_name` which is style-only.
@@ -205,7 +205,7 @@ Looking at line 380-413, the test `test_root_id_preserved_across_structure_prope
 
 **Recommendation:** Medium priority. Either rename the test or remove `font_name` from the test parameters.
 
-**Update:** ⚠️ Still needs fixing — incorrect property classification.
+**Update:** ✅ Fixed. `font_name` has been removed from structure tests as it is a style-only property.
 
 ---
 
@@ -220,7 +220,7 @@ Looking at these lines, tests like `test_shorten_forwarded_to_heading` use `@giv
 
 **Recommendation:** Medium priority. Add missing markers.
 
-**Update:** ⚠️ Still needs fixing — missing required markers.
+**Update:** ✅ Fixed. All property-based tests now specify `@pytest.mark.property`.
 
 ### Line 325: `max_examples=2` for finite space of 4
 **Deviation:** Two booleans create 4 combinations but only 2 examples used.
@@ -262,7 +262,7 @@ This tests an implementation detail (how user's original value is stored for res
 
 **Recommendation:** Medium priority. Consider testing restoration behavior instead of internal state.
 
-**Update:** ⚠️ Still a minor issue — could be refactored to test observable behavior.
+**Update:** ✅ Fixed. Refactored to verify restoration behavior via the public API (toggling `auto_size_height`) instead of inspecting internal state.
 
 ### Lines 45, 110, 203, 380: Test name/assertion mismatch
 **Deviation:** Names mention "height bound to minimum" but assertions only verify `size_hint_y` preconditions.
@@ -309,22 +309,14 @@ These could be consolidated into helper functions. However, some duplication in 
 
 # Updated Summary (Post-TESTING.md Changes)
 
-## Remaining Issues (Should Fix)
+## Resolved (All Priority Issues Corrected)
 
-### High Priority
-1. **test_rebuild_identity_preservation.py lines 276, 338, 380, 459**: Fix incorrect `max_examples` rationale math in comments
-
-### Medium Priority
-1. **test_kivy_renderer_blocks.py lines 225-266**: Fix test name/assertion mismatch for nested list indentation
-2. **test_rebuild_identity_preservation.py line 380**: Remove `font_name` from structure property test (it's style-only)
-3. **test_shortening_properties.py lines 44, 58, 73, 187, 219, 235, 252**: Add missing `@pytest.mark.property` markers
-
-### Low Priority
-1. **test_inline_renderer.py line 831**: Remove redundant `renderer._unknown(token)` call (already tested via public API on line 827)
-2. **test_sizing_behavior.py line 159**: Consider refactoring to test restoration behavior instead of `_user_size_hint_y`
-
-## Resolved (Now Acceptable Per Updated Guidelines)
-
+- ✅ **High Priority**: Corrected `max_examples` rationale math in `test_rebuild_identity_preservation.py`.
+- ✅ **Medium Priority**: Fixed nested list indentation verification in `test_kivy_renderer_blocks.py`.
+- ✅ **Medium Priority**: Corrected property classification for `font_name` in rebuild tests.
+- ✅ **Medium Priority**: Added `@pytest.mark.property` markers in `test_shortening_properties.py`.
+- ✅ **Low Priority**: Removed redundant private method call in `test_inline_renderer.py`.
+- ✅ **Low Priority**: Refactored `test_sizing_behavior.py` to test restoration behavior via public API.
 - ✅ Hybrid test names like `test_*_updates_value_without_rebuild`
 - ✅ Using documented public attributes like `language_info` and constants like `HEADING_SIZES`
 - ✅ Imports inside test methods

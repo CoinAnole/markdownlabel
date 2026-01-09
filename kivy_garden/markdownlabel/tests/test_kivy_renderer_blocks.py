@@ -257,34 +257,43 @@ class TestNestedListIndentation:
 
         # Verify indentation accumulation by traversing the nested structure
         current_list = widget
-        
+
         for i in range(depth):
-            # 1. Verify this is a List with padding
+            # 1. Verify this is a List with padding proportional to depth
             assert isinstance(current_list, BoxLayout), f"Level {i+1}: Expected BoxLayout"
-            # Lists in KivyRenderer get padding (default 20 approx)
-            assert hasattr(current_list, 'padding'), f"Level {i+1}: Should have padding"
-            assert current_list.padding[0] == 20, \
-                f"Level {i+1}: Expected padding 20, got {current_list.padding[0]}"
+            # Lists in KivyRenderer get left padding = (list_depth * 20)
+            expected_level_padding = (i + 1) * 20
+            assert current_list.padding[0] == expected_level_padding, \
+                f"Level {i+1}: Expected padding {expected_level_padding}, got {current_list.padding[0]}"
 
             if i < depth - 1:
                 # Traverse to next nested list
                 # Current List -> [ListItem] (since we generate 1 item)
-                assert len(current_list.children) >= 1, f"Level {i+1}: List empty"
-                
-                # Find the ListItem (it's a BoxLayout)
-                # In our test structure, the list has 1 child.
+                assert len(current_list.children) >= 1, f"Level {i+1}: List should have items"
+
+                # Find the ListItem (it's a horizontal BoxLayout containing marker and content)
+                # Kivy children are in reverse order of addition
                 list_item = current_list.children[0]
                 assert isinstance(list_item, BoxLayout), f"Level {i+1}: Expected ListItem BoxLayout"
-                
-                # ListItem children: [NestedList, Paragraph] (order varies)
-                # We look for the child that is the Nested List (BoxLayout with padding 20)
-                next_list = None
+
+                # Find the 'content' vertical BoxLayout within the ListItem
+                content_container = None
                 for child in list_item.children:
-                    if isinstance(child, BoxLayout) and hasattr(child, 'padding') and child.padding[0] == 20:
+                    # The content container is a vertical BoxLayout (no padding, size_hint_y=None)
+                    if isinstance(child, BoxLayout) and child.orientation == 'vertical':
+                        content_container = child
+                        break
+                assert content_container is not None, \
+                    f"Level {i+1}: Could not find content container in ListItem"
+
+                # Find the Nested List (BoxLayout with padding > 0) within the content container
+                next_list = None
+                for child in content_container.children:
+                    if isinstance(child, BoxLayout) and hasattr(child, 'padding') and child.padding[0] > 0:
                         next_list = child
                         break
-                
-                assert next_list is not None, f"Level {i+1}: Could not find nested List in Item"
+
+                assert next_list is not None, f"Level {i+1}: Could not find nested List in content"
                 current_list = next_list
 
 
