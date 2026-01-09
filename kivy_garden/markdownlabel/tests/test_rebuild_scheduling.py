@@ -15,7 +15,6 @@ from kivy_garden.markdownlabel.tests.test_utils import (
     collect_widget_ids,
     find_labels_recursive,
     st_alphanumeric_text,
-    st_font_name,
 )
 
 
@@ -65,26 +64,26 @@ class TestBatchedRebuilds:
 
     @given(
         st_alphanumeric_text(min_size=1, max_size=20),
-        st_font_name(fonts=["Roboto", "RobotoMono-Regular"]),
+        st.sampled_from(['widgets', 'texture']),
     )
     # Mixed finite/complex strategy: 16 examples (2 finite × 8 complex samples)
     @settings(max_examples=16, deadline=None)
-    def test_mixed_property_changes_batch_rebuilds(self, text, font_name):
-        """Structure property changes (text) batch with style-only changes (font_name).
+    def test_mixed_property_changes_batch_rebuilds(self, text, render_mode):
+        """Mixed structure property changes (text and render_mode) batch into single rebuild.
 
 
         Verifies batching through observable widget identity:
-        - Widget IDs unchanged after mixed property changes (deferred)
+        - Widget IDs unchanged after mixed structure property changes (deferred)
         - Widget IDs changed after force_rebuild() (single rebuild occurred)
         """
-        label = MarkdownLabel(text="Initial")
+        label = MarkdownLabel(text="Initial", render_mode='widgets')
         label.force_rebuild()  # Ensure stable initial state
 
         ids_before = collect_widget_ids(label, exclude_root=True)
 
-        # Make mixed property changes: text (rebuilds) and font_name (style-only)
+        # Make multiple structure property changes: text and render_mode (both trigger rebuilds)
         label.text = text
-        label.font_name = font_name  # Note: font_name is style-only and doesn't trigger rebuild
+        label.render_mode = render_mode
 
         # Before force_rebuild, widgets should be unchanged (rebuild is deferred)
         ids_during = collect_widget_ids(label, exclude_root=True)
