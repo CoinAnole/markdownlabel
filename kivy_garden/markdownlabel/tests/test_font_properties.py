@@ -662,8 +662,8 @@ class TestHeadingScalePreservation:
         ),
         st_font_size(min_value=12, max_value=24)
     )
-    # Mixed finite/complex strategy: 20 examples (~57 finite list combinations × sampled)
-    @settings(max_examples=20, deadline=None)
+    # Mixed finite/complex strategy: 57 examples (57 finite × 1 complex samples)
+    @settings(max_examples=57, deadline=None)
     def test_multiple_headings_preserve_relative_scales(self, heading_levels, base_size):
         """Multiple headings preserve correct relative scale factors."""
         # Create markdown with multiple headings
@@ -861,27 +861,21 @@ class TestNoRebuildOnFontSizeChange:
     )
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
-    def test_rebuild_counter_not_incremented_on_font_size_change(self, new_size):
+    def test_font_size_change_preserves_widget_tree_fixed_content(self, new_size):
         """Rebuild operations are not triggered by font size changes."""
         # Create label with content
         label = MarkdownLabel(text='# Test\n\nParagraph')
 
-        # Track rebuild calls
-        rebuild_count = [0]
-        original_rebuild = label._rebuild_widgets
-
-        def counting_rebuild():
-            rebuild_count[0] += 1
-            original_rebuild()
-
-        label._rebuild_widgets = counting_rebuild
+        # Collect widget IDs before change
+        ids_before = collect_widget_ids(label)
 
         # Change font size
         label.base_font_size = new_size
 
-        # No rebuild should have been triggered
-        assert rebuild_count[0] == 0, \
-            f"Expected 0 rebuilds for font_size change, got {rebuild_count[0]}"
+        # No rebuild should have been triggered (IDs same)
+        ids_after = collect_widget_ids(label)
+        assert ids_before == ids_after, \
+            "Expected no rebuild for font_size change, but widget tree changed"
 
         # Verify the change was applied (font sizes should be updated)
         found_label = False
