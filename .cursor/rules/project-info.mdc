@@ -14,7 +14,7 @@ Key features:
 
 Architecture: Three-layer pipeline—mistune parses to AST; `KivyRenderer` builds block-level Kivy widgets (layouts, labels, images) with nesting depth safeguards; `InlineRenderer` turns inline tokens into safe Kivy markup strings. `MarkdownSerializer` supports AST→Markdown round-trips for tests. Uses multiple inheritance pattern: `MarkdownLabel(MarkdownLabelProperties, MarkdownLabelRendering, BoxLayout)` for separation of concerns.
 
-Property system: Properties classified as STYLE_ONLY_PROPERTIES (update in-place) or STRUCTURE_PROPERTIES (trigger full rebuild). See `REBUILD_CONTRACT.md` for semantics. Properties forward to child Label widgets for Label API compatibility.
+Property system: Properties classified as STYLE_ONLY_PROPERTIES (update in-place) or STRUCTURE_PROPERTIES (trigger full rebuild). See `kivy_garden/markdownlabel/REBUILD_CONTRACT.md` for semantics. Properties forward to child Label widgets for Label API compatibility.
 
 Package/namespace: Modern Kivy Garden flower using namespace package `kivy_garden.markdownlabel` (not legacy `garden.*`); import via `from kivy_garden.markdownlabel import MarkdownLabel`.
 
@@ -33,4 +33,4 @@ Docs: Sphinx sources under `doc/`; published at https://kivy-garden.github.io/ma
 
 Testing: pytest property-based tests in `kivy_garden/markdownlabel/tests/` organized by functionality (not by implementation file); they set `KIVY_NO_ARGS=1` and `KIVY_NO_CONSOLELOG=1` for headless runs—keep those when running CI locally (e.g., `pytest` from repo root). See `tests/TESTING.md` for comprehensive testing guidelines, Hypothesis optimization rules, and documented exceptions for private method testing. Meta-tests in `tests/meta_tests/` validate test infrastructure.
 
-Repo structure note: `external/` contains vendored upstream Kivy and Mistune sources/docs/examples; usually leave untouched unless updating vendored copies. Configuration files: `setup.cfg` (Flake8, 110 char lines), `pytest.ini` (test config), `.coveragerc` (coverage settings), `REBUILD_CONTRACT.md` (property rebuild semantics).
+Repo structure note: `external/` contains vendored upstream Kivy and Mistune sources/docs/examples; usually leave untouched unless updating vendored copies. Configuration files: `setup.cfg` (Flake8, 110 char lines), `pytest.ini` (test config), `.coveragerc` (coverage settings), `../../kivy_garden/markdownlabel/REBUILD_CONTRACT.md` (property rebuild semantics).

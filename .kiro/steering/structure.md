@@ -87,4 +87,4 @@ class MarkdownLabel(MarkdownLabelProperties, MarkdownLabelRendering, BoxLayout):
 - `setup.cfg`: Flake8 (110 char lines, PEP8)
 - `pytest.ini`: Test configuration
 - `.coveragerc`: Coverage settings
-- `REBUILD_CONTRACT.md`: Property rebuild semantics documentation
+- `kivy_garden/markdownlabel/REBUILD_CONTRACT.md`: Property rebuild semantics documentation
