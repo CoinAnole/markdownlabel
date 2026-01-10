@@ -108,7 +108,7 @@ def test_finite_strategy(num):
             lambda x: x not in {2, 5, 10, 20, 50, 100}
         )
     )
-    # Complex strategy: 30 examples (adequate coverage)
+    # Mixed finite/complex strategy: 30 examples (finite × complex samples)
     @settings(max_examples=30, deadline=None)
     def test_sampled_from_finite_strategy_documentation(self, items, max_examples):
         """Sampled_from finite strategies are properly documented."""

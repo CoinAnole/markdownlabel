@@ -120,7 +120,7 @@ def {function_name}(data):
             whitelist_categories=('Lu', 'Ll', 'Nd', 'Pc')
         )).map(lambda x: f"test_{x}")
     )
-    # Mixed finite/complex strategy: 25 examples (5 finite × 5 complex samples)
+    # Mixed finite/complex strategy: 25 examples (5 keywords × 5 complex samples)
     @settings(max_examples=25, deadline=None)
     def test_explicit_performance_comments_detected(
         self, performance_keywords, max_examples, function_name

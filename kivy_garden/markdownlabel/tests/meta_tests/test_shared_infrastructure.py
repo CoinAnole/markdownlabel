@@ -7,6 +7,7 @@ and are available for use across all test modules.
 
 import pytest
 from hypothesis import given, strategies as st, settings
+from kivy.uix.label import Label
 
 from kivy_garden.markdownlabel import MarkdownLabel
 from kivy_garden.markdownlabel.tests.test_utils import (
@@ -177,10 +178,13 @@ class TestSharedInfrastructureHelpers:
         assert colors_equal(color1, color1), "Identical colors should be equal"
 
         # Test with different colors (if they're actually different)
-        if color1 != color2:
-            # Most of the time they should be different
-            result = colors_equal(color1, color2)
-            assert isinstance(result, bool), "colors_equal should return boolean"
+        result = colors_equal(color1, color2)
+        assert isinstance(result, bool), "colors_equal should return boolean"
+        
+        # Test that clearly different colors return False
+        if not colors_equal(color1, color2):
+            # Verify they are actually different
+            assert color1 != color2 or any(abs(c1 - c2) > 0.01 for c1, c2 in zip(color1, color2))
 
     @given(text_padding_strategy, text_padding_strategy)
     # Complex strategy: 50 examples (adequate coverage)
@@ -191,9 +195,13 @@ class TestSharedInfrastructureHelpers:
         assert padding_equal(padding1, padding1), "Identical padding should be equal"
 
         # Test with different padding (if they're actually different)
-        if padding1 != padding2:
-            result = padding_equal(padding1, padding2)
-            assert isinstance(result, bool), "padding_equal should return boolean"
+        result = padding_equal(padding1, padding2)
+        assert isinstance(result, bool), "padding_equal should return boolean"
+        
+        # Test that clearly different padding returns False
+        if not padding_equal(padding1, padding2):
+            # Verify they are actually different
+            assert padding1 != padding2 or any(abs(p1 - p2) > 0.01 for p1, p2 in zip(padding1, padding2))
 
     @given(st.floats(min_value=0.0, max_value=100.0, allow_nan=False, allow_infinity=False),
            st.floats(min_value=0.0, max_value=100.0, allow_nan=False, allow_infinity=False))

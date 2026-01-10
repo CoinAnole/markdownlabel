@@ -11,7 +11,6 @@ import tempfile
 import os
 
 from kivy_garden.markdownlabel.tests.modules.file_parser import FileParser, FileMetadata
-# Import strategies from test_utils using absolute import
 from kivy_garden.markdownlabel.tests.test_utils import rebuild_test_file_strategy
 
 

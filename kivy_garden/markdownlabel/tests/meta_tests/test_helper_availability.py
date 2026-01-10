@@ -29,8 +29,9 @@ from kivy_garden.markdownlabel.tests.test_utils import (
 class TestHelperFunctionAvailability:
     """Property tests for helper function availability."""
 
-    # Complex strategy: 10 examples (adequate coverage)
+    @pytest.mark.property
     @given(st.text(min_size=1, max_size=50))
+    # Complex strategy: 10 examples (adequate coverage)
     @settings(max_examples=10, deadline=None)
     def test_widget_traversal_helpers_available(self, markdown_text):
         """For any markdown content, widget traversal helpers should be available and functional."""
@@ -51,8 +52,9 @@ class TestHelperFunctionAvailability:
         widget_ids_no_root = collect_widget_ids(label, exclude_root=True)
         assert isinstance(widget_ids_no_root, dict)
 
-    # Complex strategy: 10 examples (adequate coverage)
+    @pytest.mark.property
     @given(color_strategy, color_strategy)
+    # Complex strategy: 10 examples (adequate coverage)
     @settings(max_examples=10, deadline=None)
     def test_comparison_helpers_available(self, color1, color2):
         """For any color values, comparison helpers should be available and functional."""
@@ -63,8 +65,9 @@ class TestHelperFunctionAvailability:
         # Test colors_equal with identical colors
         assert colors_equal(color1, color1) is True
 
-    # Complex strategy: 10 examples (adequate coverage)
+    @pytest.mark.property
     @given(text_padding_strategy, text_padding_strategy)
+    # Complex strategy: 10 examples (adequate coverage)
     @settings(max_examples=10, deadline=None)
     def test_padding_comparison_helpers_available(self, padding1, padding2):
         """For any padding values, padding comparison helpers should be available and functional."""
@@ -75,9 +78,10 @@ class TestHelperFunctionAvailability:
         # Test padding_equal with identical padding
         assert padding_equal(padding1, padding1) is True
 
-    # Complex strategy: 10 examples (adequate coverage)
+    @pytest.mark.property
     @given(st.floats(min_value=-1000, max_value=1000, allow_nan=False, allow_infinity=False),
            st.floats(min_value=-1000, max_value=1000, allow_nan=False, allow_infinity=False))
+    # Complex strategy: 10 examples (adequate coverage)
     @settings(max_examples=10, deadline=None)
     def test_float_comparison_helpers_available(self, float1, float2):
         """For any float values, float comparison helpers should be available and functional."""
@@ -88,8 +92,9 @@ class TestHelperFunctionAvailability:
         # Test floats_equal with identical floats
         assert floats_equal(float1, float1) is True
 
-    # Mixed finite/complex strategy: 10 examples (10 finite × 1 complex sample)
+    @pytest.mark.property
     @given(simple_markdown_document())
+    # Mixed finite/complex strategy: 10 examples (10 finite × 1 complex sample)
     @settings(max_examples=10, deadline=None)
     def test_rebuild_detection_helpers_available(self, markdown_text):
         """For any markdown content, rebuild detection helpers should be available and functional."""
@@ -118,8 +123,9 @@ class TestHelperFunctionAvailability:
         assert touch.y == 200
         assert touch.pos == (100, 200)
 
-    # Complex strategy: 10 examples (adequate coverage)
+    @pytest.mark.property
     @given(color_strategy)
+    # Complex strategy: 10 examples (adequate coverage)
     @settings(max_examples=10, deadline=None)
     def test_color_strategy_available(self, color):
         """color_strategy is available and generates valid colors."""
@@ -127,8 +133,9 @@ class TestHelperFunctionAvailability:
         assert len(color) == 4
         assert all(isinstance(c, float) for c in color)
 
-    # Complex strategy: 10 examples (adequate coverage)
+    @pytest.mark.property
     @given(text_padding_strategy)
+    # Complex strategy: 10 examples (adequate coverage)
     @settings(max_examples=10, deadline=None)
     def test_text_padding_strategy_available(self, padding):
         """text_padding_strategy is available and generates valid padding."""
@@ -136,8 +143,9 @@ class TestHelperFunctionAvailability:
         assert len(padding) == 4
         assert all(isinstance(p, float) for p in padding)
 
-    # Mixed finite/complex strategy: 10 examples (10 finite × 1 complex sample)
+    @pytest.mark.property
     @given(simple_markdown_document())
+    # Mixed finite/complex strategy: 10 examples (10 finite × 1 complex sample)
     @settings(max_examples=10, deadline=None)
     def test_simple_markdown_document_strategy_available(self, doc):
         """simple_markdown_document strategy is available and generates valid documents."""
