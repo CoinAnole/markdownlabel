@@ -1,4 +1,4 @@
-# Deviations from TESTING.md Guidelines
+# kivy_garden/markdownlabel/tests Deviations from TESTING.md Guidelines
 
 ## test_advanced_compatibility.py
 - Lines **173, 203, 382, 519, 557, 595, 629, 695, 729, 762, 794, 837, 869**: Manual `assert ids_before == ids_after` instead of using `assert_no_rebuild(widget, ids_before)` helper.
@@ -50,7 +50,7 @@
 ## test_text_properties.py
 - Lines **260-279, 284-304, 309-329**: Lack widget tree preservation assertions for style-only `text_size` changes.
 
-# Meta Tests Deviations Review
+# kivy_garden/markdownlabel/tests/meta_tests Deviations from TESTING.md Guidelines
 
 ## test_comment_standardizer_finite.py
 - Line 37: Property-based test comment incorrectly classifies combination of finite integer strategies (`min_value`, `max_value`, `max_examples`) as "Mixed finite/complex strategy: 50 examples (adequate coverage)"; should be "Combination strategy: 50 examples (combination coverage)" per TESTING.md line 133.
