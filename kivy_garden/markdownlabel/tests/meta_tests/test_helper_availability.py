@@ -147,33 +147,39 @@ class TestHelperFunctionAvailability:
 
 @pytest.mark.test_tests
 class TestHelperFunctionConsolidation:
-    """Property tests for helper function consolidation."""
+    """Unit tests for helper function consolidation."""
 
-    def test_no_duplicate_find_labels_recursive_implementations(self):
-        """For any test file, there should be no duplicate _find_labels_recursive implementations."""
+    def _get_test_file_asts(self):
+        """Helper to get ASTs of all test files in the project."""
         import ast
         from pathlib import Path
 
         test_dir = Path(__file__).parent.parent  # Go up from meta_tests to tests
-        duplicate_implementations = []
+        asts = []
 
         for test_file in test_dir.glob('test_*.py'):
-            if test_file.name == 'test_helper_availability.py':
-                continue  # Skip this file
+            if test_file.name in ['test_helper_availability.py', 'test_utils.py']:
+                continue
 
             try:
                 with open(test_file, 'r') as f:
                     content = f.read()
-
-                # Parse the AST to find function definitions
                 tree = ast.parse(content)
-                for node in ast.walk(tree):
-                    if isinstance(node, ast.FunctionDef) and node.name == '_find_labels_recursive':
-                        duplicate_implementations.append(str(test_file.name))
-                        break
+                asts.append((test_file.name, tree, content))
             except Exception:
-                # Skip files that can't be parsed
                 continue
+        return asts
+
+    def test_no_duplicate_find_labels_recursive_implementations(self):
+        """For any test file, there should be no duplicate _find_labels_recursive implementations."""
+        import ast
+        duplicate_implementations = []
+
+        for filename, tree, _ in self._get_test_file_asts():
+            for node in ast.walk(tree):
+                if isinstance(node, ast.FunctionDef) and node.name == '_find_labels_recursive':
+                    duplicate_implementations.append(filename)
+                    break
 
         assert len(duplicate_implementations) == 0, \
             f"Found duplicate _find_labels_recursive implementations in: {duplicate_implementations}"
@@ -181,28 +187,13 @@ class TestHelperFunctionConsolidation:
     def test_no_duplicate_collect_widget_ids_implementations(self):
         """For any test file, there should be no duplicate collect_widget_ids implementations."""
         import ast
-        from pathlib import Path
-
-        test_dir = Path(__file__).parent.parent  # Go up from meta_tests to tests
         duplicate_implementations = []
 
-        for test_file in test_dir.glob('test_*.py'):
-            if test_file.name in ['test_helper_availability.py', 'test_utils.py']:
-                continue  # Skip this file and test_utils.py
-
-            try:
-                with open(test_file, 'r') as f:
-                    content = f.read()
-
-                # Parse the AST to find function definitions
-                tree = ast.parse(content)
-                for node in ast.walk(tree):
-                    if isinstance(node, ast.FunctionDef) and node.name == 'collect_widget_ids':
-                        duplicate_implementations.append(str(test_file.name))
-                        break
-            except Exception:
-                # Skip files that can't be parsed
-                continue
+        for filename, tree, _ in self._get_test_file_asts():
+            for node in ast.walk(tree):
+                if isinstance(node, ast.FunctionDef) and node.name == 'collect_widget_ids':
+                    duplicate_implementations.append(filename)
+                    break
 
         assert len(duplicate_implementations) == 0, \
             f"Found duplicate collect_widget_ids implementations in: {duplicate_implementations}"
@@ -210,47 +201,42 @@ class TestHelperFunctionConsolidation:
     def test_all_test_files_import_from_test_utils(self):
         """For any test file using helper functions, it should import them from test_utils."""
         import ast
-        from pathlib import Path
-
-        test_dir = Path(__file__).parent.parent  # Go up from meta_tests to tests
         files_without_imports = []
 
-        for test_file in test_dir.glob('test_*.py'):
-            if test_file.name in ['test_helper_availability.py', 'test_utils.py']:
-                continue  # Skip this file and test_utils.py
+        # List of helpers to check for
+        helpers_to_check = [
+            'find_labels_recursive',
+            'collect_widget_ids',
+            'assert_rebuild_occurred',
+            'assert_no_rebuild',
+            'colors_equal',
+            'padding_equal',
+            'floats_equal'
+        ]
 
-            try:
-                with open(test_file, 'r') as f:
-                    content = f.read()
+        for filename, tree, content in self._get_test_file_asts():
+            has_function_call = False
 
-                # Parse the AST to find actual function calls (not string literals)
-                tree = ast.parse(content)
-                has_function_call = False
+            # Check for actual calls to common helpers
+            for node in ast.walk(tree):
+                # Check for function calls
+                if isinstance(node, ast.Call):
+                    if isinstance(node.func, ast.Name) and \
+                       node.func.id in helpers_to_check:
+                        has_function_call = True
+                        break
+                    # Also check for attribute calls (e.g. self.find_labels_recursive)
+                    elif isinstance(node.func, ast.Attribute) and \
+                         node.func.attr in helpers_to_check:
+                        has_function_call = True
+                        break
 
-                # Check for actual calls to find_labels_recursive
-                for node in ast.walk(tree):
-                    # Check for function calls
-                    if isinstance(node, ast.Call):
-                        if isinstance(node.func, ast.Name) and \
-                           node.func.id == 'find_labels_recursive':
-                            has_function_call = True
-                            break
-                        # Also check for attribute calls
-                        elif isinstance(node.func, ast.Attribute) and \
-                             node.func.attr == 'find_labels_recursive':
-                            has_function_call = True
-                            break
-
-                # Only check for imports if the file actually calls the function
-                if has_function_call:
-                    has_absolute_import = 'from kivy_garden.markdownlabel.tests.test_utils import' in content
-                    has_relative_import = 'from .test_utils import' in content
-                    if not (has_absolute_import or has_relative_import):
-                        files_without_imports.append(str(test_file.name))
-
-            except Exception:
-                # Skip files that can't be parsed
-                continue
+            # Only check for imports if the file actually calls any helper
+            if has_function_call:
+                has_absolute_import = 'from kivy_garden.markdownlabel.tests.test_utils import' in content
+                has_relative_import = 'from .test_utils import' in content
+                if not (has_absolute_import or has_relative_import):
+                    files_without_imports.append(filename)
 
         assert len(files_without_imports) == 0, \
             f"Files using helper functions but not importing from test_utils: {files_without_imports}"

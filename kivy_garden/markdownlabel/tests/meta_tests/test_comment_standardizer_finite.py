@@ -34,7 +34,7 @@ class TestFiniteStrategyDocumentation:
             lambda x: x not in {2, 5, 10, 20, 50, 100}
         )
     )
-    # Complex combination strategy: 50 examples (440 finite combinations with 1 complex strategy)
+    # Mixed finite/complex strategy: 50 examples (adequate coverage)
     @settings(max_examples=50, deadline=None)
     def test_finite_strategy_comments_reference_input_space_size(
         self, min_value, max_value, max_examples

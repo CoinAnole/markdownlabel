@@ -290,6 +290,7 @@ class TestRationaleGeneration:
         """Set up test fixtures."""
         self.analyzer = FileAnalyzer()
 
+    @pytest.mark.property
     @given(st.sampled_from(['Boolean', 'Small finite', 'Medium finite', 'Combination', 'Complex']))
     # Small finite strategy: 5 examples (input space size: 5)
     @settings(max_examples=5, deadline=None)
@@ -302,6 +303,8 @@ class TestRationaleGeneration:
             complexity_level=2
         )
 
+        # Access private method to test rationale generation logic directly.
+        # Reference: TESTING.md Section "Testing Exceptions"
         rationale = self.analyzer._generate_rationale(analysis, 10)
 
         assert isinstance(rationale, str)
@@ -463,6 +466,7 @@ class TestToolIntegrationCompatibility:
         """Set up test fixtures."""
         self.analyzer = FileAnalyzer()
 
+    @pytest.mark.property
     @given(
         strategy_type=st.sampled_from([
             'Boolean', 'Small finite', 'Small finite', 'Small finite', 'Small finite'
@@ -470,7 +474,7 @@ class TestToolIntegrationCompatibility:
         max_examples=st.integers(min_value=1, max_value=100),
         has_comment=st.booleans()
     )
-    # Mixed finite/complex strategy: 20 examples (4 finite × 5 complex samples)
+    # Combination strategy: 20 examples (combination coverage)
     @settings(max_examples=20, deadline=None)
     def test_tool_integration_compatibility(self, strategy_type, max_examples, has_comment):
         """**Feature: test-comment-standardization, Tool Integration Compatibility**

@@ -8,7 +8,7 @@ I've examined each deviation identified in [DEVIATIONS.md](cci:7://file:///home/
 
 ### Deviation: Private method access to `self.analyzer._analyze_file_content`
 
-**Assessment: ✅ LEGITIMATE, but LOW priority to fix**
+**Assessment: ✅ LEGITIMATE, but LOW priority (DONE)**
 
 **Evidence:** The code at lines 249, 285, 352, 583, and 683 does indeed use `self.analyzer._analyze_file_content()`, which is a private method (prefixed with `_`).
 
@@ -367,25 +367,25 @@ Per [TESTING.md](cci:7://file:///home/coinanole/repos/markdownlabel/kivy_garden/
 
 | File | Deviation | Legitimate? | Priority | Worth Fixing? |
 |------|-----------|-------------|----------|---------------|
-| [test_comment_format.py](cci:7://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/meta_tests/test_comment_format.py:0:0-0:0) | Private method access | ✅ Yes | Low | Yes (add comment) |
-| [test_comment_format.py](cci:7://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/meta_tests/test_comment_format.py:0:0-0:0) (402) | Strategy misclassification | ✅ Yes | Medium | Yes |
-| [test_comment_standardizer_boolean.py](cci:7://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer_boolean.py:0:0-0:0) (38) | Non-standard rationale | ✅ Yes | Medium | Yes |
+| [test_comment_format.py](cci:7://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/meta_tests/test_comment_format.py:0:0-0:0) | Private method access | ✅ Yes | **Done** | Yes (add comment) |
+| [test_comment_format.py](cci:7://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/meta_tests/test_comment_format.py:0:0-0:0) (402) | Strategy misclassification | ✅ Yes | **Done** | Yes |
+| [test_comment_standardizer_boolean.py](cci:7://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer_boolean.py:0:0-0:0) (38) | Non-standard rationale | ✅ Yes | **Done** | Yes |
 | [test_comment_standardizer_boolean.py](cci:7://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer_boolean.py:0:0-0:0) (29-40) | Low max_examples for complex | ✅ Yes | **Done** | Yes |
-| [test_comment_standardizer_finite.py](cci:7://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer_finite.py:0:0-0:0) (37) | Classification format | ✅ Yes | Medium | Yes |
+| [test_comment_standardizer_finite.py](cci:7://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer_finite.py:0:0-0:0) (37) | Classification format | ✅ Yes | **Done** | Yes |
 | [test_comment_standardizer_finite.py](cci:7://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer_finite.py:0:0-0:0) (39-42) | Docstring imprecision | ⚠️ Partial | Low | Optional |
 | [test_comment_standardizer_finite.py](cci:7://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer_finite.py:0:0-0:0) (120-121) | Truncation without rationale | ❌ No | - | No |
-| [test_comment_standardizer_performance.py](cci:7://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer_performance.py:0:0-0:0) (47) | Comment format | ✅ Yes | Low | Yes |
+| [test_comment_standardizer_performance.py](cci:7://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer_performance.py:0:0-0:0) (47) | Comment format | ✅ Yes | **Done** | Yes |
 | [test_comment_standardizer_performance.py](cci:7://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer_performance.py:0:0-0:0) (49-52) | Generic assertion | ⚠️ Partial | Low | Optional |
 | [test_comment_standardizer_performance.py](cci:7://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer_performance.py:0:0-0:0) (456-459) | Empty test | ✅ Yes | **Done** | Yes |
-| [test_coverage_preservation.py](cci:7://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/meta_tests/test_coverage_preservation.py:0:0-0:0) (183-184) | Strategy misclassification | ✅ Yes | Medium | Yes |
-| [test_file_analyzer.py](cci:7://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/meta_tests/test_file_analyzer.py:0:0-0:0) (294-296, 466-475) | Missing marker | ✅ Yes | Medium | Yes |
-| [test_file_analyzer.py](cci:7://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/meta_tests/test_file_analyzer.py:0:0-0:0) (305) | Private method | ✅ Yes | Low | Yes (add comment) |
-| [test_file_analyzer.py](cci:7://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/meta_tests/test_file_analyzer.py:0:0-0:0) (473) | Inaccurate rationale | ✅ Yes | Medium | Yes |
-| [test_helper_availability.py](cci:7://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/meta_tests/test_helper_availability.py:0:0-0:0) (210-255) | Misleading name | ✅ Yes | Medium | Yes |
-| [test_helper_availability.py](cci:7://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/meta_tests/test_helper_availability.py:0:0-0:0) (152-255) | Duplicated logic | ✅ Yes | Low | Optional |
-| [test_helper_availability.py](cci:7://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/meta_tests/test_helper_availability.py:0:0-0:0) (150) | Misleading docstring | ✅ Yes | Low | Yes |
+| [test_coverage_preservation.py](cci:7://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/meta_tests/test_coverage_preservation.py:0:0-0:0) (183-184) | Strategy misclassification | ✅ Yes | **Done** | Yes |
+| [test_file_analyzer.py](cci:7://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/meta_tests/test_file_analyzer.py:0:0-0:0) (294-296, 466-475) | Missing marker | ✅ Yes | **Done** | Yes |
+| [test_file_analyzer.py](cci:7://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/meta_tests/test_file_analyzer.py:0:0-0:0) (305) | Private method | ✅ Yes | **Done** | Yes (add comment) |
+| [test_file_analyzer.py](cci:7://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/meta_tests/test_file_analyzer.py:0:0-0:0) (473) | Inaccurate rationale | ✅ Yes | **Done** | Yes |
+| [test_helper_availability.py](cci:7://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/meta_tests/test_helper_availability.py:0:0-0:0) (210-255) | Misleading name | ✅ Yes | **Done** | Yes |
+| [test_helper_availability.py](cci:7://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/meta_tests/test_helper_availability.py:0:0-0:0) (152-255) | Duplicated logic | ✅ Yes | **Done** | Optional |
+| [test_helper_availability.py](cci:7://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/meta_tests/test_helper_availability.py:0:0-0:0) (150) | Misleading docstring | ✅ Yes | **Done** | Yes |
 | [test_test_file_parser.py](cci:7://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/meta_tests/test_test_file_parser.py:0:0-0:0) (24-25) | Class scope | ⚠️ Partial | Low | Optional |
-| [test_test_file_parser.py](cci:7://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/meta_tests/test_test_file_parser.py:0:0-0:0) (27-30, 67-79) | Missing marker | ✅ Yes | Medium | Yes |
+| [test_test_file_parser.py](cci:7://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/meta_tests/test_test_file_parser.py:0:0-0:0) (27-30, 67-79) | Missing marker | ✅ Yes | **Done** | Yes |
 | [test_test_file_parser.py](cci:7://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/meta_tests/test_test_file_parser.py:0:0-0:0) (35-37...) | Duplicate boilerplate | ⚠️ Partial | Low | Optional |
 
 ---
@@ -396,15 +396,15 @@ Per [TESTING.md](cci:7://file:///home/coinanole/repos/markdownlabel/kivy_garden/
 1. ~~**[test_comment_standardizer_boolean.py](cci:7://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer_boolean.py:0:0-0:0) (29-40)**: Increase [max_examples](cci:1://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/meta_tests/test_comment_format.py:125:4-138:80) from 2 to at least 10 for complex strategies~~
 2. ~~**[test_comment_standardizer_performance.py](cci:7://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer_performance.py:0:0-0:0) (456-459)**: Either implement actual backup/rollback tests or remove the empty test~~
 
-### Medium Priority Fixes:
-1. Add `@pytest.mark.property` markers to all tests using `@given()`
-2. Correct strategy misclassifications (several files)
-3. Fix misleading test names/docstrings
+### Medium Priority Fixes (DONE):
+1. ~~Add `@pytest.mark.property` markers to all tests using `@given()`~~
+2. ~~Correct strategy misclassifications (several files)~~
+3. ~~Fix misleading test names/docstrings~~
 
-### Low Priority Fixes:
-1. Add explanatory comments for private method access
-2. Minor comment format corrections
-3. Optional refactoring to reduce duplication
+### Low Priority Fixes (DONE):
+1. ~~Add explanatory comments for private method access~~
+2. ~~Minor comment format corrections~~
+3. ~~Optional refactoring to reduce duplication~~
 
 ---
 

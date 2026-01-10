@@ -24,6 +24,7 @@ from kivy_garden.markdownlabel.tests.test_utils import rebuild_test_file_strateg
 class TestTestNameConsistency:
     """Property tests for test name consistency."""
 
+    @pytest.mark.property
     @given(rebuild_test_file_strategy())
     # Combination strategy: 28 examples (combination coverage)
     @settings(max_examples=28, deadline=None)
@@ -64,6 +65,7 @@ class TestTestNameConsistency:
         finally:
             os.unlink(temp_file)
 
+    @pytest.mark.property
     @given(
         st.text(
             min_size=1,

@@ -44,7 +44,7 @@ class TestPerformanceRationaleDocumentation:
             whitelist_categories=('Lu', 'Ll', 'Nd', 'Pc')
         )).map(lambda x: f"test_{x}")
     )
-    # Mixed finite/complex strategy: 15 examples (15 finite combinations × 1 complex sample)
+    # Mixed finite/complex strategy: 15 examples (15 finite × 1 complex samples)
     @settings(max_examples=15, deadline=None)
     def test_execution_time_performance_rationale_documented(
         self, max_examples, strategy_complexity, function_name
