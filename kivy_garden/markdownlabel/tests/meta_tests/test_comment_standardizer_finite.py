@@ -36,10 +36,10 @@ class TestFiniteStrategyDocumentation:
     )
     # Mixed finite/complex strategy: 50 examples (adequate coverage)
     @settings(max_examples=50, deadline=None)
-    def test_finite_strategy_comments_reference_input_space_size(
+    def test_finite_strategy_comments_reference_size_or_coverage(
         self, min_value, max_value, max_examples
     ):
-        """Finite strategy comments reference input space size in rationale."""
+        """Finite strategy comments reference input space size or finite coverage in rationale."""
         # Ensure we have a finite range
         if max_value <= min_value:
             max_value = min_value + 10

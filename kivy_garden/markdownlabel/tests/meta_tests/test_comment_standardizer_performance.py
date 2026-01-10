@@ -46,10 +46,10 @@ class TestPerformanceRationaleDocumentation:
     )
     # Mixed finite/complex strategy: 15 examples (15 finite × 1 complex samples)
     @settings(max_examples=15, deadline=None)
-    def test_execution_time_performance_rationale_documented(
+    def test_complex_strategies_with_low_examples_trigger_performance_rationale(
         self, max_examples, strategy_complexity, function_name
     ):
-        """Execution time performance rationale is properly documented."""
+        """Complex strategies with low max_examples trigger performance rationale documentation."""
         # Create test code with complex strategy and low max_examples (performance optimization)
         strategy_map = {
             'text': 'st.text(min_size=50, max_size=200)',

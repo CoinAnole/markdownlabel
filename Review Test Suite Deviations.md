@@ -106,7 +106,7 @@ The strategies are:
 
 ### Deviation: Method name/docstring claims "input space size reference" but allows "finite coverage"
 
-**Assessment: ⚠️ PARTIALLY LEGITIMATE, LOW priority**
+**Assessment: ⚠️ PARTIALLY LEGITIMATE, LOW priority (DONE)**
 
 **Evidence:** The test docstring says "Finite strategy comments reference input space size in rationale" but the assertion (lines 83-84) allows either "input space size" or "finite coverage":
 ```python
@@ -120,7 +120,7 @@ Per [TESTING.md](cci:7://file:///home/coinanole/repos/markdownlabel/kivy_garden/
 
 **Partial validity:** The docstring is slightly misleading but the assertion correctly follows the guidelines.
 
-**Worth fixing:** Low priority - could update docstring to be more precise.
+**Worth fixing:** Yes. (Fixed: Updated name and docstring)
 
 ---
 
@@ -167,7 +167,7 @@ So it's `5 * 3 = 15 finite` × `1 complex sample`. The format "15 finite combina
 
 ### Deviation: Test name claims "execution_time" specific but assertion is generic
 
-**Assessment: ⚠️ PARTIALLY LEGITIMATE, LOW priority**
+**Assessment: ⚠️ PARTIALLY LEGITIMATE, LOW priority (DONE)**
 
 **Evidence:** The test is named [test_execution_time_performance_rationale_documented](cci:1://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer_performance.py:38:4-106:36) and the docstring says "Execution time performance rationale is properly documented" (line 52).
 
@@ -175,7 +175,7 @@ Looking at the assertions (lines 78-103), they do check for `performance_rationa
 
 **Partial validity:** The test does more than just check `performance_rationale is not None`. It has meaningful assertions about performance-related content.
 
-**Worth fixing:** Low priority - the docstring could be more precise but the assertions are reasonable.
+**Worth fixing:** Yes. (Fixed: Updated name and docstring)
 
 ---
 
@@ -372,10 +372,10 @@ Per [TESTING.md](cci:7://file:///home/coinanole/repos/markdownlabel/kivy_garden/
 | [test_comment_standardizer_boolean.py](cci:7://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer_boolean.py:0:0-0:0) (38) | Non-standard rationale | ✅ Yes | **Done** | Yes |
 | [test_comment_standardizer_boolean.py](cci:7://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer_boolean.py:0:0-0:0) (29-40) | Low max_examples for complex | ✅ Yes | **Done** | Yes |
 | [test_comment_standardizer_finite.py](cci:7://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer_finite.py:0:0-0:0) (37) | Classification format | ✅ Yes | **Done** | Yes |
-| [test_comment_standardizer_finite.py](cci:7://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer_finite.py:0:0-0:0) (39-42) | Docstring imprecision | ⚠️ Partial | Low | Optional |
+| [test_comment_standardizer_finite.py](cci:7://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer_finite.py:0:0-0:0) (39-42) | Docstring imprecision | ⚠️ Partial | Low | **Done** |
 | [test_comment_standardizer_finite.py](cci:7://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer_finite.py:0:0-0:0) (120-121) | Truncation without rationale | ❌ No | - | No |
 | [test_comment_standardizer_performance.py](cci:7://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer_performance.py:0:0-0:0) (47) | Comment format | ✅ Yes | **Done** | Yes |
-| [test_comment_standardizer_performance.py](cci:7://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer_performance.py:0:0-0:0) (49-52) | Generic assertion | ⚠️ Partial | Low | Optional |
+| [test_comment_standardizer_performance.py](cci:7://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer_performance.py:0:0-0:0) (49-52) | Generic assertion | ⚠️ Partial | Low | **Done** |
 | [test_comment_standardizer_performance.py](cci:7://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/meta_tests/test_comment_standardizer_performance.py:0:0-0:0) (456-459) | Empty test | ✅ Yes | **Done** | Yes |
 | [test_coverage_preservation.py](cci:7://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/meta_tests/test_coverage_preservation.py:0:0-0:0) (183-184) | Strategy misclassification | ✅ Yes | **Done** | Yes |
 | [test_file_analyzer.py](cci:7://file:///home/coinanole/repos/markdownlabel/kivy_garden/markdownlabel/tests/meta_tests/test_file_analyzer.py:0:0-0:0) (294-296, 466-475) | Missing marker | ✅ Yes | **Done** | Yes |
