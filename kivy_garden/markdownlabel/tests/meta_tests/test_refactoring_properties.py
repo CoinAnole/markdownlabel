@@ -7,12 +7,18 @@ including module naming consistency and other refactoring properties.
 
 import os
 import re
+import sys
 from pathlib import Path
 
 import pytest
 
-# Import TEST_MODULES from parent conftest using relative import
-from ..conftest import TEST_MODULES
+# Import TEST_MODULES from parent conftest
+# Add parent directory to path to enable import
+test_dir = os.path.dirname(os.path.dirname(__file__))
+if test_dir not in sys.path:
+    sys.path.insert(0, test_dir)
+
+from conftest import TEST_MODULES
 
 
 # *For any* test discovery operation, the time to discover all tests should not
