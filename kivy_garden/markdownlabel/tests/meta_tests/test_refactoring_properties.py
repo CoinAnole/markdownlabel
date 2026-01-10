@@ -21,10 +21,10 @@ from conftest import TEST_MODULES
 # increase significantly compared to the original structure
 
 @pytest.mark.test_tests
-class TestDiscoveryPerformance:
-    """Property tests for test discovery performance."""
+class TestDiscoveryFunctionality:
+    """Property tests for test discovery functionality."""
 
-    def test_fast_test_discovery_baseline(self):
+    def test_test_discovery_baseline(self):
         """Test that test discovery works correctly for the refactored structure."""
         import subprocess
 

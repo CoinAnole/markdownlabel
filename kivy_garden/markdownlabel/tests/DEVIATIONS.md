@@ -14,8 +14,6 @@
 
 ## test_refactoring_properties.py
 - Lines 16-17: Uses `sys.path.insert` hack to import from parent `conftest.py`; violates import best practices and can cause side effects.
-- Line 24: Class docstring "Property tests for test discovery performance" but no performance measurements (e.g., timing); only verifies basic functionality.
-- Line 27: Method name `test_fast_test_discovery_baseline` implies speed/performance testing but asserts only discovery success and test count, no timing.
 - Line 50: Hardcoded `assert len(test_lines) >= 50`; brittle threshold, should be dynamic or configurable.
 - Line 98: Hardcodes specific module `'test_rebuild_scheduling.py'` for "minimal" test; creates brittle dependency, prefer dynamic selection of simple module.
 
