@@ -158,6 +158,7 @@ class TestPropertyClassificationSets:
             'disabled',
             'disabled_color',
             'base_direction',
+            'padding',
             'text_padding',
             'outline_color',
             'disabled_outline_color',
@@ -176,14 +177,14 @@ class TestPropertyClassificationSets:
     def test_style_only_properties_count(self):
         """STYLE_ONLY_PROPERTIES has expected count after reclassification.
 
-        Original: 16 properties
+        Original: 17 properties (including padding)
         Reclassified: +14 properties
-        Total: 30 properties
+        Total: 31 properties
         """
-        # Original style-only properties: 16
+        # Original style-only properties: 17 (including padding)
         # Reclassified properties: 14
-        # Total expected: 30
-        expected_count = 30
+        # Total expected: 31
+        expected_count = 31
         actual_count = len(MarkdownLabel.STYLE_ONLY_PROPERTIES)
         assert actual_count == expected_count, (
             f"STYLE_ONLY_PROPERTIES count mismatch. "
