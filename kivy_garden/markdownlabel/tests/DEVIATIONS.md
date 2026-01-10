@@ -25,7 +25,6 @@
 
 ## test_padding_properties.py
 - Lines **118, 265, 317, 362, 620**: Manual `assert ids_before == ids_after` instead of `assert_no_rebuild`.
-- Lines **253, 264, 304, 316, 349, 361**: `collect_widget_ids(..., exclude_root=True)` uses undocumented parameter.
 - Lines **40-46, 59-65, 74-80, 89-95, 109-112, 120-124, 131-137, 277-284, 709-715**: Manual `abs(actual - exp) < 0.001` instead of `padding_equal` helper.
 - Lines **390-546** (class `TestPaddingWithNestedStructures`): Misleading class name (tests `text_padding`, suggests container `padding`).
 
@@ -39,12 +38,9 @@
 - Line **339**: Mixed strategy comment inaccurately "24 finite × 2 complex"; 4 complex strategies.
 
 ## test_rebuild_scheduling.py
-- Lines **206-208**: Access to undocumented private `label._rebuild_trigger`.
 - Lines **105-250**: Class `TestDeferredRebuildScheduling` marked `@pytest.mark.property` but contains non-Hypothesis tests (parametrized line 151, unit line 180).
 
 ## test_sizing_behavior.py
-- Lines **45, 110, 204, 381**: Tests assert preconditions/indicators, not actual height binding/absence.
-- Lines **546, 553**: `collect_widget_ids(..., exclude_root=True)` undocumented parameter.
 - Line **555**: Manual `assert ids_before != ids_after` instead of `assert_rebuild_occurred`.
 
 ## test_text_properties.py
