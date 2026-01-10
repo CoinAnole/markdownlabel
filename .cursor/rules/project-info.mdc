@@ -12,21 +12,25 @@ Key features:
 - Interactive links via `on_ref_press`; configurable fonts/colors/sizes.
 - Built on mistune 3.x with plugins (tables, strikethrough).
 
-Architecture: Three-layer pipeline—mistune parses to AST; `KivyRenderer` builds block-level Kivy widgets (layouts, labels, images) with nesting depth safeguards; `InlineRenderer` turns inline tokens into safe Kivy markup strings. `MarkdownSerializer` supports AST→Markdown round-trips for tests.
+Architecture: Three-layer pipeline—mistune parses to AST; `KivyRenderer` builds block-level Kivy widgets (layouts, labels, images) with nesting depth safeguards; `InlineRenderer` turns inline tokens into safe Kivy markup strings. `MarkdownSerializer` supports AST→Markdown round-trips for tests. Uses multiple inheritance pattern: `MarkdownLabel(MarkdownLabelProperties, MarkdownLabelRendering, BoxLayout)` for separation of concerns.
+
+Property system: Properties classified as STYLE_ONLY_PROPERTIES (update in-place) or STRUCTURE_PROPERTIES (trigger full rebuild). See `REBUILD_CONTRACT.md` for semantics. Properties forward to child Label widgets for Label API compatibility.
 
 Package/namespace: Modern Kivy Garden flower using namespace package `kivy_garden.markdownlabel` (not legacy `garden.*`); import via `from kivy_garden.markdownlabel import MarkdownLabel`.
 
 Key modules:
-- `kivy_garden/markdownlabel/__init__.py`: exposes `MarkdownLabel` plus render/serialize helpers; builds AST with Mistune (tables + strikethrough plugins) and renders via `KivyRenderer`; serializes back to Markdown with `MarkdownSerializer`.
-- `kivy_garden/markdownlabel/inline_renderer.py`: converts inline tokens to Kivy markup (bold/italic/code/links/etc) with markup escaping.
-- `kivy_garden/markdownlabel/kivy_renderer.py`: block-level renderer building Kivy widget trees (headings with scaled sizes, lists with markers/indentation, code blocks with monospace + background, images via `AsyncImage`, nesting guards).
-- `kivy_garden/markdownlabel/markdown_serializer.py`: AST→Markdown round-trip support for tests.
-- Version in `kivy_garden/markdownlabel/_version.py`.
+- `kivy_garden/markdownlabel/__init__.py`: Main `MarkdownLabel` class (orchestration, events, Label API compatibility).
+- `kivy_garden/markdownlabel/properties.py`: Property definitions, STYLE_ONLY/STRUCTURE classification constants.
+- `kivy_garden/markdownlabel/rendering.py`: Widget tree building via `MarkdownLabelRendering` mixin, `_update_*_in_place` methods for style updates.
+- `kivy_garden/markdownlabel/kivy_renderer.py`: Block-level rendering (headings, lists, code blocks, images) with nesting depth protection.
+- `kivy_garden/markdownlabel/kivy_renderer_tables.py`: Table rendering mixin for `KivyRenderer`.
+- `kivy_garden/markdownlabel/inline_renderer.py`: Inline markup → BBCode strings (`[b]`, `[i]`, `[ref=url]`) with markup escaping.
+- `kivy_garden/markdownlabel/markdown_serializer.py`: AST→Markdown serialization for tests.
 
 Packaging/deps: Python 3.8–3.12; installable as `kivy_garden.markdownlabel` (see `setup.py`). Runtime deps: `kivy>=2.0.0`, `mistune>=3.0.0`; extras for dev/test use pytest, hypothesis, coverage, sphinx. Flake8 config lives in `setup.cfg`.
 
 Docs: Sphinx sources under `doc/`; published at https://kivy-garden.github.io/markdownlabel/.
 
-Testing: pytest property-based tests in `kivy_garden/markdownlabel/tests/`; they set `KIVY_NO_ARGS=1` and `KIVY_NO_CONSOLELOG=1` for headless runs—keep those when running CI locally (e.g., `pytest` from repo root).
+Testing: pytest property-based tests in `kivy_garden/markdownlabel/tests/` organized by functionality (not by implementation file); they set `KIVY_NO_ARGS=1` and `KIVY_NO_CONSOLELOG=1` for headless runs—keep those when running CI locally (e.g., `pytest` from repo root). See `tests/TESTING.md` for comprehensive testing guidelines, Hypothesis optimization rules, and documented exceptions for private method testing. Meta-tests in `tests/meta_tests/` validate test infrastructure.
 
-Repo structure note: `external/` contains vendored upstream Kivy and Mistune sources/docs/examples; usually leave untouched unless updating vendored copies.
+Repo structure note: `external/` contains vendored upstream Kivy and Mistune sources/docs/examples; usually leave untouched unless updating vendored copies. Configuration files: `setup.cfg` (Flake8, 110 char lines), `pytest.ini` (test config), `.coveragerc` (coverage settings), `REBUILD_CONTRACT.md` (property rebuild semantics).
