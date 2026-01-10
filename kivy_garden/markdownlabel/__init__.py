@@ -3,8 +3,8 @@ MarkdownLabel
 =============
 
 A Kivy widget that parses and renders Markdown documents as structured,
-interactive Kivy UI elements. It serves as a drop-in replacement for Kivy's
-standard Label widget but supports full Markdown syntax.
+interactive Kivy UI elements. It mirrors the Label API for easy migration
+but subclasses BoxLayout because Markdown rendering builds multiple widgets.
 
 Example usage::
 
@@ -143,6 +143,9 @@ class MarkdownLabel(MarkdownLabelProperties, MarkdownLabelRendering, BoxLayout):
         # Bind structure properties
         self.bind(link_style=self._make_style_callback('link_style'))
         self.bind(text_size=self._make_style_callback('text_size'))
+        # Color changes affect generated markup/backgrounds; treat as structure-level.
+        self.bind(link_color=self._make_style_callback('link_color'))
+        self.bind(code_bg_color=self._make_style_callback('code_bg_color'))
 
         # Bind other properties
         self.bind(unicode_errors=self._make_style_callback('unicode_errors'))

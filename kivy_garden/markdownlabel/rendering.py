@@ -204,8 +204,17 @@ class MarkdownLabelRendering:
 
     def _render_as_texture(self, content):
         """Render content widget tree to a single texture."""
+        import warnings
+
+        MAX_FBO_DIM = 8192  # guardrail for GPU-backed FBO dimensions
+
         content_width = self.width if self.width > 0 else 800
         content_height = 0
+
+        # Layout children with the intended width so measurements are accurate
+        content.size_hint = (None, None)
+        content.width = content_width
+        content.do_layout()
 
         for child in content.children:
             if isinstance(child, Label):
@@ -227,11 +236,28 @@ class MarkdownLabelRendering:
         if content_width <= 0:
             content_width = 100
 
+        if content_width > MAX_FBO_DIM or content_height > MAX_FBO_DIM:
+            warnings.warn(
+                f"Texture render size too large ({content_width}x{content_height}); "
+                "falling back to widget mode.",
+                RuntimeWarning,
+            )
+            return None
+
         content.size = (content_width, content_height)
-        content.size_hint = (None, None)
         content.pos = (0, 0)
+        content.do_layout()
 
         self._collect_refs_for_texture(content, content_height)
+
+        def _has_unloaded_images(widget):
+            if isinstance(widget, AsyncImage) and not widget.texture:
+                return True
+            if hasattr(widget, 'children'):
+                return any(_has_unloaded_images(child) for child in widget.children)
+            return False
+
+        has_unloaded_images = _has_unloaded_images(content)
 
         try:
             fbo = Fbo(size=(int(content_width), int(content_height)))
@@ -255,10 +281,16 @@ class MarkdownLabelRendering:
 
             fbo.remove(content.canvas)
 
+            if has_unloaded_images:
+                warnings.warn(
+                    "Texture render completed but some AsyncImage textures were not loaded; "
+                    "images may appear blank until re-rendered.",
+                    RuntimeWarning,
+                )
+
             return image
 
         except Exception as e:
-            import warnings
             warnings.warn(
                 f"Texture rendering failed, falling back to widget mode: {e}",
                 RuntimeWarning

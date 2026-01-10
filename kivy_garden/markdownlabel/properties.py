@@ -64,6 +64,8 @@ class MarkdownLabelProperties:
         'link_style',
         'render_mode',
         'strict_label_mode',
+        'link_color',
+        'code_bg_color',
     })
 
     # Core properties

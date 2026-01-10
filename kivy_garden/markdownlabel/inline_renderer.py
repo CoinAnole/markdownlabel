@@ -8,6 +8,14 @@ Converts inline Markdown AST tokens to Kivy markup strings.
 from typing import Any, Dict, List, Optional
 
 
+def escape_kivy_markup(text: str) -> str:
+    """Escape Kivy markup special characters for safe display."""
+    text = text.replace('&', '&amp;')
+    text = text.replace('[', '&bl;')
+    text = text.replace(']', '&br;')
+    return text
+
+
 class InlineRenderer:
     """Converts inline AST tokens to Kivy markup strings.
 
@@ -63,11 +71,7 @@ class InlineRenderer:
         Returns:
             Escaped text safe for Kivy markup
         """
-        # Order matters: escape & first to avoid double-escaping
-        text = text.replace('&', '&amp;')
-        text = text.replace('[', '&bl;')
-        text = text.replace(']', '&br;')
-        return text
+        return escape_kivy_markup(text)
 
     def text(self, token: Dict[str, Any]) -> str:
         """Render plain text with Kivy markup escaping.

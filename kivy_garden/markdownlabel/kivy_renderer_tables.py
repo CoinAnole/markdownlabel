@@ -143,52 +143,14 @@ class KivyRendererTableMixin:
         text = self._render_inline(children) if children else ''
 
         # Create label with appropriate styling
-        label_kwargs = {
-            'text': text,
-            'markup': True,
-            'font_name': self.font_name,
-            'font_size': self.base_font_size,
-            'color': self.effective_color,
-            'line_height': self.line_height,
-            'size_hint_y': None,
-            'size_hint_x': 1,
-            'halign': cell_halign,
-            'valign': self.valign,
-            'bold': is_head,  # Bold for header cells
-            'unicode_errors': self.unicode_errors,
-            'strip': self.strip,
-            'font_features': self.font_features,
-            'font_kerning': self.font_kerning,
-            'font_blended': self.font_blended,
-            'shorten': self.shorten,
-            'shorten_from': self.shorten_from,
-            'split_str': self.split_str,
-            'padding': self.text_padding,
-            'mipmap': self.mipmap,
-            'outline_width': self.outline_width,
-            'outline_color': self.effective_outline_color,
-            'disabled_outline_color': self.disabled_outline_color,
-            'base_direction': self.base_direction,
-            'text_language': self.text_language,
-            'limit_render_to_text_bbox': self.limit_render_to_text_bbox,
-            'ellipsis_options': self.ellipsis_options,
-        }
-
-        # Add max_lines only if set (non-zero)
-        if self.max_lines > 0:
-            label_kwargs['max_lines'] = self.max_lines
-
-        # Add optional font properties if set
-        if self.font_family is not None:
-            label_kwargs['font_family'] = self.font_family
-        if self.font_context is not None:
-            label_kwargs['font_context'] = self.font_context
-        if self.font_hinting is not None:
-            label_kwargs['font_hinting'] = self.font_hinting
-
-        # Add ellipsis_options if non-empty
-        if self.ellipsis_options:
-            label_kwargs['ellipsis_options'] = self.ellipsis_options
+        label_kwargs = self._build_label_kwargs(
+            text=text,
+            font_size=self.base_font_size,
+            halign=cell_halign,
+            bold=is_head,
+            size_hint_y=None,
+            size_hint_x=1,
+        )
 
         label = Label(**label_kwargs)
 

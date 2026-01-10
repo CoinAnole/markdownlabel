@@ -14,7 +14,7 @@ from kivy.uix.widget import Widget
 from kivy.uix.image import AsyncImage
 from kivy.graphics import Color, Rectangle, Line
 
-from .inline_renderer import InlineRenderer
+from .inline_renderer import InlineRenderer, escape_kivy_markup
 from .kivy_renderer_tables import KivyRendererTableMixin
 
 logger = logging.getLogger(__name__)
@@ -173,6 +173,61 @@ class KivyRenderer(KivyRendererTableMixin):
         self._list_depth = 0
         self._list_counters = []  # Stack of counters for ordered lists
 
+    def _build_label_kwargs(self, *, text: str, font_size: float, halign: Optional[str] = None,
+                            valign: Optional[str] = None, bold: bool = False,
+                            markup: bool = True, padding: Optional[List[float]] = None,
+                            size_hint_x: Optional[float] = 1, size_hint_y: Optional[float] = None,
+                            color: Optional[List[float]] = None) -> Dict[str, Any]:
+        """Assemble common Label kwargs used by block-level renderers."""
+        kwargs = {
+            'text': text,
+            'markup': markup,
+            'font_name': self.font_name,
+            'font_size': font_size,
+            'color': color if color is not None else self.effective_color,
+            'line_height': self.line_height,
+            'size_hint_x': size_hint_x,
+            'size_hint_y': size_hint_y,
+            'halign': halign if halign is not None else self.halign,
+            'valign': valign if valign is not None else self.valign,
+            'unicode_errors': self.unicode_errors,
+            'strip': self.strip,
+            'font_features': self.font_features,
+            'font_kerning': self.font_kerning,
+            'font_blended': self.font_blended,
+            'shorten': self.shorten,
+            'shorten_from': self.shorten_from,
+            'split_str': self.split_str,
+            'padding': padding if padding is not None else self.text_padding,
+            'mipmap': self.mipmap,
+            'outline_width': self.outline_width,
+            'outline_color': self.effective_outline_color,
+            'disabled_outline_color': self.disabled_outline_color,
+            'base_direction': self.base_direction,
+            'text_language': self.text_language,
+            'limit_render_to_text_bbox': self.limit_render_to_text_bbox,
+            'ellipsis_options': self.ellipsis_options,
+        }
+
+        if bold:
+            kwargs['bold'] = True
+
+        if self.max_lines > 0:
+            kwargs['max_lines'] = self.max_lines
+
+        if self.font_family is not None:
+            kwargs['font_family'] = self.font_family
+        if self.font_context is not None:
+            kwargs['font_context'] = self.font_context
+        if self.font_hinting is not None:
+            kwargs['font_hinting'] = self.font_hinting
+
+        # Avoid passing empty ellipsis options explicitly when not set
+        if not self.ellipsis_options:
+            kwargs.pop('ellipsis_options', None)
+
+        return kwargs
+
     def _clear_text_size_bindings(self, label: Label) -> None:
         """Remove previously attached text_size-related bindings from a Label."""
         width_cb = getattr(label, '_md_text_size_width_cb', None)
@@ -327,51 +382,12 @@ class KivyRenderer(KivyRendererTableMixin):
         children = token.get('children', [])
         text = self._render_inline(children)
 
-        label_kwargs = {
-            'text': text,
-            'markup': True,
-            'font_name': self.font_name,
-            'font_size': self.base_font_size,
-            'color': self.effective_color,
-            'line_height': self.line_height,
-            'size_hint_y': None,
-            'size_hint_x': 1,
-            'halign': self.halign,
-            'valign': self.valign,
-            'unicode_errors': self.unicode_errors,
-            'strip': self.strip,
-            'font_features': self.font_features,
-            'font_kerning': self.font_kerning,
-            'font_blended': self.font_blended,
-            'shorten': self.shorten,
-            'shorten_from': self.shorten_from,
-            'split_str': self.split_str,
-            'padding': self.text_padding,
-            'mipmap': self.mipmap,
-            'outline_width': self.outline_width,
-            'outline_color': self.effective_outline_color,
-            'disabled_outline_color': self.disabled_outline_color,
-            'base_direction': self.base_direction,
-            'text_language': self.text_language,
-            'limit_render_to_text_bbox': self.limit_render_to_text_bbox,
-            'ellipsis_options': self.ellipsis_options,
-        }
-
-        # Add max_lines only if set (non-zero)
-        if self.max_lines > 0:
-            label_kwargs['max_lines'] = self.max_lines
-
-        # Add optional font properties if set
-        if self.font_family is not None:
-            label_kwargs['font_family'] = self.font_family
-        if self.font_context is not None:
-            label_kwargs['font_context'] = self.font_context
-        if self.font_hinting is not None:
-            label_kwargs['font_hinting'] = self.font_hinting
-
-        # Add ellipsis_options if non-empty
-        if self.ellipsis_options:
-            label_kwargs['ellipsis_options'] = self.ellipsis_options
+        label_kwargs = self._build_label_kwargs(
+            text=text,
+            font_size=self.base_font_size,
+            size_hint_y=None,
+            size_hint_x=1,
+        )
 
         label = Label(**label_kwargs)
 
@@ -396,51 +412,12 @@ class KivyRenderer(KivyRendererTableMixin):
         children = token.get('children', [])
         text = self._render_inline(children)
 
-        label_kwargs = {
-            'text': text,
-            'markup': True,
-            'font_name': self.font_name,
-            'font_size': self.base_font_size,
-            'color': self.effective_color,
-            'line_height': self.line_height,
-            'size_hint_y': None,
-            'size_hint_x': 1,
-            'halign': self.halign,
-            'valign': self.valign,
-            'unicode_errors': self.unicode_errors,
-            'strip': self.strip,
-            'font_features': self.font_features,
-            'font_kerning': self.font_kerning,
-            'font_blended': self.font_blended,
-            'shorten': self.shorten,
-            'shorten_from': self.shorten_from,
-            'split_str': self.split_str,
-            'padding': self.text_padding,
-            'mipmap': self.mipmap,
-            'outline_width': self.outline_width,
-            'outline_color': self.effective_outline_color,
-            'disabled_outline_color': self.disabled_outline_color,
-            'base_direction': self.base_direction,
-            'text_language': self.text_language,
-            'limit_render_to_text_bbox': self.limit_render_to_text_bbox,
-            'ellipsis_options': self.ellipsis_options,
-        }
-
-        # Add max_lines only if set (non-zero)
-        if self.max_lines > 0:
-            label_kwargs['max_lines'] = self.max_lines
-
-        # Add optional font properties if set
-        if self.font_family is not None:
-            label_kwargs['font_family'] = self.font_family
-        if self.font_context is not None:
-            label_kwargs['font_context'] = self.font_context
-        if self.font_hinting is not None:
-            label_kwargs['font_hinting'] = self.font_hinting
-
-        # Add ellipsis_options if non-empty
-        if self.ellipsis_options:
-            label_kwargs['ellipsis_options'] = self.ellipsis_options
+        label_kwargs = self._build_label_kwargs(
+            text=text,
+            font_size=self.base_font_size,
+            size_hint_y=None,
+            size_hint_x=1,
+        )
 
         label = Label(**label_kwargs)
 
@@ -481,52 +458,13 @@ class KivyRenderer(KivyRendererTableMixin):
         multiplier = self.HEADING_SIZES.get(level, 1.0)
         font_size = self.base_font_size * multiplier
 
-        label_kwargs = {
-            'text': text,
-            'markup': True,
-            'font_name': self.font_name,
-            'font_size': font_size,
-            'color': self.effective_color,
-            'line_height': self.line_height,
-            'size_hint_y': None,
-            'size_hint_x': 1,
-            'bold': True,
-            'halign': self.halign,
-            'valign': self.valign,
-            'unicode_errors': self.unicode_errors,
-            'strip': self.strip,
-            'font_features': self.font_features,
-            'font_kerning': self.font_kerning,
-            'font_blended': self.font_blended,
-            'shorten': self.shorten,
-            'shorten_from': self.shorten_from,
-            'split_str': self.split_str,
-            'padding': self.text_padding,
-            'mipmap': self.mipmap,
-            'outline_width': self.outline_width,
-            'outline_color': self.effective_outline_color,
-            'disabled_outline_color': self.disabled_outline_color,
-            'base_direction': self.base_direction,
-            'text_language': self.text_language,
-            'limit_render_to_text_bbox': self.limit_render_to_text_bbox,
-            'ellipsis_options': self.ellipsis_options,
-        }
-
-        # Add max_lines only if set (non-zero)
-        if self.max_lines > 0:
-            label_kwargs['max_lines'] = self.max_lines
-
-        # Add optional font properties if set
-        if self.font_family is not None:
-            label_kwargs['font_family'] = self.font_family
-        if self.font_context is not None:
-            label_kwargs['font_context'] = self.font_context
-        if self.font_hinting is not None:
-            label_kwargs['font_hinting'] = self.font_hinting
-
-        # Add ellipsis_options if non-empty
-        if self.ellipsis_options:
-            label_kwargs['ellipsis_options'] = self.ellipsis_options
+        label_kwargs = self._build_label_kwargs(
+            text=text,
+            font_size=font_size,
+            bold=True,
+            size_hint_y=None,
+            size_hint_x=1,
+        )
 
         label = Label(**label_kwargs)
 
@@ -628,53 +566,18 @@ class KivyRenderer(KivyRendererTableMixin):
         else:
             marker_text = '•'
 
-        marker_kwargs = {
-            'text': marker_text,
-            'font_name': self.font_name,
-            'font_size': self.base_font_size,
-            'color': self.effective_color,
-            'line_height': self.line_height,
-            'size_hint': (None, 1),  # Match content height
-            'width': 30,
-            'halign': 'right',
-            # Force top alignment so bullets align with the first line of nested content
-            'valign': 'top',
-            'unicode_errors': self.unicode_errors,
-            'strip': self.strip,
-            'font_features': self.font_features,
-            'font_kerning': self.font_kerning,
-            'font_blended': self.font_blended,
-            'shorten': self.shorten,
-            'shorten_from': self.shorten_from,
-            'split_str': self.split_str,
-            'padding': self.text_padding,
-            'mipmap': self.mipmap,
-            'outline_width': self.outline_width,
-            'outline_color': self.effective_outline_color,
-            'disabled_outline_color': self.disabled_outline_color,
-            'base_direction': self.base_direction,
-            'text_language': self.text_language,
-            'limit_render_to_text_bbox': self.limit_render_to_text_bbox,
-            'ellipsis_options': self.ellipsis_options,
-        }
-
-        # Add max_lines only if set (non-zero)
-        if self.max_lines > 0:
-            marker_kwargs['max_lines'] = self.max_lines
-
-        # Add optional font properties if set
-        if self.font_family is not None:
-            marker_kwargs['font_family'] = self.font_family
-        if self.font_context is not None:
-            marker_kwargs['font_context'] = self.font_context
-        if self.font_hinting is not None:
-            marker_kwargs['font_hinting'] = self.font_hinting
-
-        # Add ellipsis_options if non-empty
-        if self.ellipsis_options:
-            marker_kwargs['ellipsis_options'] = self.ellipsis_options
+        marker_kwargs = self._build_label_kwargs(
+            text=marker_text,
+            font_size=self.base_font_size,
+            halign='right',
+            valign='top',  # Force top alignment so bullets align with first line
+            markup=False,
+            size_hint_x=None,
+            size_hint_y=1,
+        )
 
         marker = Label(**marker_kwargs)
+        marker.width = 30
         # Bind text_size to enable valign to work properly
         marker.bind(size=lambda inst, val: setattr(inst, 'text_size', val))
 
@@ -742,7 +645,7 @@ class KivyRenderer(KivyRendererTableMixin):
         language = attrs.get('info', '')
 
         # Escape the code text for Kivy markup
-        escaped_text = self.inline_renderer._escape_markup(raw.rstrip('\n'))
+        escaped_text = escape_kivy_markup(raw.rstrip('\n'))
 
         # Create container with background
         container = BoxLayout(
