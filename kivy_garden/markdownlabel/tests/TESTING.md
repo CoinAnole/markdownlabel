@@ -74,7 +74,7 @@ MarkdownLabel distinguishes between:
 1. **Style-only changes** — Update existing widgets in place (no rebuild)
 2. **Structure changes** — Rebuild the entire widget tree
 
-See `REBUILD_CONTRACT.md` in the project root for detailed property classifications, implementation details, and performance implications.
+See [`REBUILD_CONTRACT.md`](../REBUILD_CONTRACT.md) for detailed property classifications, implementation details, and performance implications.
 
 ### Property Classifications
 

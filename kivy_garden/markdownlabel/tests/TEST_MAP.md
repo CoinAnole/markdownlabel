@@ -26,7 +26,7 @@
 - modules/: assertion_analyzer.py (patterns), duplicate_detector.py, file_analyzer.py (max_examples), strategy_analyzer.py, etc. (14 total)
 - meta_tests/: test_assertion_analyzer.py, test_coverage_preservation.py, test_duplicate_detector.py, test_naming_convention_validator.py, etc. (20 total)
 
-**Property → File Lookup** (key examples; full ref [`REBUILD_CONTRACT.md`](REBUILD_CONTRACT.md))
+**Property → File Lookup** (key examples; full ref [`REBUILD_CONTRACT.md`](../REBUILD_CONTRACT.md))
 
 | Property | Primary Files | Type |
 |----------|---------------|------|
@@ -283,7 +283,7 @@
 **Property Types**: N/A
 **Markers**: None
 **Dependencies**: None
-**Related**: All rebuild_*.py; [`REBUILD_CONTRACT.md`](REBUILD_CONTRACT.md)
+**Related**: All rebuild_*.py; [`REBUILD_CONTRACT.md`](../REBUILD_CONTRACT.md)
 
 #### [`test_rebuild_scheduling.py`](kivy_garden/markdownlabel/tests/test_rebuild_scheduling.py) (253 lines)
 **Purpose**: Rebuild batching/deferral via Clock.
@@ -391,4 +391,4 @@
 - **Structure rebuild?** test_rebuild_structure_changes.py, test_sizing_behavior.py (strict), test_texture_render_mode.py
 - **Serialization round-trip?** [`test_serialization.py`](kivy_garden/markdownlabel/tests/test_serialization.py)
 - **Helpers/fixtures?** [`test_utils.py`](kivy_garden/markdownlabel/tests/test_utils.py), conftest.py; meta-tests validate
-- **Property classification gaps?** [`test_rebuild_property_classification.py`](kivy_garden/markdownlabel/tests/test_rebuild_property_classification.py), [`REBUILD_CONTRACT.md`](REBUILD_CONTRACT.md)
+- **Property classification gaps?** [`test_rebuild_property_classification.py`](kivy_garden/markdownlabel/tests/test_rebuild_property_classification.py), [`REBUILD_CONTRACT.md`](../REBUILD_CONTRACT.md)
