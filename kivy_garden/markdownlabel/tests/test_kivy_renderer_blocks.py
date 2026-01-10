@@ -513,7 +513,13 @@ class TestImageWidgetCreation:
 
 
 class TestDeepNestingTruncation:
-    """Tests for deep nesting truncation placeholder behavior."""
+    """Tests for deep nesting truncation placeholder behavior.
+
+    These are edge case tests that verify the renderer's ability to handle
+    excessive nesting by truncating content and providing a visual placeholder,
+    preventing infinite recursion or stack overflow. These tests access private
+    renderer state to simulate deep nesting conditions.
+    """
 
     def test_truncation_placeholder_when_nesting_exceeds_max(self):
         """When nesting depth exceeds max, _render_token returns placeholder.

@@ -12,7 +12,8 @@ from kivy_garden.markdownlabel import MarkdownLabel
 from .test_utils import (
     find_labels_recursive,
     simple_markdown_document,
-    collect_widget_ids
+    collect_widget_ids,
+    assert_no_rebuild
 )
 
 
@@ -261,6 +262,9 @@ class TestTextSizeDynamicUpdates:
         """Changing text_size height updates all child Labels."""
         label = MarkdownLabel(text='Hello World', text_size=[None, height1])
 
+        # Collect widget IDs before change
+        ids_before = collect_widget_ids(label)
+
         # Verify initial height
         labels = find_labels_recursive(label)
         for lbl in labels:
@@ -270,6 +274,9 @@ class TestTextSizeDynamicUpdates:
         # Change text_size height
         label.text_size = [None, height2]
         # Updates are synchronous, no force_rebuild needed
+
+        # Verify widget tree preservation (style-only property)
+        assert_no_rebuild(label, ids_before, exclude_root=False)
 
         # Verify new height
         labels = find_labels_recursive(label)
@@ -285,6 +292,9 @@ class TestTextSizeDynamicUpdates:
         """Changing text_size height to None updates all child Labels."""
         label = MarkdownLabel(text='Hello World', text_size=[None, height])
 
+        # Collect widget IDs before change
+        ids_before = collect_widget_ids(label)
+
         # Verify initial height
         labels = find_labels_recursive(label)
         for lbl in labels:
@@ -294,6 +304,9 @@ class TestTextSizeDynamicUpdates:
         # Change text_size height to None
         label.text_size = [None, None]
         # Updates are synchronous, no force_rebuild needed
+
+        # Verify widget tree preservation (style-only property)
+        assert_no_rebuild(label, ids_before, exclude_root=False)
 
         # Verify height is now None
         labels = find_labels_recursive(label)
@@ -310,6 +323,9 @@ class TestTextSizeDynamicUpdates:
         """Changing text_size height from None to value updates all child Labels."""
         label = MarkdownLabel(text='Hello World', text_size=[None, None])
 
+        # Collect widget IDs before change
+        ids_before = collect_widget_ids(label)
+
         # Verify initial height is None
         labels = find_labels_recursive(label)
         for lbl in labels:
@@ -320,6 +336,9 @@ class TestTextSizeDynamicUpdates:
         # Change text_size height to specific value
         label.text_size = [None, height]
         # Updates are synchronous, no force_rebuild needed
+
+        # Verify widget tree preservation (style-only property)
+        assert_no_rebuild(label, ids_before, exclude_root=False)
 
         # Verify new height
         labels = find_labels_recursive(label)

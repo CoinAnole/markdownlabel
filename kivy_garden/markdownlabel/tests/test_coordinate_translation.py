@@ -105,6 +105,7 @@ class TestCoordinateTranslation:
                     break
             assert found, f"Expected [ref={url}] in some Label markup"
 
+    @pytest.mark.unit
     def test_refs_empty_for_no_links(self):
         """refs returns empty dict when there are no links."""
         label = MarkdownLabel(text='Hello World without links')
@@ -112,6 +113,7 @@ class TestCoordinateTranslation:
         assert label.refs == {}, \
             f"Expected empty refs, got {label.refs}"
 
+    @pytest.mark.unit
     def test_refs_empty_for_empty_text(self):
         """refs returns empty dict for empty text."""
         label = MarkdownLabel(text='')
@@ -119,6 +121,7 @@ class TestCoordinateTranslation:
         assert label.refs == {}, \
             f"Expected empty refs for empty text, got {label.refs}"
 
+    @pytest.mark.unit
     def test_anchors_empty_for_no_anchors(self):
         """anchors returns empty dict when there are no anchors."""
         label = MarkdownLabel(text='Hello World without anchors')
@@ -126,6 +129,7 @@ class TestCoordinateTranslation:
         assert label.anchors == {}, \
             f"Expected empty anchors, got {label.anchors}"
 
+    @pytest.mark.unit
     def test_anchors_empty_for_empty_text(self):
         """anchors returns empty dict for empty text."""
         label = MarkdownLabel(text='')
@@ -179,6 +183,7 @@ class TestCoordinateTranslation:
                     assert found_match, \
                         f"Expected translated box {expected_box} in aggregated refs"
 
+    @pytest.mark.unit
     def test_nested_list_produces_correct_ref_markup(self):
         """Links in nested content (lists) produce correct ref markup."""
         markdown = '''- [Link 1](https://example1.com)
@@ -199,6 +204,7 @@ class TestCoordinateTranslation:
                '[ref=https://example2.com]' in all_markup, \
             "Expected ref markup for list links"
 
+    @pytest.mark.unit
     def test_table_produces_correct_ref_markup(self):
         """Links in table content produce correct ref markup."""
         markdown = '''| Column A | Column B |
@@ -219,6 +225,7 @@ class TestCoordinateTranslation:
                    for lbl in labels_with_markup)
         assert found, "Expected ref markup for table link"
 
+    @pytest.mark.unit
     def test_blockquote_produces_correct_ref_markup(self):
         """Links in blockquote content produce correct ref markup."""
         markdown = '> [Quoted link](https://example.com)'
@@ -427,7 +434,7 @@ class TestDeterministicRefsTranslation:
 
         actual_box = actual_boxes[0]
         for i, (expected, actual) in enumerate(zip(expected_box, actual_box)):
-            assert abs(expected - actual) < 0.001, \
+            assert floats_equal(expected, actual), \
                 f"Box coordinate {i}: expected {expected}, got {actual}"
 
     def test_refs_translation_with_multiple_zones(self):
@@ -489,7 +496,7 @@ class TestDeterministicRefsTranslation:
         ]
         actual_box = aggregated_refs['http://link1.com'][0]
         for i, (expected, actual) in enumerate(zip(expected_box, actual_box)):
-            assert abs(expected - actual) < 0.001, \
+            assert floats_equal(expected, actual), \
                 f"link1 box coord {i}: expected {expected}, got {actual}"
 
     def test_refs_translation_with_nested_containers(self):
@@ -548,7 +555,7 @@ class TestDeterministicRefsTranslation:
         assert 'http://nested.com' in aggregated_refs
         actual_box = aggregated_refs['http://nested.com'][0]
         for i, (expected, actual) in enumerate(zip(expected_box, actual_box)):
-            assert abs(expected - actual) < 0.001, \
+            assert floats_equal(expected, actual), \
                 f"Nested box coord {i}: expected {expected}, got {actual}"
 
     def test_refs_translation_with_zero_texture_size_fallback(self):
@@ -597,7 +604,7 @@ class TestDeterministicRefsTranslation:
         assert 'http://fallback.com' in aggregated_refs
         actual_box = aggregated_refs['http://fallback.com'][0]
         for i, (expected, actual) in enumerate(zip(expected_box, actual_box)):
-            assert abs(expected - actual) < 0.001, \
+            assert floats_equal(expected, actual), \
                 f"Fallback box coord {i}: expected {expected}, got {actual}"
 
     @pytest.mark.property
@@ -687,7 +694,7 @@ class TestDeterministicRefsTranslation:
         # Verify the translation
         actual_box = aggregated_refs['http://test.com'][0]
         for i, (expected, actual) in enumerate(zip(expected_box, actual_box)):
-            assert abs(expected - actual) < 0.001, \
+            assert floats_equal(expected, actual), \
                 f"Box coord {i}: expected {expected}, got {actual}"
 
 # *For any* MarkdownLabel containing a child Label with known `anchors`, `pos`, `size`,
@@ -769,9 +776,9 @@ class TestDeterministicAnchorsTranslation:
             f"Expected 'section1' in anchors, got {aggregated_anchors.keys()}"
 
         actual_pos = aggregated_anchors['section1']
-        assert abs(expected_pos[0] - actual_pos[0]) < 0.001, \
+        assert floats_equal(expected_pos[0], actual_pos[0]), \
             f"Anchor X: expected {expected_pos[0]}, got {actual_pos[0]}"
-        assert abs(expected_pos[1] - actual_pos[1]) < 0.001, \
+        assert floats_equal(expected_pos[1], actual_pos[1]), \
             f"Anchor Y: expected {expected_pos[1]}, got {actual_pos[1]}"
 
     def test_anchors_translation_with_multiple_anchors(self):
@@ -826,9 +833,9 @@ class TestDeterministicAnchorsTranslation:
                 base_y - orig_pos[1],
             )
             actual_pos = aggregated_anchors[anchor_name]
-            assert abs(expected_pos[0] - actual_pos[0]) < 0.001, \
+            assert floats_equal(expected_pos[0], actual_pos[0]), \
                 f"{anchor_name} X: expected {expected_pos[0]}, got {actual_pos[0]}"
-            assert abs(expected_pos[1] - actual_pos[1]) < 0.001, \
+            assert floats_equal(expected_pos[1], actual_pos[1]), \
                 f"{anchor_name} Y: expected {expected_pos[1]}, got {actual_pos[1]}"
 
     def test_anchors_translation_with_nested_containers(self):
@@ -883,9 +890,9 @@ class TestDeterministicAnchorsTranslation:
 
         assert 'nested_anchor' in aggregated_anchors
         actual_pos = aggregated_anchors['nested_anchor']
-        assert abs(expected_pos[0] - actual_pos[0]) < 0.001, \
+        assert floats_equal(expected_pos[0], actual_pos[0]), \
             f"Nested anchor X: expected {expected_pos[0]}, got {actual_pos[0]}"
-        assert abs(expected_pos[1] - actual_pos[1]) < 0.001, \
+        assert floats_equal(expected_pos[1], actual_pos[1]), \
             f"Nested anchor Y: expected {expected_pos[1]}, got {actual_pos[1]}"
 
     def test_anchors_translation_with_zero_texture_size_fallback(self):
@@ -931,9 +938,9 @@ class TestDeterministicAnchorsTranslation:
 
         assert 'fallback_anchor' in aggregated_anchors
         actual_pos = aggregated_anchors['fallback_anchor']
-        assert abs(expected_pos[0] - actual_pos[0]) < 0.001, \
+        assert floats_equal(expected_pos[0], actual_pos[0]), \
             f"Fallback anchor X: expected {expected_pos[0]}, got {actual_pos[0]}"
-        assert abs(expected_pos[1] - actual_pos[1]) < 0.001, \
+        assert floats_equal(expected_pos[1], actual_pos[1]), \
             f"Fallback anchor Y: expected {expected_pos[1]}, got {actual_pos[1]}"
 
     @pytest.mark.property
@@ -1018,7 +1025,7 @@ class TestDeterministicAnchorsTranslation:
 
         # Verify the translation
         actual_pos = aggregated_anchors['test_anchor']
-        assert abs(expected_pos[0] - actual_pos[0]) < 0.001, \
+        assert floats_equal(expected_pos[0], actual_pos[0]), \
             f"Anchor X: expected {expected_pos[0]}, got {actual_pos[0]}"
-        assert abs(expected_pos[1] - actual_pos[1]) < 0.001, \
+        assert floats_equal(expected_pos[1], actual_pos[1]), \
             f"Anchor Y: expected {expected_pos[1]}, got {actual_pos[1]}"

@@ -138,7 +138,13 @@ class TestTableAlignmentApplication:
 
     @pytest.mark.parametrize('alignment', ['left', 'center', 'right'])
     def test_cell_alignment_applied(self, alignment):
-        """Table cell alignment is applied to Label halign."""
+        """Table cell alignment is applied to Label halign.
+
+        This test directly accesses the private `_render_table_cell` method to
+        verify that specific alignment values are correctly applied to the
+        resulting Label widget, which is difficult to isolate through the
+        public `table` method.
+        """
         renderer = KivyRenderer()
 
         cell_token = {
@@ -211,7 +217,12 @@ class TestTableAlignmentApplication:
 
     @pytest.mark.parametrize('alignment', [None, 'invalid', ''])
     def test_invalid_alignment_defaults_to_left(self, alignment):
-        """Invalid or missing alignment defaults to 'left'."""
+        """Invalid or missing alignment defaults to 'left'.
+
+        This test directly accesses the private `_render_table_cell` method to
+        verify fallback behavior for invalid or missing alignment attributes in
+        the token, ensuring robust handling of malformed input.
+        """
         renderer = KivyRenderer()
 
         cell_token = {

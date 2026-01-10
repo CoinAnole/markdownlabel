@@ -17,7 +17,8 @@ from kivy_garden.markdownlabel import MarkdownLabel
 from .test_utils import (
     simple_markdown_document,
     find_labels_recursive,
-    collect_widget_ids
+    collect_widget_ids,
+    assert_no_rebuild
 )
 
 
@@ -58,7 +59,7 @@ class TestAdvancedFontPropertyIdentityPreservationPBT:
         font_blended=st.booleans()
     )
     # Feature: optimize-rebuild-contract, Property 1: Style-only property updates preserve widget identity
-    # Mixed finite/complex strategy: 48 examples (8 finite × 6 complex samples)
+    # Mixed finite/complex strategy: 48 examples (16 finite × 3 complex samples)
     @settings(max_examples=48, deadline=None)
     def test_advanced_font_properties_preserve_widget_identity(
         self, markdown_text, font_family, font_context, font_features,
@@ -95,13 +96,7 @@ class TestAdvancedFontPropertyIdentityPreservationPBT:
         label.font_blended = font_blended
 
         # Capture widget IDs after changes
-        ids_after = collect_widget_ids(label)
-
-        # Assert: widget IDs should be unchanged
-        assert ids_before == ids_after, (
-            f"Widget IDs changed after advanced font property updates. "
-            f"Before: {len(ids_before)} widgets, After: {len(ids_after)} widgets"
-        )
+        assert_no_rebuild(label, ids_before, exclude_root=False)
 
 
 # =============================================================================
@@ -158,13 +153,7 @@ class TestTextProcessingPropertyIdentityPreservationPBT:
         label.strip = strip
 
         # Capture widget IDs after changes
-        ids_after = collect_widget_ids(label)
-
-        # Assert: widget IDs should be unchanged
-        assert ids_before == ids_after, (
-            f"Widget IDs changed after text processing property updates. "
-            f"Before: {len(ids_before)} widgets, After: {len(ids_after)} widgets"
-        )
+        assert_no_rebuild(label, ids_before, exclude_root=False)
 
 
 # =============================================================================
@@ -238,13 +227,7 @@ class TestTruncationPropertyIdentityPreservationPBT:
         label.ellipsis_options = ellipsis_options
 
         # Capture widget IDs after changes
-        ids_after = collect_widget_ids(label)
-
-        # Assert: widget IDs should be unchanged
-        assert ids_before == ids_after, (
-            f"Widget IDs changed after truncation property updates. "
-            f"Before: {len(ids_before)} widgets, After: {len(ids_after)} widgets"
-        )
+        assert_no_rebuild(label, ids_before, exclude_root=False)
 
 
 # =============================================================================
@@ -313,7 +296,7 @@ class TestAdvancedFontPropertyValuePropagationPBT:
     )
     # Feature: optimize-rebuild-contract, Property 2: Style-only property
     # updates apply values to all child Labels
-    # Mixed finite/complex strategy: 48 examples (8 finite × 6 complex samples)
+    # Mixed finite/complex strategy: 48 examples (16 finite × 3 complex samples)
     @settings(max_examples=48, deadline=None)
     def test_all_advanced_font_properties_propagate_to_children(
         self, markdown_text, font_family, font_context, font_features,

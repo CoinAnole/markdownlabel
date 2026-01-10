@@ -16,7 +16,7 @@ from hypothesis import given, strategies as st, settings, assume
 from kivy_garden.markdownlabel import MarkdownLabel
 from .test_utils import (
     simple_markdown_document, find_labels_recursive, collect_widget_ids,
-    colors_equal, floats_equal
+    colors_equal, floats_equal, assert_no_rebuild
 )
 
 
@@ -169,8 +169,7 @@ class TestAdvancedFontPropertiesForwarding:
         label.font_kerning = kerning2
 
         # Verify widget tree preserved (style-only property)
-        ids_after = collect_widget_ids(label, exclude_root=True)
-        assert ids_before == ids_after, "Widget tree should be preserved for font_kerning changes"
+        assert_no_rebuild(label, ids_before)
 
         # Verify new value
         labels = find_labels_recursive(label)
@@ -199,8 +198,7 @@ class TestAdvancedFontPropertiesForwarding:
         label.font_blended = blended2
 
         # Verify widget tree preserved (style-only property)
-        ids_after = collect_widget_ids(label, exclude_root=True)
-        assert ids_before == ids_after, "Widget tree should be preserved for font_blended changes"
+        assert_no_rebuild(label, ids_before)
 
         # Verify new value
         labels = find_labels_recursive(label)
@@ -379,8 +377,7 @@ class TestDisabledColorApplication:
         label.disabled = True
 
         # Verify widget tree preserved (style-only property)
-        ids_after = collect_widget_ids(label, exclude_root=True)
-        assert ids_before == ids_after, "Widget tree should be preserved for disabled changes"
+        assert_no_rebuild(label, ids_before)
 
         # Verify disabled state uses disabled_color
         labels = find_labels_recursive(label)
@@ -515,8 +512,7 @@ class TestStylePropertyReactiveUpdates:
         label.font_name = font2
 
         # Verify widget tree preserved (no rebuild)
-        ids_after = collect_widget_ids(label, exclude_root=True)
-        assert ids_before == ids_after, "Widget tree should be preserved for font_name changes (style-only)"
+        assert_no_rebuild(label, ids_before)
 
         # Verify font_name was updated in-place
         labels_after = find_labels_recursive(label)
@@ -553,8 +549,7 @@ class TestStylePropertyReactiveUpdates:
         label.color = color2
 
         # Verify no rebuild occurred (style-only property)
-        ids_after = collect_widget_ids(label, exclude_root=True)
-        assert ids_before == ids_after, "Widget tree should NOT rebuild for color changes"
+        assert_no_rebuild(label, ids_before)
 
         # Verify color was updated on existing widgets
         labels_after = find_labels_recursive(label)
@@ -591,8 +586,7 @@ class TestStylePropertyReactiveUpdates:
         label.line_height = lh2
 
         # Verify no rebuild occurred (style-only property)
-        ids_after = collect_widget_ids(label, exclude_root=True)
-        assert ids_before == ids_after, "Widget tree should NOT rebuild for line_height changes"
+        assert_no_rebuild(label, ids_before)
 
         # Verify line_height was updated on existing widgets
         labels_after = find_labels_recursive(label)
@@ -625,8 +619,7 @@ class TestStylePropertyReactiveUpdates:
         label.text_size = [width2, None]
 
         # Verify no rebuild occurred (style-only property)
-        ids_after = collect_widget_ids(label, exclude_root=True)
-        assert ids_before == ids_after, "Widget tree should NOT rebuild for text_size changes"
+        assert_no_rebuild(label, ids_before)
 
         # Verify text_size was updated on MarkdownLabel
         assert label.text_size[0] == width2, \
@@ -691,8 +684,7 @@ class TestStylePropertyReactiveUpdates:
         label.halign = halign2
 
         # Verify NO rebuild occurred (style-only property)
-        ids_after = collect_widget_ids(label, exclude_root=True)
-        assert ids_before == ids_after, "Widget tree should NOT rebuild for halign changes"
+        assert_no_rebuild(label, ids_before)
 
         # Verify widgets were updated with new halign
         labels_after = find_labels_recursive(label)
@@ -725,8 +717,7 @@ class TestStylePropertyReactiveUpdates:
         label.valign = valign2
 
         # Verify NO rebuild occurred (style-only property)
-        ids_after = collect_widget_ids(label, exclude_root=True)
-        assert ids_before == ids_after, "Widget tree should NOT rebuild for valign changes"
+        assert_no_rebuild(label, ids_before)
 
         # Verify widgets were updated with new valign
         labels_after = find_labels_recursive(label)
@@ -758,8 +749,7 @@ class TestStylePropertyReactiveUpdates:
         label.unicode_errors = errors2
 
         # Verify widget tree preserved (style-only property)
-        ids_after = collect_widget_ids(label, exclude_root=True)
-        assert ids_before == ids_after, "Widget tree should be preserved for unicode_errors changes"
+        assert_no_rebuild(label, ids_before)
 
         # Verify widgets were updated with new unicode_errors
         labels_after = find_labels_recursive(label)
@@ -790,8 +780,7 @@ class TestStylePropertyReactiveUpdates:
         label.strip = strip2
 
         # Verify widget tree preserved (style-only property)
-        ids_after = collect_widget_ids(label, exclude_root=True)
-        assert ids_before == ids_after, "Widget tree should be preserved for strip changes"
+        assert_no_rebuild(label, ids_before)
 
         # Verify widgets were updated with new strip
         labels_after = find_labels_recursive(label)
@@ -833,8 +822,7 @@ class TestStylePropertyReactiveUpdates:
         label.disabled = disabled2
 
         # Verify widget tree preserved (style-only property)
-        ids_after = collect_widget_ids(label, exclude_root=True)
-        assert ids_before == ids_after, "Widget tree should be preserved for disabled changes"
+        assert_no_rebuild(label, ids_before)
 
         expected_color2 = disabled_color if disabled2 else regular_color
 
@@ -865,8 +853,7 @@ class TestStylePropertyReactiveUpdates:
         label.font_name = font2
 
         # Verify widget tree preserved (no rebuild)
-        ids_after = collect_widget_ids(label)
-        assert ids_before == ids_after, "Widget tree should be preserved for font_name change (style-only)"
+        assert_no_rebuild(label, ids_before, exclude_root=False)
 
         # Count children after
         children_after = len(label.children)

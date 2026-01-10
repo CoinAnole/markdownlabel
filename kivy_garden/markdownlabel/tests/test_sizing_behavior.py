@@ -10,7 +10,8 @@ from hypothesis import given, strategies as st, settings, assume
 
 from kivy_garden.markdownlabel import MarkdownLabel
 from .test_utils import (
-    simple_markdown_document, markdown_heading, collect_widget_ids
+    simple_markdown_document, markdown_heading, collect_widget_ids,
+    assert_rebuild_occurred
 )
 
 
@@ -550,9 +551,7 @@ class TestStrictLabelModeSizingBehavior:
         label.force_rebuild()
 
         # Widget tree should be rebuilt (children may be different objects)
-        ids_after = collect_widget_ids(label, exclude_root=True)
-        assert ids_before != ids_after, \
-            "Widget tree should rebuild after strict_label_mode toggle"
+        assert_rebuild_occurred(label, ids_before)
 
         # Verify the label still has children
         assert len(label.children) >= 1, \

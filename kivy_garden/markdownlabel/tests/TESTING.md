@@ -251,6 +251,7 @@ Certain private methods are **acceptable exceptions** for testing when no public
 - `_get_effective_render_mode()` — verifying auto-selection logic
 - `_aggregated_refs` — verifying internal link coordinate maps
 - `_get_effective_halign()` — (prefer child `Label.halign` when possible)
+- `_is_code` — identifying code block labels for style exclusion logic
 
 **Edge case classes** (e.g., `TestKivyRendererEdgeCases`) may access private methods when:
 1. Class name/docstring indicates it's for coverage or edge cases

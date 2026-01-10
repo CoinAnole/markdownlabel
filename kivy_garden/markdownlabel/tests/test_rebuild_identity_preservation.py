@@ -273,7 +273,7 @@ class TestStylePropertyIdentityPreservationPBT:
         line_height=st.floats(min_value=0.5, max_value=3.0, allow_nan=False,
                                allow_infinity=False)
     )
-    # Mixed finite/complex strategy: 50 examples (sampling from 120 finite combinations)
+    # Mixed finite/complex strategy: 50 examples (sampling from 120 combinations)
     @settings(max_examples=50, deadline=None)
     def test_style_property_changes_preserve_widget_tree(
         self, markdown_text, base_font_size, color, halign, valign,

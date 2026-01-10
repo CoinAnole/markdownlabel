@@ -16,7 +16,9 @@ from .test_utils import (
     padding_single,
     padding_two,
     padding_four,
-    collect_widget_ids
+    collect_widget_ids,
+    assert_no_rebuild,
+    floats_equal
 )
 
 
@@ -41,7 +43,7 @@ class TestPaddingApplication:
             f"Expected 4-element padding, got {len(label.padding)}"
 
         for i, (actual, exp) in enumerate(zip(label.padding, expected)):
-            assert abs(actual - exp) < 0.001, \
+            assert floats_equal(actual, exp), \
                 f"Padding[{i}]: expected {exp}, got {actual}"
 
     @pytest.mark.property
@@ -60,7 +62,7 @@ class TestPaddingApplication:
             f"Expected 4-element padding, got {len(label.padding)}"
 
         for i, (actual, exp) in enumerate(zip(label.padding, expected)):
-            assert abs(actual - exp) < 0.001, \
+            assert floats_equal(actual, exp), \
                 f"Padding[{i}]: expected {exp}, got {actual}"
 
     @pytest.mark.property
@@ -75,7 +77,7 @@ class TestPaddingApplication:
             f"Expected 4-element padding, got {len(label.padding)}"
 
         for i, (actual, exp) in enumerate(zip(label.padding, padding_values)):
-            assert abs(actual - exp) < 0.001, \
+            assert floats_equal(actual, exp), \
                 f"Padding[{i}]: expected {exp}, got {actual}"
 
     @pytest.mark.property
@@ -90,7 +92,7 @@ class TestPaddingApplication:
             f"Expected 4-element padding, got {len(label.padding)}"
 
         for i, (actual, exp) in enumerate(zip(label.padding, padding_values)):
-            assert abs(actual - exp) < 0.001, \
+            assert floats_equal(actual, exp), \
                 f"Padding[{i}]: expected {exp}, got {actual}"
 
     @pytest.mark.property
@@ -108,14 +110,13 @@ class TestPaddingApplication:
 
         # Verify initial padding
         for i, (actual, exp) in enumerate(zip(label.padding, padding1)):
-            assert abs(actual - exp) < 0.001
+            assert floats_equal(actual, exp)
 
         # Change padding (style-only property - no rebuild needed)
         label.padding = padding2
 
         # Verify NO rebuild occurred (style-only property)
-        ids_after = collect_widget_ids(label)
-        assert ids_before == ids_after, "Widget tree should NOT rebuild for padding changes"
+        assert_no_rebuild(label, ids_before, exclude_root=False)
 
         # Verify new padding applied to container
         for i, (actual, exp) in enumerate(zip(label.padding, padding2)):
@@ -132,7 +133,7 @@ class TestPaddingApplication:
             f"Expected 4-element padding, got {len(label.padding)}"
 
         for i, (actual, exp) in enumerate(zip(label.padding, expected)):
-            assert abs(actual - exp) < 0.001, \
+            assert floats_equal(actual, exp), \
                 f"Default padding[{i}]: expected {exp}, got {actual}"
 
 
@@ -261,8 +262,7 @@ Regular paragraph
         label.text_padding = padding2
 
         # Verify NO rebuild occurred (style-only property)
-        ids_after = collect_widget_ids(label, exclude_root=True)
-        assert ids_before == ids_after, "Widget tree should NOT rebuild for text_padding changes"
+        assert_no_rebuild(label, ids_before)
 
         # Verify new padding applied in place
         labels = find_labels_recursive(label)
@@ -313,8 +313,7 @@ class TestTextPaddingDynamicUpdates:
         label.text_padding = new_padding
 
         # Verify NO rebuild occurred (style-only property)
-        ids_after = collect_widget_ids(label, exclude_root=True)
-        assert ids_before == ids_after, "Widget tree should NOT rebuild for text_padding changes"
+        assert_no_rebuild(label, ids_before)
 
         # Verify all labels have new padding
         labels = find_labels_recursive(label)
@@ -358,8 +357,7 @@ Paragraph with text.
         label.text_padding = new_padding
 
         # Verify NO rebuild occurred (style-only property)
-        ids_after = collect_widget_ids(label, exclude_root=True)
-        assert ids_before == ids_after, "Widget tree should NOT rebuild for text_padding changes"
+        assert_no_rebuild(label, ids_before)
 
         # Verify all labels have new padding
         labels = find_labels_recursive(label)
@@ -387,8 +385,8 @@ Paragraph with text.
 # Labels within those structures SHALL have the `padding` property applied without
 # breaking the layout structure.
 
-class TestPaddingWithNestedStructures:
-    """Property tests for padding with nested structures."""
+class TestTextPaddingWithNestedStructures:
+    """Property tests for text_padding with nested structures."""
 
     @pytest.mark.property
     @given(text_padding_strategy)
@@ -616,8 +614,7 @@ class TestPaddingAppliesToContainer:
         label.padding = new_padding
 
         # Verify NO rebuild occurred (style-only property)
-        ids_after = collect_widget_ids(label)
-        assert ids_before == ids_after, "Widget tree should NOT rebuild for padding changes"
+        assert_no_rebuild(label, ids_before, exclude_root=False)
 
         # Container should have new padding
         assert padding_equal(list(label.padding), new_padding), \
