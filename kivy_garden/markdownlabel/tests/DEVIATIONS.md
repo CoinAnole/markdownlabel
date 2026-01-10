@@ -3,12 +3,9 @@
 ## test_advanced_compatibility.py
 - Lines **173, 203, 382, 519, 557, 595, 629, 695, 729, 762, 794, 837, 869**: Manual `assert ids_before == ids_after` instead of using `assert_no_rebuild(widget, ids_before)` helper.
 - Lines **296, 323, 349, 373, 388, 399**: Access to undocumented private attribute `lbl._is_code`.
-- Lines **489-491**: Class `TestReactiveRebuildOnPropertyChange` name and docstring misleading, as tests verify no rebuild (preservation).
 
 ## test_coordinate_translation.py
 - Lines **106, 113, 120, 127, 177, 198, 218**: Unit tests missing `@pytest.mark.unit` marker.
-- Line **174**: Exact list containment check (expected_box in aggregated_refs[url]) for float coordinates without tolerance.
-- Lines **300-303, 329-330**: Exact equality assertions (==) on float computations without tolerance or `floats_equal` helper.
 - Lines **425-427, 486-488, 545-547, 594-596, 683-686, 766-769, 823-826, 880-883, 928-931, 1015-1018**: Manual float comparisons using `abs(diff) < 0.001` instead of `floats_equal` helper from test_utils.py.
 
 ## test_core_functionality.py
@@ -35,10 +32,8 @@
 
 ## test_rebuild_identity_preservation.py
 - Line **277**: Mixed strategy comment uses incorrect rationale "(sampling from 120 finite combinations)" instead of "(X finite × Y complex samples)".
-- Line **339**: Mixed strategy comment inaccurately "24 finite × 2 complex"; 4 complex strategies.
 
 ## test_rebuild_scheduling.py
-- Lines **105-250**: Class `TestDeferredRebuildScheduling` marked `@pytest.mark.property` but contains non-Hypothesis tests (parametrized line 151, unit line 180).
 
 ## test_sizing_behavior.py
 - Line **555**: Manual `assert ids_before != ids_after` instead of `assert_rebuild_occurred`.

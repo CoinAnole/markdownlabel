@@ -12,9 +12,9 @@ I've examined the deviations listed in `DEVIATIONS.md` against the actual test c
 - **Legitimate:** ✅ Yes, these access the private `_is_code` attribute
 - **Worth fixing:** ⚠️ **Low priority** — This pattern is used to skip code block Labels when verifying color changes. It's documented behavior that code blocks preserve their own color. The `_is_code` marker is an implementation detail, but there's no public API equivalent. Consider adding `_is_code` to the documented exceptions in `TESTING.md` if frequently used.
 
-### Lines 489-491 — Class name `TestReactiveRebuildOnPropertyChange` misleading
+### [RESOLVED] Lines 489-491 — Class name `TestReactiveRebuildOnPropertyChange` misleading
 - **Legitimate:** ✅ Yes, the class tests that **no** rebuild occurs (widget preservation)
-- **Worth fixing:** ✅ **Medium priority** — The class name is indeed misleading. Tests like `test_font_name_change_preserves_widget_tree` verify that changes **preserve** widgets (no rebuild). A better name would be `TestReactivePropertyPreservation` or `TestStylePropertyReactiveUpdates`.
+- **Worth fixing:** ✅ **Medium priority** — RESOLVED: Renamed to `TestStylePropertyReactiveUpdates`.
 
 ---
 
@@ -24,13 +24,13 @@ I've examined the deviations listed in `DEVIATIONS.md` against the actual test c
 - **Legitimate:** ✅ Yes, these are unit tests without the marker
 - **Worth fixing:** ⚠️ **Low priority** — Per TESTING.md, unit tests should have `@pytest.mark.unit`. However, the tests work correctly without it.
 
-### Line 174 — Exact list containment check for float coordinates
+### [RESOLVED] Line 174 — Exact list containment check for float coordinates
 - **Legitimate:** ✅ Yes, uses exact `in` check: `expected_box in aggregated_refs[url]`
-- **Worth fixing:** ✅ **Medium priority** — Float coordinates should use tolerance-based comparison. The test should iterate through boxes and use `floats_equal` for each coordinate.
+- **Worth fixing:** ✅ **Medium priority** — RESOLVED: Updated to use `any()` with `padding_equal()`.
 
-### Lines 300-303, 329-330 — Exact equality assertions on float computations
+### [RESOLVED] Lines 300-303, 329-330 — Exact equality assertions on float computations
 - **Legitimate:** ✅ Yes, uses `==` for float comparisons
-- **Worth fixing:** ✅ **Medium priority** — Should use `floats_equal()` helper or `abs(a - b) < tolerance`.
+- **Worth fixing:** ✅ **Medium priority** — RESOLVED: Updated to use `floats_equal()`.
 
 ### Lines 425-427, 486-488, 545-547, etc. — Manual float comparisons `abs(diff) < 0.001`
 - **Legitimate:** ✅ Yes, uses manual tolerance checks instead of `floats_equal`
@@ -102,18 +102,18 @@ I've examined the deviations listed in `DEVIATIONS.md` against the actual test c
 - **Legitimate:** ✅ Yes, comment says "(sampling from 120 finite combinations)" instead of "(X finite × Y complex samples)"
 - **Worth fixing:** ⚠️ **Low priority** — The comment format doesn't strictly follow TESTING.md line 140. However, the rationale is still clear and meaningful.
 
-### Line 339 — Mixed strategy comment inaccurately counts complex strategies
+### [RESOLVED] Line 339 — Mixed strategy comment inaccurately counts complex strategies
 - **Legitimate:** ✅ Yes, comment says "24 finite × 2 complex" but there are actually 4 complex strategies (2 × st_rgba_color)
-- **Worth fixing:** ✅ **Medium priority** — The count is incorrect.
+- **Worth fixing:** ✅ **Medium priority** — RESOLVED: Updated to 48 examples (24 finite × 2 complex samples).
 
 ---
 
 ## **test_rebuild_scheduling.py**
 
 
-### Lines 105-250 — Class with `@pytest.mark.property` contains non-Hypothesis tests
+### [RESOLVED] Lines 105-250 — Class with `@pytest.mark.property` contains non-Hypothesis tests
 - **Legitimate:** ✅ Yes, `TestDeferredRebuildScheduling` is marked with `@pytest.mark.property` but contains parametrized (line 151) and unit (line 180) tests
-- **Worth fixing:** ✅ **Medium priority** — Either remove the class-level marker and add appropriate markers to individual tests, or split the class.
+- **Worth fixing:** ✅ **Medium priority** — RESOLVED: Moved markers to individual test methods.
 
 ---
 
@@ -141,7 +141,7 @@ I've examined the deviations listed in `DEVIATIONS.md` against the actual test c
 | Priority | Count | Description |
 |----------|-------|-------------|
 | **High** | 0 | None identified |
-| **Medium** | 5 | Class naming issues, incorrect comment counts, marker inconsistencies |
+| **Medium** | 0 | All identified Medium Priority issues resolved |
 | **Low** | 12 | Style inconsistencies, missing helpers usage |
 
 ## Recommendations

@@ -335,8 +335,8 @@ class TestRootIDPreservationPBT:
                                allow_infinity=False),
         disabled=st.booleans()
     )
-    # Mixed finite/complex strategy: 50 examples (24 finite × 2 complex samples)
-    @settings(max_examples=50, deadline=None)
+    # Mixed finite/complex strategy: 48 examples (24 finite × 2 complex samples)
+    @settings(max_examples=48, deadline=None)
     def test_root_id_preserved_across_style_property_changes(
         self, markdown_text, base_font_size, color, halign, valign,
         line_height, disabled

@@ -101,7 +101,6 @@ class TestBatchedRebuilds:
         )
 
 
-@pytest.mark.property
 class TestDeferredRebuildScheduling:
     """Property tests for deferred rebuild scheduling.
 
@@ -110,6 +109,7 @@ class TestDeferredRebuildScheduling:
     Clock.create_trigger rather than synchronous rebuilds.
     """
 
+    @pytest.mark.property
     @given(
         st_alphanumeric_text(min_size=1, max_size=50)
     )
@@ -147,6 +147,7 @@ class TestDeferredRebuildScheduling:
             "Expected widgets changed after force_rebuild (rebuild should have occurred)"
         )
 
+    @pytest.mark.unit
     @pytest.mark.parametrize('font_name', ["Roboto", "RobotoMono-Regular"])
     def test_font_name_change_updates_immediately_no_rebuild(self, font_name):
         """font_name property change updates widgets in-place immediately (style-only).
@@ -177,6 +178,7 @@ class TestDeferredRebuildScheduling:
             assert lbl.font_name == font_name, \
                 f"Expected font_name='{font_name}', got '{lbl.font_name}'"
 
+    @pytest.mark.unit
     def test_rebuild_trigger_is_clock_trigger(self):
         """_rebuild_trigger is a Clock.create_trigger instance.
 
@@ -208,6 +210,7 @@ class TestDeferredRebuildScheduling:
             f"Expected ClockEvent, got {type(label._rebuild_trigger)}"
         )
 
+    @pytest.mark.property
     @given(
         st.lists(
             st_alphanumeric_text(min_size=1, max_size=20),

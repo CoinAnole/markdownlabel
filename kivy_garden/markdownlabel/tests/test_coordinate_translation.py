@@ -24,7 +24,9 @@ from .test_utils import (
     find_labels_with_refs,
     find_labels_with_ref_markup,
     get_widget_offset,
-    st_alphanumeric_text
+    st_alphanumeric_text,
+    floats_equal,
+    padding_equal
 )
 
 
@@ -171,7 +173,10 @@ class TestCoordinateTranslation:
                         child_box[3] + offset_y
                     ]
 
-                    assert expected_box in aggregated_refs[url], \
+                    # Float coordinates should use tolerance-based comparison
+                    found_match = any(padding_equal(expected_box, actual_box)
+                                    for actual_box in aggregated_refs[url])
+                    assert found_match, \
                         f"Expected translated box {expected_box} in aggregated refs"
 
     def test_nested_list_produces_correct_ref_markup(self):
@@ -297,10 +302,10 @@ class TestCoordinateTranslation:
         ]
 
         # Verify translation
-        assert translated_box[0] == x1 + offset_x
-        assert translated_box[1] == y1 + offset_y
-        assert translated_box[2] == x2 + offset_x
-        assert translated_box[3] == y2 + offset_y
+        assert floats_equal(translated_box[0], x1 + offset_x)
+        assert floats_equal(translated_box[1], y1 + offset_y)
+        assert floats_equal(translated_box[2], x2 + offset_x)
+        assert floats_equal(translated_box[3], y2 + offset_y)
 
     @pytest.mark.property
     @given(st.floats(min_value=0, max_value=100),
@@ -326,8 +331,8 @@ class TestCoordinateTranslation:
         )
 
         # Verify translation
-        assert translated_pos[0] == x + offset_x
-        assert translated_pos[1] == y + offset_y
+        assert floats_equal(translated_pos[0], x + offset_x)
+        assert floats_equal(translated_pos[1], y + offset_y)
 
 
 # *For any* MarkdownLabel containing a child Label with known `refs`, `pos`, `size`,

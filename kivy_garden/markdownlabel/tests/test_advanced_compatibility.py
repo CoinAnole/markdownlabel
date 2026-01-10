@@ -486,8 +486,8 @@ rebuild_text_size_widths = st.floats(min_value=50, max_value=1000, allow_nan=Fal
 
 
 @pytest.mark.property
-class TestReactiveRebuildOnPropertyChange:
-    """Property tests for reactive rebuild on property change."""
+class TestStylePropertyReactiveUpdates:
+    """Property tests for style property reactive updates (no rebuild)."""
 
     @given(rebuild_font_names, rebuild_font_names)
     # Combination strategy: 9 examples (combination coverage)
