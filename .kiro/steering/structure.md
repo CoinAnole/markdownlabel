@@ -24,6 +24,7 @@ kivy_garden/markdownlabel/
 ├── markdown_serializer.py   # AST → Markdown serialization
 └── tests/               # Organized by functionality
     ├── TESTING.md       # Testing guidelines, Hypothesis optimization rules
+    ├── TEST_MAP.md      # Complete test suite catalog and navigation guide
     ├── modules/         # Test analysis infrastructure
     └── meta_tests/      # Test validation tests
 ```
@@ -75,6 +76,7 @@ class MarkdownLabel(MarkdownLabelProperties, MarkdownLabelRendering, BoxLayout):
 - Tests grouped by **functionality**: `test_font_properties.py`, `test_rebuild_*`, etc.
 - Property-based tests use Hypothesis with documented `max_examples`
 - **Read `tests/TESTING.md`** for comprehensive testing guidelines and optimization rules
+- **Read `tests/TEST_MAP.md`** for complete test suite catalog and navigation guide
 - Documented exceptions for private method testing (e.g., `_get_effective_render_mode()`) are allowed when no public API equivalent exists
 - Meta-tests in `tests/meta_tests/` validate test infrastructure
 
