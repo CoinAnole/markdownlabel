@@ -33,6 +33,7 @@ class MarkdownLabelProperties:
         'disabled',
         'disabled_color',
         'base_direction',
+        'padding',
         'text_padding',
         'outline_color',
         'disabled_outline_color',

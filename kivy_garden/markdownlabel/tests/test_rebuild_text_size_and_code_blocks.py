@@ -205,6 +205,30 @@ class TestTextSizeBindingTransitions:
         assert ids_before == ids_after_none, \
             "Widget IDs changed after transition back to [None, None]"
 
+    def test_text_size_rebinds_width_after_mode_changes(self):
+        """text_size transitions drop stale bindings and respect explicit widths."""
+        label = MarkdownLabel(text='Hello World', text_size=[None, None])
+        ids_before = collect_widget_ids(label)
+
+        child_labels = find_labels_recursive(label)
+        assert len(child_labels) >= 1, "Expected at least one child Label"
+        child = child_labels[0]
+
+        # Height-only: width should follow widget width via binding
+        label.text_size = [None, 60]
+        child.width = 150
+        assert child.text_size[0] == child.width
+        assert child.text_size[1] == 60
+
+        # Switch to explicit width: previous width binding should be removed
+        label.text_size = [140, None]
+        child.width = 260  # should NOT override explicit width
+        assert child.text_size[0] == 140
+        assert child.text_size[1] is None
+
+        ids_after = collect_widget_ids(label)
+        assert ids_before == ids_after, "text_size transitions should not rebuild"
+
 
 # =============================================================================
 # Code Block Font Preservation Tests

@@ -114,28 +114,66 @@ class MarkdownLabelRendering:
                 if hasattr(widget, 'split_str'):
                     widget.split_str = self.split_str
 
-                if hasattr(widget, 'text_size'):
-                    text_width = self.text_size[0] if self.text_size else None
-                    text_height = self.text_size[1] if self.text_size else None
-
-                    if text_width is not None and text_height is not None:
-                        widget.text_size = (text_width, text_height)
-                    elif text_width is not None:
-                        widget.text_size = (text_width, None)
-                    elif text_height is not None:
-                        widget.text_size = (widget.width, text_height)
-                    else:
-                        if self.strict_label_mode:
-                            widget.text_size = (None, None)
-                        else:
-                            widget.text_size = (widget.width, None)
-
             if hasattr(widget, 'children'):
                 for child in widget.children:
                     update_widget(child)
 
         for child in self.children:
             update_widget(child)
+
+    def _clear_text_size_bindings(self, label):
+        """Remove previously attached text_size-related bindings from a Label."""
+        width_cb = getattr(label, '_md_text_size_width_cb', None)
+        if width_cb:
+            label.unbind(width=width_cb)
+
+        tex_cb = getattr(label, '_md_text_size_tex_cb', None)
+        if tex_cb:
+            label.unbind(texture_size=tex_cb)
+
+        label._md_text_size_width_cb = None
+        label._md_text_size_tex_cb = None
+
+    def _apply_text_size_to_label(self, label):
+        """Apply current text_size/strict_label_mode to a Label with clean bindings."""
+        self._clear_text_size_bindings(label)
+
+        text_width, text_height = self.text_size if self.text_size else (None, None)
+        strict = self.strict_label_mode
+
+        tex_cb = lambda inst, val: setattr(inst, 'height', val[1])
+        label._md_text_size_tex_cb = tex_cb
+        label.bind(texture_size=tex_cb)
+
+        if text_width is not None and text_height is not None:
+            label.text_size = (text_width, text_height)
+        elif text_width is not None:
+            label.text_size = (text_width, None)
+        elif text_height is not None:
+            label.text_size = (label.width, text_height)
+            width_cb = lambda inst, val, th=text_height: setattr(inst, 'text_size', (val, th))
+            label._md_text_size_width_cb = width_cb
+            label.bind(width=width_cb)
+        else:
+            if strict:
+                label.text_size = (None, None)
+            else:
+                label.text_size = (label.width, None)
+                width_cb = lambda inst, val: setattr(inst, 'text_size', (val, None))
+                label._md_text_size_width_cb = width_cb
+                label.bind(width=width_cb)
+
+    def _update_text_size_bindings_in_place(self):
+        """Reapply text_size bindings to all descendant Labels."""
+        def update(widget):
+            if isinstance(widget, Label):
+                self._apply_text_size_to_label(widget)
+            if hasattr(widget, 'children'):
+                for child in widget.children:
+                    update(child)
+
+        for child in self.children:
+            update(child)
 
     def _needs_clipping(self):
         """Determine if content clipping is needed."""

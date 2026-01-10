@@ -18,7 +18,8 @@ from .test_utils import (
     floats_equal,
     st_rgba_color,
     collect_widget_ids,
-    assert_no_rebuild
+    assert_no_rebuild,
+    assert_rebuild_occurred
 )
 
 
@@ -110,6 +111,33 @@ class TestStylePropertyPropagation:
         for child_label in child_labels:
             assert floats_equal(child_label.line_height, new_line_height), \
                 f"Expected line_height {new_line_height}, got {child_label.line_height}"
+
+    def test_update_style_batches_style_only_without_rebuild(self):
+        """update_style applies style-only changes in-place without rebuild."""
+        label = MarkdownLabel(text='Hello World')
+        ids_before = collect_widget_ids(label, exclude_root=True)
+
+        label.update_style(base_font_size=22, color=[0.2, 0.4, 0.6, 1])
+
+        assert_no_rebuild(label, ids_before)
+
+        child_labels = find_labels_recursive(label)
+        assert len(child_labels) >= 1, "Expected at least one child Label"
+
+        for child_label in child_labels:
+            assert floats_equal(child_label.font_size, 22), \
+                f"Expected font_size 22, got {child_label.font_size}"
+            assert colors_equal(list(child_label.color), [0.2, 0.4, 0.6, 1])
+
+    def test_update_style_structure_property_triggers_rebuild(self):
+        """update_style schedules rebuild when structure properties are present."""
+        label = MarkdownLabel(text='Hello World')
+        ids_before = collect_widget_ids(label)
+
+        label.update_style(link_style='styled')
+        label._do_rebuild()
+
+        assert_rebuild_occurred(label, ids_before, exclude_root=False)
 
     def test_disabled_color_propagates_when_disabled(self):
         """Disabled_color propagates to descendants when disabled is True."""

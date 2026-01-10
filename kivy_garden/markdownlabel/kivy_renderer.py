@@ -173,6 +173,19 @@ class KivyRenderer(KivyRendererTableMixin):
         self._list_depth = 0
         self._list_counters = []  # Stack of counters for ordered lists
 
+    def _clear_text_size_bindings(self, label: Label) -> None:
+        """Remove previously attached text_size-related bindings from a Label."""
+        width_cb = getattr(label, '_md_text_size_width_cb', None)
+        if width_cb:
+            label.unbind(width=width_cb)
+
+        tex_cb = getattr(label, '_md_text_size_tex_cb', None)
+        if tex_cb:
+            label.unbind(texture_size=tex_cb)
+
+        label._md_text_size_width_cb = None
+        label._md_text_size_tex_cb = None
+
     def _apply_text_size_binding(self, label: Label) -> None:
         """Apply text_size binding to a Label based on mode and text_size settings.
 
@@ -184,35 +197,46 @@ class KivyRenderer(KivyRendererTableMixin):
         Args:
             label: The Label widget to apply bindings to
         """
-        text_width = self.text_size[0]
-        text_height = self.text_size[1]
+        self._clear_text_size_bindings(label)
+
+        text_width, text_height = self.text_size
+        strict = self.strict_label_mode
+
+        tex_cb = lambda inst, val: setattr(inst, 'height', val[1])
+        label._md_text_size_tex_cb = tex_cb
+        label.bind(texture_size=tex_cb)
 
         if text_width is not None:
             if text_height is not None:
                 # Both width and height specified
                 label.text_size = (text_width, text_height)
             else:
-                # Only width specified - bind to maintain width
-                label.bind(width=lambda inst, val, tw=text_width: setattr(
-                    inst, 'text_size', (tw, None)))
+                # Only width specified - keep fixed width, no binding needed
+                label.text_size = (text_width, None)
         else:
             if text_height is not None:
                 # Only height specified - set initial text_size and bind width
                 label.text_size = (label.width, text_height)
-                label.bind(width=lambda inst, val, th=text_height: setattr(
-                    inst, 'text_size', (val, th)))
+                width_cb = lambda inst, val, th=text_height: setattr(
+                    inst, 'text_size', (val, th))
+                label._md_text_size_width_cb = width_cb
+                label.bind(width=width_cb)
             else:
                 # Neither specified
-                if self.strict_label_mode:
+                if strict:
                     # Strict mode: don't auto-bind width, let Label handle naturally
                     pass
                 else:
                     # Markdown-friendly mode: auto-bind width for text wrapping
-                    label.bind(width=lambda inst, val: setattr(
-                        inst, 'text_size', (val, None)))
+                    width_cb = lambda inst, val: setattr(inst, 'text_size', (val, None))
+                    label._md_text_size_width_cb = width_cb
+                    label.bind(width=width_cb)
 
         # Always bind texture_size to height for proper sizing
-        label.bind(texture_size=lambda inst, val: setattr(inst, 'height', val[1]))
+        if getattr(label, '_md_text_size_tex_cb', None) is None:
+            tex_cb = lambda inst, val: setattr(inst, 'height', val[1])
+            label._md_text_size_tex_cb = tex_cb
+            label.bind(texture_size=tex_cb)
 
     def __call__(self, tokens: List[Dict[str, Any]], state: Any = None) -> BoxLayout:
         """Render tokens to a BoxLayout containing all widgets.

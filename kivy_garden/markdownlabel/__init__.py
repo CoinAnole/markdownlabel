@@ -81,6 +81,7 @@ class MarkdownLabel(MarkdownLabelProperties, MarkdownLabelRendering, BoxLayout):
     def __init__(self, **kwargs):
         super(MarkdownLabel, self).__init__(**kwargs)
         self.orientation = 'vertical'
+        self._in_update_style = False
 
         # Deferred rebuild system for batching property changes
         self._pending_rebuild = False
@@ -158,9 +159,6 @@ class MarkdownLabel(MarkdownLabelProperties, MarkdownLabelRendering, BoxLayout):
         self.bind(split_str=self._make_style_callback('split_str'))
         self.bind(ellipsis_options=self._make_style_callback('ellipsis_options'))
 
-        # Bind padding to the container
-        self.bind(padding=self._on_padding_changed)
-
         # Initial build if text is provided
         if self.text:
             self._rebuild_widgets()
@@ -177,6 +175,9 @@ class MarkdownLabel(MarkdownLabelProperties, MarkdownLabelRendering, BoxLayout):
 
     def _on_style_changed(self, instance, value, prop_name=None):
         """Callback when a styling property changes."""
+        if self._in_update_style:
+            return
+
         if prop_name is None:
             self._schedule_rebuild()
             return
@@ -184,15 +185,14 @@ class MarkdownLabel(MarkdownLabelProperties, MarkdownLabelRendering, BoxLayout):
         if prop_name in ('base_font_size', 'font_size'):
             if self.children:
                 self._update_font_sizes_in_place()
+        elif prop_name == 'text_size':
+            if self.children:
+                self._update_text_size_bindings_in_place()
         elif prop_name in self.STYLE_ONLY_PROPERTIES:
             if self.children:
                 self._update_styles_in_place()
         else:
             self._schedule_rebuild()
-
-    def _on_padding_changed(self, instance, value):
-        """Callback when padding property changes."""
-        pass
 
     def _on_auto_size_height_changed(self, instance, value):
         """Handle auto_size_height property changes."""
@@ -384,3 +384,44 @@ class MarkdownLabel(MarkdownLabelProperties, MarkdownLabelRendering, BoxLayout):
         """Serialize the current AST back to Markdown text."""
         serializer = MarkdownSerializer()
         return serializer.serialize(self._ast_tokens)
+
+    def update_style(self, **kwargs):
+        """Batch update style/structure properties with a single refresh.
+
+        Style-only changes apply immediately in-place. Including any structure
+        property schedules a rebuild after all assignments complete.
+        """
+        if not kwargs:
+            return
+
+        structure_changed = any(name in self.STRUCTURE_PROPERTIES for name in kwargs)
+        font_changed = any(name in ('base_font_size', 'font_size') for name in kwargs)
+        text_size_changed = 'text_size' in kwargs
+        style_changed = any(
+            name in self.STYLE_ONLY_PROPERTIES
+            for name in kwargs
+            if name not in ('base_font_size', 'font_size', 'text_size')
+        )
+
+        try:
+            self._in_update_style = True
+            for name, value in kwargs.items():
+                setattr(self, name, value)
+        finally:
+            self._in_update_style = False
+
+        if structure_changed:
+            self._schedule_rebuild()
+            return
+
+        if not self.children:
+            return
+
+        if text_size_changed:
+            self._update_text_size_bindings_in_place()
+
+        if font_changed:
+            self._update_font_sizes_in_place()
+
+        if style_changed:
+            self._update_styles_in_place()

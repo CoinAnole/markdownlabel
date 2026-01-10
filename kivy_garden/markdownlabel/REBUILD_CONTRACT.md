@@ -107,6 +107,10 @@ def _update_font_size(self, new_size):
         label.font_size = new_size * scale
 ```
 
+`MarkdownLabel.update_style(**kwargs)` batches multiple assignments. Style-only
+changes apply immediately in-place once, while any structure property in the
+kwargs schedules a single rebuild after all assignments complete.
+
 ### Structure Rebuild Mechanism
 
 When a structure property changes:
@@ -186,7 +190,7 @@ def test_text_change_rebuilds_widget_tree(self):
 
 ### Helper Functions
 
-Use these helpers from `test_utils.py`:
+Use these helpers from `kivy_garden.markdownlabel.utils`:
 
 ```python
 def collect_widget_ids(widget):
@@ -258,12 +262,19 @@ def assert_no_rebuild(widget, change_func):
 - **Behavior**: Complete widget tree recreation
 - **Performance**: May be deferred for rapid changes
 
+#### `padding`
+- **Type**: Style-only
+- **Behavior**: Updates container padding without rebuilding the widget tree
+- **Scope**: Affects the BoxLayout container only (child Labels use `text_padding`)
+- **Performance**: Fast O(1) update (no traversal needed)
+
 #### `text_size`
 - **Type**: Style-only
 - **Behavior**: Updates `Label.text_size` on all existing Labels with binding management
 - **Layout impact**: Affects how text wraps and flows
 - **None handling**: `(None, None)` allows unlimited size, respects `strict_label_mode`
-- **Binding management**: Handles transitions between constrained and unconstrained states
+- **Binding management**: Handles transitions between constrained and unconstrained states and
+  rebinds/unbinds width/texture callbacks to avoid stale captured widths
 - **Performance**: Fast O(n) update where n = number of Labels
 
 #### `text_padding`
