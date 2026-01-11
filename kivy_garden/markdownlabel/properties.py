@@ -157,7 +157,10 @@ class MarkdownLabelProperties:
     aggregate_texture_enabled = BooleanProperty(False)
 
     def _get_texture_size(self):
-        """Compute aggregate texture_size from all descendant widgets."""
+        """Compute aggregate texture_size from all descendant widgets.
+
+        Walks the widget tree (O(n)); updated when `_texture_size_version` changes.
+        """
         from kivy.uix.label import Label
         from kivy.uix.image import AsyncImage
         from kivy.uix.gridlayout import GridLayout
@@ -210,7 +213,11 @@ class MarkdownLabelProperties:
     texture_size = AliasProperty(_get_texture_size, bind=['children', 'text', '_texture_size_version'])
 
     def _get_texture(self):
-        """Return an aggregated texture when enabled."""
+        """Return an aggregated texture when enabled.
+
+        Uses `export_as_image()` which can be expensive; gated by
+        `aggregate_texture_enabled`.
+        """
         if not self.aggregate_texture_enabled:
             return None
 
@@ -227,7 +234,10 @@ class MarkdownLabelProperties:
     )
 
     def _get_refs(self):
-        """Aggregate refs from child Labels using Label-style coordinates."""
+        """Aggregate refs from child Labels using Label-style coordinates.
+
+        Walks the widget tree; reflects current rendered widget positions.
+        """
         from kivy.uix.label import Label
 
         refs = {}
@@ -274,7 +284,10 @@ class MarkdownLabelProperties:
     refs = AliasProperty(_get_refs, bind=['children', 'text', '_texture_size_version'])
 
     def _get_anchors(self):
-        """Aggregate anchors from child Labels using Label-style coordinates."""
+        """Aggregate anchors from child Labels using Label-style coordinates.
+
+        Walks the widget tree; reflects current rendered widget positions.
+        """
         from kivy.uix.label import Label
 
         anchors = {}

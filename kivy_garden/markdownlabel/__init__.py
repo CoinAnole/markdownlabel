@@ -21,13 +21,23 @@ import mistune
 from mistune.plugins.table import table
 from mistune.plugins.formatting import strikethrough
 
+from ._version import __version__
 from .inline_renderer import InlineRenderer
 from .kivy_renderer import KivyRenderer
 from .markdown_serializer import MarkdownSerializer
 from .properties import MarkdownLabelProperties
 from .rendering import MarkdownLabelRendering
+from .utils import collect_widget_ids, find_labels_recursive
 
-__all__ = ('MarkdownLabel', 'InlineRenderer', 'KivyRenderer', 'MarkdownSerializer')
+__all__ = (
+    'MarkdownLabel',
+    'InlineRenderer',
+    'KivyRenderer',
+    'MarkdownSerializer',
+    'find_labels_recursive',
+    'collect_widget_ids',
+    '__version__',
+)
 
 
 class _ClippingContainer(StencilView):
@@ -140,12 +150,15 @@ class MarkdownLabel(MarkdownLabelProperties, MarkdownLabelRendering, BoxLayout):
         self.bind(text_language=self._make_style_callback('text_language'))
         self.bind(limit_render_to_text_bbox=self._make_style_callback('limit_render_to_text_bbox'))
 
-        # Bind structure properties
+        # Bind structure properties (trigger rebuild)
         self.bind(link_style=self._make_style_callback('link_style'))
-        self.bind(text_size=self._make_style_callback('text_size'))
         # Color changes affect generated markup/backgrounds; treat as structure-level.
         self.bind(link_color=self._make_style_callback('link_color'))
         self.bind(code_bg_color=self._make_style_callback('code_bg_color'))
+
+        # Special-case style-only properties with extra handling
+        # text_size is style-only but needs binding refresh on existing Labels
+        self.bind(text_size=self._make_style_callback('text_size'))
 
         # Bind other properties
         self.bind(unicode_errors=self._make_style_callback('unicode_errors'))

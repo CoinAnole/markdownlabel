@@ -275,11 +275,15 @@ class KivyRenderer(KivyRendererTableMixin):
         token_type = token.get('type', '')
         method = getattr(self, token_type, None)
 
-        if method is not None:
-            return method(token, state)
+        if method is None:
+            logger.debug(
+                "Skipping unknown token type '%s' (keys=%s)",
+                token_type,
+                sorted(token.keys()),
+            )
+            return None
 
-        # Unknown token type - skip with warning
-        return None
+        return method(token, state)
 
     def _create_truncation_placeholder(self) -> Widget:
         """Create a placeholder widget for truncated deeply nested content.

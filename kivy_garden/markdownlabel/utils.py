@@ -1,7 +1,8 @@
-"""Internal helper utilities for MarkdownLabel.
+"""Public helper utilities for MarkdownLabel.
 
-These helpers mirror the rebuild contract documentation and are intended
-for internal/testing use rather than public API export.
+These helpers are part of the supported API surface for debugging, testing,
+and inspecting widget trees. They avoid revisiting nodes to keep traversals
+fast and predictable.
 """
 
 from typing import Generator, Set
