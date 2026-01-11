@@ -266,7 +266,22 @@ class MarkdownLabel(MarkdownLabelProperties, MarkdownLabelRendering, BoxLayout):
 
         # Parse Markdown to AST
         result = self._parser.parse(self.text)
-        self._ast_tokens = result[0] if isinstance(result, tuple) else result
+        tokens = result[0] if isinstance(result, tuple) else result
+
+        # Normalize degenerate single-marker inputs (e.g., "-" without list content)
+        # to a paragraph token so they render as a Label, matching paragraph
+        # expectations in the public API and tests.
+        if (
+            len(tokens) == 1
+            and tokens[0].get('type') == 'list'
+            and self.text.strip() in ('-', '*', '+')
+        ):
+            tokens = [{
+                'type': 'paragraph',
+                'children': [{'type': 'text', 'raw': self.text}]
+            }]
+
+        self._ast_tokens = tokens
 
         # Create renderer with current styling properties
         renderer = KivyRenderer(
