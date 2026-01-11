@@ -13,6 +13,8 @@ Example usage::
     label = MarkdownLabel(text='# Hello World\\n\\nThis is **bold** text.')
 """
 
+import re
+
 from kivy.uix.boxlayout import BoxLayout
 from kivy.clock import Clock
 from kivy.uix.stencilview import StencilView
@@ -38,6 +40,17 @@ __all__ = (
     'collect_widget_ids',
     '__version__',
 )
+
+
+_DEGENERATE_TOKEN_PATTERNS = {
+    'list': (
+        re.compile(r'^\s*[-*+]\s*$'),
+        re.compile(r'^\s*\d+[.)]\s*$'),
+    ),
+    'block_quote': (
+        re.compile(r'^\s*>\s*$'),
+    ),
+}
 
 
 class _ClippingContainer(StencilView):
@@ -268,14 +281,10 @@ class MarkdownLabel(MarkdownLabelProperties, MarkdownLabelRendering, BoxLayout):
         result = self._parser.parse(self.text)
         tokens = result[0] if isinstance(result, tuple) else result
 
-        # Normalize degenerate single-marker inputs (e.g., "-" without list content)
-        # to a paragraph token so they render as a Label, matching paragraph
-        # expectations in the public API and tests.
-        if (
-            len(tokens) == 1
-            and tokens[0].get('type') == 'list'
-            and self.text.strip() in ('-', '*', '+')
-        ):
+        # Normalize degenerate single structural tokens (e.g., lone markers) to a
+        # paragraph token so they render as a Label, while keeping strict Markdown
+        # semantics for meaningful content.
+        if self._is_degenerate_single_block(tokens):
             tokens = [{
                 'type': 'paragraph',
                 'children': [{'type': 'text', 'raw': self.text}]
@@ -409,6 +418,40 @@ class MarkdownLabel(MarkdownLabelProperties, MarkdownLabelRendering, BoxLayout):
     def on_ref_press(self, ref):
         """Event handler for link clicks."""
         pass
+
+    def _is_degenerate_single_block(self, tokens):
+        """Return True when mistune produced a single, content-less block token.
+
+        This guards only obvious marker-only inputs (e.g., '-', '1.', '>') so
+        real Markdown constructs continue to render with strict semantics.
+        """
+        if len(tokens) != 1:
+            return False
+
+        token = tokens[0] or {}
+        token_type = token.get('type')
+        if token_type not in _DEGENERATE_TOKEN_PATTERNS:
+            return False
+
+        raw_text = self.text or ''
+        patterns = _DEGENERATE_TOKEN_PATTERNS[token_type]
+        if not any(pattern.match(raw_text) for pattern in patterns):
+            return False
+
+        # If the token (or its children) contains meaningful content, keep it.
+        return not self._has_meaningful_content(token)
+
+    def _has_meaningful_content(self, token):
+        """Recursively detect non-empty content in a token tree."""
+        raw = token.get('raw')
+        if isinstance(raw, str) and raw.strip():
+            return True
+
+        for child in token.get('children', []) or []:
+            if isinstance(child, dict) and self._has_meaningful_content(child):
+                return True
+
+        return False
 
     def get_ast(self):
         """Return the parsed AST tokens."""

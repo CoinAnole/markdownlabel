@@ -84,6 +84,47 @@ class TestMarkdownToWidgetTreeGeneration:
         assert isinstance(paragraph_widget, Label), \
             f"Expected Label, got {type(paragraph_widget)}"
 
+    @pytest.mark.needs_window
+    @pytest.mark.parametrize("text", ['-', '*', '+'])
+    def test_degenerate_unordered_marker_renders_as_label(self, text):
+        """Lone unordered list markers render as a paragraph Label."""
+        label = MarkdownLabel(text=text)
+        assert len(label.children) >= 1
+        widget = label.children[-1]
+        assert isinstance(widget, Label), f"Expected Label for {text!r}, got {type(widget)}"
+        assert widget.text == text
+
+    @pytest.mark.needs_window
+    @pytest.mark.parametrize("text", ['1.', '1)'])
+    def test_degenerate_ordered_marker_renders_as_label(self, text):
+        """Lone ordered list markers render as a paragraph Label."""
+        label = MarkdownLabel(text=text)
+        assert len(label.children) >= 1
+        widget = label.children[-1]
+        assert isinstance(widget, Label), f"Expected Label for {text!r}, got {type(widget)}"
+        assert widget.text == text
+
+    @pytest.mark.needs_window
+    def test_degenerate_blockquote_marker_renders_as_label(self):
+        """Lone blockquote marker renders as a paragraph Label."""
+        text = '>'
+        label = MarkdownLabel(text=text)
+        assert len(label.children) >= 1
+        widget = label.children[-1]
+        assert isinstance(widget, Label), f"Expected Label for {text!r}, got {type(widget)}"
+        assert widget.text == text
+
+    @pytest.mark.needs_window
+    def test_non_degenerate_markers_keep_structural_rendering(self):
+        """Markers with content should render as structural widgets."""
+        list_label = MarkdownLabel(text='- item')
+        assert any(isinstance(child, BoxLayout) for child in list_label.children), \
+            "Expected a list container for '- item'"
+
+        quote_label = MarkdownLabel(text='> quote')
+        assert any(isinstance(child, BoxLayout) for child in quote_label.children), \
+            "Expected a block quote container for '> quote'"
+
     @pytest.mark.parametrize("num_blocks", [1, 2, 3, 4, 5])
     def test_multiple_blocks_produce_multiple_widgets(self, num_blocks):
         """Multiple block elements produce multiple widgets."""

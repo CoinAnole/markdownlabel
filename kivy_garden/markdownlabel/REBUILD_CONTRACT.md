@@ -9,6 +9,14 @@ MarkdownLabel optimizes performance by distinguishing between two types of prope
 1. **Style-only changes** - Update existing widgets in place without rebuilding the widget tree
 2. **Structure changes** - Rebuild the entire widget tree from scratch
 
+### Degenerate Markdown normalization
+
+When the parsed Markdown is a single structural token with no meaningful content
+(e.g., a lone list marker `-`/`*`/`+`, `1.`/`1)`, or a bare `>` blockquote
+marker), MarkdownLabel normalizes it to a paragraph `Label` showing the literal
+input for Label-like UX. Inputs with actual content continue to render with
+strict Markdown semantics.
+
 Understanding this contract is crucial for:
 - **Performance optimization** - Avoiding unnecessary rebuilds
 - **Test writing** - Knowing when to test for rebuilds vs. value updates
