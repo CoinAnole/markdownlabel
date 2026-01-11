@@ -26,6 +26,7 @@ Key modules:
 - `kivy_garden/markdownlabel/kivy_renderer_tables.py`: Table rendering mixin for `KivyRenderer`.
 - `kivy_garden/markdownlabel/inline_renderer.py`: Inline markup → BBCode strings (`[b]`, `[i]`, `[ref=url]`) with markup escaping.
 - `kivy_garden/markdownlabel/markdown_serializer.py`: AST→Markdown serialization for tests.
+- `kivy_garden/markdownlabel/utils.py`: Internal helper utilities (widget traversal, testing support).
 
 Packaging/deps: Python 3.8–3.12; installable as `kivy_garden.markdownlabel` (see `setup.py`). Runtime deps: `kivy>=2.0.0`, `mistune>=3.0.0`; extras for dev/test use pytest, hypothesis, coverage, sphinx. Flake8 config lives in `setup.cfg`.
 

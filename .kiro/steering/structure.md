@@ -22,6 +22,7 @@ kivy_garden/markdownlabel/
 ├── kivy_renderer_tables.py  # Table rendering mixin
 ├── inline_renderer.py   # Inline markup (bold, italic, links → BBCode strings)
 ├── markdown_serializer.py   # AST → Markdown serialization
+├── utils.py             # Internal helper utilities (widget traversal, testing support)
 └── tests/               # Organized by functionality
     ├── TESTING.md       # Testing guidelines, Hypothesis optimization rules
     ├── TEST_MAP.md      # Complete test suite catalog and navigation guide
@@ -44,6 +45,7 @@ kivy_garden/markdownlabel/
 | MarkdownLabelRendering | `rendering.py` | Widget tree building, `_update_*_in_place` methods |
 | KivyRenderer | `kivy_renderer.py` | Block rendering, nesting depth protection |
 | InlineRenderer | `inline_renderer.py` | Inline → BBCode (`[b]`, `[i]`, `[ref=url]`) |
+| Utils | `utils.py` | Internal helpers (widget traversal, testing support) |
 
 ## Architecture Pattern
 
