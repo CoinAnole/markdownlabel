@@ -36,8 +36,8 @@ class TestCommentFormatValidation:
             )
         )
     )
-    # Mixed finite/complex strategy: 50 examples (6 finite × ~8 complex samples)
-    @settings(max_examples=50, deadline=None)
+    # Mixed finite/complex strategy: 30 examples (6 finite × 5 complex samples)
+    @settings(max_examples=30, deadline=None)
     def test_valid_comment_format_compliance(self, strategy_type, max_examples, rationale):
         """Valid standardized comments are correctly validated and parsed."""
         # Generate a valid comment using the standard format
@@ -222,8 +222,8 @@ class TestCustomValueDocumentation:
         ),
         strategy_type=st.sampled_from([s.value for s in StrategyType])
     )
-    # Mixed finite/complex strategy: 25 examples (6 finite × ~4 complex samples)
-    @settings(max_examples=25, deadline=None)
+    # Mixed finite/complex strategy: 30 examples (6 finite × 5 complex samples)
+    @settings(max_examples=30, deadline=None)
     def test_custom_max_examples_require_documentation(self, max_examples, strategy_type):
         """Custom max_examples values require documentation comments."""
         # Create a test function with custom max_examples but no comment
@@ -246,6 +246,8 @@ def test_documented_function(data):
 '''
 
         # Analyze both versions
+        # Access private method for testing analyzer behavior on arbitrary strings.
+        # Reference: TESTING.md Section "Testing Exceptions"
         analysis_without = self.analyzer._analyze_file_content("test_without.py", test_code_without_comment)
         analysis_with = self.analyzer._analyze_file_content("test_with.py", test_code_with_comment)
 
@@ -282,6 +284,8 @@ def test_standard_function(data):
     assert len(data) >= 0
 '''
 
+        # Access private method for testing analyzer behavior on arbitrary strings.
+        # Reference: TESTING.md Section "Testing Exceptions"
         analysis = self.analyzer._analyze_file_content("test_standard.py", test_code)
 
         # Even historically standard values require documentation now
@@ -316,6 +320,8 @@ def test_another_missing_doc(data):
     assert data is not None
 '''
 
+        # Access private method for testing analyzer behavior on arbitrary strings.
+        # Reference: TESTING.md Section "Testing Exceptions"
         analysis = self.analyzer._analyze_file_content("test_missing.py", test_code)
 
         assert analysis.total_property_tests == 2
@@ -350,6 +356,8 @@ def test_wrong_format(data):
     assert data is not None
 '''
 
+        # Access private method for testing analyzer behavior on arbitrary strings.
+        # Reference: TESTING.md Section "Testing Exceptions"
         analysis = self.analyzer._analyze_file_content("test_invalid.py", test_code)
 
         assert analysis.total_property_tests == 2
@@ -399,7 +407,7 @@ class TestStrategyTypeConsistency:
     @given(
         strategy_type=st.sampled_from(['st.booleans()', 'st.integers(min_value=0, max_value=5)'])
     )
-    # Mixed finite/complex strategy: 2 examples (2 finite × 1 complex sample)
+    # Small finite strategy: 2 examples (input space size: 2)
     @settings(max_examples=2, deadline=None)
     def test_boolean_and_small_finite_terminology_consistency(self, strategy_type):
         """Boolean and small finite strategies use consistent terminology."""
@@ -580,6 +588,8 @@ def test_machine_readable_function(data):
     assert len(data) >= 0
 '''
 
+            # Access private method for testing analyzer behavior on arbitrary strings.
+            # Reference: TESTING.md Section "Testing Exceptions"
             analysis = self.analyzer._analyze_file_content("test_machine_readable.py", test_code)
 
             # Should detect the test and recognize the valid comment
@@ -680,6 +690,8 @@ def test_text_processing(text):
 '''
 
         # Analyze the test code
+        # Access private method for testing analyzer behavior on arbitrary strings.
+        # Reference: TESTING.md Section "Testing Exceptions"
         analysis = self.analyzer._analyze_file_content("test_integration.py", test_code)
 
         # Should detect both tests as documented

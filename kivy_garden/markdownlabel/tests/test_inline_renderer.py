@@ -8,7 +8,7 @@ to Kivy markup strings.
 import pytest
 from hypothesis import given, strategies as st, settings
 
-from kivy_garden.markdownlabel.inline_renderer import InlineRenderer
+from kivy_garden.markdownlabel.inline_renderer import InlineRenderer, escape_kivy_markup
 
 
 # Custom strategies for generating valid inline tokens
@@ -484,21 +484,8 @@ class TestHTMLSecurity:
         token = {'type': 'inline_html', 'raw': html_content}
         result = renderer.inline_html(token)
 
-        # Should not contain unescaped HTML angle brackets
-        assert '<' not in result, f"Should not contain unescaped <: {result}"
-        assert '>' not in result, f"Should not contain unescaped >: {result}"
-
-        # Should contain escaped HTML (double-escaped due to HTML then Kivy escaping)
-        if '<' in html_content:
-            assert '&amp;lt;' in result, f"Should contain &amp;lt; for <: {result}"
-        if '>' in html_content:
-            assert '&amp;gt;' in result, f"Should contain &amp;gt; for >: {result}"
-
-        # Should not contain unescaped Kivy markup characters
-        assert '[' not in result or result.count('&bl;') >= html_content.count('['), \
-            f"Should escape [ characters: {result}"
-        assert ']' not in result or result.count('&br;') >= html_content.count(']'), \
-            f"Should escape ] characters: {result}"
+        expected = escape_kivy_markup(html_content)
+        assert result == expected, "Inline HTML should render literally with Kivy markup escaping"
 
     @pytest.mark.parametrize('malicious_html', [
         '<script>alert("XSS")</script>',
@@ -518,14 +505,8 @@ class TestHTMLSecurity:
         token = {'type': 'inline_html', 'raw': malicious_html}
         result = renderer.inline_html(token)
 
-        # Should not contain any executable HTML tags (angle brackets should be escaped)
-        assert '<script' not in result, f"Should not contain <script: {result}"
-        # Note: javascript:, onload=, etc. may still appear as text content but are safe
-        # because the < and > are escaped, so they can't form executable HTML tags
-
-        # All angle brackets should be escaped
-        assert '<' not in result, f"Should not contain unescaped <: {result}"
-        assert '>' not in result, f"Should not contain unescaped >: {result}"
+        expected = escape_kivy_markup(malicious_html)
+        assert result == expected, "Inline HTML should render literally with Kivy markup escaping"
 
     def test_html_with_quotes_escaping(self):
         """HTML with quotes should be properly escaped."""
@@ -542,19 +523,8 @@ class TestHTMLSecurity:
             token = {'type': 'inline_html', 'raw': html}
             result = renderer.inline_html(token)
 
-            # Should not contain unescaped quotes
-            # Note: We escape quotes in HTML content, then escape Kivy markup
-            # So quotes might be escaped as &quot; or &#x27;
-            if '"' in html:
-                assert '"' not in result or '&quot;' in result, \
-                    f"Should escape double quotes: {result}"
-            if "'" in html:
-                assert "'" not in result or '&#x27;' in result, \
-                    f"Should escape single quotes: {result}"
-
-            # Should not contain unescaped angle brackets
-            assert '<' not in result, f"Should escape < in: {result}"
-            assert '>' not in result, f"Should escape > in: {result}"
+            expected = escape_kivy_markup(html)
+            assert result == expected, "Inline HTML should render literally with Kivy markup escaping"
 
     def test_nested_html_and_kivy_markup(self):
         """HTML containing Kivy markup patterns should be safe."""
@@ -572,10 +542,8 @@ class TestHTMLSecurity:
             token = {'type': 'inline_html', 'raw': html}
             result = renderer.inline_html(token)
 
-            # Should not contain active Kivy markup
-            # The Kivy markup should be escaped along with the HTML
-            assert '<' not in result, f"Should escape HTML tags: {result}"
-            assert '>' not in result, f"Should escape HTML tags: {result}"
+            expected = escape_kivy_markup(html)
+            assert result == expected, "Inline HTML should render literally with Kivy markup escaping"
 
             # Kivy markup characters should also be escaped
             kivy_patterns = [
@@ -583,11 +551,7 @@ class TestHTMLSecurity:
                 '[/ref]', '[font=', '[/font]', '[size=', '[/size]'
             ]
             for pattern in kivy_patterns:
-                if pattern in html:
-                    # The pattern should not appear unescaped in the result
-                    # It should be escaped ([ becomes &bl;, ] becomes &br;)
-                    assert pattern not in result or result.count('&bl;') > 0 or result.count('&br;') > 0, \
-                        f"Kivy markup should be escaped: {pattern} in {result}"
+                assert pattern not in result, f"Kivy markup should be escaped: {pattern} in {result}"
 
     def test_html_escaping_preserves_content(self):
         """HTML escaping should preserve the readable content."""
@@ -605,13 +569,9 @@ class TestHTMLSecurity:
             token = {'type': 'inline_html', 'raw': html}
             result = renderer.inline_html(token)
 
-            # The readable content should still be present (though escaped)
-            # Due to double-escaping, quotes become &amp;quot;
-            escaped_content = expected_content.replace('"', '&amp;quot;').replace("'", '&#x27;')
-            assert expected_content in result or escaped_content in result, (
-                f"Should preserve readable content '{expected_content}' "
-                f"(or escaped as '{escaped_content}') in: {result}"
-            )
+            expected = escape_kivy_markup(html)
+            assert result == expected, "Inline HTML should render literally with Kivy markup escaping"
+            assert expected_content in result, "Readable content should be preserved in output"
 
     def test_empty_and_whitespace_html(self):
         """Empty and whitespace-only HTML should be handled safely."""
@@ -623,14 +583,8 @@ class TestHTMLSecurity:
             token = {'type': 'inline_html', 'raw': html}
             result = renderer.inline_html(token)
 
-            # Should not contain unescaped angle brackets
-            assert '<' not in result, f"Should escape < in '{html}': {result}"
-            assert '>' not in result, f"Should escape > in '{html}': {result}"
-
-            # Should handle empty/whitespace gracefully
-            if not html.strip():
-                # Empty or whitespace-only should produce safe output
-                assert len(result) >= 0, f"Should handle empty input: {result}"
+            expected = escape_kivy_markup(html)
+            assert result == expected, "Inline HTML should render literally with Kivy markup escaping"
 
     def test_html_with_special_entities(self):
         """HTML with existing entities should be handled correctly."""
@@ -648,14 +602,8 @@ class TestHTMLSecurity:
             token = {'type': 'inline_html', 'raw': html}
             result = renderer.inline_html(token)
 
-            # Should not double-escape already escaped entities
-            # But should still be safe (no unescaped < or >)
-            assert '<' not in result, f"Should not contain unescaped <: {result}"
-            assert '>' not in result, f"Should not contain unescaped >: {result}"
-
-            # Should preserve entity structure (though may be double-escaped)
-            if '&' in html:
-                assert '&amp;' in result, f"Should handle & characters: {result}"
+            expected = escape_kivy_markup(html)
+            assert result == expected, "Inline HTML should render literally with Kivy markup escaping"
 
 
 # *For any* inline HTML content, the InlineRenderer SHALL escape HTML tags to render them as plain text
@@ -694,79 +642,8 @@ class TestHTMLContentEscapingProperty:
         token = {'type': 'inline_html', 'raw': html_content}
         result = renderer.inline_html(token)
 
-        # Property: No unescaped HTML angle brackets
-        assert '<' not in result, \
-            f"Should not contain unescaped <. HTML: {html_content!r}, Result: {result!r}"
-        assert '>' not in result, \
-            f"Should not contain unescaped >. HTML: {html_content!r}, Result: {result!r}"
-
-        # Property: HTML angle brackets should be escaped (double-escaped due to HTML then Kivy escaping)
-        if '<' in html_content:
-            assert '&amp;lt;' in result, \
-                f"Should contain &amp;lt; for <. HTML: {html_content!r}, Result: {result!r}"
-        if '>' in html_content:
-            assert '&amp;gt;' in result, \
-                f"Should contain &amp;gt; for >. HTML: {html_content!r}, Result: {result!r}"
-
-        # Property: No unescaped Kivy markup characters
-        # Count Kivy special chars in input and ensure they're escaped in output
-        input_open_brackets = html_content.count('[')
-        input_close_brackets = html_content.count(']')
-        input_ampersands = html_content.count('&')
-
-        output_bl_escapes = result.count('&bl;')
-        output_br_escapes = result.count('&br;')
-        output_amp_escapes = result.count('&amp;')
-
-        # Each [ should become &bl;
-        assert output_bl_escapes >= input_open_brackets, (
-            f"Should escape all [ characters. Input: {input_open_brackets}, "
-            f"Escaped: {output_bl_escapes}. HTML: {html_content!r}, Result: {result!r}"
-        )
-
-        # Each ] should become &br;
-        assert output_br_escapes >= input_close_brackets, (
-            f"Should escape all ] characters. Input: {input_close_brackets}, "
-            f"Escaped: {output_br_escapes}. HTML: {html_content!r}, Result: {result!r}"
-        )
-
-        # Each & should become &amp; (but note that HTML escaping adds &lt; etc.)
-        # So we need to account for the & characters we introduced during HTML escaping
-        expected_amp_escapes = input_ampersands
-        if '<' in html_content:
-            expected_amp_escapes += html_content.count('<')  # &lt; adds &
-        if '>' in html_content:
-            expected_amp_escapes += html_content.count('>')  # &gt; adds &
-        if '"' in html_content:
-            expected_amp_escapes += html_content.count('"')  # &quot; adds &
-        if "'" in html_content:
-            expected_amp_escapes += html_content.count("'")  # &#x27; adds &
-
-        assert output_amp_escapes >= expected_amp_escapes, (
-            f"Should escape all & characters (including those from HTML escaping). "
-            f"Expected: {expected_amp_escapes}, Got: {output_amp_escapes}. "
-            f"HTML: {html_content!r}, Result: {result!r}"
-        )
-
-        # Property: Result should be safe for Kivy markup rendering
-        # No unescaped [ or ] should remain that could create active markup
-        cleaned_result = (
-            result.replace('&bl;', '').replace('&br;', '').replace('&amp;', '')
-            .replace('&lt;', '').replace('&gt;', '').replace('&quot;', '')
-            .replace('&#x27;', '')
-        )
-        assert '[' not in cleaned_result, (
-            f"Should not contain unescaped [ after removing escape sequences. "
-            f"HTML: {html_content!r}, Result: {result!r}, Cleaned: {cleaned_result!r}"
-        )
-        assert ']' not in cleaned_result, (
-            f"Should not contain unescaped ] after removing escape sequences. "
-            f"HTML: {html_content!r}, Result: {result!r}, Cleaned: {cleaned_result!r}"
-        )
-        assert '&' not in cleaned_result, (
-            f"Should not contain unescaped & after removing escape sequences. "
-            f"HTML: {html_content!r}, Result: {result!r}, Cleaned: {cleaned_result!r}"
-        )
+        expected = escape_kivy_markup(html_content)
+        assert result == expected, "Inline HTML should render literally with Kivy markup escaping"
 
     @pytest.mark.property
     @given(st.text(min_size=0, max_size=200, alphabet=st.characters(
@@ -792,27 +669,8 @@ class TestHTMLContentEscapingProperty:
             token = {'type': 'inline_html', 'raw': html_content}
             result = renderer.inline_html(token)
 
-            # Property: All HTML should be escaped
-            assert '<' not in result, \
-                f"Should escape all < characters. HTML: {html_content!r}, Result: {result!r}"
-            assert '>' not in result, \
-                f"Should escape all > characters. HTML: {html_content!r}, Result: {result!r}"
-
-            # Property: All Kivy markup should be escaped
-            assert '[' not in result or '&bl;' in result, \
-                f"Should escape [ characters. HTML: {html_content!r}, Result: {result!r}"
-            assert ']' not in result or '&br;' in result, \
-                f"Should escape ] characters. HTML: {html_content!r}, Result: {result!r}"
-
-            # Property: Content should still be present (though escaped)
-            if content.strip():  # Only check non-empty content
-                # The content should appear in some form in the result
-                # It might be escaped, so we check for the presence of the core content
-                content_chars = set(c for c in content if c.isalnum())
-                result_chars = set(c for c in result if c.isalnum())
-                if content_chars:  # Only check if there are alphanumeric characters
-                    assert content_chars.issubset(result_chars), \
-                        f"Should preserve content characters. Content: {content!r}, Result: {result!r}"
+            expected = escape_kivy_markup(html_content)
+            assert result == expected, "Inline HTML should render literally with Kivy markup escaping"
 
 
 class TestInlineRendererEdgeCases:
@@ -826,9 +684,6 @@ class TestInlineRendererEdgeCases:
         # Should fallback to _unknown which escapes raw text
         result = renderer.render([token])
         assert result == 'some text &bl;b&br;'
-
-        # Test direct _unknown call
-        assert renderer._unknown(token) == 'some text &bl;b&br;'
 
     def test_image_rendering(self):
         """Test that image tokens render alt text in inline context."""

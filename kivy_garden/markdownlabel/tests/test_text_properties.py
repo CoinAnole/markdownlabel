@@ -12,13 +12,13 @@ from kivy_garden.markdownlabel import MarkdownLabel
 from .test_utils import (
     find_labels_recursive,
     simple_markdown_document,
-    unicode_errors_strategy,
-    collect_widget_ids
+    collect_widget_ids,
+    assert_no_rebuild
 )
 
 
 class TestTextSizeForwarding:
-    """Property tests for text_size forwarding."""
+    """Property tests for text_size storage and forwarding to child Labels."""
 
     @pytest.mark.property
     @given(st.floats(min_value=50, max_value=1000, allow_nan=False, allow_infinity=False))
@@ -81,8 +81,13 @@ class TestTextSizeForwarding:
     @given(st.floats(min_value=50, max_value=1000, allow_nan=False, allow_infinity=False))
     # Complex strategy: 50 examples (adequate coverage)
     @settings(max_examples=50, deadline=None)
-    def test_text_size_with_width_passed_to_renderer(self, width):
-        """text_size with width is passed to renderer and affects internal Labels."""
+    def test_text_size_with_width_stored_on_parent(self, width):
+        """text_size with width is stored on parent MarkdownLabel.
+
+        Note: Child Labels' text_size width is bound dynamically via Kivy bindings
+        in MarkdownLabelRendering._apply_text_size_to_label(), and the actual value
+        depends on the label's width property, which may not be set immediately.
+        """
         label = MarkdownLabel(text='Hello World', text_size=[width, None])
 
         # The text_size should be stored on the MarkdownLabel
@@ -92,6 +97,29 @@ class TestTextSizeForwarding:
         # Verify the label has children (widgets were created)
         labels = find_labels_recursive(label)
         assert len(labels) >= 1, "Expected at least one Label"
+
+    @pytest.mark.unit
+    def test_text_size_applied_on_initial_build(self):
+        """Child labels receive text_size bindings during initial build."""
+        width = 180
+        label = MarkdownLabel(text='Hello World', text_size=[width, None])
+
+        labels = list(find_labels_recursive(label))
+        assert labels, "Expected at least one Label"
+        assert all(getattr(lbl, 'text_size', (None, None))[0] == width for lbl in labels)
+
+    @pytest.mark.unit
+    def test_text_size_consistent_after_update_style(self):
+        """text_size bindings stay consistent between build and in-place updates."""
+        label = MarkdownLabel(text='Hello World', text_size=[200, None])
+        initial_labels = list(find_labels_recursive(label))
+        assert initial_labels, "Expected at least one Label"
+        assert all(getattr(lbl, 'text_size', (None, None))[0] == 200 for lbl in initial_labels)
+
+        label.update_style(text_size=[150, None])
+        updated_labels = list(find_labels_recursive(label))
+        assert updated_labels, "Expected at least one Label after update"
+        assert all(getattr(lbl, 'text_size', (None, None))[0] == 150 for lbl in updated_labels)
 
 
 # *For any* MarkdownLabel with `text_size[1]` set to a non-None numeric value H,
@@ -224,12 +252,11 @@ class TestTextSizeHeightNoneBackwardCompatibility:
 
         # Labels should have width constraint but height=None
         for lbl in labels:
-            # Width should be bound dynamically, but we can check the initial text_size
-            # The exact behavior depends on binding, but height should be None
-            if hasattr(lbl, 'text_size') and lbl.text_size:
-                assert lbl.text_size[1] is None, \
-                    f"Expected text_size[1]=None, got {lbl.text_size[1]}"
+            # All Label widgets have text_size as a ListProperty
+            assert lbl.text_size[1] is None, \
+                f"Expected text_size[1]=None, got {lbl.text_size[1]}"
 
+    @pytest.mark.unit
     def test_default_text_size_maintains_none_height(self):
         """Default text_size=[None, None] maintains None height in child Labels."""
         label = MarkdownLabel(text='Hello World')
@@ -239,9 +266,8 @@ class TestTextSizeHeightNoneBackwardCompatibility:
 
         # All labels should have text_size[1]=None by default
         for lbl in labels:
-            if hasattr(lbl, 'text_size') and lbl.text_size:
-                assert lbl.text_size[1] is None, \
-                    f"Expected default text_size[1]=None, got {lbl.text_size[1]}"
+            assert lbl.text_size[1] is None, \
+                f"Expected default text_size[1]=None, got {lbl.text_size[1]}"
 
 
 # *For any* MarkdownLabel, when `text_size` is changed from value A to value B,
@@ -259,6 +285,9 @@ class TestTextSizeDynamicUpdates:
         """Changing text_size height updates all child Labels."""
         label = MarkdownLabel(text='Hello World', text_size=[None, height1])
 
+        # Collect widget IDs before change
+        ids_before = collect_widget_ids(label)
+
         # Verify initial height
         labels = find_labels_recursive(label)
         for lbl in labels:
@@ -267,7 +296,10 @@ class TestTextSizeDynamicUpdates:
 
         # Change text_size height
         label.text_size = [None, height2]
-        label.force_rebuild()  # Force immediate rebuild for test
+        # Updates are synchronous, no force_rebuild needed
+
+        # Verify widget tree preservation (style-only property)
+        assert_no_rebuild(label, ids_before, exclude_root=False)
 
         # Verify new height
         labels = find_labels_recursive(label)
@@ -283,6 +315,9 @@ class TestTextSizeDynamicUpdates:
         """Changing text_size height to None updates all child Labels."""
         label = MarkdownLabel(text='Hello World', text_size=[None, height])
 
+        # Collect widget IDs before change
+        ids_before = collect_widget_ids(label)
+
         # Verify initial height
         labels = find_labels_recursive(label)
         for lbl in labels:
@@ -291,7 +326,10 @@ class TestTextSizeDynamicUpdates:
 
         # Change text_size height to None
         label.text_size = [None, None]
-        label.force_rebuild()  # Force immediate rebuild for test
+        # Updates are synchronous, no force_rebuild needed
+
+        # Verify widget tree preservation (style-only property)
+        assert_no_rebuild(label, ids_before, exclude_root=False)
 
         # Verify height is now None
         labels = find_labels_recursive(label)
@@ -308,6 +346,9 @@ class TestTextSizeDynamicUpdates:
         """Changing text_size height from None to value updates all child Labels."""
         label = MarkdownLabel(text='Hello World', text_size=[None, None])
 
+        # Collect widget IDs before change
+        ids_before = collect_widget_ids(label)
+
         # Verify initial height is None
         labels = find_labels_recursive(label)
         for lbl in labels:
@@ -317,7 +358,10 @@ class TestTextSizeDynamicUpdates:
 
         # Change text_size height to specific value
         label.text_size = [None, height]
-        label.force_rebuild()  # Force immediate rebuild for test
+        # Updates are synchronous, no force_rebuild needed
+
+        # Verify widget tree preservation (style-only property)
+        assert_no_rebuild(label, ids_before, exclude_root=False)
 
         # Verify new height
         labels = find_labels_recursive(label)
@@ -332,10 +376,7 @@ class TestTextSizeDynamicUpdates:
 class TestUnicodeErrorsForwarding:
     """Property tests for unicode_errors forwarding."""
 
-    @pytest.mark.property
-    @given(unicode_errors_strategy)
-    # Small finite strategy: 3 examples (input space size: 3)
-    @settings(max_examples=3, deadline=None)
+    @pytest.mark.parametrize("unicode_errors", ['strict', 'replace', 'ignore'])
     def test_unicode_errors_stored_correctly(self, unicode_errors):
         """unicode_errors value is stored correctly on MarkdownLabel."""
         label = MarkdownLabel(text='Hello World', unicode_errors=unicode_errors)
@@ -343,10 +384,7 @@ class TestUnicodeErrorsForwarding:
         assert label.unicode_errors == unicode_errors, \
             f"Expected unicode_errors={unicode_errors}, got {label.unicode_errors}"
 
-    @pytest.mark.property
-    @given(unicode_errors_strategy)
-    # Small finite strategy: 3 examples (input space size: 3)
-    @settings(max_examples=3, deadline=None)
+    @pytest.mark.parametrize("unicode_errors", ['strict', 'replace', 'ignore'])
     def test_unicode_errors_applied_to_paragraph(self, unicode_errors):
         """unicode_errors is applied to paragraph Labels."""
         label = MarkdownLabel(text='Hello World', unicode_errors=unicode_errors)
@@ -359,10 +397,7 @@ class TestUnicodeErrorsForwarding:
             assert lbl.unicode_errors == unicode_errors, \
                 f"Expected unicode_errors={unicode_errors}, got {lbl.unicode_errors}"
 
-    @pytest.mark.property
-    @given(unicode_errors_strategy)
-    # Small finite strategy: 3 examples (input space size: 3)
-    @settings(max_examples=3, deadline=None)
+    @pytest.mark.parametrize("unicode_errors", ['strict', 'replace', 'ignore'])
     def test_unicode_errors_applied_to_heading(self, unicode_errors):
         """unicode_errors is applied to heading Labels."""
         label = MarkdownLabel(text='# Heading', unicode_errors=unicode_errors)
@@ -375,10 +410,7 @@ class TestUnicodeErrorsForwarding:
             assert lbl.unicode_errors == unicode_errors, \
                 f"Expected unicode_errors={unicode_errors}, got {lbl.unicode_errors}"
 
-    @pytest.mark.property
-    @given(unicode_errors_strategy)
-    # Small finite strategy: 3 examples (input space size: 3)
-    @settings(max_examples=3, deadline=None)
+    @pytest.mark.parametrize("unicode_errors", ['strict', 'replace', 'ignore'])
     def test_unicode_errors_applied_to_code_block(self, unicode_errors):
         """unicode_errors is applied to code block Labels."""
         markdown = '```python\nprint("hello")\n```'
@@ -392,10 +424,7 @@ class TestUnicodeErrorsForwarding:
             assert lbl.unicode_errors == unicode_errors, \
                 f"Expected unicode_errors={unicode_errors}, got {lbl.unicode_errors}"
 
-    @pytest.mark.property
-    @given(unicode_errors_strategy)
-    # Small finite strategy: 3 examples (input space size: 3)
-    @settings(max_examples=3, deadline=None)
+    @pytest.mark.parametrize("unicode_errors", ['strict', 'replace', 'ignore'])
     def test_unicode_errors_applied_to_list_items(self, unicode_errors):
         """unicode_errors is applied to list item Labels."""
         markdown = '- Item 1\n- Item 2'
@@ -409,10 +438,7 @@ class TestUnicodeErrorsForwarding:
             assert lbl.unicode_errors == unicode_errors, \
                 f"Expected unicode_errors={unicode_errors}, got {lbl.unicode_errors}"
 
-    @pytest.mark.property
-    @given(unicode_errors_strategy)
-    # Small finite strategy: 3 examples (input space size: 3)
-    @settings(max_examples=3, deadline=None)
+    @pytest.mark.parametrize("unicode_errors", ['strict', 'replace', 'ignore'])
     def test_unicode_errors_applied_to_table_cells(self, unicode_errors):
         """unicode_errors is applied to table cell Labels."""
         markdown = '| A | B |\n| --- | --- |\n| 1 | 2 |'
@@ -426,14 +452,16 @@ class TestUnicodeErrorsForwarding:
             assert lbl.unicode_errors == unicode_errors, \
                 f"Expected unicode_errors={unicode_errors}, got {lbl.unicode_errors}"
 
-    @pytest.mark.property
-    @given(unicode_errors_strategy, unicode_errors_strategy)
-    # Combination strategy: 9 examples (combination coverage)
-    @settings(max_examples=9, deadline=None)
-    def test_unicode_errors_change_triggers_rebuild(self, errors1, errors2):
-        """Changing unicode_errors triggers widget rebuild with new value."""
-        assume(errors1 != errors2)
-
+    @pytest.mark.parametrize("errors1,errors2", [
+        ('strict', 'replace'),
+        ('strict', 'ignore'),
+        ('replace', 'strict'),
+        ('replace', 'ignore'),
+        ('ignore', 'strict'),
+        ('ignore', 'replace'),
+    ])
+    def test_unicode_errors_change_preserves_widget_tree(self, errors1, errors2):
+        """Changing unicode_errors updates in-place without rebuilding widget tree."""
         label = MarkdownLabel(text='Hello World', unicode_errors=errors1)
 
         # Collect widget IDs before change
@@ -446,11 +474,11 @@ class TestUnicodeErrorsForwarding:
 
         # Change unicode_errors
         label.unicode_errors = errors2
-        label.force_rebuild()  # Force immediate rebuild for test
+        # Updates are synchronous, no force_rebuild needed
 
-        # Verify rebuild occurred
+        # Verify NO rebuild occurred
         ids_after = collect_widget_ids(label)
-        assert ids_before != ids_after, "Widget tree should rebuild for unicode_errors changes"
+        assert ids_before == ids_after, "Widget tree should be preserved for unicode_errors changes"
 
         # Verify new unicode_errors
         labels = find_labels_recursive(label)
@@ -473,10 +501,7 @@ class TestUnicodeErrorsForwarding:
 class TestStripForwarding:
     """Property tests for strip forwarding."""
 
-    @pytest.mark.property
-    @given(st.booleans())
-    # Boolean strategy: 2 examples (True/False coverage)
-    @settings(max_examples=2, deadline=None)
+    @pytest.mark.parametrize("strip_value", [True, False])
     def test_strip_stored_correctly(self, strip_value):
         """strip value is stored correctly on MarkdownLabel."""
         label = MarkdownLabel(text='Hello World', strip=strip_value)
@@ -484,10 +509,7 @@ class TestStripForwarding:
         assert label.strip == strip_value, \
             f"Expected strip={strip_value}, got {label.strip}"
 
-    @pytest.mark.property
-    @given(st.booleans())
-    # Boolean strategy: 2 examples (True/False coverage)
-    @settings(max_examples=2, deadline=None)
+    @pytest.mark.parametrize("strip_value", [True, False])
     def test_strip_applied_to_paragraph(self, strip_value):
         """strip is applied to paragraph Labels."""
         label = MarkdownLabel(text='Hello World', strip=strip_value)
@@ -500,10 +522,7 @@ class TestStripForwarding:
             assert lbl.strip == strip_value, \
                 f"Expected strip={strip_value}, got {lbl.strip}"
 
-    @pytest.mark.property
-    @given(st.booleans())
-    # Boolean strategy: 2 examples (True/False coverage)
-    @settings(max_examples=2, deadline=None)
+    @pytest.mark.parametrize("strip_value", [True, False])
     def test_strip_applied_to_heading(self, strip_value):
         """strip is applied to heading Labels."""
         label = MarkdownLabel(text='# Heading', strip=strip_value)
@@ -516,10 +535,7 @@ class TestStripForwarding:
             assert lbl.strip == strip_value, \
                 f"Expected strip={strip_value}, got {lbl.strip}"
 
-    @pytest.mark.property
-    @given(st.booleans())
-    # Boolean strategy: 2 examples (True/False coverage)
-    @settings(max_examples=2, deadline=None)
+    @pytest.mark.parametrize("strip_value", [True, False])
     def test_strip_applied_to_code_block(self, strip_value):
         """strip is applied to code block Labels."""
         markdown = '```python\nprint("hello")\n```'
@@ -533,10 +549,7 @@ class TestStripForwarding:
             assert lbl.strip == strip_value, \
                 f"Expected strip={strip_value}, got {lbl.strip}"
 
-    @pytest.mark.property
-    @given(st.booleans())
-    # Boolean strategy: 2 examples (True/False coverage)
-    @settings(max_examples=2, deadline=None)
+    @pytest.mark.parametrize("strip_value", [True, False])
     def test_strip_applied_to_list_items(self, strip_value):
         """strip is applied to list item Labels."""
         markdown = '- Item 1\n- Item 2'
@@ -550,10 +563,7 @@ class TestStripForwarding:
             assert lbl.strip == strip_value, \
                 f"Expected strip={strip_value}, got {lbl.strip}"
 
-    @pytest.mark.property
-    @given(st.booleans())
-    # Boolean strategy: 2 examples (True/False coverage)
-    @settings(max_examples=2, deadline=None)
+    @pytest.mark.parametrize("strip_value", [True, False])
     def test_strip_applied_to_table_cells(self, strip_value):
         """strip is applied to table cell Labels."""
         markdown = '| A | B |\n| --- | --- |\n| 1 | 2 |'
@@ -567,14 +577,9 @@ class TestStripForwarding:
             assert lbl.strip == strip_value, \
                 f"Expected strip={strip_value}, got {lbl.strip}"
 
-    @pytest.mark.property
-    @given(st.booleans(), st.booleans())
-    # Combination strategy: 4 examples (combination coverage)
-    @settings(max_examples=4, deadline=None)
-    def test_strip_change_triggers_rebuild(self, strip1, strip2):
-        """Changing strip triggers widget rebuild with new value."""
-        assume(strip1 != strip2)
-
+    @pytest.mark.parametrize("strip1,strip2", [(True, False), (False, True)])
+    def test_strip_change_preserves_widget_tree(self, strip1, strip2):
+        """Changing strip updates in-place without rebuilding widget tree."""
         label = MarkdownLabel(text='Hello World', strip=strip1)
 
         # Collect widget IDs before change
@@ -587,11 +592,11 @@ class TestStripForwarding:
 
         # Change strip
         label.strip = strip2
-        label.force_rebuild()  # Force immediate rebuild for test
+        # Updates are synchronous, no force_rebuild needed
 
-        # Verify rebuild occurred
+        # Verify NO rebuild occurred
         ids_after = collect_widget_ids(label)
-        assert ids_before != ids_after, "Widget tree should rebuild for strip changes"
+        assert ids_before == ids_after, "Widget tree should be preserved for strip changes"
 
         # Verify new strip
         labels = find_labels_recursive(label)

@@ -9,6 +9,8 @@ from hypothesis import given, strategies as st, settings, assume
 import pytest
 
 from kivy.uix.gridlayout import GridLayout
+from kivy.uix.label import Label
+from kivy.uix.boxlayout import BoxLayout
 
 from kivy_garden.markdownlabel import MarkdownLabel
 from .test_utils import (
@@ -80,6 +82,8 @@ class TestComprehensiveTextureSizeCalculation:
         # Verify heading creates children
         assert len(label.children) >= 1, \
             f"Expected at least 1 child for heading, got {len(label.children)}"
+        assert any(isinstance(c, Label) for c in label.children), \
+            "Expected at least one Label child for heading"
 
         # Verify texture_size is accessible and returns valid structure
         texture_size = label.texture_size
@@ -99,6 +103,8 @@ class TestComprehensiveTextureSizeCalculation:
         # Verify paragraph creates children
         assert len(label.children) >= 1, \
             f"Expected at least 1 child for paragraph, got {len(label.children)}"
+        assert any(isinstance(c, Label) for c in label.children), \
+            "Expected at least one Label child for paragraph"
 
         # Verify texture_size is accessible and returns valid structure
         texture_size = label.texture_size
@@ -114,6 +120,8 @@ class TestComprehensiveTextureSizeCalculation:
         # Verify code block creates children
         assert len(label.children) >= 1, \
             f"Expected at least 1 child for code block, got {len(label.children)}"
+        assert any(isinstance(c, BoxLayout) for c in label.children), \
+            "Expected at least one BoxLayout container for code block"
 
         # Verify texture_size is accessible and returns valid structure
         texture_size = label.texture_size
@@ -129,6 +137,8 @@ class TestComprehensiveTextureSizeCalculation:
         # Verify list creates children
         assert len(label.children) >= 1, \
             f"Expected at least 1 child for list, got {len(label.children)}"
+        assert any(isinstance(c, BoxLayout) for c in label.children), \
+            "Expected at least one BoxLayout container for list"
 
         # Verify texture_size is accessible and returns valid structure
         texture_size = label.texture_size
@@ -163,6 +173,8 @@ class TestComprehensiveTextureSizeCalculation:
         # Verify block quote creates children
         assert len(label.children) >= 1, \
             f"Expected at least 1 child for block quote, got {len(label.children)}"
+        assert any(isinstance(c, BoxLayout) for c in label.children), \
+            "Expected at least one BoxLayout container for block quote"
 
         # Verify texture_size is accessible and returns valid structure
         texture_size = label.texture_size
@@ -261,6 +273,8 @@ code = "block"
         # Verify nested list creates children
         assert len(label.children) >= 1, \
             f"Expected at least 1 child for nested list, got {len(label.children)}"
+        assert any(isinstance(c, BoxLayout) for c in label.children), \
+            "Expected at least one BoxLayout container for nested list"
 
         # Verify texture_size is accessible and returns valid structure
         texture_size = label.texture_size
@@ -276,6 +290,8 @@ code = "block"
         # Verify ordered list creates children
         assert len(label.children) >= 1, \
             f"Expected at least 1 child for ordered list, got {len(label.children)}"
+        assert any(isinstance(c, BoxLayout) for c in label.children), \
+            "Expected at least one BoxLayout container for ordered list"
 
         # Verify texture_size is accessible and returns valid structure
         texture_size = label.texture_size
@@ -284,7 +300,7 @@ code = "block"
 
     @pytest.mark.property
     @given(simple_markdown_document(), simple_markdown_document())
-    # Complex strategy: 50 examples (two complex strategies combined)
+    # Complex strategy: 50 examples (adequate coverage)
     @settings(max_examples=50, deadline=None)
     def test_texture_size_updates_on_text_change(self, text1, text2):
         """texture_size updates when text property changes."""
@@ -343,6 +359,8 @@ code = "block"
         # Verify heading creates children
         assert len(label.children) >= 1, \
             f"Expected at least 1 child for h{level}, got {len(label.children)}"
+        assert any(isinstance(c, Label) for c in label.children), \
+            "Expected at least one Label child for heading"
 
         # Verify texture_size is accessible and returns valid structure
         texture_size = label.texture_size

@@ -13,9 +13,8 @@ import pytest
 from kivy_garden.markdownlabel import MarkdownLabel
 from kivy_garden.markdownlabel.tests.test_utils import (
     collect_widget_ids,
+    find_labels_recursive,
     st_alphanumeric_text,
-    st_font_size,
-    st_font_name,
 )
 
 
@@ -65,28 +64,26 @@ class TestBatchedRebuilds:
 
     @given(
         st_alphanumeric_text(min_size=1, max_size=20),
-        st_font_size(min_value=10, max_value=30),
-        st_font_name(fonts=["Roboto", "RobotoMono-Regular"]),
+        st.sampled_from(['widgets', 'texture']),
     )
-    # Mixed finite/complex strategy: 15 examples (2 finite × 8 complex samples)
-    @settings(max_examples=15, deadline=None)
-    def test_mixed_property_changes_batch_rebuilds(self, text, font_size, font_name):
-        """Mixed structure property changes batch into single rebuild.
+    # Mixed finite/complex strategy: 16 examples (2 finite × 8 complex samples)
+    @settings(max_examples=16, deadline=None)
+    def test_mixed_property_changes_batch_rebuilds(self, text, render_mode):
+        """Mixed structure property changes (text and render_mode) batch into single rebuild.
 
 
         Verifies batching through observable widget identity:
-        - Widget IDs unchanged after mixed property changes (deferred)
+        - Widget IDs unchanged after mixed structure property changes (deferred)
         - Widget IDs changed after force_rebuild() (single rebuild occurred)
         """
-        label = MarkdownLabel(text="Initial")
+        label = MarkdownLabel(text="Initial", render_mode='widgets')
         label.force_rebuild()  # Ensure stable initial state
 
         ids_before = collect_widget_ids(label, exclude_root=True)
 
-        # Make multiple structure property changes (should be batched/deferred)
+        # Make multiple structure property changes: text and render_mode (both trigger rebuilds)
         label.text = text
-        label.font_name = font_name
-        # Note: font_size is a style-only property, doesn't trigger rebuild
+        label.render_mode = render_mode
 
         # Before force_rebuild, widgets should be unchanged (rebuild is deferred)
         ids_during = collect_widget_ids(label, exclude_root=True)
@@ -104,7 +101,6 @@ class TestBatchedRebuilds:
         )
 
 
-@pytest.mark.property
 class TestDeferredRebuildScheduling:
     """Property tests for deferred rebuild scheduling.
 
@@ -113,6 +109,7 @@ class TestDeferredRebuildScheduling:
     Clock.create_trigger rather than synchronous rebuilds.
     """
 
+    @pytest.mark.property
     @given(
         st_alphanumeric_text(min_size=1, max_size=50)
     )
@@ -150,14 +147,14 @@ class TestDeferredRebuildScheduling:
             "Expected widgets changed after force_rebuild (rebuild should have occurred)"
         )
 
+    @pytest.mark.unit
     @pytest.mark.parametrize('font_name', ["Roboto", "RobotoMono-Regular"])
-    def test_font_name_change_schedules_deferred_rebuild(self, font_name):
-        """font_name property change schedules deferred rebuild.
+    def test_font_name_change_updates_immediately_no_rebuild(self, font_name):
+        """font_name property change updates widgets in-place immediately (style-only).
 
-
-        Verifies deferral through observable widget identity:
-        - Widget IDs unchanged immediately after font_name property change (deferred)
-        - Widget IDs changed after force_rebuild() (rebuild occurred)
+        Verifies that font_name is a style-only property:
+        - Widget IDs unchanged after font_name property change (no rebuild)
+        - Font name is applied immediately to child Labels
         """
         # Use a different initial font to ensure the change is detected
         initial_font = "RobotoMono-Regular" if font_name != "RobotoMono-Regular" else "Roboto"
@@ -166,25 +163,22 @@ class TestDeferredRebuildScheduling:
 
         ids_before = collect_widget_ids(label, exclude_root=True)
 
-        # Change font_name - this is a structure property that triggers rebuild
+        # Change font_name - this is a style-only property that updates in-place
         label.font_name = font_name
 
-        # Immediately after setting font_name, widgets should be unchanged
-        # (rebuild hasn't executed yet because it's deferred)
-        ids_during = collect_widget_ids(label, exclude_root=True)
-        assert ids_before == ids_during, (
-            "Expected widgets unchanged immediately after font_name change (rebuild should be deferred)"
-        )
-
-        # Force the rebuild to execute
-        label.force_rebuild()
-
-        # After force_rebuild, widgets should have changed (rebuild occurred)
+        # Widget IDs should be unchanged (no rebuild, just in-place update)
         ids_after = collect_widget_ids(label, exclude_root=True)
-        assert ids_before != ids_after, (
-            "Expected widgets changed after force_rebuild (rebuild should have occurred)"
+        assert ids_before == ids_after, (
+            "Expected widgets unchanged after font_name change (style-only, no rebuild)"
         )
 
+        # Verify font_name was applied to child Labels
+        labels = find_labels_recursive(label)
+        for lbl in labels:
+            assert lbl.font_name == font_name, \
+                f"Expected font_name='{font_name}', got '{lbl.font_name}'"
+
+    @pytest.mark.unit
     def test_rebuild_trigger_is_clock_trigger(self):
         """_rebuild_trigger is a Clock.create_trigger instance.
 
@@ -216,6 +210,7 @@ class TestDeferredRebuildScheduling:
             f"Expected ClockEvent, got {type(label._rebuild_trigger)}"
         )
 
+    @pytest.mark.property
     @given(
         st.lists(
             st_alphanumeric_text(min_size=1, max_size=20),

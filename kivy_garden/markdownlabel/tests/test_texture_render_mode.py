@@ -26,6 +26,28 @@ from kivy_garden.markdownlabel import MarkdownLabel
 from .test_utils import find_labels_recursive, FakeTouch, find_images
 
 
+@pytest.fixture
+def ref_capture():
+    """Fixture providing a ref capture helper for on_ref_press event testing.
+
+    Returns a tuple of (dispatched_refs list, capture_ref callback function).
+    Bind capture_ref to on_ref_press to collect dispatched refs.
+
+    Usage:
+        def test_example(ref_capture):
+            dispatched_refs, capture_ref = ref_capture
+            label.bind(on_ref_press=capture_ref)
+            # ... trigger touch event ...
+            assert len(dispatched_refs) == 1
+    """
+    dispatched_refs = []
+
+    def capture_ref(instance, ref):
+        dispatched_refs.append(ref)
+
+    return dispatched_refs, capture_ref
+
+
 # *For any* MarkdownLabel with render_mode='texture' and non-empty text, the widget
 # tree SHALL contain an Image widget displaying the rendered content as a texture.
 
@@ -110,8 +132,8 @@ class TestTextureModeLinksHandling:
     """Property tests for texture mode link handling."""
 
     @pytest.mark.unit
-    def test_aggregated_refs_populated_in_texture_mode(self):
-        """In texture mode, _aggregated_refs is populated with link zones."""
+    def test_aggregated_refs_attribute_exists_in_texture_mode(self):
+        """In texture mode, _aggregated_refs attribute exists and is a dict."""
         label = MarkdownLabel(
             text='Click [here](http://example.com) for more info.',
             render_mode='texture',
@@ -120,11 +142,15 @@ class TestTextureModeLinksHandling:
         )
         label.force_rebuild()
 
-        # Check that aggregated refs were collected
-        # Note: The refs may be empty if texture rendering failed or
-        # if the link zones couldn't be calculated
+        # Check that aggregated refs attribute exists and is a dict
+        # Documented Exception: Verifying internal link zones in texture mode
         assert hasattr(label, '_aggregated_refs'), \
             "Expected _aggregated_refs attribute"
+        assert isinstance(label._aggregated_refs, dict), \
+            f"Expected _aggregated_refs to be a dict, got {type(label._aggregated_refs)}"
+
+        # Note: The refs may be empty if texture rendering failed or
+        # if the link zones couldn't be calculated, but the attribute should exist
 
     @pytest.mark.unit
     def test_widgets_mode_no_aggregated_refs(self):
@@ -139,6 +165,7 @@ class TestTextureModeLinksHandling:
 
         # In widgets mode, aggregated refs should be empty
         # (links are handled by individual Label widgets)
+        # Documented Exception: Verifying internal link zones in texture mode
         assert label._aggregated_refs == {}, \
             f"Expected empty _aggregated_refs in widgets mode, got {label._aggregated_refs}"
 
@@ -157,12 +184,15 @@ class TestTextureModeLinksHandling:
         )
         label.force_rebuild()
 
+        # Verify refs were collected (not empty)
+        # Documented Exception: Verifying internal link zones in texture mode
+        assert label._aggregated_refs, \
+            "Expected _aggregated_refs to be populated, got empty dict"
+
         # Check that the expected refs are present
-        # Note: refs may not be collected if texture rendering fails
-        if label._aggregated_refs:
-            for ref in expected_refs:
-                assert ref in label._aggregated_refs, \
-                    f"Expected ref '{ref}' in _aggregated_refs"
+        for ref in expected_refs:
+            assert ref in label._aggregated_refs, \
+                f"Expected ref '{ref}' in _aggregated_refs"
 
 
 # *For any* MarkdownLabel with render_mode='texture' and _aggregated_refs containing
@@ -179,8 +209,10 @@ class TestDeterministicTextureHitTesting:
     """
 
     @pytest.mark.unit
-    def test_inside_zone_dispatch(self):
+    def test_inside_zone_dispatch(self, ref_capture):
         """Touch inside ref zone dispatches on_ref_press and returns True."""
+        dispatched_refs, capture_ref = ref_capture
+
         # Create MarkdownLabel with render_mode='texture'
         label = MarkdownLabel(
             text='Test content',
@@ -190,17 +222,10 @@ class TestDeterministicTextureHitTesting:
             pos=(0, 0)
         )
 
-        # Manually set _aggregated_refs with known zones
-        # Zone format: (x, y, width, height) in local coordinates
+        # Documented Exception: Verifying internal link zones in texture mode
         label._aggregated_refs = {
             'http://example.com': [(10, 10, 50, 20)],
         }
-
-        # Track dispatched refs
-        dispatched_refs = []
-
-        def capture_ref(instance, ref):
-            dispatched_refs.append(ref)
 
         # Bind on_ref_press to capture dispatched ref
         label.bind(on_ref_press=capture_ref)
@@ -236,7 +261,7 @@ class TestDeterministicTextureHitTesting:
         touch_offset_x=st.floats(min_value=0.1, max_value=0.9, allow_nan=False),
         touch_offset_y=st.floats(min_value=0.1, max_value=0.9, allow_nan=False)
     )
-    # Mixed finite/complex strategy: 50 examples (multiple finite dimensions × complex samples)
+    # Complex strategy: 50 examples (adequate coverage)
     @settings(max_examples=50, deadline=None)
     @pytest.mark.property
     def test_property_inside_zone_dispatch(
@@ -260,7 +285,7 @@ class TestDeterministicTextureHitTesting:
             pos=(0, 0)
         )
 
-        # Manually set _aggregated_refs with the generated zone
+        # Documented Exception: Verifying internal link zones in texture mode
         label._aggregated_refs = {
             ref_name: [(zx, zy, zw, zh)],
         }
@@ -289,8 +314,10 @@ class TestDeterministicTextureHitTesting:
             "Expected on_touch_down to return True"
 
     @pytest.mark.unit
-    def test_outside_zone_no_dispatch(self):
+    def test_outside_zone_no_dispatch(self, ref_capture):
         """Touch outside ref zones does not dispatch on_ref_press."""
+        dispatched_refs, capture_ref = ref_capture
+
         # Create MarkdownLabel with render_mode='texture'
         label = MarkdownLabel(
             text='Test content',
@@ -300,16 +327,10 @@ class TestDeterministicTextureHitTesting:
             pos=(0, 0)
         )
 
-        # Manually set _aggregated_refs with known zones
+        # Documented Exception: Verifying internal link zones in texture mode
         label._aggregated_refs = {
             'http://example.com': [(10, 10, 50, 20)],
         }
-
-        # Track dispatched refs
-        dispatched_refs = []
-
-        def capture_ref(instance, ref):
-            dispatched_refs.append(ref)
 
         label.bind(on_ref_press=capture_ref)
 
@@ -340,7 +361,7 @@ class TestDeterministicTextureHitTesting:
         ),
         outside_offset=st.floats(min_value=10, max_value=50, allow_nan=False)
     )
-    # Mixed finite/complex strategy: 50 examples (multiple finite dimensions × complex samples)
+    # Complex strategy: 50 examples (adequate coverage)
     @settings(max_examples=50, deadline=None)
     @pytest.mark.property
     def test_property_outside_zone_no_dispatch(self, zone, ref_name, outside_offset):
@@ -362,7 +383,7 @@ class TestDeterministicTextureHitTesting:
             pos=(0, 0)
         )
 
-        # Manually set _aggregated_refs with the generated zone
+        # Documented Exception: Verifying internal link zones in texture mode
         label._aggregated_refs = {
             ref_name: [(zx, zy, zw, zh)],
         }
@@ -391,8 +412,10 @@ class TestDeterministicTextureHitTesting:
             "Expected on_touch_down to return falsy value"
 
     @pytest.mark.unit
-    def test_multiple_zones_first_match(self):
+    def test_multiple_zones_first_match(self, ref_capture):
         """Multiple zones: first matching zone triggers dispatch."""
+        dispatched_refs, capture_ref = ref_capture
+
         # Create MarkdownLabel with render_mode='texture'
         label = MarkdownLabel(
             text='Test content',
@@ -405,16 +428,11 @@ class TestDeterministicTextureHitTesting:
         # Set up multiple overlapping ref zones
         # Zone 1: (10, 10, 100, 50) - larger zone
         # Zone 2: (30, 20, 40, 30) - smaller zone inside zone 1
+        # Documented Exception: Verifying internal link zones in texture mode
         label._aggregated_refs = {
             'http://first.com': [(10, 10, 100, 50)],
             'http://second.com': [(30, 20, 40, 30)],
         }
-
-        # Track dispatched refs
-        dispatched_refs = []
-
-        def capture_ref(instance, ref):
-            dispatched_refs.append(ref)
 
         label.bind(on_ref_press=capture_ref)
 
@@ -435,8 +453,10 @@ class TestDeterministicTextureHitTesting:
             "Expected on_touch_down to return True"
 
     @pytest.mark.unit
-    def test_multiple_zones_non_overlapping(self):
+    def test_multiple_zones_non_overlapping(self, ref_capture):
         """Multiple non-overlapping zones: correct zone triggers dispatch."""
+        dispatched_refs, capture_ref = ref_capture
+
         # Create MarkdownLabel with render_mode='texture'
         label = MarkdownLabel(
             text='Test content',
@@ -446,18 +466,12 @@ class TestDeterministicTextureHitTesting:
             pos=(0, 0)
         )
 
-        # Set up multiple non-overlapping ref zones
+        # Documented Exception: Verifying internal link zones in texture mode
         label._aggregated_refs = {
             'http://first.com': [(10, 10, 50, 30)],
             'http://second.com': [(100, 10, 50, 30)],
             'http://third.com': [(200, 10, 50, 30)],
         }
-
-        # Track dispatched refs
-        dispatched_refs = []
-
-        def capture_ref(instance, ref):
-            dispatched_refs.append(ref)
 
         label.bind(on_ref_press=capture_ref)
 
@@ -496,6 +510,8 @@ class TestTextureFallbackBranch:
         content is always displayed.
         """
         # Monkeypatch _render_as_texture to return None (simulate failure)
+        # Testing Exception: Fallback behavior requires simulating texture failure
+        # which cannot be triggered through public API
         monkeypatch.setattr(
             MarkdownLabel,
             '_render_as_texture',
@@ -527,6 +543,8 @@ class TestTextureFallbackBranch:
     def test_texture_fallback_preserves_content(self, monkeypatch):
         """Fallback to widgets mode preserves all content."""
         # Monkeypatch _render_as_texture to return None
+        # Testing Exception: Fallback behavior requires simulating texture failure
+        # which cannot be triggered through public API
         monkeypatch.setattr(
             MarkdownLabel,
             '_render_as_texture',
@@ -567,6 +585,7 @@ class TestAutoRenderModeSelection:
             strict_label_mode=False
         )
 
+        # Documented Exception: Verifying auto-selection logic
         effective_mode = label._get_effective_render_mode()
         assert effective_mode == 'widgets', \
             f"Expected 'widgets' for simple content, got '{effective_mode}'"
@@ -582,6 +601,7 @@ class TestAutoRenderModeSelection:
             height=100
         )
 
+        # Documented Exception: Verifying auto-selection logic
         effective_mode = label._get_effective_render_mode()
         assert effective_mode == 'texture', \
             f"Expected 'texture' with strict_label_mode and height constraint, got '{effective_mode}'"
@@ -596,6 +616,7 @@ class TestAutoRenderModeSelection:
             text_size=[400, 100]
         )
 
+        # Documented Exception: Verifying auto-selection logic
         effective_mode = label._get_effective_render_mode()
         assert effective_mode == 'texture', \
             f"Expected 'texture' with strict_label_mode and text_size height, got '{effective_mode}'"
@@ -610,6 +631,7 @@ class TestAutoRenderModeSelection:
             text_size=[400, 100]  # Even with height constraint
         )
 
+        # Documented Exception: Verifying auto-selection logic
         effective_mode = label._get_effective_render_mode()
         assert effective_mode == 'widgets', \
             f"Expected 'widgets' without strict_label_mode, got '{effective_mode}'"
@@ -630,6 +652,7 @@ class TestAutoRenderModeSelection:
             size_hint_y=size_hint_y
         )
 
+        # Documented Exception: Verifying auto-selection logic
         effective_mode = label._get_effective_render_mode()
         assert effective_mode == expected, \
             f"Expected '{expected}' for strict_mode={strict_mode}, " \
@@ -646,6 +669,7 @@ class TestAutoRenderModeSelection:
             height=100
         )
 
+        # Documented Exception: Verifying auto-selection logic
         effective_mode = label._get_effective_render_mode()
         assert effective_mode == 'widgets', \
             f"Expected 'widgets' when explicitly set, got '{effective_mode}'"
@@ -659,6 +683,7 @@ class TestAutoRenderModeSelection:
             strict_label_mode=False
         )
 
+        # Documented Exception: Verifying auto-selection logic
         effective_mode = label._get_effective_render_mode()
         assert effective_mode == 'texture', \
             f"Expected 'texture' when explicitly set, got '{effective_mode}'"

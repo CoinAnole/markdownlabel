@@ -6,7 +6,7 @@ work correctly and are properly forwarded to child widgets.
 """
 
 import pytest
-from hypothesis import given, strategies as st, settings, assume
+from hypothesis import given, settings, assume
 
 from kivy_garden.markdownlabel import MarkdownLabel
 from .test_utils import (
@@ -16,7 +16,9 @@ from .test_utils import (
     padding_single,
     padding_two,
     padding_four,
-    collect_widget_ids
+    collect_widget_ids,
+    assert_no_rebuild,
+    floats_equal
 )
 
 
@@ -41,7 +43,7 @@ class TestPaddingApplication:
             f"Expected 4-element padding, got {len(label.padding)}"
 
         for i, (actual, exp) in enumerate(zip(label.padding, expected)):
-            assert abs(actual - exp) < 0.001, \
+            assert floats_equal(actual, exp), \
                 f"Padding[{i}]: expected {exp}, got {actual}"
 
     @pytest.mark.property
@@ -60,7 +62,7 @@ class TestPaddingApplication:
             f"Expected 4-element padding, got {len(label.padding)}"
 
         for i, (actual, exp) in enumerate(zip(label.padding, expected)):
-            assert abs(actual - exp) < 0.001, \
+            assert floats_equal(actual, exp), \
                 f"Padding[{i}]: expected {exp}, got {actual}"
 
     @pytest.mark.property
@@ -75,7 +77,7 @@ class TestPaddingApplication:
             f"Expected 4-element padding, got {len(label.padding)}"
 
         for i, (actual, exp) in enumerate(zip(label.padding, padding_values)):
-            assert abs(actual - exp) < 0.001, \
+            assert floats_equal(actual, exp), \
                 f"Padding[{i}]: expected {exp}, got {actual}"
 
     @pytest.mark.property
@@ -90,27 +92,33 @@ class TestPaddingApplication:
             f"Expected 4-element padding, got {len(label.padding)}"
 
         for i, (actual, exp) in enumerate(zip(label.padding, padding_values)):
-            assert abs(actual - exp) < 0.001, \
+            assert floats_equal(actual, exp), \
                 f"Padding[{i}]: expected {exp}, got {actual}"
 
     @pytest.mark.property
     @given(padding_four, padding_four)
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
-    def test_padding_change_updates_container(self, padding1, padding2):
-        """Changing padding updates the container padding."""
+    def test_padding_change_preserves_widget_tree(self, padding1, padding2):
+        """Changing padding preserves widget tree (style-only property)."""
         assume(padding1 != padding2)
 
         label = MarkdownLabel(text='Hello World', padding=padding1)
 
+        # Collect widget IDs before change
+        ids_before = collect_widget_ids(label)
+
         # Verify initial padding
         for i, (actual, exp) in enumerate(zip(label.padding, padding1)):
-            assert abs(actual - exp) < 0.001
+            assert floats_equal(actual, exp)
 
-        # Change padding
+        # Change padding (style-only property - no rebuild needed)
         label.padding = padding2
 
-        # Verify new padding
+        # Verify NO rebuild occurred (style-only property)
+        assert_no_rebuild(label, ids_before, exclude_root=False)
+
+        # Verify new padding applied to container
         for i, (actual, exp) in enumerate(zip(label.padding, padding2)):
             assert abs(actual - exp) < 0.001, \
                 f"After change, padding[{i}]: expected {exp}, got {actual}"
@@ -125,22 +133,22 @@ class TestPaddingApplication:
             f"Expected 4-element padding, got {len(label.padding)}"
 
         for i, (actual, exp) in enumerate(zip(label.padding, expected)):
-            assert abs(actual - exp) < 0.001, \
+            assert floats_equal(actual, exp), \
                 f"Default padding[{i}]: expected {exp}, got {actual}"
 
 
 # *For any* MarkdownLabel with `text_padding` set to value P, all child Labels that display
 # text content SHALL have their `padding` property equal to P.
 
-class TestPaddingForwarding:
-    """Property tests for padding forwarding."""
+class TestTextPaddingForwarding:
+    """Property tests for text_padding forwarding to child Labels."""
 
     @pytest.mark.property
     @given(text_padding_strategy)
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
-    def test_padding_applied_to_paragraph(self, padding):
-        """padding is applied to paragraph Labels."""
+    def test_text_padding_applied_to_paragraph(self, padding):
+        """text_padding is applied to paragraph Labels."""
         label = MarkdownLabel(text='Hello World', text_padding=padding)
 
         labels = find_labels_recursive(label)
@@ -155,8 +163,8 @@ class TestPaddingForwarding:
     @given(text_padding_strategy)
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
-    def test_padding_applied_to_heading(self, padding):
-        """padding is applied to heading Labels."""
+    def test_text_padding_applied_to_heading(self, padding):
+        """text_padding is applied to heading Labels."""
         label = MarkdownLabel(text='# Heading', text_padding=padding)
 
         labels = find_labels_recursive(label)
@@ -171,8 +179,8 @@ class TestPaddingForwarding:
     @given(text_padding_strategy)
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
-    def test_padding_applied_to_list_items(self, padding):
-        """padding is applied to list item Labels."""
+    def test_text_padding_applied_to_list_items(self, padding):
+        """text_padding is applied to list item Labels."""
         markdown = '- Item 1\n- Item 2'
         label = MarkdownLabel(text=markdown, text_padding=padding)
 
@@ -188,8 +196,8 @@ class TestPaddingForwarding:
     @given(text_padding_strategy)
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
-    def test_padding_applied_to_table_cells(self, padding):
-        """padding is applied to table cell Labels."""
+    def test_text_padding_applied_to_table_cells(self, padding):
+        """text_padding is applied to table cell Labels."""
         markdown = '| A | B |\n| --- | --- |\n| 1 | 2 |'
         label = MarkdownLabel(text=markdown, text_padding=padding)
 
@@ -205,8 +213,8 @@ class TestPaddingForwarding:
     @given(text_padding_strategy)
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
-    def test_padding_applied_to_nested_structures(self, padding):
-        """padding is applied to Labels in nested structures (lists, tables, block quotes)."""
+    def test_text_padding_applied_to_nested_structures(self, padding):
+        """text_padding is applied to Labels in nested structures (lists, tables, block quotes)."""
         markdown = '''
 # Heading
 
@@ -236,7 +244,7 @@ Regular paragraph
     @given(text_padding_strategy, text_padding_strategy)
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
-    def test_padding_change_updates_in_place(self, padding1, padding2):
+    def test_text_padding_change_updates_in_place(self, padding1, padding2):
         """Changing text_padding updates child Labels in place without rebuild."""
         assume(not padding_equal(padding1, padding2))
 
@@ -250,12 +258,11 @@ Regular paragraph
         for lbl in labels:
             assert padding_equal(list(lbl.padding), padding1)
 
-        # Change padding
+        # Change text_padding
         label.text_padding = padding2
 
         # Verify NO rebuild occurred (style-only property)
-        ids_after = collect_widget_ids(label, exclude_root=True)
-        assert ids_before == ids_after, "Widget tree should NOT rebuild for text_padding changes"
+        assert_no_rebuild(label, ids_before)
 
         # Verify new padding applied in place
         labels = find_labels_recursive(label)
@@ -280,14 +287,14 @@ Regular paragraph
 # *For any* MarkdownLabel, when `text_padding` is changed from value A to value B, all child Labels
 # SHALL be updated to reflect the new padding value B.
 
-class TestPaddingDynamicUpdates:
+class TestTextPaddingDynamicUpdates:
     """Property tests for text_padding dynamic updates."""
 
     @pytest.mark.property
     @given(text_padding_strategy, text_padding_strategy)
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
-    def test_padding_update_updates_in_place(self, initial_padding, new_padding):
+    def test_text_padding_update_updates_in_place(self, initial_padding, new_padding):
         """Updating text_padding on paragraph updates child Labels in place without rebuild."""
         assume(not padding_equal(initial_padding, new_padding))
 
@@ -306,8 +313,7 @@ class TestPaddingDynamicUpdates:
         label.text_padding = new_padding
 
         # Verify NO rebuild occurred (style-only property)
-        ids_after = collect_widget_ids(label, exclude_root=True)
-        assert ids_before == ids_after, "Widget tree should NOT rebuild for text_padding changes"
+        assert_no_rebuild(label, ids_before)
 
         # Verify all labels have new padding
         labels = find_labels_recursive(label)
@@ -319,7 +325,7 @@ class TestPaddingDynamicUpdates:
     @given(text_padding_strategy, text_padding_strategy)
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
-    def test_padding_update_updates_in_place_complex_content(self, initial_padding, new_padding):
+    def test_text_padding_update_updates_in_place_complex_content(self, initial_padding, new_padding):
         """Updating text_padding on complex content updates child Labels in place without rebuild."""
         assume(not padding_equal(initial_padding, new_padding))
 
@@ -351,8 +357,7 @@ Paragraph with text.
         label.text_padding = new_padding
 
         # Verify NO rebuild occurred (style-only property)
-        ids_after = collect_widget_ids(label, exclude_root=True)
-        assert ids_before == ids_after, "Widget tree should NOT rebuild for text_padding changes"
+        assert_no_rebuild(label, ids_before)
 
         # Verify all labels have new padding
         labels = find_labels_recursive(label)
@@ -360,12 +365,9 @@ Paragraph with text.
             assert padding_equal(list(lbl.padding), new_padding), \
                 f"After update, expected padding={new_padding}, got {list(lbl.padding)}"
 
-    @pytest.mark.property
-    @given(st.integers(min_value=1, max_value=5))
-    # Small finite strategy: 5 examples (input space size: 5)
-    @settings(max_examples=5, deadline=None)
-    def test_multiple_padding_updates(self, num_updates):
-        """Multiple padding updates all work correctly."""
+    @pytest.mark.parametrize("num_updates", [1, 2, 3, 4, 5])
+    def test_multiple_text_padding_updates(self, num_updates):
+        """Multiple text_padding updates all work correctly."""
         label = MarkdownLabel(text='Hello World')
 
         for i in range(num_updates):
@@ -383,8 +385,8 @@ Paragraph with text.
 # Labels within those structures SHALL have the `padding` property applied without
 # breaking the layout structure.
 
-class TestPaddingWithNestedStructures:
-    """Property tests for padding with nested structures."""
+class TestTextPaddingWithNestedStructures:
+    """Property tests for text_padding with nested structures."""
 
     @pytest.mark.property
     @given(text_padding_strategy)
@@ -540,79 +542,6 @@ Final paragraph.
             assert lbl.parent is not None, "Label should have a parent widget"
 
 
-# *For any* MarkdownLabel with text_padding set to value P, all child Label widgets
-# SHALL have their padding property set to P.
-
-class TestTextPaddingAppliesToChildLabels:
-    """Property tests for text_padding applies to child Labels."""
-
-    @pytest.mark.property
-    @given(text_padding_strategy)
-    # Complex strategy: 20 examples (adequate coverage)
-    @settings(max_examples=20, deadline=None)
-    def test_text_padding_applied_to_paragraph_labels(self, padding):
-        """text_padding is applied to paragraph Labels."""
-        label = MarkdownLabel(text='Hello World', text_padding=padding)
-
-        labels = find_labels_recursive(label)
-        assert len(labels) >= 1, "Expected at least one Label"
-
-        # All labels should have the specified text_padding
-        for lbl in labels:
-            assert padding_equal(list(lbl.padding), padding), \
-                f"Expected padding={padding}, got {list(lbl.padding)}"
-
-    @pytest.mark.property
-    @given(text_padding_strategy)
-    # Complex strategy: 20 examples (adequate coverage)
-    @settings(max_examples=20, deadline=None)
-    def test_text_padding_applied_to_heading_labels(self, padding):
-        """text_padding is applied to heading Labels."""
-        label = MarkdownLabel(text='# Heading', text_padding=padding)
-
-        labels = find_labels_recursive(label)
-        assert len(labels) >= 1, "Expected at least one Label"
-
-        # All labels should have the specified text_padding
-        for lbl in labels:
-            assert padding_equal(list(lbl.padding), padding), \
-                f"Expected padding={padding}, got {list(lbl.padding)}"
-
-    @pytest.mark.property
-    @given(text_padding_strategy)
-    # Complex strategy: 20 examples (adequate coverage)
-    @settings(max_examples=20, deadline=None)
-    def test_text_padding_applied_to_list_labels(self, padding):
-        """text_padding is applied to list item Labels."""
-        markdown = '- Item 1\n- Item 2'
-        label = MarkdownLabel(text=markdown, text_padding=padding)
-
-        labels = find_labels_recursive(label)
-        assert len(labels) >= 2, "Expected at least 2 Labels for list items"
-
-        # All labels should have the specified text_padding
-        for lbl in labels:
-            assert padding_equal(list(lbl.padding), padding), \
-                f"Expected padding={padding}, got {list(lbl.padding)}"
-
-    @pytest.mark.property
-    @given(text_padding_strategy)
-    # Complex strategy: 20 examples (adequate coverage)
-    @settings(max_examples=20, deadline=None)
-    def test_text_padding_applied_to_table_labels(self, padding):
-        """text_padding is applied to table cell Labels."""
-        markdown = '| A | B |\n| --- | --- |\n| 1 | 2 |'
-        label = MarkdownLabel(text=markdown, text_padding=padding)
-
-        labels = find_labels_recursive(label)
-        assert len(labels) >= 4, "Expected at least 4 Labels for table cells"
-
-        # All labels should have the specified text_padding
-        for lbl in labels:
-            assert padding_equal(list(lbl.padding), padding), \
-                f"Expected padding={padding}, got {list(lbl.padding)}"
-
-
 # *For any* MarkdownLabel with padding set to value P, the BoxLayout container (self)
 # SHALL have padding P, and child Label widgets SHALL NOT have their padding affected by this property.
 
@@ -671,26 +600,31 @@ class TestPaddingAppliesToContainer:
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_padding_change_affects_container_only(self, new_padding):
-        """Changing padding affects only the container, not child Labels."""
+        """Changing padding preserves widget tree and affects only the container, not child Labels."""
         label = MarkdownLabel(text='Hello World', padding=[0, 0, 0, 0])
 
-        # Get initial child Label padding
+        # Collect widget IDs before change
+        ids_before = collect_widget_ids(label)
+
+        # Get initial child Label padding (should be [0, 0, 0, 0] by default)
         labels = find_labels_recursive(label)
         assert len(labels) >= 1, "Expected at least one Label"
-        initial_child_padding = list(labels[0].padding)
 
-        # Change container padding
+        # Change container padding (style-only property - no rebuild needed)
         label.padding = new_padding
+
+        # Verify NO rebuild occurred (style-only property)
+        assert_no_rebuild(label, ids_before, exclude_root=False)
 
         # Container should have new padding
         assert padding_equal(list(label.padding), new_padding), \
             f"Expected container padding={new_padding}, got {list(label.padding)}"
 
-        # Child Labels should still have the same padding as before
+        # Child Labels should have default padding (not affected by container padding)
         labels = find_labels_recursive(label)
         for lbl in labels:
-            assert padding_equal(list(lbl.padding), initial_child_padding), \
-                f"Expected child Label padding unchanged={initial_child_padding}, got {list(lbl.padding)}"
+            assert padding_equal(list(lbl.padding), [0, 0, 0, 0]), \
+                f"Expected child Label padding=[0, 0, 0, 0], got {list(lbl.padding)}"
 
 
 # *For any* value V assigned to label_padding, text_padding SHALL equal V, and vice versa.
