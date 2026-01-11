@@ -42,6 +42,8 @@
 | render_mode | [`test_texture_render_mode.py`](kivy_garden/markdownlabel/tests/test_texture_render_mode.py) | Structure |
 | strict_label_mode | [`test_sizing_behavior.py`](kivy_garden/markdownlabel/tests/test_sizing_behavior.py) | Structure |
 | link_style | [`test_core_functionality.py`](kivy_garden/markdownlabel/tests/test_core_functionality.py) | Structure |
+| link_color | [`test_color_properties.py`](kivy_garden/markdownlabel/tests/test_color_properties.py) | Structure |
+| code_bg_color | [`test_color_properties.py`](kivy_garden/markdownlabel/tests/test_color_properties.py) | Structure |
 | Property classification | [`test_rebuild_property_classification.py`](kivy_garden/markdownlabel/tests/test_rebuild_property_classification.py) | Meta |
 
 (*advanced: font_features etc. [`test_advanced_compatibility.py`](kivy_garden/markdownlabel/tests/test_advanced_compatibility.py))

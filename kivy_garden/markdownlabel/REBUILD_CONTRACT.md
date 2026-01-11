@@ -84,6 +84,10 @@ These properties trigger a **complete widget tree rebuild**:
 ### Parser Configuration
 - `link_style` - Changes link rendering behavior, requires rebuild to regenerate markup
 
+### Color Properties
+- `link_color` - Changes link color, requires rebuild to regenerate markup with new color
+- `code_bg_color` - Changes code block background color, requires rebuild to regenerate markup with new background
+
 ## Implementation Details
 
 ### Style-Only Update Mechanism

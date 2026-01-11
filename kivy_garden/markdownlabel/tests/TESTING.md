@@ -88,7 +88,7 @@ See [`REBUILD_CONTRACT.md`](../REBUILD_CONTRACT.md) for detailed property classi
 - Layout: `text_size`, `mipmap`, `limit_render_to_text_bbox`
 
 **Structure Properties** (trigger rebuild):
-- `text`, `render_mode`, `link_style`, `strict_label_mode`
+- `text`, `render_mode`, `link_style`, `strict_label_mode`, `link_color`, `code_bg_color`
 
 ### Testing Patterns
 
