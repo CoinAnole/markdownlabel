@@ -84,8 +84,8 @@ class TestTextSizeForwarding:
     def test_text_size_with_width_stored_on_parent(self, width):
         """text_size with width is stored on parent MarkdownLabel.
 
-        Note: Child Labels' text_size width is bound dynamically via Kivy bindings.
-        The binding is set up in _apply_text_size_binding() but the actual value
+        Note: Child Labels' text_size width is bound dynamically via Kivy bindings
+        in MarkdownLabelRendering._apply_text_size_to_label(), and the actual value
         depends on the label's width property, which may not be set immediately.
         """
         label = MarkdownLabel(text='Hello World', text_size=[width, None])
@@ -97,6 +97,29 @@ class TestTextSizeForwarding:
         # Verify the label has children (widgets were created)
         labels = find_labels_recursive(label)
         assert len(labels) >= 1, "Expected at least one Label"
+
+    @pytest.mark.unit
+    def test_text_size_applied_on_initial_build(self):
+        """Child labels receive text_size bindings during initial build."""
+        width = 180
+        label = MarkdownLabel(text='Hello World', text_size=[width, None])
+
+        labels = list(find_labels_recursive(label))
+        assert labels, "Expected at least one Label"
+        assert all(getattr(lbl, 'text_size', (None, None))[0] == width for lbl in labels)
+
+    @pytest.mark.unit
+    def test_text_size_consistent_after_update_style(self):
+        """text_size bindings stay consistent between build and in-place updates."""
+        label = MarkdownLabel(text='Hello World', text_size=[200, None])
+        initial_labels = list(find_labels_recursive(label))
+        assert initial_labels, "Expected at least one Label"
+        assert all(getattr(lbl, 'text_size', (None, None))[0] == 200 for lbl in initial_labels)
+
+        label.update_style(text_size=[150, None])
+        updated_labels = list(find_labels_recursive(label))
+        assert updated_labels, "Expected at least one Label after update"
+        assert all(getattr(lbl, 'text_size', (None, None))[0] == 150 for lbl in updated_labels)
 
 
 # *For any* MarkdownLabel with `text_size[1]` set to a non-None numeric value H,

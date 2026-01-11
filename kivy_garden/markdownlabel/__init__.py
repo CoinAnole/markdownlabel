@@ -297,6 +297,9 @@ class MarkdownLabel(MarkdownLabelProperties, MarkdownLabelRendering, BoxLayout):
         # Render AST to widget tree
         content = renderer(self._ast_tokens, None)
 
+        # Apply text_size bindings consistently using rendering mixin logic
+        self._update_text_size_bindings_in_place(content)
+
         # Determine effective render mode
         effective_render_mode = self._get_effective_render_mode()
 

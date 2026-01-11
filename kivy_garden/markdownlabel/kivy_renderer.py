@@ -16,6 +16,7 @@ from kivy.graphics import Color, Rectangle, Line
 
 from .inline_renderer import InlineRenderer, escape_kivy_markup
 from .kivy_renderer_tables import KivyRendererTableMixin
+from .rendering import apply_text_size_binding as _apply_text_size_binding_helper
 
 logger = logging.getLogger(__name__)
 
@@ -173,6 +174,10 @@ class KivyRenderer(KivyRendererTableMixin):
         self._list_depth = 0
         self._list_counters = []  # Stack of counters for ordered lists
 
+    def _apply_text_size_binding(self, label: Label) -> None:
+        """Backward-compatible text_size binding using shared logic."""
+        _apply_text_size_binding_helper(label, self.text_size, self.strict_label_mode)
+
     def _build_label_kwargs(self, *, text: str, font_size: float, halign: Optional[str] = None,
                             valign: Optional[str] = None, bold: bool = False,
                             markup: bool = True, padding: Optional[List[float]] = None,
@@ -227,71 +232,6 @@ class KivyRenderer(KivyRendererTableMixin):
             kwargs.pop('ellipsis_options', None)
 
         return kwargs
-
-    def _clear_text_size_bindings(self, label: Label) -> None:
-        """Remove previously attached text_size-related bindings from a Label."""
-        width_cb = getattr(label, '_md_text_size_width_cb', None)
-        if width_cb:
-            label.unbind(width=width_cb)
-
-        tex_cb = getattr(label, '_md_text_size_tex_cb', None)
-        if tex_cb:
-            label.unbind(texture_size=tex_cb)
-
-        label._md_text_size_width_cb = None
-        label._md_text_size_tex_cb = None
-
-    def _apply_text_size_binding(self, label: Label) -> None:
-        """Apply text_size binding to a Label based on mode and text_size settings.
-
-        In strict_label_mode with text_size=[None, None], no automatic width
-        binding is applied (Label handles sizing naturally).
-
-        In non-strict mode (default), width is bound to text_size for auto-wrap.
-
-        Args:
-            label: The Label widget to apply bindings to
-        """
-        self._clear_text_size_bindings(label)
-
-        text_width, text_height = self.text_size
-        strict = self.strict_label_mode
-
-        tex_cb = lambda inst, val: setattr(inst, 'height', val[1])
-        label._md_text_size_tex_cb = tex_cb
-        label.bind(texture_size=tex_cb)
-
-        if text_width is not None:
-            if text_height is not None:
-                # Both width and height specified
-                label.text_size = (text_width, text_height)
-            else:
-                # Only width specified - keep fixed width, no binding needed
-                label.text_size = (text_width, None)
-        else:
-            if text_height is not None:
-                # Only height specified - set initial text_size and bind width
-                label.text_size = (label.width, text_height)
-                width_cb = lambda inst, val, th=text_height: setattr(
-                    inst, 'text_size', (val, th))
-                label._md_text_size_width_cb = width_cb
-                label.bind(width=width_cb)
-            else:
-                # Neither specified
-                if strict:
-                    # Strict mode: don't auto-bind width, let Label handle naturally
-                    pass
-                else:
-                    # Markdown-friendly mode: auto-bind width for text wrapping
-                    width_cb = lambda inst, val: setattr(inst, 'text_size', (val, None))
-                    label._md_text_size_width_cb = width_cb
-                    label.bind(width=width_cb)
-
-        # Always bind texture_size to height for proper sizing
-        if getattr(label, '_md_text_size_tex_cb', None) is None:
-            tex_cb = lambda inst, val: setattr(inst, 'height', val[1])
-            label._md_text_size_tex_cb = tex_cb
-            label.bind(texture_size=tex_cb)
 
     def __call__(self, tokens: List[Dict[str, Any]], state: Any = None) -> BoxLayout:
         """Render tokens to a BoxLayout containing all widgets.
@@ -391,9 +331,6 @@ class KivyRenderer(KivyRendererTableMixin):
 
         label = Label(**label_kwargs)
 
-        # Apply text_size binding based on mode
-        self._apply_text_size_binding(label)
-
         # Set font scale metadata for body text
         label._font_scale = 1.0
 
@@ -420,9 +357,6 @@ class KivyRenderer(KivyRendererTableMixin):
         )
 
         label = Label(**label_kwargs)
-
-        # Apply text_size binding based on mode
-        self._apply_text_size_binding(label)
 
         # Set font scale metadata for body text
         label._font_scale = 1.0
@@ -467,9 +401,6 @@ class KivyRenderer(KivyRendererTableMixin):
         )
 
         label = Label(**label_kwargs)
-
-        # Apply text_size binding based on mode
-        self._apply_text_size_binding(label)
 
         # Store heading level as metadata
         label.heading_level = level

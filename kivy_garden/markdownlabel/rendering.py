@@ -11,6 +11,63 @@ from kivy.uix.widget import Widget
 from kivy.graphics import Fbo, ClearColor, ClearBuffers
 
 
+def clear_text_size_bindings(label):
+    """Remove previously attached text_size-related bindings from a Label."""
+    width_cb = getattr(label, '_md_text_size_width_cb', None)
+    if width_cb:
+        label.unbind(width=width_cb)
+
+    tex_cb = getattr(label, '_md_text_size_tex_cb', None)
+    if tex_cb:
+        label.unbind(texture_size=tex_cb)
+
+    label._md_text_size_width_cb = None
+    label._md_text_size_tex_cb = None
+
+
+def apply_text_size_binding(label, text_size, strict_label_mode):
+    """Apply text_size binding logic consistently for both build and updates."""
+    clear_text_size_bindings(label)
+
+    text_width, text_height = text_size if text_size else (None, None)
+    strict = strict_label_mode
+
+    tex_cb = lambda inst, val: setattr(inst, 'height', val[1])
+    label._md_text_size_tex_cb = tex_cb
+    label.bind(texture_size=tex_cb)
+
+    if text_width is not None:
+        if text_height is not None:
+            # Both width and height specified
+            label.text_size = (text_width, text_height)
+        else:
+            # Only width specified - keep fixed width, no binding needed
+            label.text_size = (text_width, None)
+    else:
+        if text_height is not None:
+            # Only height specified - set initial text_size and bind width
+            label.text_size = (label.width, text_height)
+            width_cb = lambda inst, val, th=text_height: setattr(inst, 'text_size', (val, th))
+            label._md_text_size_width_cb = width_cb
+            label.bind(width=width_cb)
+        else:
+            # Neither specified
+            if strict:
+                # Strict mode: don't auto-bind width, let Label handle naturally
+                pass
+            else:
+                # Markdown-friendly mode: auto-bind width for text wrapping
+                width_cb = lambda inst, val: setattr(inst, 'text_size', (val, None))
+                label._md_text_size_width_cb = width_cb
+                label.bind(width=width_cb)
+
+    # Always bind texture_size to height for proper sizing
+    if getattr(label, '_md_text_size_tex_cb', None) is None:
+        tex_cb = lambda inst, val: setattr(inst, 'height', val[1])
+        label._md_text_size_tex_cb = tex_cb
+        label.bind(texture_size=tex_cb)
+
+
 class MarkdownLabelRendering:
     """Mixin class containing rendering logic for MarkdownLabel.
 
@@ -123,48 +180,20 @@ class MarkdownLabelRendering:
 
     def _clear_text_size_bindings(self, label):
         """Remove previously attached text_size-related bindings from a Label."""
-        width_cb = getattr(label, '_md_text_size_width_cb', None)
-        if width_cb:
-            label.unbind(width=width_cb)
-
-        tex_cb = getattr(label, '_md_text_size_tex_cb', None)
-        if tex_cb:
-            label.unbind(texture_size=tex_cb)
-
-        label._md_text_size_width_cb = None
-        label._md_text_size_tex_cb = None
+        clear_text_size_bindings(label)
 
     def _apply_text_size_to_label(self, label):
         """Apply current text_size/strict_label_mode to a Label with clean bindings."""
-        self._clear_text_size_bindings(label)
+        apply_text_size_binding(label, self.text_size, self.strict_label_mode)
 
-        text_width, text_height = self.text_size if self.text_size else (None, None)
-        strict = self.strict_label_mode
+    def _update_text_size_bindings_in_place(self, root=None):
+        """Reapply text_size bindings to all descendant Labels.
 
-        tex_cb = lambda inst, val: setattr(inst, 'height', val[1])
-        label._md_text_size_tex_cb = tex_cb
-        label.bind(texture_size=tex_cb)
+        Args:
+            root: optional root widget to traverse; defaults to self.
+        """
+        traversal_root = root if root is not None else self
 
-        if text_width is not None and text_height is not None:
-            label.text_size = (text_width, text_height)
-        elif text_width is not None:
-            label.text_size = (text_width, None)
-        elif text_height is not None:
-            label.text_size = (label.width, text_height)
-            width_cb = lambda inst, val, th=text_height: setattr(inst, 'text_size', (val, th))
-            label._md_text_size_width_cb = width_cb
-            label.bind(width=width_cb)
-        else:
-            if strict:
-                label.text_size = (None, None)
-            else:
-                label.text_size = (label.width, None)
-                width_cb = lambda inst, val: setattr(inst, 'text_size', (val, None))
-                label._md_text_size_width_cb = width_cb
-                label.bind(width=width_cb)
-
-    def _update_text_size_bindings_in_place(self):
-        """Reapply text_size bindings to all descendant Labels."""
         def update(widget):
             if isinstance(widget, Label):
                 self._apply_text_size_to_label(widget)
@@ -172,8 +201,9 @@ class MarkdownLabelRendering:
                 for child in widget.children:
                     update(child)
 
-        for child in self.children:
-            update(child)
+        if hasattr(traversal_root, 'children'):
+            for child in traversal_root.children:
+                update(child)
 
     def _needs_clipping(self):
         """Determine if content clipping is needed."""

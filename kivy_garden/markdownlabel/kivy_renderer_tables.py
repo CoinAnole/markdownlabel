@@ -154,9 +154,6 @@ class KivyRendererTableMixin:
 
         label = Label(**label_kwargs)
 
-        # Apply text_size binding based on mode
-        self._apply_text_size_binding(label)
-
         # Store alignment as metadata
         label.cell_align = cell_halign
         label.is_header = is_head

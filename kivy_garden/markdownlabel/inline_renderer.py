@@ -219,10 +219,10 @@ class InlineRenderer:
     def inline_html(self, token: Dict[str, Any]) -> str:
         """Render inline HTML as escaped text.
 
-        HTML content is escaped to render as plain text and prevent
-        introduction of exploitable Kivy markup. This ensures that
-        HTML tags like <script>, <img>, etc. are displayed as text
-        rather than being interpreted.
+        HTML content is displayed literally but escaped for Kivy markup
+        (`[`, `]`, `&`) so it cannot inject markup. We intentionally do
+        not HTML-entity escape first to avoid double-escaping (e.g.
+        `<b>` should render as `<b>`, not `&amp;lt;b&amp;gt;`).
 
         Args:
             token: Token with 'raw' containing HTML
@@ -231,26 +231,4 @@ class InlineRenderer:
             Escaped HTML text safe for display
         """
         raw = token.get('raw', '')
-        # Escape HTML-specific characters first, then Kivy markup characters
-        escaped = self._escape_html_content(raw)
-        return self._escape_markup(escaped)
-
-    def _escape_html_content(self, html: str) -> str:
-        """Escape HTML-specific characters to render as plain text.
-
-        This prevents HTML tags from being interpreted and ensures
-        they are displayed as literal text content.
-
-        Args:
-            html: Raw HTML content
-
-        Returns:
-            HTML with < and > escaped
-        """
-        # Escape HTML angle brackets to prevent tag interpretation
-        html = html.replace('<', '&lt;')
-        html = html.replace('>', '&gt;')
-        # Escape quotes to prevent attribute injection
-        html = html.replace('"', '&quot;')
-        html = html.replace("'", '&#x27;')
-        return html
+        return self._escape_markup(raw)
