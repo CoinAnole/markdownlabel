@@ -54,9 +54,10 @@ def apply_text_size_binding(label, text_size, strict_label_mode):
             # Neither specified
             if strict:
                 # Strict mode: don't auto-bind width, let Label handle naturally
-                pass
+                label.text_size = (None, None)
             else:
                 # Markdown-friendly mode: auto-bind width for text wrapping
+                label.text_size = (label.width, None)
                 width_cb = lambda inst, val: setattr(inst, 'text_size', (val, None))
                 label._md_text_size_width_cb = width_cb
                 label.bind(width=width_cb)
