@@ -299,7 +299,7 @@ class KivyRenderer(KivyRendererTableMixin):
             color=[0.6, 0.6, 0.6, 1],  # Gray text
             italic=True
         )
-        label.bind(texture_size=label.setter('size'))
+        label.bind(texture_size=lambda inst, val: setattr(inst, 'height', val[1]))
         return label
 
     def _render_inline(self, children: List[Dict[str, Any]]) -> str:
@@ -638,7 +638,7 @@ class KivyRenderer(KivyRendererTableMixin):
             label_kwargs['font_hinting'] = self.font_hinting
 
         label = Label(**label_kwargs)
-        label.bind(texture_size=label.setter('size'))
+        label.bind(texture_size=lambda inst, val: setattr(inst, 'height', val[1]))
         label.bind(size=lambda instance, value: setattr(instance, 'text_size', (value[0], None)))
 
         # Set font scale metadata for code blocks

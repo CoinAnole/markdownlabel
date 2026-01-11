@@ -63,8 +63,11 @@ def apply_text_size_binding(label, text_size, strict_label_mode):
                 label.bind(width=width_cb)
 
     # Always bind texture_size to height for proper sizing
-    if getattr(label, '_md_text_size_tex_cb', None) is None:
-        tex_cb = lambda inst, val: setattr(inst, 'height', val[1])
+    # But ONLY if size_hint_y is None (otherwise layout controls height)
+    if label.size_hint_y is None and getattr(label, '_md_text_size_tex_cb', None) is None:
+        def tex_cb(inst, val):
+            setattr(inst, 'height', val[1])
+        
         label._md_text_size_tex_cb = tex_cb
         label.bind(texture_size=tex_cb)
 
@@ -393,7 +396,8 @@ class MarkdownLabelRendering:
             if hasattr(widget, 'minimum_size'):
                 widget.bind(minimum_size=on_child_size_change)
         elif isinstance(widget, Widget):
-            widget.bind(height=on_child_size_change)
+            if widget is not self:
+                widget.bind(height=on_child_size_change)
 
         if hasattr(widget, 'children'):
             for child in widget.children:
