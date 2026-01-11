@@ -591,6 +591,43 @@ class TestAutoRenderModeSelection:
             f"Expected 'widgets' for simple content, got '{effective_mode}'"
 
     @pytest.mark.unit
+    def test_auto_mode_uses_texture_for_complex_content_with_dynamic_height(self):
+        """Auto mode uses 'texture' for complex mixed content in dynamic-height layouts.
+
+        This approximates the common chat-feed case (MarkdownLabel with auto_size_height
+        inside a ScrollView), where widget-mode layout can require many convergence
+        iterations for mixed constructs (lists + tables + code blocks).
+        """
+        complex_markdown = (
+            "# Title\n\n"
+            "- Item 1\n"
+            "  - Nested item\n\n"
+            "| A | B |\n"
+            "|---|---|\n"
+            "| 1 | 2 |\n\n"
+            "```python\n"
+            "print('hello')\n"
+            "```\n"
+        )
+
+        label = MarkdownLabel(
+            text=complex_markdown,
+            render_mode='auto',
+            strict_label_mode=False,
+            auto_size_height=True,
+        )
+
+        # Populate AST tokens without building widgets (fast + deterministic).
+        result = label._parser.parse(label.text)
+        tokens = result[0] if isinstance(result, tuple) else result
+        label._ast_tokens = tokens
+
+        # Documented Exception: Verifying auto-selection logic
+        effective_mode = label._get_effective_render_mode()
+        assert effective_mode == 'texture', \
+            f"Expected 'texture' for complex content with dynamic height, got '{effective_mode}'"
+
+    @pytest.mark.unit
     def test_auto_mode_uses_texture_with_strict_mode_and_height(self):
         """Auto mode uses 'texture' when strict_label_mode with height constraints."""
         label = MarkdownLabel(

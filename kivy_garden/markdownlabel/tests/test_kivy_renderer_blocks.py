@@ -512,6 +512,70 @@ class TestImageWidgetCreation:
             f"Expected alt_text='{expected_alt}', got '{widget.alt_text}'"
 
 
+# *For any* Markdown block HTML, the rendered widget SHALL be a Label
+# with markup enabled and showing the escaped HTML source text.
+
+class TestBlockHTMLRendering:
+    """Property tests for block HTML rendering."""
+
+    @pytest.mark.property
+    @given(st.text(min_size=1, max_size=100))
+    # Complex strategy: 20 examples (adequate coverage)
+    @settings(max_examples=20, deadline=None)
+    def test_block_html_returns_label(self, raw_html):
+        """Block HTML tokens produce Label widgets."""
+        renderer = KivyRenderer()
+        token = {'type': 'block_html', 'raw': raw_html}
+        widget = renderer.block_html(token, None)
+
+        assert isinstance(widget, Label), f"Expected Label, got {type(widget)}"
+
+    @pytest.mark.property
+    @given(st.text(min_size=1, max_size=100))
+    # Complex strategy: 20 examples (adequate coverage)
+    @settings(max_examples=20, deadline=None)
+    def test_block_html_has_markup_enabled(self, raw_html):
+        """Block HTML Labels have markup=True."""
+        renderer = KivyRenderer()
+        token = {'type': 'block_html', 'raw': raw_html}
+        widget = renderer.block_html(token, None)
+
+        assert widget.markup is True, "Block HTML label should have markup=True"
+
+    @pytest.mark.parametrize('html_content', [
+        '<div>Test</div>',
+        '<p>Paragraph</p>',
+        '[[Double brackets]]',
+        'Text with & symbol'
+    ])
+    def test_block_html_escapes_content(self, html_content):
+        """Block HTML escapes content to prevent Kivy markup injection."""
+        renderer = KivyRenderer()
+        token = {'type': 'block_html', 'raw': html_content}
+        widget = renderer.block_html(token, None)
+
+        # Kivy markup escaping: [ -> &bl;, ] -> &br;, & -> &amp;
+        # Note: Kivy does NOT use < or > for its own markup.
+        if '[' in html_content:
+            assert '&bl;' in widget.text
+        if ']' in html_content:
+            assert '&br;' in widget.text
+        if '&' in html_content:
+            assert '&amp;' in widget.text
+
+    def test_block_html_font_styling(self):
+        """Block HTML uses body font and base font size."""
+        base_size = 18
+        font_name = 'Roboto-Bold'
+        renderer = KivyRenderer(base_font_size=base_size, font_name=font_name)
+        token = {'type': 'block_html', 'raw': '<div></div>'}
+        widget = renderer.block_html(token, None)
+
+        assert widget.font_size == base_size
+        assert widget.font_name == font_name
+        assert widget._font_scale == 1.0
+
+
 class TestDeepNestingTruncation:
     """Tests for deep nesting truncation placeholder behavior.
 

@@ -299,7 +299,8 @@ class KivyRenderer(KivyRendererTableMixin):
             color=[0.6, 0.6, 0.6, 1],  # Gray text
             italic=True
         )
-        label.bind(texture_size=label.setter('size'))
+        # NOTE: Don't bind texture_size->height here; MarkdownLabel applies a
+        # consistent binding pass across all Labels after rendering.
         return label
 
     def _render_inline(self, children: List[Dict[str, Any]]) -> str:
@@ -508,13 +509,28 @@ class KivyRenderer(KivyRendererTableMixin):
             valign='top',  # Force top alignment so bullets align with first line
             markup=False,
             size_hint_x=None,
-            size_hint_y=1,
+            # IMPORTANT: do NOT use size_hint_y=1 here. item_layout's height is
+            # driven by minimum_height (children heights), and a child whose
+            # height is driven by the parent creates a feedback loop that can
+            # hit Clock.max_iteration.
+            size_hint_y=None,
         )
 
         marker = Label(**marker_kwargs)
         marker.width = 30
-        # Bind text_size to enable valign to work properly
-        marker.bind(size=lambda inst, val: setattr(inst, 'text_size', val))
+        # The marker's height is driven by the list item content column height
+        # (see binding below). Disable auto texture_size->height binding to avoid
+        # a feedback loop (height changes -> size changes -> text_size changes ->
+        # texture_size changes -> height changes ...).
+        marker._md_disable_tex_height_binding = True
+
+        # Bind text_size to enable valign to work properly. Use width/height
+        # bindings rather than size to reduce churn.
+        def _update_marker_text_size(*_args):
+            marker.text_size = (marker.width, marker.height)
+
+        marker.bind(width=_update_marker_text_size, height=_update_marker_text_size)
+        _update_marker_text_size()
 
         # Set font scale metadata for list markers
         marker._font_scale = 1.0
@@ -536,6 +552,11 @@ class KivyRenderer(KivyRendererTableMixin):
                 content.add_widget(child_widget)
 
         item_layout.add_widget(content)
+
+        # Keep the marker column aligned to the content column height without
+        # introducing a parent-driven size_hint_y cycle.
+        content.bind(height=marker.setter('height'))
+        marker.height = content.height
 
         return item_layout
 
@@ -638,8 +659,10 @@ class KivyRenderer(KivyRendererTableMixin):
             label_kwargs['font_hinting'] = self.font_hinting
 
         label = Label(**label_kwargs)
-        label.bind(texture_size=label.setter('size'))
-        label.bind(size=lambda instance, value: setattr(instance, 'text_size', (value[0], None)))
+        # NOTE: Don't bind size/texture_size here; MarkdownLabel applies a
+        # consistent text_size + texture_size->height binding pass across all
+        # Labels after rendering. Duplicating bindings here can create layout
+        # thrash and trigger Clock.max_iteration warnings on complex content.
 
         # Set font scale metadata for code blocks
         label._font_scale = 1.0
@@ -760,11 +783,21 @@ class KivyRenderer(KivyRendererTableMixin):
         image = AsyncImage(
             source=url,
             size_hint_y=None,
-            allow_stretch=True,
-            keep_ratio=True
         )
+        # Kivy 2.2+ deprecates allow_stretch/keep_ratio in favor of fit_mode.
+        # We want aspect-preserving resizing to fit within the widget (equivalent
+        # to allow_stretch=True, keep_ratio=True).
+        try:
+            if 'fit_mode' in image.properties():
+                image.fit_mode = 'contain'
+            else:
+                image.allow_stretch = True
+                image.keep_ratio = True
+        except Exception:
+            # Defensive: never fail rendering due to a sizing hint.
+            pass
 
-        # Store alt text for fallback
+        # Store alt text for fallback (always set attribute for testing consistency)
         image.alt_text = alt_text
 
         # Set initial height based on texture when loaded
@@ -782,7 +815,37 @@ class KivyRenderer(KivyRendererTableMixin):
         # Set default height until texture loads
         image.height = 100
 
+        # Return image, but handle loading errors with fallback?
+        # For now, AsyncImage handles its own loading.
         return image
+
+    def block_html(self, token: Dict[str, Any], state: Any = None) -> Label:
+        """Render block HTML as a plain text Label (showing source).
+
+        Args:
+            token: HTML token with 'raw' content
+            state: Block state
+
+        Returns:
+            Label widget with escaped HTML source
+        """
+        raw = token.get('raw', '')
+        # User requested plain text styling, same as paragraph
+        text = escape_kivy_markup(raw.rstrip('\n'))
+
+        label_kwargs = self._build_label_kwargs(
+            text=text,
+            font_size=self.base_font_size,
+            size_hint_y=None,
+            size_hint_x=1,
+            # Use default font_name (Roboto), not code_font_name
+        )
+
+        label = Label(**label_kwargs)
+        # Set font scale metadata (same as paragraph)
+        label._font_scale = 1.0
+
+        return label
 
     def newline(self, token: Dict[str, Any], state: Any = None) -> Widget:
         """Render a newline as a small spacer widget.
