@@ -17,7 +17,8 @@ from .test_utils import (
     markdown_paragraph,
     markdown_link,
     simple_markdown_document,
-    st_alphanumeric_text
+    st_alphanumeric_text,
+    collect_widget_ids
 )
 
 
@@ -52,7 +53,7 @@ class TestMarkdownToWidgetTreeGeneration:
         """Heading Markdown produces a Label widget."""
         label = MarkdownLabel(text=heading)
 
-        # Should have exactly one child (the heading)
+        # Should have at least one child (Kivy may add blank_line widgets)
         assert len(label.children) >= 1, \
             f"Expected at least 1 child for heading: {heading!r}"
 
@@ -77,10 +78,54 @@ class TestMarkdownToWidgetTreeGeneration:
         assert len(label.children) >= 1, \
             f"Expected at least 1 child for paragraph: {paragraph!r}"
 
-    @pytest.mark.property
-    @given(st.integers(min_value=1, max_value=5))
-    # Small finite strategy: 5 examples (input space size: 5)
-    @settings(max_examples=5, deadline=None)
+        # The child should be a Label
+        # Note: Kivy children are in reverse order
+        paragraph_widget = label.children[-1]
+        assert isinstance(paragraph_widget, Label), \
+            f"Expected Label, got {type(paragraph_widget)}"
+
+    @pytest.mark.needs_window
+    @pytest.mark.parametrize("text", ['-', '*', '+'])
+    def test_degenerate_unordered_marker_renders_as_label(self, text):
+        """Lone unordered list markers render as a paragraph Label."""
+        label = MarkdownLabel(text=text)
+        assert len(label.children) >= 1
+        widget = label.children[-1]
+        assert isinstance(widget, Label), f"Expected Label for {text!r}, got {type(widget)}"
+        assert widget.text == text
+
+    @pytest.mark.needs_window
+    @pytest.mark.parametrize("text", ['1.', '1)'])
+    def test_degenerate_ordered_marker_renders_as_label(self, text):
+        """Lone ordered list markers render as a paragraph Label."""
+        label = MarkdownLabel(text=text)
+        assert len(label.children) >= 1
+        widget = label.children[-1]
+        assert isinstance(widget, Label), f"Expected Label for {text!r}, got {type(widget)}"
+        assert widget.text == text
+
+    @pytest.mark.needs_window
+    def test_degenerate_blockquote_marker_renders_as_label(self):
+        """Lone blockquote marker renders as a paragraph Label."""
+        text = '>'
+        label = MarkdownLabel(text=text)
+        assert len(label.children) >= 1
+        widget = label.children[-1]
+        assert isinstance(widget, Label), f"Expected Label for {text!r}, got {type(widget)}"
+        assert widget.text == text
+
+    @pytest.mark.needs_window
+    def test_non_degenerate_markers_keep_structural_rendering(self):
+        """Markers with content should render as structural widgets."""
+        list_label = MarkdownLabel(text='- item')
+        assert any(isinstance(child, BoxLayout) for child in list_label.children), \
+            "Expected a list container for '- item'"
+
+        quote_label = MarkdownLabel(text='> quote')
+        assert any(isinstance(child, BoxLayout) for child in quote_label.children), \
+            "Expected a block quote container for '> quote'"
+
+    @pytest.mark.parametrize("num_blocks", [1, 2, 3, 4, 5])
     def test_multiple_blocks_produce_multiple_widgets(self, num_blocks):
         """Multiple block elements produce multiple widgets."""
         # Create markdown with multiple paragraphs
@@ -113,20 +158,25 @@ class TestMarkdownTextPropertyUpdates:
     @given(markdown_heading(), markdown_paragraph())
     # Complex strategy: 50 examples (adequate coverage)
     @settings(max_examples=50, deadline=None)
-    def test_text_change_updates_widgets(self, text1, text2):
-        """Changing text property updates the widget tree."""
+    def test_text_change_triggers_rebuild_with_new_content(self, text1, text2):
+        """Changing text property triggers rebuild of the widget tree with new content."""
         assume(text1.strip() and text2.strip())
         assume(text1 != text2)
 
         label = MarkdownLabel(text=text1)
-        initial_children = len(label.children)
+        ids_before = collect_widget_ids(label, exclude_root=True)
 
-        # Change text
+        # Change text - use force_rebuild() for immediate update since
+        # text changes now use deferred rebuilds
         label.text = text2
+        label.force_rebuild()
 
-        # Widget tree should be rebuilt
-        # We can't easily compare exact structure, but we can verify
-        # that the label's text property reflects the new value
+        # Widget tree should be rebuilt (different widget objects)
+        ids_after = collect_widget_ids(label, exclude_root=True)
+        assert ids_before != ids_after, \
+            "Widget tree should be rebuilt after text change"
+
+        # Verify the label's text property reflects the new value
         assert label.text == text2, \
             f"Expected text to be {text2!r}, got {label.text!r}"
 
@@ -135,8 +185,8 @@ class TestMarkdownTextPropertyUpdates:
     @given(st.integers(min_value=1, max_value=3), st.integers(min_value=1, max_value=3))
     # Combination strategy: 9 examples (combination coverage)
     @settings(max_examples=9, deadline=None)
-    def test_different_block_counts_update_correctly(self, count1, count2):
-        """Changing from N blocks to M blocks updates widget count."""
+    def test_different_block_counts_trigger_rebuild(self, count1, count2):
+        """Changing from N blocks to M blocks triggers rebuild and updates widget count."""
         assume(count1 != count2)
 
         # Create markdown with count1 paragraphs
@@ -145,16 +195,23 @@ class TestMarkdownTextPropertyUpdates:
         text2 = '\n\n'.join([f'New para {i}' for i in range(count2)])
 
         label = MarkdownLabel(text=text1)
-        children_before = len(label.children)
+
+        # Collect widget IDs before change
+        ids_before = collect_widget_ids(label, exclude_root=True)
 
         # Change text - use force_rebuild() for immediate update since
         # text changes now use deferred rebuilds
         label.text = text2
         label.force_rebuild()
-        children_after = len(label.children)
+
+        # Verify rebuild occurred
+        ids_after = collect_widget_ids(label, exclude_root=True)
+        assert ids_before != ids_after, \
+            "Widget tree should rebuild after text change"
 
         # The number of children should change to reflect new content
         # (may include blank_line widgets, so we check >= count)
+        children_after = len(label.children)
         assert children_after >= count2, \
             f"Expected at least {count2} children after update, got {children_after}"
 
@@ -163,17 +220,25 @@ class TestMarkdownTextPropertyUpdates:
     @given(simple_markdown_document())
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
-    def test_clear_text_removes_widgets(self, markdown_text):
-        """Setting text to empty removes all widgets."""
+    def test_clear_text_triggers_rebuild_and_removes_widgets(self, markdown_text):
+        """Setting text to empty triggers rebuild and removes all widgets."""
         assume(markdown_text.strip())
 
         label = MarkdownLabel(text=markdown_text)
         assert len(label.children) > 0, "Should have children initially"
 
+        # Collect widget IDs before change
+        ids_before = collect_widget_ids(label, exclude_root=True)
+
         # Clear text - use force_rebuild() for immediate update since
         # text changes now use deferred rebuilds
         label.text = ''
         label.force_rebuild()
+
+        # Verify rebuild occurred (widget tree changed)
+        ids_after = collect_widget_ids(label, exclude_root=True)
+        assert ids_before != ids_after, \
+            "Widget tree should rebuild after clearing text"
 
         assert len(label.children) == 0, \
             f"Expected 0 children after clearing text, got {len(label.children)}"
@@ -183,12 +248,16 @@ class TestMarkdownTextPropertyUpdates:
     @given(simple_markdown_document(), simple_markdown_document())
     # Complex strategy: 50 examples (adequate coverage)
     @settings(max_examples=50, deadline=None)
-    def test_ast_updates_with_text(self, text1, text2):
-        """AST tokens update when text changes."""
+    def test_ast_updates_with_text_and_triggers_rebuild(self, text1, text2):
+        """AST tokens update and widget tree rebuilds when text changes."""
         assume(text1.strip() and text2.strip())
+        assume(text1 != text2)
 
         label = MarkdownLabel(text=text1)
         ast1 = label.get_ast()
+
+        # Collect widget IDs before change
+        ids_before = collect_widget_ids(label, exclude_root=True)
 
         # Use force_rebuild() for immediate update since
         # text changes now use deferred rebuilds
@@ -196,11 +265,19 @@ class TestMarkdownTextPropertyUpdates:
         label.force_rebuild()
         ast2 = label.get_ast()
 
-        # If texts are different, ASTs should be different
-        if text1 != text2:
-            # At minimum, the AST should be updated (not necessarily different
-            # if the texts parse to the same structure)
-            assert label.text == text2
+        # Verify rebuild occurred
+        ids_after = collect_widget_ids(label, exclude_root=True)
+        assert ids_before != ids_after, \
+            "Widget tree should rebuild after text change"
+
+        # Verify the text property was updated
+        assert label.text == text2, \
+            f"Expected text to be {text2!r}, got {label.text!r}"
+
+        # Verify AST was updated (compare string representations since
+        # AST objects may not be directly comparable)
+        assert str(ast1) != str(ast2) or text1 == text2, \
+            "AST should change when text changes to different content"
 
 
 # *For any* Markdown link [text](url), the rendered Kivy markup SHALL contain
@@ -233,6 +310,7 @@ class TestMarkdownLinkRendering:
         assert found_ref, \
             f"Expected to find [ref=...][/ref] markup in children for: {link_markdown!r}"
 
+    @pytest.mark.property
     @pytest.mark.needs_window
     @given(st_alphanumeric_text(min_size=1, max_size=20))
     # Complex strategy: 20 examples (adequate coverage)
@@ -254,6 +332,7 @@ class TestMarkdownLinkRendering:
 
         pytest.fail(f"Expected to find [ref={url}] in markup for: {markdown!r}")
 
+    @pytest.mark.property
     @pytest.mark.needs_window
     @given(st.from_regex(r'https?://[a-z]+\.[a-z]+/[a-z]+', fullmatch=True))
     # Complex strategy: 20 examples (adequate coverage)
@@ -284,10 +363,11 @@ class TestMarkdownLinkRendering:
 class TestMarkdownNestingStability:
     """Property tests for deep nesting stability."""
 
+    @pytest.mark.property
     @pytest.mark.needs_window
     @given(st.integers(min_value=1, max_value=15))
-    # Medium finite strategy: 20 examples (adequate finite coverage)
-    @settings(max_examples=20, deadline=None)
+    # Medium finite strategy: 15 examples (adequate finite coverage)
+    @settings(max_examples=15, deadline=None)
     def test_nested_lists_render_without_exception(self, depth):
         """Deeply nested lists render without raising exceptions."""
         # Generate nested list markdown
@@ -303,10 +383,11 @@ class TestMarkdownNestingStability:
         except Exception as e:
             pytest.fail(f"Unexpected exception at depth {depth}: {e}")
 
+    @pytest.mark.property
     @pytest.mark.needs_window
     @given(st.integers(min_value=1, max_value=15))
-    # Medium finite strategy: 20 examples (adequate finite coverage)
-    @settings(max_examples=20, deadline=None)
+    # Medium finite strategy: 15 examples (adequate finite coverage)
+    @settings(max_examples=15, deadline=None)
     def test_nested_quotes_render_without_exception(self, depth):
         """Deeply nested block quotes render without raising exceptions."""
         # Generate nested quote markdown
@@ -321,10 +402,11 @@ class TestMarkdownNestingStability:
         except Exception as e:
             pytest.fail(f"Unexpected exception at depth {depth}: {e}")
 
+    @pytest.mark.property
     @pytest.mark.needs_window
     @given(st.integers(min_value=1, max_value=15))
-    # Medium finite strategy: 20 examples (adequate finite coverage)
-    @settings(max_examples=20, deadline=None)
+    # Medium finite strategy: 15 examples (adequate finite coverage)
+    @settings(max_examples=15, deadline=None)
     def test_mixed_nesting_renders_without_exception(self, depth):
         """Mixed nested structures (lists and quotes) render without exceptions."""
         # Generate mixed nested markdown

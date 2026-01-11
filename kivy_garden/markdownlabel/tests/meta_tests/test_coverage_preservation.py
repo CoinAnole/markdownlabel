@@ -180,7 +180,7 @@ class TestCoveragePreservation:
     """Property tests for coverage preservation."""
 
     @given(_test_suite_with_coverage())
-    # Mixed finite/complex strategy: 12 examples (12 finite ×1 complex (_test_suite_with_coverage:4 num_files×3 coverage_level))
+    # Combination strategy: 12 examples (combination coverage)
     @settings(max_examples=12, deadline=None)
     def test_refactoring_preserves_coverage(self, test_data):
         """Refactoring operations should preserve or improve test coverage."""

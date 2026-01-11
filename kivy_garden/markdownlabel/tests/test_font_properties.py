@@ -108,8 +108,8 @@ class TestFontNamePropertyForwarding:
         ('Roboto-Bold', 'Roboto'), ('Roboto-Bold', 'Roboto-Italic'),
         ('Roboto-Italic', 'Roboto'), ('Roboto-Italic', 'Roboto-Bold')
     ])
-    def test_font_name_property_forwarding_triggers_rebuild(self, font1, font2):
-        """Changing font_name triggers widget rebuild with new font."""
+    def test_font_name_property_forwarding_preserves_widget_tree(self, font1, font2):
+        """Changing font_name preserves widget tree (style-only property)."""
         label = MarkdownLabel(text='Hello World', font_name=font1)
 
         # Collect widget IDs before change
@@ -120,15 +120,14 @@ class TestFontNamePropertyForwarding:
         for lbl in labels:
             assert lbl.font_name == font1
 
-        # Change font_name
+        # Change font_name (style-only, no rebuild needed)
         label.font_name = font2
-        label.force_rebuild()  # Force immediate rebuild for test
 
-        # Verify rebuild occurred
+        # Verify widget tree preserved (no rebuild)
         ids_after = collect_widget_ids(label)
-        assert ids_before != ids_after, "Widget tree should rebuild for font_name changes"
+        assert ids_before == ids_after, "Widget tree should be preserved for font_name changes (style-only)"
 
-        # Verify new font
+        # Verify new font was applied in-place
         labels = find_labels_recursive(label)
         for lbl in labels:
             assert lbl.font_name == font2, \
@@ -223,8 +222,8 @@ class TestLineHeightPropertyForwarding:
     @given(line_height_strategy, line_height_strategy)
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
-    def test_line_height_change_triggers_rebuild(self, lh1, lh2):
-        """Changing line_height triggers widget rebuild with new value."""
+    def test_line_height_change_preserves_widget_tree(self, lh1, lh2):
+        """Changing line_height updates value in place without rebuild (style-only property)."""
         assume(not floats_equal(lh1, lh2))
 
         label = MarkdownLabel(text='Hello World', line_height=lh1)
@@ -237,15 +236,14 @@ class TestLineHeightPropertyForwarding:
         for lbl in labels:
             assert floats_equal(lbl.line_height, lh1)
 
-        # Change line_height
+        # Change line_height (style-only property - no force_rebuild needed)
         label.line_height = lh2
-        label.force_rebuild()  # Force immediate rebuild for test
 
-        # Verify rebuild occurred
+        # Verify NO rebuild occurred (style-only property)
         ids_after = collect_widget_ids(label)
-        assert ids_before != ids_after, "Widget tree should rebuild for line_height changes"
+        assert ids_before == ids_after, "Widget tree should NOT rebuild for line_height changes"
 
-        # Verify new line_height
+        # Verify new line_height was applied in place
         labels = find_labels_recursive(label)
         for lbl in labels:
             assert floats_equal(lbl.line_height, lh2), \
@@ -458,8 +456,8 @@ class TestAdvancedFontPropertyForwarding:
         st_alphanumeric_text(min_size=1, max_size=20),
         st.sampled_from([None, 'normal', 'light', 'mono']),
         st.booleans())
-    # Mixed finite/complex strategy: 20 examples (8 finite × 2.5 complex samples)
-    @settings(max_examples=20, deadline=None)
+    # Mixed finite/complex strategy: 24 examples (8 finite × 3 complex samples)
+    @settings(max_examples=24, deadline=None)
     def test_combined_font_properties_with_code_block(self, font_family, font_context,
                                                        font_hinting, font_kerning):
         """Combined font properties are correctly forwarded with code block exclusion."""
@@ -525,39 +523,27 @@ class TestFontSizeImmediateUpdates:
         # Create label with initial font size
         label = MarkdownLabel(text=markdown_text, base_font_size=initial_size)
 
-        # Collect all Label widgets and their expected font sizes
-        def collect_labels_and_scales(widget, labels_info=None):
-            if labels_info is None:
-                labels_info = []
-
-            if isinstance(widget, Label):
-                # Get the font scale factor (default to 1.0 if not set)
-                scale = getattr(widget, '_font_scale', 1.0)
-                labels_info.append((widget, scale))
-
-            if hasattr(widget, 'children'):
-                for child in widget.children:
-                    collect_labels_and_scales(child, labels_info)
-
-            return labels_info
-
-        labels_before = collect_labels_and_scales(label)
+        # Collect all Label widgets and their initial font sizes
+        labels_before = find_labels_recursive(label)
         assume(len(labels_before) > 0)  # Need at least one Label to test
+
+        # Calculate scale factors from initial font sizes
+        # Note: scale = label_font_size / initial_base_font_size
+        font_scales = {id(lbl): lbl.font_size / initial_size for lbl in labels_before}
 
         # Change base_font_size
         label.base_font_size = new_size
 
-        # Collect labels after change
-        labels_after = collect_labels_and_scales(label)
-
-        # Verify all Labels have updated font_size
-        for label_widget, scale in labels_after:
+        # Verify all Labels have updated font_size correctly
+        labels_after = find_labels_recursive(label)
+        for label_widget in labels_after:
+            scale = font_scales[id(label_widget)]
             expected_font_size = new_size * scale
             actual_font_size = label_widget.font_size
 
             assert abs(actual_font_size - expected_font_size) < 0.1, \
-                f"Label font_size not updated: expected {expected_font_size}, " \
-                f"got {actual_font_size} (scale={scale})"
+                f"Label font_size not updated correctly: expected {expected_font_size}, " \
+                f"got {actual_font_size} (calculated scale={scale})"
 
     @pytest.mark.property
     @given(
@@ -565,8 +551,8 @@ class TestFontSizeImmediateUpdates:
         st_font_size(min_value=10, max_value=30),
         st_font_size(min_value=10, max_value=30)
     )
-    # Mixed finite/complex strategy: 20 examples (6 finite × ~3 complex samples)
-    @settings(max_examples=20, deadline=None)
+    # Mixed finite/complex strategy: 30 examples (6 finite × 5 complex samples)
+    @settings(max_examples=30, deadline=None)
     def test_heading_font_size_updates_with_scale(self, heading_level, initial_size, new_size):
         """Heading font sizes update immediately with correct scale factors."""
         assume(abs(initial_size - new_size) > 1.0)
@@ -576,13 +562,9 @@ class TestFontSizeImmediateUpdates:
         label = MarkdownLabel(text=heading_text, base_font_size=initial_size)
 
         # Find the heading Label
-        heading_label = None
-        for child in label.children:
-            if isinstance(child, Label) and hasattr(child, '_font_scale'):
-                heading_label = child
-                break
-
-        assume(heading_label is not None)
+        labels = find_labels_recursive(label)
+        assume(len(labels) > 0)
+        heading_label = labels[0]
 
         # Get expected scale from KivyRenderer.HEADING_SIZES
         from kivy_garden.markdownlabel.kivy_renderer import KivyRenderer
@@ -641,8 +623,8 @@ class TestHeadingScalePreservation:
         st.integers(min_value=1, max_value=6),  # Heading levels
         st_font_size(min_value=8, max_value=50)
     )
-    # Mixed finite/complex strategy: 20 examples (6 finite × ~3 complex samples)
-    @settings(max_examples=20, deadline=None)
+    # Mixed finite/complex strategy: 30 examples (6 finite × 5 complex samples)
+    @settings(max_examples=30, deadline=None)
     def test_heading_scale_factors_preserved(self, heading_level, base_size):
         """Heading scale factors are preserved according to HEADING_SIZES."""
         # Create heading markdown
@@ -650,22 +632,19 @@ class TestHeadingScalePreservation:
         label = MarkdownLabel(text=heading_text, base_font_size=base_size)
 
         # Find the heading Label
-        heading_label = None
-        for child in label.children:
-            if isinstance(child, Label) and hasattr(child, '_font_scale'):
-                heading_label = child
-                break
-
-        assume(heading_label is not None)
+        labels = find_labels_recursive(label)
+        assume(len(labels) > 0)
+        heading_label = labels[0]
 
         # Get expected scale from KivyRenderer.HEADING_SIZES
         from kivy_garden.markdownlabel.kivy_renderer import KivyRenderer
         expected_scale = KivyRenderer.HEADING_SIZES.get(heading_level, 1.0)
 
-        # Verify the scale factor is stored correctly
-        actual_scale = getattr(heading_label, '_font_scale', 1.0)
+        # Verify the behavioral scale factor (font_size / base_font_size)
+        actual_scale = heading_label.font_size / base_size
         assert abs(actual_scale - expected_scale) < 0.01, \
-            f"Heading scale factor incorrect: expected {expected_scale}, got {actual_scale}"
+            f"Heading scale factor incorrect: expected {expected_scale}, " \
+            f"got {actual_scale} (font_size={heading_label.font_size}, base={base_size})"
 
         # Verify the computed font_size matches base_font_size * scale
         expected_font_size = base_size * expected_scale
@@ -683,8 +662,8 @@ class TestHeadingScalePreservation:
         ),
         st_font_size(min_value=12, max_value=24)
     )
-    # Mixed finite/complex strategy: 20 examples (large finite lists × complex)
-    @settings(max_examples=20, deadline=None)
+    # Mixed finite/complex strategy: 57 examples (57 finite × 1 complex samples)
+    @settings(max_examples=57, deadline=None)
     def test_multiple_headings_preserve_relative_scales(self, heading_levels, base_size):
         """Multiple headings preserve correct relative scale factors."""
         # Create markdown with multiple headings
@@ -693,21 +672,18 @@ class TestHeadingScalePreservation:
 
         label = MarkdownLabel(text=markdown_text, base_font_size=base_size)
 
-        # Collect all heading Labels with their levels
-        heading_labels = []
-        for child in label.children:
-            if isinstance(child, Label) and hasattr(child, '_font_scale'):
-                # Try to determine heading level from font scale
-                scale = getattr(child, '_font_scale', 1.0)
-                heading_labels.append((child, scale))
-
+        # Collect all heading Labels
+        heading_labels = find_labels_recursive(label)
         assume(len(heading_labels) >= 2)  # Need multiple headings to test relative scales
 
         # Get expected scales from KivyRenderer.HEADING_SIZES
         from kivy_garden.markdownlabel.kivy_renderer import KivyRenderer
 
         # Verify each heading has correct scale and font size
-        for heading_label, actual_scale in heading_labels:
+        for heading_label in heading_labels:
+            # Calculate actual scale factor from behavior
+            actual_scale = heading_label.font_size / base_size
+
             # Find which heading level this corresponds to
             expected_level = None
             for level, expected_scale in KivyRenderer.HEADING_SIZES.items():
@@ -716,7 +692,8 @@ class TestHeadingScalePreservation:
                     break
 
             assert expected_level is not None, \
-                f"Could not match scale {actual_scale} to any heading level"
+                f"Could not match behavior (font_size={heading_label.font_size}, " \
+                f"base={base_size}, scale={actual_scale}) to any heading level"
 
             # Verify font_size matches base_size * scale
             expected_font_size = base_size * actual_scale
@@ -731,8 +708,8 @@ class TestHeadingScalePreservation:
         st_font_size(min_value=10, max_value=20),
         st_font_size(min_value=20, max_value=40)
     )
-    # Mixed finite/complex strategy: 20 examples (6 finite × ~3 complex samples)
-    @settings(max_examples=20, deadline=None)
+    # Mixed finite/complex strategy: 30 examples (6 finite × 5 complex samples)
+    @settings(max_examples=30, deadline=None)
     def test_heading_scale_preserved_after_base_font_size_change(self, heading_level, initial_size, new_size):
         """Heading scale factors are preserved when base_font_size changes."""
         # Create heading
@@ -740,13 +717,9 @@ class TestHeadingScalePreservation:
         label = MarkdownLabel(text=heading_text, base_font_size=initial_size)
 
         # Find heading Label
-        heading_label = None
-        for child in label.children:
-            if isinstance(child, Label) and hasattr(child, '_font_scale'):
-                heading_label = child
-                break
-
-        assume(heading_label is not None)
+        labels = find_labels_recursive(label)
+        assume(len(labels) > 0)
+        heading_label = labels[0]
 
         # Get expected scale
         from kivy_garden.markdownlabel.kivy_renderer import KivyRenderer
@@ -759,8 +732,8 @@ class TestHeadingScalePreservation:
         # Change base_font_size
         label.base_font_size = new_size
 
-        # Verify scale factor is still preserved
-        actual_scale = getattr(heading_label, '_font_scale', 1.0)
+        # Verify scale factor is still preserved (via behavioral calculation)
+        actual_scale = heading_label.font_size / new_size
         assert abs(actual_scale - expected_scale) < 0.01, \
             f"Scale factor changed after base_font_size update: expected {expected_scale}, got {actual_scale}"
 
@@ -888,27 +861,21 @@ class TestNoRebuildOnFontSizeChange:
     )
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
-    def test_rebuild_counter_not_incremented_on_font_size_change(self, new_size):
+    def test_font_size_change_preserves_widget_tree_fixed_content(self, new_size):
         """Rebuild operations are not triggered by font size changes."""
         # Create label with content
         label = MarkdownLabel(text='# Test\n\nParagraph')
 
-        # Track rebuild calls
-        rebuild_count = [0]
-        original_rebuild = label._rebuild_widgets
-
-        def counting_rebuild():
-            rebuild_count[0] += 1
-            original_rebuild()
-
-        label._rebuild_widgets = counting_rebuild
+        # Collect widget IDs before change
+        ids_before = collect_widget_ids(label)
 
         # Change font size
         label.base_font_size = new_size
 
-        # No rebuild should have been triggered
-        assert rebuild_count[0] == 0, \
-            f"Expected 0 rebuilds for font_size change, got {rebuild_count[0]}"
+        # No rebuild should have been triggered (IDs same)
+        ids_after = collect_widget_ids(label)
+        assert ids_before == ids_after, \
+            "Expected no rebuild for font_size change, but widget tree changed"
 
         # Verify the change was applied (font sizes should be updated)
         found_label = False

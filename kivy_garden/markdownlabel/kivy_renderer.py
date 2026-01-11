@@ -12,15 +12,16 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label import Label
 from kivy.uix.widget import Widget
 from kivy.uix.image import AsyncImage
-from kivy.uix.gridlayout import GridLayout
 from kivy.graphics import Color, Rectangle, Line
 
-from .inline_renderer import InlineRenderer
+from .inline_renderer import InlineRenderer, escape_kivy_markup
+from .kivy_renderer_tables import KivyRendererTableMixin
+from .rendering import apply_text_size_binding as _apply_text_size_binding_helper
 
 logger = logging.getLogger(__name__)
 
 
-class KivyRenderer:
+class KivyRenderer(KivyRendererTableMixin):
     """Renders mistune AST to Kivy widgets.
 
     This renderer handles block-level Markdown elements like paragraphs,
@@ -174,45 +175,63 @@ class KivyRenderer:
         self._list_counters = []  # Stack of counters for ordered lists
 
     def _apply_text_size_binding(self, label: Label) -> None:
-        """Apply text_size binding to a Label based on mode and text_size settings.
+        """Backward-compatible text_size binding using shared logic."""
+        _apply_text_size_binding_helper(label, self.text_size, self.strict_label_mode)
 
-        In strict_label_mode with text_size=[None, None], no automatic width
-        binding is applied (Label handles sizing naturally).
+    def _build_label_kwargs(self, *, text: str, font_size: float, halign: Optional[str] = None,
+                            valign: Optional[str] = None, bold: bool = False,
+                            markup: bool = True, padding: Optional[List[float]] = None,
+                            size_hint_x: Optional[float] = 1, size_hint_y: Optional[float] = None,
+                            color: Optional[List[float]] = None) -> Dict[str, Any]:
+        """Assemble common Label kwargs used by block-level renderers."""
+        kwargs = {
+            'text': text,
+            'markup': markup,
+            'font_name': self.font_name,
+            'font_size': font_size,
+            'color': color if color is not None else self.effective_color,
+            'line_height': self.line_height,
+            'size_hint_x': size_hint_x,
+            'size_hint_y': size_hint_y,
+            'halign': halign if halign is not None else self.halign,
+            'valign': valign if valign is not None else self.valign,
+            'unicode_errors': self.unicode_errors,
+            'strip': self.strip,
+            'font_features': self.font_features,
+            'font_kerning': self.font_kerning,
+            'font_blended': self.font_blended,
+            'shorten': self.shorten,
+            'shorten_from': self.shorten_from,
+            'split_str': self.split_str,
+            'padding': padding if padding is not None else self.text_padding,
+            'mipmap': self.mipmap,
+            'outline_width': self.outline_width,
+            'outline_color': self.effective_outline_color,
+            'disabled_outline_color': self.disabled_outline_color,
+            'base_direction': self.base_direction,
+            'text_language': self.text_language,
+            'limit_render_to_text_bbox': self.limit_render_to_text_bbox,
+            'ellipsis_options': self.ellipsis_options,
+        }
 
-        In non-strict mode (default), width is bound to text_size for auto-wrap.
+        if bold:
+            kwargs['bold'] = True
 
-        Args:
-            label: The Label widget to apply bindings to
-        """
-        text_width = self.text_size[0]
-        text_height = self.text_size[1]
+        if self.max_lines > 0:
+            kwargs['max_lines'] = self.max_lines
 
-        if text_width is not None:
-            if text_height is not None:
-                # Both width and height specified
-                label.text_size = (text_width, text_height)
-            else:
-                # Only width specified - bind to maintain width
-                label.bind(width=lambda inst, val, tw=text_width: setattr(
-                    inst, 'text_size', (tw, None)))
-        else:
-            if text_height is not None:
-                # Only height specified - set initial text_size and bind width
-                label.text_size = (label.width, text_height)
-                label.bind(width=lambda inst, val, th=text_height: setattr(
-                    inst, 'text_size', (val, th)))
-            else:
-                # Neither specified
-                if self.strict_label_mode:
-                    # Strict mode: don't auto-bind width, let Label handle naturally
-                    pass
-                else:
-                    # Markdown-friendly mode: auto-bind width for text wrapping
-                    label.bind(width=lambda inst, val: setattr(
-                        inst, 'text_size', (val, None)))
+        if self.font_family is not None:
+            kwargs['font_family'] = self.font_family
+        if self.font_context is not None:
+            kwargs['font_context'] = self.font_context
+        if self.font_hinting is not None:
+            kwargs['font_hinting'] = self.font_hinting
 
-        # Always bind texture_size to height for proper sizing
-        label.bind(texture_size=lambda inst, val: setattr(inst, 'height', val[1]))
+        # Avoid passing empty ellipsis options explicitly when not set
+        if not self.ellipsis_options:
+            kwargs.pop('ellipsis_options', None)
+
+        return kwargs
 
     def __call__(self, tokens: List[Dict[str, Any]], state: Any = None) -> BoxLayout:
         """Render tokens to a BoxLayout containing all widgets.
@@ -256,11 +275,15 @@ class KivyRenderer:
         token_type = token.get('type', '')
         method = getattr(self, token_type, None)
 
-        if method is not None:
-            return method(token, state)
+        if method is None:
+            logger.debug(
+                "Skipping unknown token type '%s' (keys=%s)",
+                token_type,
+                sorted(token.keys()),
+            )
+            return None
 
-        # Unknown token type - skip with warning
-        return None
+        return method(token, state)
 
     def _create_truncation_placeholder(self) -> Widget:
         """Create a placeholder widget for truncated deeply nested content.
@@ -303,56 +326,14 @@ class KivyRenderer:
         children = token.get('children', [])
         text = self._render_inline(children)
 
-        label_kwargs = {
-            'text': text,
-            'markup': True,
-            'font_name': self.font_name,
-            'font_size': self.base_font_size,
-            'color': self.effective_color,
-            'line_height': self.line_height,
-            'size_hint_y': None,
-            'size_hint_x': 1,
-            'halign': self.halign,
-            'valign': self.valign,
-            'unicode_errors': self.unicode_errors,
-            'strip': self.strip,
-            'font_features': self.font_features,
-            'font_kerning': self.font_kerning,
-            'font_blended': self.font_blended,
-            'shorten': self.shorten,
-            'shorten_from': self.shorten_from,
-            'split_str': self.split_str,
-            'padding': self.text_padding,
-            'mipmap': self.mipmap,
-            'outline_width': self.outline_width,
-            'outline_color': self.effective_outline_color,
-            'disabled_outline_color': self.disabled_outline_color,
-            'base_direction': self.base_direction,
-            'text_language': self.text_language,
-            'limit_render_to_text_bbox': self.limit_render_to_text_bbox,
-            'ellipsis_options': self.ellipsis_options,
-        }
-
-        # Add max_lines only if set (non-zero)
-        if self.max_lines > 0:
-            label_kwargs['max_lines'] = self.max_lines
-
-        # Add optional font properties if set
-        if self.font_family is not None:
-            label_kwargs['font_family'] = self.font_family
-        if self.font_context is not None:
-            label_kwargs['font_context'] = self.font_context
-        if self.font_hinting is not None:
-            label_kwargs['font_hinting'] = self.font_hinting
-
-        # Add ellipsis_options if non-empty
-        if self.ellipsis_options:
-            label_kwargs['ellipsis_options'] = self.ellipsis_options
+        label_kwargs = self._build_label_kwargs(
+            text=text,
+            font_size=self.base_font_size,
+            size_hint_y=None,
+            size_hint_x=1,
+        )
 
         label = Label(**label_kwargs)
-
-        # Apply text_size binding based on mode
-        self._apply_text_size_binding(label)
 
         # Set font scale metadata for body text
         label._font_scale = 1.0
@@ -372,56 +353,14 @@ class KivyRenderer:
         children = token.get('children', [])
         text = self._render_inline(children)
 
-        label_kwargs = {
-            'text': text,
-            'markup': True,
-            'font_name': self.font_name,
-            'font_size': self.base_font_size,
-            'color': self.effective_color,
-            'line_height': self.line_height,
-            'size_hint_y': None,
-            'size_hint_x': 1,
-            'halign': self.halign,
-            'valign': self.valign,
-            'unicode_errors': self.unicode_errors,
-            'strip': self.strip,
-            'font_features': self.font_features,
-            'font_kerning': self.font_kerning,
-            'font_blended': self.font_blended,
-            'shorten': self.shorten,
-            'shorten_from': self.shorten_from,
-            'split_str': self.split_str,
-            'padding': self.text_padding,
-            'mipmap': self.mipmap,
-            'outline_width': self.outline_width,
-            'outline_color': self.effective_outline_color,
-            'disabled_outline_color': self.disabled_outline_color,
-            'base_direction': self.base_direction,
-            'text_language': self.text_language,
-            'limit_render_to_text_bbox': self.limit_render_to_text_bbox,
-            'ellipsis_options': self.ellipsis_options,
-        }
-
-        # Add max_lines only if set (non-zero)
-        if self.max_lines > 0:
-            label_kwargs['max_lines'] = self.max_lines
-
-        # Add optional font properties if set
-        if self.font_family is not None:
-            label_kwargs['font_family'] = self.font_family
-        if self.font_context is not None:
-            label_kwargs['font_context'] = self.font_context
-        if self.font_hinting is not None:
-            label_kwargs['font_hinting'] = self.font_hinting
-
-        # Add ellipsis_options if non-empty
-        if self.ellipsis_options:
-            label_kwargs['ellipsis_options'] = self.ellipsis_options
+        label_kwargs = self._build_label_kwargs(
+            text=text,
+            font_size=self.base_font_size,
+            size_hint_y=None,
+            size_hint_x=1,
+        )
 
         label = Label(**label_kwargs)
-
-        # Apply text_size binding based on mode
-        self._apply_text_size_binding(label)
 
         # Set font scale metadata for body text
         label._font_scale = 1.0
@@ -457,57 +396,15 @@ class KivyRenderer:
         multiplier = self.HEADING_SIZES.get(level, 1.0)
         font_size = self.base_font_size * multiplier
 
-        label_kwargs = {
-            'text': text,
-            'markup': True,
-            'font_name': self.font_name,
-            'font_size': font_size,
-            'color': self.effective_color,
-            'line_height': self.line_height,
-            'size_hint_y': None,
-            'size_hint_x': 1,
-            'bold': True,
-            'halign': self.halign,
-            'valign': self.valign,
-            'unicode_errors': self.unicode_errors,
-            'strip': self.strip,
-            'font_features': self.font_features,
-            'font_kerning': self.font_kerning,
-            'font_blended': self.font_blended,
-            'shorten': self.shorten,
-            'shorten_from': self.shorten_from,
-            'split_str': self.split_str,
-            'padding': self.text_padding,
-            'mipmap': self.mipmap,
-            'outline_width': self.outline_width,
-            'outline_color': self.effective_outline_color,
-            'disabled_outline_color': self.disabled_outline_color,
-            'base_direction': self.base_direction,
-            'text_language': self.text_language,
-            'limit_render_to_text_bbox': self.limit_render_to_text_bbox,
-            'ellipsis_options': self.ellipsis_options,
-        }
-
-        # Add max_lines only if set (non-zero)
-        if self.max_lines > 0:
-            label_kwargs['max_lines'] = self.max_lines
-
-        # Add optional font properties if set
-        if self.font_family is not None:
-            label_kwargs['font_family'] = self.font_family
-        if self.font_context is not None:
-            label_kwargs['font_context'] = self.font_context
-        if self.font_hinting is not None:
-            label_kwargs['font_hinting'] = self.font_hinting
-
-        # Add ellipsis_options if non-empty
-        if self.ellipsis_options:
-            label_kwargs['ellipsis_options'] = self.ellipsis_options
+        label_kwargs = self._build_label_kwargs(
+            text=text,
+            font_size=font_size,
+            bold=True,
+            size_hint_y=None,
+            size_hint_x=1,
+        )
 
         label = Label(**label_kwargs)
-
-        # Apply text_size binding based on mode
-        self._apply_text_size_binding(label)
 
         # Store heading level as metadata
         label.heading_level = level
@@ -604,53 +501,18 @@ class KivyRenderer:
         else:
             marker_text = '•'
 
-        marker_kwargs = {
-            'text': marker_text,
-            'font_name': self.font_name,
-            'font_size': self.base_font_size,
-            'color': self.effective_color,
-            'line_height': self.line_height,
-            'size_hint': (None, 1),  # Match content height
-            'width': 30,
-            'halign': 'right',
-            # Force top alignment so bullets align with the first line of nested content
-            'valign': 'top',
-            'unicode_errors': self.unicode_errors,
-            'strip': self.strip,
-            'font_features': self.font_features,
-            'font_kerning': self.font_kerning,
-            'font_blended': self.font_blended,
-            'shorten': self.shorten,
-            'shorten_from': self.shorten_from,
-            'split_str': self.split_str,
-            'padding': self.text_padding,
-            'mipmap': self.mipmap,
-            'outline_width': self.outline_width,
-            'outline_color': self.effective_outline_color,
-            'disabled_outline_color': self.disabled_outline_color,
-            'base_direction': self.base_direction,
-            'text_language': self.text_language,
-            'limit_render_to_text_bbox': self.limit_render_to_text_bbox,
-            'ellipsis_options': self.ellipsis_options,
-        }
-
-        # Add max_lines only if set (non-zero)
-        if self.max_lines > 0:
-            marker_kwargs['max_lines'] = self.max_lines
-
-        # Add optional font properties if set
-        if self.font_family is not None:
-            marker_kwargs['font_family'] = self.font_family
-        if self.font_context is not None:
-            marker_kwargs['font_context'] = self.font_context
-        if self.font_hinting is not None:
-            marker_kwargs['font_hinting'] = self.font_hinting
-
-        # Add ellipsis_options if non-empty
-        if self.ellipsis_options:
-            marker_kwargs['ellipsis_options'] = self.ellipsis_options
+        marker_kwargs = self._build_label_kwargs(
+            text=marker_text,
+            font_size=self.base_font_size,
+            halign='right',
+            valign='top',  # Force top alignment so bullets align with first line
+            markup=False,
+            size_hint_x=None,
+            size_hint_y=1,
+        )
 
         marker = Label(**marker_kwargs)
+        marker.width = 30
         # Bind text_size to enable valign to work properly
         marker.bind(size=lambda inst, val: setattr(inst, 'text_size', val))
 
@@ -718,7 +580,7 @@ class KivyRenderer:
         language = attrs.get('info', '')
 
         # Escape the code text for Kivy markup
-        escaped_text = self.inline_renderer._escape_markup(raw.rstrip('\n'))
+        escaped_text = escape_kivy_markup(raw.rstrip('\n'))
 
         # Create container with background
         container = BoxLayout(
@@ -933,253 +795,3 @@ class KivyRenderer:
             Small spacer widget
         """
         return Widget(size_hint_y=None, height=5)
-
-    def table(self, token: Dict[str, Any], state: Any = None) -> GridLayout:
-        """Render a table as a GridLayout with bottom spacing.
-
-        Args:
-            token: Table token with 'children' containing head and body
-            state: Block state
-
-        Returns:
-            GridLayout containing table cells
-        """
-        children = token.get('children', [])
-
-        # Determine number of columns from the first row
-        num_cols = self._get_table_column_count(token)
-
-        # Create GridLayout with correct number of columns and bottom padding
-        grid = GridLayout(
-            cols=num_cols,
-            size_hint_y=None,
-            spacing=[2, 2],
-            padding=[5, 5, 5, 5 + self.base_font_size]  # Add bottom spacing via padding
-        )
-        grid.bind(minimum_height=grid.setter('height'))
-
-        # Process table head and body
-        for child in children:
-            child_type = child.get('type', '')
-            if child_type == 'table_head':
-                self._render_table_section(child, grid, state, is_head=True)
-            elif child_type == 'table_body':
-                self._render_table_section(child, grid, state, is_head=False)
-
-        return grid
-
-    def _get_table_column_count(self, token: Dict[str, Any]) -> int:
-        """Get the number of columns in a table.
-
-        Args:
-            token: Table token
-
-        Returns:
-            Number of columns
-        """
-        children = token.get('children', [])
-        for child in children:
-            child_type = child.get('type', '')
-            if child_type in ('table_head', 'table_body'):
-                rows = child.get('children', [])
-                if rows:
-                    first_item = rows[0]
-                    # table_head has direct table_cell children
-                    # table_body has table_row children which contain table_cell children
-                    if first_item.get('type') == 'table_cell':
-                        return len(rows)
-                    elif first_item.get('type') == 'table_row':
-                        cells = first_item.get('children', [])
-                        return len(cells)
-        return 1  # Default to 1 column if structure is unclear
-
-    def _render_table_section(self, section: Dict[str, Any], grid: GridLayout,
-                               state: Any, is_head: bool = False) -> None:
-        """Render a table section (head or body) into the grid.
-
-        Args:
-            section: Table head or body token
-            grid: GridLayout to add cells to
-            state: Block state
-            is_head: Whether this is the header section
-        """
-        children = section.get('children', [])
-        if not children:
-            return
-
-        # Check if children are table_cell (table_head) or table_row (table_body)
-        first_child_type = children[0].get('type', '')
-
-        if first_child_type == 'table_cell':
-            # table_head: direct table_cell children
-            for cell in children:
-                cell_widget = self._render_table_cell(cell, state, is_head)
-                grid.add_widget(cell_widget)
-        elif first_child_type == 'table_row':
-            # table_body: table_row children containing table_cell children
-            for row in children:
-                self._render_table_row(row, grid, state, is_head)
-
-    def _render_table_row(self, row: Dict[str, Any], grid: GridLayout,
-                          state: Any, is_head: bool = False) -> None:
-        """Render a table row into the grid.
-
-        Args:
-            row: Table row token
-            grid: GridLayout to add cells to
-            state: Block state
-            is_head: Whether this row is in the header
-        """
-        cells = row.get('children', [])
-        for cell in cells:
-            cell_widget = self._render_table_cell(cell, state, is_head)
-            grid.add_widget(cell_widget)
-
-    def _render_table_cell(self, cell: Dict[str, Any], state: Any,
-                           is_head: bool = False) -> Label:
-        """Render a table cell as a Label.
-
-        Args:
-            cell: Table cell token
-            state: Block state
-            is_head: Whether this cell is in the header
-
-        Returns:
-            Label widget for the cell
-        """
-        children = cell.get('children', [])
-        attrs = cell.get('attrs', {})
-
-        # Get alignment from attrs - table cells use their own alignment from markdown
-        # but fall back to the renderer's halign if not specified or invalid
-        align = attrs.get('align', None)
-        if align in ('left', 'center', 'right'):
-            cell_halign = align
-        else:
-            # Fall back to renderer's halign, but convert 'auto' to 'left' for table cells
-            cell_halign = 'left' if self.halign == 'auto' else self.halign
-
-        # Render inline content
-        text = self._render_inline(children) if children else ''
-
-        # Create label with appropriate styling
-        label_kwargs = {
-            'text': text,
-            'markup': True,
-            'font_name': self.font_name,
-            'font_size': self.base_font_size,
-            'color': self.effective_color,
-            'line_height': self.line_height,
-            'size_hint_y': None,
-            'size_hint_x': 1,
-            'halign': cell_halign,
-            'valign': self.valign,
-            'bold': is_head,  # Bold for header cells
-            'unicode_errors': self.unicode_errors,
-            'strip': self.strip,
-            'font_features': self.font_features,
-            'font_kerning': self.font_kerning,
-            'font_blended': self.font_blended,
-            'shorten': self.shorten,
-            'shorten_from': self.shorten_from,
-            'split_str': self.split_str,
-            'padding': self.text_padding,
-            'mipmap': self.mipmap,
-            'outline_width': self.outline_width,
-            'outline_color': self.effective_outline_color,
-            'disabled_outline_color': self.disabled_outline_color,
-            'base_direction': self.base_direction,
-            'text_language': self.text_language,
-            'limit_render_to_text_bbox': self.limit_render_to_text_bbox,
-            'ellipsis_options': self.ellipsis_options,
-        }
-
-        # Add max_lines only if set (non-zero)
-        if self.max_lines > 0:
-            label_kwargs['max_lines'] = self.max_lines
-
-        # Add optional font properties if set
-        if self.font_family is not None:
-            label_kwargs['font_family'] = self.font_family
-        if self.font_context is not None:
-            label_kwargs['font_context'] = self.font_context
-        if self.font_hinting is not None:
-            label_kwargs['font_hinting'] = self.font_hinting
-
-        # Add ellipsis_options if non-empty
-        if self.ellipsis_options:
-            label_kwargs['ellipsis_options'] = self.ellipsis_options
-
-        label = Label(**label_kwargs)
-
-        # Apply text_size binding based on mode
-        self._apply_text_size_binding(label)
-
-        # Store alignment as metadata
-        label.cell_align = cell_halign
-        label.is_header = is_head
-
-        # Set font scale metadata for table cells
-        label._font_scale = 1.0
-
-        return label
-
-    def table_head(self, token: Dict[str, Any], state: Any = None) -> None:
-        """Handle table_head token (processed by table()).
-
-        This method exists for completeness but table_head is typically
-        processed as part of the table() method.
-
-        Args:
-            token: Table head token
-            state: Block state
-
-        Returns:
-            None (processed by parent table)
-        """
-        return None
-
-    def table_body(self, token: Dict[str, Any], state: Any = None) -> None:
-        """Handle table_body token (processed by table()).
-
-        This method exists for completeness but table_body is typically
-        processed as part of the table() method.
-
-        Args:
-            token: Table body token
-            state: Block state
-
-        Returns:
-            None (processed by parent table)
-        """
-        return None
-
-    def table_row(self, token: Dict[str, Any], state: Any = None) -> None:
-        """Handle table_row token (processed by table()).
-
-        This method exists for completeness but table_row is typically
-        processed as part of the table() method.
-
-        Args:
-            token: Table row token
-            state: Block state
-
-        Returns:
-            None (processed by parent table)
-        """
-        return None
-
-    def table_cell(self, token: Dict[str, Any], state: Any = None) -> Label:
-        """Handle table_cell token directly.
-
-        This method can be called directly if needed, but cells are typically
-        processed as part of the table() method.
-
-        Args:
-            token: Table cell token
-            state: Block state
-
-        Returns:
-            Label widget for the cell
-        """
-        return self._render_table_cell(token, state, is_head=False)

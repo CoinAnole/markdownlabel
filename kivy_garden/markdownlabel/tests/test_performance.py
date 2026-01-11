@@ -14,7 +14,9 @@ from .test_utils import (
     find_labels_recursive,
     collect_widget_ids,
     st_font_size,
-    st_rgba_color
+    st_rgba_color,
+    colors_equal,
+    floats_equal
 )
 
 
@@ -27,6 +29,7 @@ class TestStyleOnlyPropertyUpdates:
     changes trigger a full rebuild.
     """
 
+    @pytest.mark.property
     @given(st_font_size(min_value=10, max_value=50),
            st_font_size(min_value=10, max_value=50))
     # Complex strategy: 20 examples (adequate coverage)
@@ -52,6 +55,17 @@ class TestStyleOnlyPropertyUpdates:
         assert ids_before == ids_after, \
             f"Widget tree changed after font_size update. Before: {len(ids_before)}, After: {len(ids_after)}"
 
+        # Verify the font_size change was actually applied
+        child_labels = find_labels_recursive(label)
+        assert len(child_labels) >= 1, "Expected at least one child Label"
+        # Verify base_font_size was updated on the parent
+        assert floats_equal(label.base_font_size, new_size), \
+            f"Expected base_font_size={new_size}, got {label.base_font_size}"
+        # Verify child labels have updated font sizes (scaled for headings)
+        for child_label in child_labels:
+            assert child_label.font_size > 0, "Child label should have positive font_size"
+
+    @pytest.mark.property
     @given(st_rgba_color())
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -74,6 +88,7 @@ class TestStyleOnlyPropertyUpdates:
         assert ids_before == ids_after, \
             "Widget tree changed after color update"
 
+    @pytest.mark.property
     @given(st_rgba_color())
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -92,7 +107,7 @@ class TestStyleOnlyPropertyUpdates:
         assert len(child_labels) >= 1, "Expected at least one child Label"
 
         for child_label in child_labels:
-            assert list(child_label.color) == new_color_list, \
+            assert colors_equal(list(child_label.color), new_color_list), \
                 f"Expected color {new_color_list}, got {list(child_label.color)}"
 
     @pytest.mark.parametrize('new_halign', ['left', 'center', 'right', 'justify'])
@@ -171,6 +186,7 @@ class TestStyleOnlyPropertyUpdates:
             assert child_label.valign == new_valign, \
                 f"Expected valign {new_valign}, got {child_label.valign}"
 
+    @pytest.mark.property
     @given(st.floats(min_value=0.5, max_value=3.0, allow_nan=False, allow_infinity=False))
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -193,6 +209,7 @@ class TestStyleOnlyPropertyUpdates:
         assert ids_before == ids_after, \
             "Widget tree changed after line_height update"
 
+    @pytest.mark.property
     @given(st.floats(min_value=0.5, max_value=3.0, allow_nan=False, allow_infinity=False))
     # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
@@ -210,9 +227,10 @@ class TestStyleOnlyPropertyUpdates:
         assert len(child_labels) >= 1, "Expected at least one child Label"
 
         for child_label in child_labels:
-            assert child_label.line_height == new_line_height, \
+            assert floats_equal(child_label.line_height, new_line_height), \
                 f"Expected line_height {new_line_height}, got {child_label.line_height}"
 
+    @pytest.mark.property
     @given(st.booleans())
     # Boolean strategy: 2 examples (True/False coverage)
     @settings(max_examples=2, deadline=None)
@@ -256,8 +274,8 @@ class TestStyleOnlyPropertyUpdates:
         assert ids_before != ids_after, \
             "Widget tree should be rebuilt after text change"
 
-    def test_font_name_structure_property_rebuilds_tree(self):
-        """Changing font_name (structure property) rebuilds the widget tree."""
+    def test_font_name_style_property_preserves_tree(self):
+        """Changing font_name (style-only property) preserves the widget tree."""
         # Create label with some content
         markdown = 'Paragraph text.'
         label = MarkdownLabel(text=markdown, font_name='Roboto')
@@ -265,17 +283,23 @@ class TestStyleOnlyPropertyUpdates:
         # Collect widget ids before change
         ids_before = collect_widget_ids(label, exclude_root=True)
 
-        # Change font_name (structure property)
+        # Change font_name (style-only property, no rebuild needed)
         label.font_name = 'RobotoMono-Regular'
-        label.force_rebuild()  # Force immediate rebuild for test
 
         # Collect widget ids after change
         ids_after = collect_widget_ids(label, exclude_root=True)
 
-        # Widget tree should be rebuilt (different widget objects)
-        assert ids_before != ids_after, \
-            "Widget tree should be rebuilt after font_name change"
+        # Widget tree should be preserved (same widget objects)
+        assert ids_before == ids_after, \
+            "Widget tree should be preserved after font_name change (style-only)"
 
+        # Verify font_name was applied
+        labels = find_labels_recursive(label)
+        for lbl in labels:
+            assert lbl.font_name == 'RobotoMono-Regular', \
+                f"Expected font_name='RobotoMono-Regular', got '{lbl.font_name}'"
+
+    @pytest.mark.property
     @given(
         st_font_size(min_value=10, max_value=30),
         st_rgba_color(),
@@ -283,8 +307,8 @@ class TestStyleOnlyPropertyUpdates:
         st.sampled_from(['top', 'middle', 'bottom']),
         st.floats(min_value=0.8, max_value=2.0, allow_nan=False, allow_infinity=False)
     )
-    # Mixed finite/complex strategy: 20 examples (9 finite × ~2 complex samples)
-    @settings(max_examples=20, deadline=None)
+    # Mixed finite/complex strategy: 27 examples (9 finite combinations × 3 complex samples)
+    @settings(max_examples=27, deadline=None)
     def test_multiple_style_changes_preserve_widget_tree(self, font_size, color,
                                                           halign, valign, line_height):
         """Multiple style-only property changes preserve widget tree structure."""
@@ -309,6 +333,7 @@ class TestStyleOnlyPropertyUpdates:
         assert ids_before == ids_after, \
             "Widget tree changed after multiple style updates"
 
+    @pytest.mark.property
     @given(
         st_rgba_color(),
         st_rgba_color()
@@ -332,7 +357,7 @@ class TestStyleOnlyPropertyUpdates:
 
         # Initially should use normal color
         for child_label in child_labels:
-            assert list(child_label.color) == list(normal_color), \
+            assert colors_equal(list(child_label.color), list(normal_color)), \
                 f"Expected normal color {list(normal_color)}, got {list(child_label.color)}"
 
         # Enable disabled state
@@ -340,7 +365,7 @@ class TestStyleOnlyPropertyUpdates:
 
         # Should now use disabled_color
         for child_label in child_labels:
-            assert list(child_label.color) == list(disabled_color), \
+            assert colors_equal(list(child_label.color), list(disabled_color)), \
                 f"Expected disabled color {list(disabled_color)}, got {list(child_label.color)}"
 
         # Disable disabled state
@@ -348,5 +373,5 @@ class TestStyleOnlyPropertyUpdates:
 
         # Should return to normal color
         for child_label in child_labels:
-            assert list(child_label.color) == list(normal_color), \
+            assert colors_equal(list(child_label.color), list(normal_color)), \
                 f"Expected normal color {list(normal_color)}, got {list(child_label.color)}"

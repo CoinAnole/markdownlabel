@@ -4,8 +4,11 @@ branch = True
 [report]
 include = 
     */kivy_garden/markdownlabel/__init__.py
+    */kivy_garden/markdownlabel/properties.py
+    */kivy_garden/markdownlabel/rendering.py
     */kivy_garden/markdownlabel/inline_renderer.py
     */kivy_garden/markdownlabel/kivy_renderer.py
+    */kivy_garden/markdownlabel/kivy_renderer_tables.py
     */kivy_garden/markdownlabel/markdown_serializer.py
 exclude_lines =
     pragma: no cover

@@ -10,7 +10,8 @@ from hypothesis import given, strategies as st, settings, assume
 
 from kivy_garden.markdownlabel import MarkdownLabel
 from .test_utils import (
-    simple_markdown_document, markdown_heading
+    simple_markdown_document, markdown_heading, collect_widget_ids,
+    assert_rebuild_occurred
 )
 
 
@@ -22,9 +23,9 @@ class TestAutoSizingBehavior:
 
     @pytest.mark.property
     @given(simple_markdown_document())
-    # Mixed finite/complex strategy: 20 examples (6 finite × ~3 complex samples)
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
-    def test_auto_size_hint_enabled_sets_none(self, markdown_text):
+    def test_auto_size_height_enabled_sets_size_hint_y_none(self, markdown_text):
         """With auto_size_height=True, size_hint_y is None for auto-sizing."""
         label = MarkdownLabel(text=markdown_text, auto_size_height=True)
 
@@ -40,19 +41,28 @@ class TestAutoSizingBehavior:
 
     @pytest.mark.property
     @given(markdown_heading())
-    # Mixed finite/complex strategy: 20 examples (5 finite × 4 complex samples)
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_height_bound_to_minimum(self, heading):
-        """auto_size_height=True binds height to minimum_height."""
+        """auto_size_height=True enables height binding via size_hint_y=None.
+
+        When auto_size_height=True, size_hint_y is set to None which allows
+        the height binding to minimum_height to take effect. In headless testing,
+        we verify the precondition (size_hint_y=None) rather than the computed
+        height values which require a window for layout calculation.
+        """
         label = MarkdownLabel(text=heading, auto_size_height=True)
 
-        # The height should be bound to minimum_height
-        # We can verify the binding exists by checking the property
+        # Verify size_hint_y is None (required for height binding to work)
         assert label.size_hint_y is None, \
             "size_hint_y should be None for auto-sizing"
 
-    def test_empty_label_has_zero_height(self):
-        """Empty MarkdownLabel has zero or minimal height."""
+        # Verify auto_size_height is enabled
+        assert label.auto_size_height is True, \
+            f"Expected auto_size_height=True, got {label.auto_size_height}"
+
+    def test_empty_label_has_no_children(self):
+        """Empty MarkdownLabel has no children and auto-sizing enabled."""
         label = MarkdownLabel(text='', auto_size_height=True)
 
         assert label.size_hint_y is None, \
@@ -64,8 +74,8 @@ class TestAutoSizingBehavior:
     @given(st.integers(min_value=1, max_value=5))
     # Small finite strategy: 5 examples (input space size: 5)
     @settings(max_examples=5, deadline=None)
-    def test_more_content_means_more_height_potential(self, num_paragraphs):
-        """More content should result in more minimum height."""
+    def test_more_content_creates_more_children(self, num_paragraphs):
+        """More content should result in more child widgets."""
         text = '\n\n'.join([f'Paragraph number {i} with some text content.'
                            for i in range(num_paragraphs)])
 
@@ -73,7 +83,7 @@ class TestAutoSizingBehavior:
 
         # Verify auto-sizing is enabled
         assert label.size_hint_y is None
-        # Verify children exist
+        # Verify children exist proportional to content
         assert len(label.children) >= num_paragraphs
 
 
@@ -85,7 +95,7 @@ class TestAutoSizeHeightTrueBehavior:
 
     @pytest.mark.property
     @given(simple_markdown_document())
-    # Mixed finite/complex strategy: 20 examples (5 finite × 4 complex samples)
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_auto_size_height_true_sets_size_hint_y_none(self, markdown_text):
         """When auto_size_height=True, size_hint_y should be None."""
@@ -96,14 +106,19 @@ class TestAutoSizeHeightTrueBehavior:
 
     @pytest.mark.property
     @given(simple_markdown_document())
-    # Mixed finite/complex strategy: 20 examples (5 finite × 4 complex samples)
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_auto_size_height_true_binds_height_to_minimum(self, markdown_text):
-        """When auto_size_height=True, height should be bound to minimum_height."""
+        """auto_size_height=True enables height binding via size_hint_y=None.
+
+        When auto_size_height=True, size_hint_y is set to None which allows
+        the height binding to minimum_height to take effect. In headless testing,
+        we verify the precondition (size_hint_y=None) rather than the computed
+        height values which require a window for layout calculation.
+        """
         label = MarkdownLabel(text=markdown_text, auto_size_height=True)
 
-        # Check that the binding exists by verifying size_hint_y is None
-        # (which is the primary indicator of auto-sizing behavior)
+        # Verify size_hint_y is None (required for height binding to work)
         assert label.size_hint_y is None, \
             "size_hint_y should be None when auto_size_height=True"
 
@@ -125,21 +140,22 @@ class TestAutoSizeHeightTrueBehavior:
     @given(st.floats(min_value=0.1, max_value=2.0, allow_nan=False, allow_infinity=False))
     # Complex strategy: 50 examples (adequate coverage)
     @settings(max_examples=50, deadline=None)
-    def test_auto_size_height_true_ignores_user_size_hint_y(self, user_size_hint_y):
-        """When auto_size_height=True, user-provided size_hint_y is overridden."""
+    def test_auto_size_height_true_overrides_user_size_hint_y(self, user_size_hint_y):
+        """When auto_size_height=True, user-provided size_hint_y is overridden but restorable."""
         label = MarkdownLabel(
             text="Test content",
             auto_size_height=True,
             size_hint_y=user_size_hint_y
         )
 
-        # Should override user's size_hint_y
+        # Should override user's size_hint_y initially
         assert label.size_hint_y is None, \
             f"Expected size_hint_y=None to override user value {user_size_hint_y}, got {label.size_hint_y}"
 
-        # But should store the user value for later restoration
-        assert label._user_size_hint_y == user_size_hint_y, \
-            f"Expected _user_size_hint_y={user_size_hint_y}, got {label._user_size_hint_y}"
+        # Verify restoration behavior (observable behavior)
+        label.auto_size_height = False
+        assert label.size_hint_y == user_size_hint_y, \
+            f"Expected size_hint_y to restore to {user_size_hint_y}, got {label.size_hint_y}"
 
 
 # *For any* MarkdownLabel with `auto_size_height=False`, the widget SHALL preserve
@@ -151,7 +167,7 @@ class TestAutoSizeHeightFalseBehavior:
 
     @pytest.mark.property
     @given(simple_markdown_document())
-    # Mixed finite/complex strategy: 20 examples (5 finite × 4 complex samples)
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_auto_size_height_false_preserves_default_size_hint_y(self, markdown_text):
         """When auto_size_height=False, default size_hint_y=1 is preserved."""
@@ -166,7 +182,7 @@ class TestAutoSizeHeightFalseBehavior:
     @pytest.mark.property
     @given(simple_markdown_document(),
            st.floats(min_value=0.1, max_value=2.0, allow_nan=False, allow_infinity=False))
-    # Mixed finite/complex strategy: 50 examples (5 finite × 10 complex samples)
+    # Complex strategy: 50 examples (adequate coverage)
     @settings(max_examples=50, deadline=None)
     def test_auto_size_height_false_preserves_user_size_hint_y(self, markdown_text, user_size_hint_y):
         """When auto_size_height=False, user-specified size_hint_y is preserved."""
@@ -184,7 +200,7 @@ class TestAutoSizeHeightFalseBehavior:
 
     @pytest.mark.property
     @given(simple_markdown_document())
-    # Mixed finite/complex strategy: 20 examples (5 finite × 4 complex samples)
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_auto_size_height_false_no_height_binding(self, markdown_text):
         """When auto_size_height=False, height is not bound to minimum_height."""
@@ -198,6 +214,12 @@ class TestAutoSizeHeightFalseBehavior:
         assert label.auto_size_height is False, \
             f"Expected auto_size_height=False, got {label.auto_size_height}"
 
+        # Verify height is NOT bound to minimum_height (they can differ)
+        # When size_hint_y is not None, height is controlled by layout, not minimum_height
+        # We verify the binding doesn't exist by checking the property value is preserved
+        assert label.size_hint_y == 1, \
+            f"Expected default size_hint_y=1, got {label.size_hint_y}"
+
 
 # *For any* MarkdownLabel, when `auto_size_height` is toggled from True to False,
 # the height binding SHALL be removed and `size_hint_y` SHALL be restored. When
@@ -209,7 +231,7 @@ class TestAutoSizeHeightDynamicToggling:
 
     @pytest.mark.property
     @given(simple_markdown_document())
-    # Mixed finite/complex strategy: 20 examples (5 finite × 4 complex samples)
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_toggle_true_to_false_restores_size_hint_y(self, markdown_text):
         """Toggling auto_size_height from True to False restores size_hint_y."""
@@ -231,7 +253,7 @@ class TestAutoSizeHeightDynamicToggling:
 
     @pytest.mark.property
     @given(simple_markdown_document())
-    # Mixed finite/complex strategy: 20 examples (5 finite × 4 complex samples)
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_toggle_false_to_true_sets_size_hint_y_none(self, markdown_text):
         """Toggling auto_size_height from False to True sets size_hint_y=None."""
@@ -254,7 +276,7 @@ class TestAutoSizeHeightDynamicToggling:
     @pytest.mark.property
     @given(simple_markdown_document(),
            st.floats(min_value=0.1, max_value=2.0, allow_nan=False, allow_infinity=False))
-    # Mixed finite/complex strategy: 50 examples (5 finite × 10 complex samples)
+    # Complex strategy: 50 examples (adequate coverage)
     @settings(max_examples=50, deadline=None)
     def test_toggle_preserves_user_size_hint_y(self, markdown_text, user_size_hint_y):
         """Toggling preserves the original user-specified size_hint_y value."""
@@ -288,7 +310,7 @@ class TestAutoSizeHeightDynamicToggling:
 
     @pytest.mark.property
     @given(simple_markdown_document())
-    # Mixed finite/complex strategy: 20 examples (5 finite × 4 complex samples)
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_multiple_toggles_maintain_consistency(self, markdown_text):
         """Multiple toggles maintain consistent behavior."""
@@ -322,7 +344,7 @@ class TestStrictLabelModeSizingBehavior:
 
     @pytest.mark.property
     @given(simple_markdown_document())
-    # Mixed finite/complex strategy: 20 examples (5 finite × 4 complex samples)
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_strict_mode_preserves_default_size_hint_y(self, markdown_text):
         """When strict_label_mode=True, default size_hint_y=1 is preserved."""
@@ -337,7 +359,7 @@ class TestStrictLabelModeSizingBehavior:
     @pytest.mark.property
     @given(simple_markdown_document(),
            st.floats(min_value=0.1, max_value=2.0, allow_nan=False, allow_infinity=False))
-    # Mixed finite/complex strategy: 50 examples (5 finite × 10 complex samples)
+    # Complex strategy: 50 examples (adequate coverage)
     @settings(max_examples=50, deadline=None)
     def test_strict_mode_preserves_user_size_hint_y(self, markdown_text, user_size_hint_y):
         """When strict_label_mode=True, user-specified size_hint_y is preserved."""
@@ -355,7 +377,7 @@ class TestStrictLabelModeSizingBehavior:
 
     @pytest.mark.property
     @given(simple_markdown_document())
-    # Mixed finite/complex strategy: 20 examples (5 finite × 4 complex samples)
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_strict_mode_height_not_bound_to_minimum(self, markdown_text):
         """When strict_label_mode=True, height is not bound to minimum_height."""
@@ -368,6 +390,11 @@ class TestStrictLabelModeSizingBehavior:
 
         assert label.strict_label_mode is True, \
             f"Expected strict_label_mode=True, got {label.strict_label_mode}"
+
+        # Verify height is NOT bound to minimum_height
+        # When size_hint_y is not None, height is controlled by layout, not minimum_height
+        assert label.size_hint_y == 1, \
+            f"Expected default size_hint_y=1, got {label.size_hint_y}"
 
     def test_strict_mode_default_is_false(self):
         """Default MarkdownLabel should have strict_label_mode=False."""
@@ -401,7 +428,7 @@ class TestStrictLabelModeSizingBehavior:
 
     @pytest.mark.property
     @given(simple_markdown_document())
-    # Mixed finite/complex strategy: 20 examples (5 finite × 4 complex samples)
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_strict_mode_toggle_from_false_to_true(self, markdown_text):
         """Toggling strict_label_mode from False to True disables auto-sizing."""
@@ -424,7 +451,7 @@ class TestStrictLabelModeSizingBehavior:
 
     @pytest.mark.property
     @given(simple_markdown_document())
-    # Mixed finite/complex strategy: 20 examples (5 finite × 4 complex samples)
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_strict_mode_toggle_from_true_to_false(self, markdown_text):
         """Toggling strict_label_mode from True to False enables auto-sizing."""
@@ -448,7 +475,7 @@ class TestStrictLabelModeSizingBehavior:
     @pytest.mark.property
     @given(simple_markdown_document(),
            st.floats(min_value=0.1, max_value=2.0, allow_nan=False, allow_infinity=False))
-    # Mixed finite/complex strategy: 50 examples (5 finite × 10 complex samples)
+    # Complex strategy: 50 examples (adequate coverage)
     @settings(max_examples=50, deadline=None)
     def test_strict_mode_toggle_preserves_user_size_hint_y(self, markdown_text, user_size_hint_y):
         """Toggling strict_label_mode preserves user-specified size_hint_y."""
@@ -475,7 +502,7 @@ class TestStrictLabelModeSizingBehavior:
 
     @pytest.mark.property
     @given(simple_markdown_document())
-    # Mixed finite/complex strategy: 20 examples (5 finite × 4 complex samples)
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_strict_mode_overrides_auto_size_height(self, markdown_text):
         """strict_label_mode=True overrides auto_size_height=True behavior."""
@@ -492,7 +519,7 @@ class TestStrictLabelModeSizingBehavior:
 
     @pytest.mark.property
     @given(simple_markdown_document())
-    # Mixed finite/complex strategy: 20 examples (5 finite × 4 complex samples)
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_strict_mode_ignores_auto_size_height_changes(self, markdown_text):
         """When strict_label_mode=True, auto_size_height changes are ignored."""
@@ -510,26 +537,29 @@ class TestStrictLabelModeSizingBehavior:
 
     @pytest.mark.property
     @given(simple_markdown_document())
-    # Mixed finite/complex strategy: 20 examples (5 finite × 4 complex samples)
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
-    def test_strict_mode_updates_value(self, markdown_text):
+    def test_strict_mode_change_triggers_rebuild(self, markdown_text):
         """Changing strict_label_mode triggers widget rebuild."""
         assume(markdown_text.strip())
 
         label = MarkdownLabel(text=markdown_text, strict_label_mode=False)
-        initial_children = list(label.children)
+        ids_before = collect_widget_ids(label, exclude_root=True)
 
         # Toggle strict_label_mode
         label.strict_label_mode = True
+        label.force_rebuild()
 
         # Widget tree should be rebuilt (children may be different objects)
-        # We verify by checking that the label still has children
+        assert_rebuild_occurred(label, ids_before)
+
+        # Verify the label still has children
         assert len(label.children) >= 1, \
             "Expected at least 1 child after strict_label_mode toggle"
 
     @pytest.mark.property
     @given(simple_markdown_document())
-    # Mixed finite/complex strategy: 20 examples (5 finite × 4 complex samples)
+    # Complex strategy: 20 examples (adequate coverage)
     @settings(max_examples=20, deadline=None)
     def test_multiple_strict_mode_toggles_maintain_consistency(self, markdown_text):
         """Multiple strict_label_mode toggles maintain consistent behavior."""
@@ -553,35 +583,5 @@ class TestStrictLabelModeSizingBehavior:
             assert label.size_hint_y == expected_size_hint_y, \
                 f"Expected size_hint_y={expected_size_hint_y}, got {label.size_hint_y}"
 
-    @pytest.mark.test_tests
-    def test_all_classes_test_related_functionality(self):
-        """All test classes in this module test related sizing functionality."""
-        import inspect
-        import kivy_garden.markdownlabel.tests.test_sizing_behavior as sizing_module
-
-        # Get all test classes and their methods
-        for name, obj in inspect.getmembers(sizing_module):
-            if (inspect.isclass(obj) and
-                name.startswith('Test') and
-                    obj.__module__ == sizing_module.__name__):
-
-                # Get test methods
-                test_methods = [method_name for method_name, method in inspect.getmembers(obj)
-                              if method_name.startswith('test_')]
-
-                if test_methods:  # Only check classes with test methods
-                    # Check that class docstring or name indicates sizing focus
-                    class_doc = obj.__doc__ or ""
-                    class_name_lower = name.lower()
-
-                    sizing_indicators = [
-                        'sizing', 'size', 'auto', 'height', 'strict', 'grouping'
-                    ]
-
-                    has_sizing_indicator = (
-                        any(indicator in class_name_lower for indicator in sizing_indicators) or
-                        any(indicator in class_doc.lower() for indicator in sizing_indicators)
-                    )
-
-                    assert has_sizing_indicator, \
-                        f"Test class {name} should focus on sizing behavior"
+# NOTE: Meta-test for class organization has been moved to
+# meta_tests/test_sizing_behavior_grouping.py

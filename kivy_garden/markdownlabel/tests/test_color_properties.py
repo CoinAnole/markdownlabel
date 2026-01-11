@@ -1,9 +1,8 @@
 """
 Property-based tests for color-related properties in MarkdownLabel widget.
 
-Tests verify that color properties (color, disabled_color) are correctly
-forwarded to internal Label widgets and applied appropriately based on
-the widget's disabled state.
+Tests verify that color properties (color) are correctly forwarded to internal
+Label widgets and applied appropriately.
 """
 
 import pytest
@@ -13,7 +12,8 @@ from kivy_garden.markdownlabel import MarkdownLabel
 from .test_utils import (
     color_strategy,
     find_labels_recursive,
-    colors_equal
+    colors_equal,
+    collect_widget_ids
 )
 
 
@@ -79,11 +79,14 @@ class TestColorPropertyForwarding:
     @given(color_strategy, color_strategy)
     # Complex strategy: 50 examples (adequate coverage)
     @settings(max_examples=50, deadline=None)
-    def test_color_change_updates_value(self, color1, color2):
+    def test_color_change_updates_value_without_rebuild(self, color1, color2):
         """Changing color updates color on existing widgets without rebuild."""
         assume(not colors_equal(color1, color2))
 
         label = MarkdownLabel(text='Hello World', color=color1)
+
+        # Collect widget IDs before change
+        ids_before = collect_widget_ids(label)
 
         # Verify initial color
         labels = find_labels_recursive(label)
@@ -93,7 +96,11 @@ class TestColorPropertyForwarding:
         # Change color
         label.color = color2
 
-        # Verify new color
+        # Verify NO rebuild occurred (style-only property)
+        ids_after = collect_widget_ids(label)
+        assert ids_before == ids_after, "Widget tree should NOT rebuild for color changes"
+
+        # Verify new color was applied
         labels = find_labels_recursive(label)
         for lbl in labels:
             assert colors_equal(list(lbl.color), color2), \
@@ -154,6 +161,10 @@ class TestColorPropertyForwarding:
         # Should have both body and code labels
         assert len(body_labels) >= 1, "Expected at least one body text label with specified color"
         assert len(code_labels) >= 1, "Expected at least one code label with light color"
+
+
+class TestLinkStyling:
+    """Tests for link styling behavior."""
 
     @pytest.mark.unit
     def test_links_unstyled_by_default(self):

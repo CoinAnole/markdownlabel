@@ -79,6 +79,7 @@ class TestRegularClass:
             os.unlink(temp_file)
 
 
+@pytest.mark.test_tests
 class TestPropertyTestExtraction:
     """Tests for extracting property tests from file content."""
 
@@ -219,6 +220,7 @@ def test_multiline_given(self, value):
             os.unlink(temp_file)
 
 
+@pytest.mark.test_tests
 class TestValidationReport:
     """Tests for test suite validation reporting."""
 
@@ -280,6 +282,7 @@ def test_boolean_good(self, value):
             assert report.estimated_time_reduction_seconds > 0
 
 
+@pytest.mark.test_tests
 class TestRationaleGeneration:
     """Tests for optimization rationale generation."""
 
@@ -287,6 +290,7 @@ class TestRationaleGeneration:
         """Set up test fixtures."""
         self.analyzer = FileAnalyzer()
 
+    @pytest.mark.property
     @given(st.sampled_from(['Boolean', 'Small finite', 'Medium finite', 'Combination', 'Complex']))
     # Small finite strategy: 5 examples (input space size: 5)
     @settings(max_examples=5, deadline=None)
@@ -299,6 +303,8 @@ class TestRationaleGeneration:
             complexity_level=2
         )
 
+        # Access private method to test rationale generation logic directly.
+        # Reference: TESTING.md Section "Testing Exceptions"
         rationale = self.analyzer._generate_rationale(analysis, 10)
 
         assert isinstance(rationale, str)
@@ -315,6 +321,7 @@ class TestRationaleGeneration:
             assert 'complex' in rationale or 'complexity' in rationale
 
 
+@pytest.mark.test_tests
 class TestErrorHandling:
     """Tests for error handling in file analysis."""
 
@@ -385,6 +392,7 @@ def test_incomplete2(self):
             os.unlink(temp_file)
 
 
+@pytest.mark.test_tests
 class TestIntegrationWithOptimizationTools:
     """Integration tests with StrategyClassifier and MaxExamplesCalculator."""
 
@@ -450,6 +458,7 @@ def test_two_booleans(self, values):
             os.unlink(temp_file)
 
 
+@pytest.mark.test_tests
 class TestToolIntegrationCompatibility:
     """Property-based tests for tool integration compatibility."""
 
@@ -457,6 +466,7 @@ class TestToolIntegrationCompatibility:
         """Set up test fixtures."""
         self.analyzer = FileAnalyzer()
 
+    @pytest.mark.property
     @given(
         strategy_type=st.sampled_from([
             'Boolean', 'Small finite', 'Small finite', 'Small finite', 'Small finite'
@@ -464,7 +474,7 @@ class TestToolIntegrationCompatibility:
         max_examples=st.integers(min_value=1, max_value=100),
         has_comment=st.booleans()
     )
-    # Mixed finite/complex strategy: 20 examples (4 finite × 5 complex samples)
+    # Combination strategy: 20 examples (combination coverage)
     @settings(max_examples=20, deadline=None)
     def test_tool_integration_compatibility(self, strategy_type, max_examples, has_comment):
         """**Feature: test-comment-standardization, Tool Integration Compatibility**
