@@ -224,6 +224,10 @@ class MarkdownLabelRendering:
         elif self.render_mode == 'texture':
             return 'texture'
         else:  # 'auto' mode
+            # Heuristic selection:
+            # - Prefer widgets for simple content (fast + interactive widget tree)
+            # - Prefer texture when layout constraints or content complexity would
+            #   likely cause expensive layout convergence (Clock.max_iteration).
             if self.strict_label_mode:
                 has_height_constraint = (
                     (self.text_size and self.text_size[1] is not None) or
@@ -231,6 +235,66 @@ class MarkdownLabelRendering:
                 )
                 if has_height_constraint:
                     return 'texture'
+
+            # Complexity-based fallback for common "chat feed" pattern:
+            # a dynamic-height MarkdownLabel inside a ScrollView can be extremely
+            # expensive to converge for mixed content (lists + tables + code).
+            # Note: `_ast_tokens` is populated during `_rebuild_widgets()` before
+            # this method is used for rendering decisions.
+            try:
+                tokens = self._ast_tokens
+            except AttributeError:
+                tokens = []
+
+            token_count = 0
+            max_depth = 0
+            has_table = False
+            has_list = False
+            has_block_code = False
+
+            if tokens:
+                stack = [(tok, 1) for tok in tokens if isinstance(tok, dict)]
+                while stack:
+                    tok, depth = stack.pop()
+                    if not isinstance(tok, dict):
+                        continue
+                    token_count += 1
+                    if depth > max_depth:
+                        max_depth = depth
+                    tok_type = tok.get('type')
+                    if tok_type == 'table' or (isinstance(tok_type, str) and tok_type.startswith('table_')):
+                        has_table = True
+                    elif tok_type in ('list', 'list_item'):
+                        has_list = True
+                    elif tok_type == 'block_code':
+                        has_block_code = True
+                    for child in (tok.get('children') or []):
+                        stack.append((child, depth + 1))
+
+            # Score is intentionally biased toward constructs that produce deep,
+            # wide widget trees (tables/lists/code blocks).
+            complexity_score = token_count
+            if has_table:
+                complexity_score += 80
+            if has_list:
+                complexity_score += 40
+            if has_block_code:
+                complexity_score += 50
+            if max_depth > 6:
+                complexity_score += (max_depth - 6) * 10
+
+            dynamic_height_layout = self.auto_size_height or self.size_hint_y is None
+
+            # Conservative thresholds:
+            # - Very large documents always prefer texture
+            # - Medium documents prefer texture only when combined with a dynamic-height layout
+            if complexity_score >= 500:
+                return 'texture'
+            # Strong signal: mixed constructs (tables + lists + code) in a dynamic-height layout.
+            if dynamic_height_layout and has_table and has_list and has_block_code and complexity_score >= 180:
+                return 'texture'
+            if dynamic_height_layout and complexity_score >= 220 and (has_table or (has_list and has_block_code)):
+                return 'texture'
 
             return 'widgets'
 
