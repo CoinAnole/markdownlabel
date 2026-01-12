@@ -798,6 +798,41 @@ class KivyRenderer(KivyRendererTableMixin):
             pass
 
         # Store alt text for fallback
+        if alt_text:
+            image.alt_text = alt_text
+
+        # Return image, but handle loading errors with fallback?
+        # For now, AsyncImage handles its own loading.
+        return image
+
+    def block_html(self, token: Dict[str, Any], state: Any = None) -> Label:
+        """Render block HTML as a plain text Label (showing source).
+
+        Args:
+            token: HTML token with 'raw' content
+            state: Block state
+
+        Returns:
+            Label widget with escaped HTML source
+        """
+        raw = token.get('raw', '')
+        # User requested plain text styling, same as paragraph
+        text = escape_kivy_markup(raw.rstrip('\n'))
+
+        label_kwargs = self._build_label_kwargs(
+            text=text,
+            font_size=self.base_font_size,
+            size_hint_y=None,
+            size_hint_x=1,
+            # Use default font_name (Roboto), not code_font_name
+        )
+
+        label = Label(**label_kwargs)
+        # Set font scale metadata (same as paragraph)
+        label._font_scale = 1.0
+
+        return label
+
         image.alt_text = alt_text
 
         # Set initial height based on texture when loaded
