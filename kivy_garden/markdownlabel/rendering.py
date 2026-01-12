@@ -32,10 +32,6 @@ def apply_text_size_binding(label, text_size, strict_label_mode):
     text_width, text_height = text_size if text_size else (None, None)
     strict = strict_label_mode
 
-    tex_cb = lambda inst, val: setattr(inst, 'height', val[1])
-    label._md_text_size_tex_cb = tex_cb
-    label.bind(texture_size=tex_cb)
-
     if text_width is not None:
         if text_height is not None:
             # Both width and height specified
@@ -62,12 +58,14 @@ def apply_text_size_binding(label, text_size, strict_label_mode):
                 label._md_text_size_width_cb = width_cb
                 label.bind(width=width_cb)
 
-    # Always bind texture_size to height for proper sizing
-    # But ONLY if size_hint_y is None (otherwise layout controls height)
-    if label.size_hint_y is None and getattr(label, '_md_text_size_tex_cb', None) is None:
+    # Bind texture_size -> height for auto-sizing, but ONLY when the layout isn't
+    # driving height (i.e., size_hint_y is None). Otherwise this can create a
+    # feedback loop: layout sets height -> text_size/texture updates -> callback
+    # sets height -> layout runs again.
+    if label.size_hint_y is None:
         def tex_cb(inst, val):
             setattr(inst, 'height', val[1])
-        
+
         label._md_text_size_tex_cb = tex_cb
         label.bind(texture_size=tex_cb)
 

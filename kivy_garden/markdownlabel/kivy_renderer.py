@@ -299,7 +299,8 @@ class KivyRenderer(KivyRendererTableMixin):
             color=[0.6, 0.6, 0.6, 1],  # Gray text
             italic=True
         )
-        label.bind(texture_size=lambda inst, val: setattr(inst, 'height', val[1]))
+        # NOTE: Don't bind texture_size->height here; MarkdownLabel applies a
+        # consistent binding pass across all Labels after rendering.
         return label
 
     def _render_inline(self, children: List[Dict[str, Any]]) -> str:
@@ -508,7 +509,11 @@ class KivyRenderer(KivyRendererTableMixin):
             valign='top',  # Force top alignment so bullets align with first line
             markup=False,
             size_hint_x=None,
-            size_hint_y=1,
+            # IMPORTANT: do NOT use size_hint_y=1 here. item_layout's height is
+            # driven by minimum_height (children heights), and a child whose
+            # height is driven by the parent creates a feedback loop that can
+            # hit Clock.max_iteration.
+            size_hint_y=None,
         )
 
         marker = Label(**marker_kwargs)
@@ -536,6 +541,11 @@ class KivyRenderer(KivyRendererTableMixin):
                 content.add_widget(child_widget)
 
         item_layout.add_widget(content)
+
+        # Keep the marker column aligned to the content column height without
+        # introducing a parent-driven size_hint_y cycle.
+        content.bind(height=marker.setter('height'))
+        marker.height = content.height
 
         return item_layout
 
@@ -638,8 +648,10 @@ class KivyRenderer(KivyRendererTableMixin):
             label_kwargs['font_hinting'] = self.font_hinting
 
         label = Label(**label_kwargs)
-        label.bind(texture_size=lambda inst, val: setattr(inst, 'height', val[1]))
-        label.bind(size=lambda instance, value: setattr(instance, 'text_size', (value[0], None)))
+        # NOTE: Don't bind size/texture_size here; MarkdownLabel applies a
+        # consistent text_size + texture_size->height binding pass across all
+        # Labels after rendering. Duplicating bindings here can create layout
+        # thrash and trigger Clock.max_iteration warnings on complex content.
 
         # Set font scale metadata for code blocks
         label._font_scale = 1.0
