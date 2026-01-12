@@ -772,9 +772,19 @@ class KivyRenderer(KivyRendererTableMixin):
         image = AsyncImage(
             source=url,
             size_hint_y=None,
-            allow_stretch=True,
-            keep_ratio=True
         )
+        # Kivy 2.2+ deprecates allow_stretch/keep_ratio in favor of fit_mode.
+        # We want aspect-preserving resizing to fit within the widget (equivalent
+        # to allow_stretch=True, keep_ratio=True).
+        try:
+            if 'fit_mode' in image.properties():
+                image.fit_mode = 'contain'
+            else:
+                image.allow_stretch = True
+                image.keep_ratio = True
+        except Exception:
+            # Defensive: never fail rendering due to a sizing hint.
+            pass
 
         # Store alt text for fallback
         image.alt_text = alt_text

@@ -371,9 +371,19 @@ class MarkdownLabelRendering:
                 texture=texture,
                 size=(content_width, content_height),
                 size_hint=(None, None),
-                allow_stretch=True,
-                keep_ratio=False
             )
+            # Kivy 2.2+ deprecates allow_stretch/keep_ratio in favor of fit_mode.
+            # We want the rendered texture to stretch to our explicit size without
+            # preserving aspect ratio (equivalent to allow_stretch=True, keep_ratio=False).
+            try:
+                if 'fit_mode' in image.properties():
+                    image.fit_mode = 'fill'
+                else:
+                    image.allow_stretch = True
+                    image.keep_ratio = False
+            except Exception:
+                # Defensive: never fail rendering due to a sizing hint.
+                pass
 
             fbo.remove(content.canvas)
 
