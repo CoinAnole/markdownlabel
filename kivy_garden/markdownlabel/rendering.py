@@ -62,9 +62,12 @@ def apply_text_size_binding(label, text_size, strict_label_mode):
     # driving height (i.e., size_hint_y is None). Otherwise this can create a
     # feedback loop: layout sets height -> text_size/texture updates -> callback
     # sets height -> layout runs again.
-    if label.size_hint_y is None:
+    if label.size_hint_y is None and not getattr(label, '_md_disable_tex_height_binding', False):
         def tex_cb(inst, val):
-            setattr(inst, 'height', val[1])
+            new_h = float(val[1])
+            # Avoid re-triggering layout work when texture height didn't meaningfully change.
+            if new_h > 0 and inst.height != new_h:
+                inst.height = new_h
 
         label._md_text_size_tex_cb = tex_cb
         label.bind(texture_size=tex_cb)

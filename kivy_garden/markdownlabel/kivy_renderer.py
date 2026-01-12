@@ -518,8 +518,19 @@ class KivyRenderer(KivyRendererTableMixin):
 
         marker = Label(**marker_kwargs)
         marker.width = 30
-        # Bind text_size to enable valign to work properly
-        marker.bind(size=lambda inst, val: setattr(inst, 'text_size', val))
+        # The marker's height is driven by the list item content column height
+        # (see binding below). Disable auto texture_size->height binding to avoid
+        # a feedback loop (height changes -> size changes -> text_size changes ->
+        # texture_size changes -> height changes ...).
+        marker._md_disable_tex_height_binding = True
+
+        # Bind text_size to enable valign to work properly. Use width/height
+        # bindings rather than size to reduce churn.
+        def _update_marker_text_size(*_args):
+            marker.text_size = (marker.width, marker.height)
+
+        marker.bind(width=_update_marker_text_size, height=_update_marker_text_size)
+        _update_marker_text_size()
 
         # Set font scale metadata for list markers
         marker._font_scale = 1.0
