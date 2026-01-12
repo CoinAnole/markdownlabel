@@ -797,9 +797,23 @@ class KivyRenderer(KivyRendererTableMixin):
             # Defensive: never fail rendering due to a sizing hint.
             pass
 
-        # Store alt text for fallback
-        if alt_text:
-            image.alt_text = alt_text
+        # Store alt text for fallback (always set attribute for testing consistency)
+        image.alt_text = alt_text
+
+        # Set initial height based on texture when loaded
+        def on_texture(instance, value):
+            if value:
+                # Calculate height maintaining aspect ratio
+                ratio = value.height / value.width if value.width > 0 else 1
+                instance.height = instance.width * ratio
+            else:
+                # Fallback height if no texture
+                instance.height = 100
+
+        image.bind(texture=on_texture)
+
+        # Set default height until texture loads
+        image.height = 100
 
         # Return image, but handle loading errors with fallback?
         # For now, AsyncImage handles its own loading.
@@ -832,25 +846,6 @@ class KivyRenderer(KivyRendererTableMixin):
         label._font_scale = 1.0
 
         return label
-
-        image.alt_text = alt_text
-
-        # Set initial height based on texture when loaded
-        def on_texture(instance, value):
-            if value:
-                # Calculate height maintaining aspect ratio
-                ratio = value.height / value.width if value.width > 0 else 1
-                instance.height = instance.width * ratio
-            else:
-                # Fallback height if no texture
-                instance.height = 100
-
-        image.bind(texture=on_texture)
-
-        # Set default height until texture loads
-        image.height = 100
-
-        return image
 
     def newline(self, token: Dict[str, Any], state: Any = None) -> Widget:
         """Render a newline as a small spacer widget.
