@@ -294,9 +294,11 @@ class MarkdownLabelRendering:
             if complexity_score >= 500:
                 return 'texture'
             # Strong signal: mixed constructs (tables + lists + code) in a dynamic-height layout.
-            if dynamic_height_layout and has_table and has_list and has_block_code and complexity_score >= 180:
+            if (dynamic_height_layout and has_table and has_list and has_block_code
+                    and complexity_score >= 180):
                 return 'texture'
-            if dynamic_height_layout and complexity_score >= 220 and (has_table or (has_list and has_block_code)):
+            if (dynamic_height_layout and complexity_score >= 220
+                    and (has_table or (has_list and has_block_code))):
                 return 'texture'
 
             return 'widgets'

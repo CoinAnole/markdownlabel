@@ -7,7 +7,6 @@ and are available for use across all test modules.
 
 import pytest
 from hypothesis import given, strategies as st, settings
-from kivy.uix.label import Label
 
 from kivy_garden.markdownlabel import MarkdownLabel
 from kivy_garden.markdownlabel.tests.test_utils import (
@@ -180,7 +179,7 @@ class TestSharedInfrastructureHelpers:
         # Test with different colors (if they're actually different)
         result = colors_equal(color1, color2)
         assert isinstance(result, bool), "colors_equal should return boolean"
-        
+
         # Test that clearly different colors return False
         if not colors_equal(color1, color2):
             # Verify they are actually different
@@ -197,7 +196,7 @@ class TestSharedInfrastructureHelpers:
         # Test with different padding (if they're actually different)
         result = padding_equal(padding1, padding2)
         assert isinstance(result, bool), "padding_equal should return boolean"
-        
+
         # Test that clearly different padding returns False
         if not padding_equal(padding1, padding2):
             # Verify they are actually different
