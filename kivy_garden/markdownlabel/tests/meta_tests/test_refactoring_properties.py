@@ -108,12 +108,12 @@ class TestDiscoveryFunctionality:
         # Test discovery startup by running discovery on any available test module
         # Find the first available test module dynamically
         parent_test_dir = os.path.dirname(test_dir)
-        test_modules = [f for f in os.listdir(parent_test_dir) 
+        test_modules = [f for f in os.listdir(parent_test_dir)
                        if f.startswith('test_') and f.endswith('.py')]
-        
+
         assert len(test_modules) > 0, \
             f"No test modules found in {parent_test_dir}. Cannot validate discovery functionality."
-        
+
         # Use the first available test module
         minimal_module = test_modules[0]
         module_path = os.path.join(parent_test_dir, minimal_module)
