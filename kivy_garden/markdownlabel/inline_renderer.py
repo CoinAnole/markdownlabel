@@ -7,6 +7,7 @@ Converts inline Markdown AST tokens to Kivy markup strings.
 
 from typing import Any, Dict, List, Optional
 
+from .font_fallback import apply_fallback_markup
 
 def escape_kivy_markup(text: str) -> str:
     """Escape Kivy markup special characters for safe display."""
@@ -27,7 +28,10 @@ class InlineRenderer:
     def __init__(self,
                  link_color: Optional[List[float]] = None,
                  code_font_name: str = 'RobotoMono-Regular',
-                 link_style: str = 'unstyled'):
+                 link_style: str = 'unstyled',
+                 font_name: str = 'Roboto',
+                 fallback_enabled: bool = False,
+                 fallback_fonts: Optional[List[str]] = None):
         """Initialize the InlineRenderer.
 
         Args:
@@ -38,6 +42,9 @@ class InlineRenderer:
         self.link_color = link_color or [0, 0.5, 1, 1]
         self.code_font_name = code_font_name
         self.link_style = link_style
+        self.font_name = font_name
+        self.fallback_enabled = fallback_enabled
+        self.fallback_fonts = fallback_fonts or []
 
     def render(self, children: List[Dict[str, Any]]) -> str:
         """Render inline tokens to a Kivy markup string.
@@ -83,6 +90,14 @@ class InlineRenderer:
             Escaped text
         """
         raw = token.get('raw', '')
+        if self.fallback_enabled:
+            return apply_fallback_markup(
+                raw,
+                primary_font=self.font_name,
+                fallback_fonts=self.fallback_fonts,
+                enabled=True,
+                wrap_primary=False
+            )
         return self._escape_markup(raw)
 
     def strong(self, token: Dict[str, Any]) -> str:
@@ -121,8 +136,13 @@ class InlineRenderer:
             Kivy font markup for monospace
         """
         raw = token.get('raw', '')
-        escaped = self._escape_markup(raw)
-        return f'[font={self.code_font_name}]{escaped}[/font]'
+        return apply_fallback_markup(
+            raw,
+            primary_font=self.code_font_name,
+            fallback_fonts=self.fallback_fonts,
+            enabled=self.fallback_enabled,
+            wrap_primary=True
+        )
 
     def strikethrough(self, token: Dict[str, Any]) -> str:
         """Render strikethrough text as [s]...[/s].

@@ -14,6 +14,7 @@ from kivy.uix.widget import Widget
 from kivy.uix.image import AsyncImage
 from kivy.graphics import Color, Rectangle, Line
 
+from .font_fallback import apply_fallback_markup
 from .inline_renderer import InlineRenderer, escape_kivy_markup
 from .kivy_renderer_tables import KivyRendererTableMixin
 from .rendering import apply_text_size_binding as _apply_text_size_binding_helper
@@ -76,7 +77,9 @@ class KivyRenderer(KivyRendererTableMixin):
                  split_str: str = '',
                  text_padding: Optional[List[float]] = None,
                  strict_label_mode: bool = False,
-                 ellipsis_options: Optional[Dict] = None):
+                 ellipsis_options: Optional[Dict] = None,
+                 fallback_enabled: bool = False,
+                 fallback_fonts: Optional[List[str]] = None):
         """Initialize the KivyRenderer.
 
         Args:
@@ -153,6 +156,8 @@ class KivyRenderer(KivyRendererTableMixin):
         self.text_padding = text_padding or [0, 0, 0, 0]
         self.strict_label_mode = strict_label_mode
         self.ellipsis_options = ellipsis_options or {}
+        self.fallback_enabled = fallback_enabled
+        self.fallback_fonts = fallback_fonts or []
 
         # Compute effective color based on disabled state
         self.effective_color = self.disabled_color if self.disabled else self.color
@@ -164,6 +169,9 @@ class KivyRenderer(KivyRendererTableMixin):
             link_color=self.link_color,
             code_font_name=self.code_font_name,
             link_style=self.link_style,
+            font_name=self.font_name,
+            fallback_enabled=self.fallback_enabled,
+            fallback_fonts=self.fallback_fonts,
         )
 
         # Track nesting depth for deep nesting protection
@@ -601,7 +609,13 @@ class KivyRenderer(KivyRendererTableMixin):
         language = attrs.get('info', '')
 
         # Escape the code text for Kivy markup
-        escaped_text = escape_kivy_markup(raw.rstrip('\n'))
+        escaped_text = apply_fallback_markup(
+            raw.rstrip('\n'),
+            primary_font=self.code_font_name,
+            fallback_fonts=self.fallback_fonts,
+            enabled=self.fallback_enabled,
+            wrap_primary=True
+        )
 
         # Create container with background
         container = BoxLayout(

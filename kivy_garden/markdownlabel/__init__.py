@@ -168,6 +168,8 @@ class MarkdownLabel(MarkdownLabelProperties, MarkdownLabelRendering, BoxLayout):
         # Color changes affect generated markup/backgrounds; treat as structure-level.
         self.bind(link_color=self._make_style_callback('link_color'))
         self.bind(code_bg_color=self._make_style_callback('code_bg_color'))
+        self.bind(fallback_enabled=self._make_style_callback('fallback_enabled'))
+        self.bind(fallback_fonts=self._make_style_callback('fallback_fonts'))
 
         # Special-case style-only properties with extra handling
         # text_size is style-only but needs binding refresh on existing Labels
@@ -328,7 +330,9 @@ class MarkdownLabel(MarkdownLabelProperties, MarkdownLabelRendering, BoxLayout):
             text_padding=list(self.text_padding),
             strict_label_mode=self.strict_label_mode,
             ellipsis_options=dict(self.ellipsis_options),
-            limit_render_to_text_bbox=self.limit_render_to_text_bbox
+            limit_render_to_text_bbox=self.limit_render_to_text_bbox,
+            fallback_enabled=self.fallback_enabled,
+            fallback_fonts=list(self.fallback_fonts)
         )
 
         # Render AST to widget tree
