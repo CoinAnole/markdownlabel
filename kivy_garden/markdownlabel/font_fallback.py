@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import logging
 import unicodedata
 from functools import lru_cache
 from pathlib import Path
@@ -10,6 +11,10 @@ from typing import Iterable, List, Optional, Sequence, Tuple
 from fontTools.ttLib import TTCollection, TTFont
 from kivy.core.text import LabelBase
 from kivy.resources import resource_find
+
+_fonttools_logger = logging.getLogger("fontTools")
+if _fonttools_logger.level < logging.WARNING:
+    _fonttools_logger.setLevel(logging.WARNING)
 
 
 def escape_kivy_markup(text: str) -> str:
