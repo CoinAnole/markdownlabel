@@ -68,6 +68,7 @@ class MarkdownLabelProperties:
         'code_bg_color',
         'fallback_enabled',
         'fallback_fonts',
+        'fallback_font_scales',
     })
 
     # Core properties
@@ -79,6 +80,7 @@ class MarkdownLabelProperties:
     code_bg_color = ColorProperty([0.15, 0.15, 0.15, 1])
     fallback_enabled = BooleanProperty(False)
     fallback_fonts = ListProperty([])
+    fallback_font_scales = DictProperty({})
 
     def _get_font_size(self):
         """Getter for font_size alias property."""

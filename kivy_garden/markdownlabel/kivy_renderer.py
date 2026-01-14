@@ -79,7 +79,8 @@ class KivyRenderer(KivyRendererTableMixin):
                  strict_label_mode: bool = False,
                  ellipsis_options: Optional[Dict] = None,
                  fallback_enabled: bool = False,
-                 fallback_fonts: Optional[List[str]] = None):
+                 fallback_fonts: Optional[List[str]] = None,
+                 fallback_font_scales: Optional[Dict[str, float]] = None):
         """Initialize the KivyRenderer.
 
         Args:
@@ -158,6 +159,7 @@ class KivyRenderer(KivyRendererTableMixin):
         self.ellipsis_options = ellipsis_options or {}
         self.fallback_enabled = fallback_enabled
         self.fallback_fonts = fallback_fonts or []
+        self.fallback_font_scales = fallback_font_scales or {}
 
         # Compute effective color based on disabled state
         self.effective_color = self.disabled_color if self.disabled else self.color
@@ -172,6 +174,8 @@ class KivyRenderer(KivyRendererTableMixin):
             font_name=self.font_name,
             fallback_enabled=self.fallback_enabled,
             fallback_fonts=self.fallback_fonts,
+            base_font_size=self.base_font_size,
+            fallback_font_scales=self.fallback_font_scales,
         )
 
         # Track nesting depth for deep nesting protection
@@ -614,7 +618,9 @@ class KivyRenderer(KivyRendererTableMixin):
             primary_font=self.code_font_name,
             fallback_fonts=self.fallback_fonts,
             enabled=self.fallback_enabled,
-            wrap_primary=True
+            wrap_primary=True,
+            base_font_size=self.base_font_size,
+            font_scales=self.fallback_font_scales
         )
 
         # Create container with background

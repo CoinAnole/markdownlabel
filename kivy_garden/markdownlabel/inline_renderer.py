@@ -31,7 +31,9 @@ class InlineRenderer:
                  link_style: str = 'unstyled',
                  font_name: str = 'Roboto',
                  fallback_enabled: bool = False,
-                 fallback_fonts: Optional[List[str]] = None):
+                 fallback_fonts: Optional[List[str]] = None,
+                 base_font_size: Optional[float] = None,
+                 fallback_font_scales: Optional[Dict[str, float]] = None):
         """Initialize the InlineRenderer.
 
         Args:
@@ -45,6 +47,8 @@ class InlineRenderer:
         self.font_name = font_name
         self.fallback_enabled = fallback_enabled
         self.fallback_fonts = fallback_fonts or []
+        self.base_font_size = base_font_size
+        self.fallback_font_scales = fallback_font_scales or {}
 
     def render(self, children: List[Dict[str, Any]]) -> str:
         """Render inline tokens to a Kivy markup string.
@@ -96,7 +100,9 @@ class InlineRenderer:
                 primary_font=self.font_name,
                 fallback_fonts=self.fallback_fonts,
                 enabled=True,
-                wrap_primary=False
+                wrap_primary=False,
+                base_font_size=self.base_font_size,
+                font_scales=self.fallback_font_scales
             )
         return self._escape_markup(raw)
 
@@ -141,7 +147,9 @@ class InlineRenderer:
             primary_font=self.code_font_name,
             fallback_fonts=self.fallback_fonts,
             enabled=self.fallback_enabled,
-            wrap_primary=True
+            wrap_primary=True,
+            base_font_size=self.base_font_size,
+            font_scales=self.fallback_font_scales
         )
 
     def strikethrough(self, token: Dict[str, Any]) -> str:

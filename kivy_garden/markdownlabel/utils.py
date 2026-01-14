@@ -5,7 +5,8 @@ and inspecting widget trees. They avoid revisiting nodes to keep traversals
 fast and predictable.
 """
 
-from typing import Generator, Set
+import re
+from typing import Generator, List, Set
 
 from kivy.uix.label import Label
 from kivy.uix.widget import Widget
@@ -57,3 +58,13 @@ def collect_widget_ids(widget: Widget, exclude_root: bool = False) -> Set[int]:
         ids.discard(id(widget))
 
     return ids
+
+
+_FONT_TAG_PATTERN = re.compile(r'\[font=([^\]]+)\]')
+
+
+def extract_font_tags(markup_text: str) -> List[str]:
+    """Extract font tag names from Kivy markup text."""
+    if not markup_text:
+        return []
+    return _FONT_TAG_PATTERN.findall(markup_text)

@@ -156,7 +156,9 @@ def apply_fallback_markup(text: str,
                           primary_font: str,
                           fallback_fonts: Optional[Iterable[str]] = None,
                           enabled: bool = True,
-                          wrap_primary: bool = False) -> str:
+                          wrap_primary: bool = False,
+                          base_font_size: Optional[float] = None,
+                          font_scales: Optional[dict] = None) -> str:
     if not enabled or not text:
         return escape_kivy_markup(text)
 
@@ -168,12 +170,33 @@ def apply_fallback_markup(text: str,
 
     runs = _split_runs(text, fonts)
     rendered: List[str] = []
+    font_scales = font_scales or {}
 
     for font_name, run_text in runs:
         escaped = escape_kivy_markup(run_text)
-        if font_name == primary_font and not wrap_primary:
+        scale = font_scales.get(font_name, 1.0)
+        size_tag = None
+        if base_font_size and scale and scale != 1.0:
+            size_value = max(1, int(round(base_font_size * float(scale))))
+            size_tag = f'[size={size_value}]'
+
+        if font_name == primary_font and not wrap_primary and not size_tag:
             rendered.append(escaped)
+            continue
+
+        prefix = ''
+        suffix = ''
+        if font_name == primary_font and not wrap_primary:
+            prefix = ''
+            suffix = ''
         else:
-            rendered.append(f'[font={font_name}]{escaped}[/font]')
+            prefix += f'[font={font_name}]'
+            suffix = '[/font]' + suffix
+
+        if size_tag:
+            prefix += size_tag
+            suffix = '[/size]' + suffix
+
+        rendered.append(f'{prefix}{escaped}{suffix}')
 
     return ''.join(rendered)
