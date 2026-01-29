@@ -465,11 +465,13 @@ class KivyRenderer(KivyRendererTableMixin):
 
         # Add bottom spacing only for top-level lists
         bottom_padding = self.base_font_size if self._list_depth == 1 else 0
+        indent = self._list_depth * 20
+        align_right = self.halign == 'right'
 
         container = BoxLayout(
             orientation='vertical',
             size_hint_y=None,
-            padding=[self._list_depth * 20, 0, 0, bottom_padding]  # Left indent + bottom spacing
+            padding=[0, 0, indent, bottom_padding] if align_right else [indent, 0, 0, bottom_padding]
         )
         container.bind(minimum_height=container.setter('height'))
 
@@ -547,8 +549,6 @@ class KivyRenderer(KivyRendererTableMixin):
         # Set font scale metadata for list markers
         marker._font_scale = 1.0
 
-        item_layout.add_widget(marker)
-
         # Create content container
         content = BoxLayout(
             orientation='vertical',
@@ -563,7 +563,13 @@ class KivyRenderer(KivyRendererTableMixin):
             if child_widget is not None:
                 content.add_widget(child_widget)
 
-        item_layout.add_widget(content)
+        align_right = self.halign == 'right'
+        if align_right:
+            item_layout.add_widget(content)
+            item_layout.add_widget(marker)
+        else:
+            item_layout.add_widget(marker)
+            item_layout.add_widget(content)
 
         # Keep the marker column aligned to the content column height without
         # introducing a parent-driven size_hint_y cycle.
