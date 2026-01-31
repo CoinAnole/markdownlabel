@@ -42,8 +42,8 @@ setup(
 
     packages=find_namespace_packages(include=['kivy_garden.*']),
     install_requires=[
-        'kivy>=2.0.0',
-        'mistune>=3.0.0',
+        'kivy==2.3.1',
+        'mistune==3.2.0',
     ],
     extras_require={
         'dev': ['pytest>=3.6', 'pytest-cov', 'pytest-asyncio',
