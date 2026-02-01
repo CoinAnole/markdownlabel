@@ -851,6 +851,117 @@ class TestExample{i}:
 
 
 @st.composite
+def markdown_reference_link(draw, include_title=None, implicit=None):
+    """Generate valid reference-style link markdown.
+
+    This strategy generates reference-style link markdown with variations:
+    - Explicit label: `[text][label]` with `[label]: url`
+    - Implicit label: `[text][]` with `[text]: url`
+    - With title: `[label]: url "title"`
+
+    Args:
+        include_title: If True, always include title. If False, never include.
+                       If None (default), randomly decide.
+        implicit: If True, generate implicit link (`[text][]`). If False, generate
+                  explicit link (`[text][label]`). If None (default), randomly decide.
+
+    Returns:
+        Dictionary containing:
+            - markdown: Complete markdown string with link and definition
+            - link_text: The text displayed for the link
+            - label: The reference label used
+            - url: The URL in the definition
+            - title: The title (or None if not included)
+            - is_implicit: Boolean indicating if this is an implicit link
+
+    _Requirements: 2.5_
+    """
+    # Generate link text (alphanumeric, no special markdown chars)
+    link_text = draw(st.text(
+        min_size=1,
+        max_size=30,
+        alphabet=st.characters(
+            whitelist_categories=['L', 'N'],
+            blacklist_characters='[]()&\n\r'
+        )
+    ))
+
+    # Decide if implicit or explicit
+    if implicit is None:
+        is_implicit = draw(st.booleans())
+    else:
+        is_implicit = implicit
+
+    # For implicit links, label equals link_text
+    # For explicit links, generate a separate label
+    if is_implicit:
+        label = link_text
+    else:
+        label = draw(st.text(
+            min_size=1,
+            max_size=10,
+            alphabet=st.characters(
+                whitelist_categories=['L', 'N'],
+                blacklist_characters='[]()&\n\r'
+            )
+        ))
+
+    # Generate URL path (ASCII-only to avoid encoding issues)
+    url_path = draw(st.text(
+        min_size=1,
+        max_size=20,
+        alphabet='abcdefghijklmnopqrstuvwxyz0123456789'
+    ))
+    url = f'http://example.com/{url_path}'
+
+    # Decide if title should be included
+    if include_title is None:
+        has_title = draw(st.booleans())
+    else:
+        has_title = include_title
+
+    # Generate title if needed (alphanumeric, no quotes to avoid escaping issues)
+    if has_title:
+        title = draw(st.text(
+            min_size=1,
+            max_size=30,
+            alphabet=st.characters(
+                whitelist_categories=['L', 'N', 'Z'],
+                blacklist_characters='"\'[]&\n\r'
+            )
+        ))
+        # Ensure title has content
+        if not title.strip():
+            title = "Link Title"
+    else:
+        title = None
+
+    # Build the markdown
+    if is_implicit:
+        link_part = f'[{link_text}][]'
+    else:
+        link_part = f'[{link_text}][{label}]'
+
+    if title:
+        definition = f'[{label}]: {url} "{title}"'
+    else:
+        definition = f'[{label}]: {url}'
+
+    markdown = f'''Click {link_part} for info.
+
+{definition}'''
+
+    return {
+        'markdown': markdown,
+        'link_text': link_text,
+        'label': label,
+        'url': url,
+        'title': title,
+        'is_implicit': is_implicit
+    }
+
+
+@st.composite
 def rebuild_test_file_strategy(draw):
     """Generate a Python test file with a rebuild test.
 

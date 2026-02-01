@@ -783,3 +783,412 @@ class TestMarkdownSerializerEdgeCases:
         token = {'type': 'block_code', 'raw': 'code with newline\n'}
         result = serializer.block_code(token)
         assert result == '```\ncode with newline\n```'
+
+
+class TestReferenceStyleLinkSerialization:
+    """Tests for reference-style link serialization."""
+
+    @pytest.mark.unit
+    def test_basic_reference_style_link_serialization(self):
+        """Basic reference-style link serializes to [text][label] format with definition."""
+        markdown = '''Click [here][1] for info.
+
+[1]: http://example.com/'''
+
+        label = MarkdownLabel(text=markdown)
+        serialized = label.to_markdown()
+
+        # Should contain reference-style link format
+        assert '[here][1]' in serialized
+        # Should contain definition at end
+        assert '[1]: http://example.com/' in serialized
+
+    @pytest.mark.unit
+    def test_implicit_reference_style_link_serialization(self):
+        """Implicit reference-style link ([Google][]) serializes correctly."""
+        markdown = '''Visit [Google][] for search.
+
+[Google]: http://google.com/'''
+
+        label = MarkdownLabel(text=markdown)
+        serialized = label.to_markdown()
+
+        # Should contain reference-style link format with label
+        assert '[Google][Google]' in serialized
+        # Should contain definition at end
+        assert '[Google]: http://google.com/' in serialized
+
+    @pytest.mark.unit
+    def test_reference_style_link_with_title_serialization(self):
+        """Reference-style link with title includes title in definition."""
+        markdown = '''Visit [Google][] for search.
+
+[Google]: http://google.com/ "Search Engine"'''
+
+        label = MarkdownLabel(text=markdown)
+        serialized = label.to_markdown()
+
+        # Should contain reference-style link format
+        assert '[Google][Google]' in serialized
+        # Should contain definition with title
+        assert '[Google]: http://google.com/ "Search Engine"' in serialized
+
+    @pytest.mark.unit
+    def test_mixed_inline_and_reference_style_links(self):
+        """Mixed inline and reference-style links serialize correctly."""
+        markdown = '''Click [here][1] or [inline](http://inline.com/).
+
+[1]: http://example.com/'''
+
+        label = MarkdownLabel(text=markdown)
+        serialized = label.to_markdown()
+
+        # Should contain reference-style link
+        assert '[here][1]' in serialized
+        # Should contain inline link
+        assert '[inline](http://inline.com/)' in serialized
+        # Should contain definition
+        assert '[1]: http://example.com/' in serialized
+
+    @pytest.mark.unit
+    def test_multiple_reference_style_links_same_label(self):
+        """Multiple links with same label produce single definition."""
+        markdown = '''Click [here][1] and [there][1] for info.
+
+[1]: http://example.com/'''
+
+        label = MarkdownLabel(text=markdown)
+        serialized = label.to_markdown()
+
+        # Should contain both links
+        assert '[here][1]' in serialized
+        assert '[there][1]' in serialized
+        # Should contain only one definition
+        assert serialized.count('[1]: http://example.com/') == 1
+
+    @pytest.mark.unit
+    def test_reference_style_link_round_trip(self):
+        """Reference-style link round-trips correctly."""
+        markdown = '''Click [here][1] for info.
+
+[1]: http://example.com/'''
+
+        label = MarkdownLabel(text=markdown)
+        ast1 = label.get_ast()
+
+        serialized = label.to_markdown()
+
+        label2 = MarkdownLabel(text=serialized)
+        ast2 = label2.get_ast()
+
+        # Both should have link tokens with same URL
+        link1 = ast1[0]['children'][1]
+        link2 = ast2[0]['children'][1]
+
+        assert link1['attrs']['url'] == link2['attrs']['url']
+        assert link1['children'][0]['raw'] == link2['children'][0]['raw']
+
+    @pytest.mark.property
+    @given(
+        label=st.text(min_size=1, max_size=10, alphabet=st.characters(
+            whitelist_categories=['L', 'N'],
+            blacklist_characters='[]()&\n\r'
+        )),
+        link_text1=st.text(min_size=1, max_size=20, alphabet=st.characters(
+            whitelist_categories=['L', 'N'],
+            blacklist_characters='[]()&\n\r'
+        )),
+        link_text2=st.text(min_size=1, max_size=20, alphabet=st.characters(
+            whitelist_categories=['L', 'N'],
+            blacklist_characters='[]()&\n\r'
+        )),
+        num_links=st.integers(min_value=2, max_value=5)
+    )
+    # Complex strategy: 50 examples (adequate coverage for property test)
+    @settings(max_examples=50, deadline=None)
+    def test_property_duplicate_labels_single_definition(
+        self, label, link_text1, link_text2, num_links
+    ):
+        """**Property 4: Duplicate Labels Produce Single Definition**
+
+        *For any* document with multiple links sharing the same label,
+        serialization SHALL output exactly one definition for that label.
+
+        **Validates: Requirements 3.2**
+        """
+        assume(len(label.strip()) > 0)
+        assume(len(link_text1.strip()) > 0)
+        assume(len(link_text2.strip()) > 0)
+
+        # Build markdown with multiple links using the same label
+        link_texts = [link_text1, link_text2]
+        for i in range(num_links - 2):
+            link_texts.append(f"link{i}")
+
+        links = ' and '.join(f'[{text}][{label}]' for text in link_texts)
+        markdown = f'''{links}
+
+[{label}]: http://example.com/'''
+
+        md_label = MarkdownLabel(text=markdown)
+        serialized = md_label.to_markdown()
+
+        # Property: Only one definition should exist for the label
+        definition_pattern = f'[{label}]: http://example.com/'
+        definition_count = serialized.count(definition_pattern)
+
+        assert definition_count == 1, (
+            f"Expected exactly 1 definition for label '{label}', "
+            f"but found {definition_count}.\n"
+            f"Input markdown:\n{markdown}\n"
+            f"Serialized output:\n{serialized}"
+        )
+
+        # Additional verification: all link references should be preserved
+        for text in link_texts:
+            assert f'[{text}][{label}]' in serialized, (
+                f"Link reference '[{text}][{label}]' not found in serialized output.\n"
+                f"Serialized output:\n{serialized}"
+            )
+
+    @pytest.mark.property
+    @given(
+        label=st.text(min_size=1, max_size=10, alphabet=st.characters(
+            whitelist_categories=['L', 'N'],
+            blacklist_characters='[]()&\n\r"'
+        )),
+        link_text=st.text(min_size=1, max_size=20, alphabet=st.characters(
+            whitelist_categories=['L', 'N'],
+            blacklist_characters='[]()&\n\r'
+        )),
+        url_path=st.text(min_size=1, max_size=20, alphabet=st.characters(
+            whitelist_categories=['L', 'N'],
+            blacklist_characters='[]()&\n\r" '
+        )),
+        title=st.one_of(
+            st.none(),
+            st.text(min_size=1, max_size=20, alphabet=st.characters(
+                whitelist_categories=['L', 'N', 'P', 'S'],
+                blacklist_characters='[]&\n\r"'
+            ))
+        )
+    )
+    # Complex strategy: 100 examples (adequate coverage for property test)
+    @settings(max_examples=100, deadline=None)
+    def test_property_reference_style_link_round_trip(
+        self, label, link_text, url_path, title
+    ):
+        """**Property 3: Reference-Style Link Round-Trip Serialization**
+
+        *For any* valid Markdown document containing reference-style links,
+        parsing then serializing then parsing SHALL produce an equivalent AST
+        (semantic equivalence after normalization).
+
+        **Validates: Requirements 2.1, 2.2, 2.3, 2.4, 2.5**
+        """
+        assume(len(label.strip()) > 0)
+        assume(len(link_text.strip()) > 0)
+        assume(len(url_path.strip()) > 0)
+
+        # Build URL
+        url = f'http://example.com/{url_path}'
+
+        # Build markdown with reference-style link
+        if title:
+            markdown = f'''Click [{link_text}][{label}] for info.
+
+[{label}]: {url} "{title}"'''
+        else:
+            markdown = f'''Click [{link_text}][{label}] for info.
+
+[{label}]: {url}'''
+
+        # First parse
+        label1 = MarkdownLabel(text=markdown)
+        ast1 = label1.get_ast()
+
+        # Serialize
+        serialized = label1.to_markdown()
+
+        # Second parse
+        label2 = MarkdownLabel(text=serialized)
+        ast2 = label2.get_ast()
+
+        # Normalize ASTs for comparison
+        def normalize_link_ast(ast):
+            """Normalize AST by extracting semantic link information."""
+            if not ast:
+                return []
+            result = []
+            for token in ast:
+                if token.get('type') == 'paragraph':
+                    children = token.get('children', [])
+                    for child in children:
+                        if child.get('type') == 'link':
+                            attrs = child.get('attrs', {})
+                            link_children = child.get('children', [])
+                            link_text_content = ''
+                            if link_children:
+                                link_text_content = link_children[0].get('raw', '')
+                            result.append({
+                                'type': 'link',
+                                'url': attrs.get('url', ''),
+                                'title': attrs.get('title'),
+                                'text': link_text_content
+                            })
+            return result
+
+        normalized1 = normalize_link_ast(ast1)
+        normalized2 = normalize_link_ast(ast2)
+
+        # Property: Semantic equivalence - URLs and link text should match
+        assert len(normalized1) == len(normalized2), (
+            f"Number of links changed after round-trip.\n"
+            f"Before: {len(normalized1)}, After: {len(normalized2)}\n"
+            f"Input markdown:\n{markdown}\n"
+            f"Serialized:\n{serialized}"
+        )
+
+        for link1, link2 in zip(normalized1, normalized2):
+            assert link1['url'] == link2['url'], (
+                f"URL changed after round-trip.\n"
+                f"Before: {link1['url']}, After: {link2['url']}\n"
+                f"Input markdown:\n{markdown}\n"
+                f"Serialized:\n{serialized}"
+            )
+            assert link1['text'] == link2['text'], (
+                f"Link text changed after round-trip.\n"
+                f"Before: {link1['text']}, After: {link2['text']}\n"
+                f"Input markdown:\n{markdown}\n"
+                f"Serialized:\n{serialized}"
+            )
+            assert link1['title'] == link2['title'], (
+                f"Title changed after round-trip.\n"
+                f"Before: {link1['title']}, After: {link2['title']}\n"
+                f"Input markdown:\n{markdown}\n"
+                f"Serialized:\n{serialized}"
+            )
+
+    @pytest.mark.unit
+    def test_round_trip_title_with_special_characters(self):
+        """Round-trip with titles containing special characters.
+
+        _Requirements: 2.5, 3.4_
+        """
+        # Title with apostrophe
+        markdown = '''Click [here][1] for info.
+
+[1]: http://example.com/ "It's a test"'''
+
+        label = MarkdownLabel(text=markdown)
+        ast1 = label.get_ast()
+
+        serialized = label.to_markdown()
+
+        label2 = MarkdownLabel(text=serialized)
+        ast2 = label2.get_ast()
+
+        # Extract link info from both ASTs
+        link1 = ast1[0]['children'][1]
+        link2 = ast2[0]['children'][1]
+
+        assert link1['attrs']['url'] == link2['attrs']['url']
+        assert link1['attrs']['title'] == link2['attrs']['title']
+        assert link1['attrs']['title'] == "It's a test"
+
+    @pytest.mark.unit
+    def test_round_trip_multiple_definitions(self):
+        """Round-trip with multiple link definitions.
+
+        _Requirements: 2.5, 3.4_
+        """
+        markdown = '''Click [here][1] and [there][2] for info.
+
+[1]: http://example.com/
+[2]: http://other.com/ "Other Site"'''
+
+        label = MarkdownLabel(text=markdown)
+        ast1 = label.get_ast()
+
+        serialized = label.to_markdown()
+
+        label2 = MarkdownLabel(text=serialized)
+        ast2 = label2.get_ast()
+
+        # Extract links from both ASTs
+        links1 = [c for c in ast1[0]['children'] if c.get('type') == 'link']
+        links2 = [c for c in ast2[0]['children'] if c.get('type') == 'link']
+
+        assert len(links1) == len(links2) == 2
+
+        # Verify first link
+        assert links1[0]['attrs']['url'] == links2[0]['attrs']['url']
+        assert links1[0]['attrs']['url'] == 'http://example.com/'
+
+        # Verify second link
+        assert links1[1]['attrs']['url'] == links2[1]['attrs']['url']
+        assert links1[1]['attrs']['url'] == 'http://other.com/'
+        assert links1[1]['attrs']['title'] == links2[1]['attrs']['title']
+        assert links1[1]['attrs']['title'] == 'Other Site'
+
+    @pytest.mark.unit
+    def test_round_trip_preserves_link_text(self):
+        """Round-trip preserves link text content.
+
+        _Requirements: 2.5_
+        """
+        markdown = '''Click [click here for more][ref] for info.
+
+[ref]: http://example.com/'''
+
+        label = MarkdownLabel(text=markdown)
+        ast1 = label.get_ast()
+
+        serialized = label.to_markdown()
+
+        label2 = MarkdownLabel(text=serialized)
+        ast2 = label2.get_ast()
+
+        # Extract link text from both ASTs
+        link1 = ast1[0]['children'][1]
+        link2 = ast2[0]['children'][1]
+
+        text1 = link1['children'][0]['raw']
+        text2 = link2['children'][0]['raw']
+
+        assert text1 == text2 == 'click here for more'
+
+    @pytest.mark.unit
+    def test_round_trip_mixed_links_preserves_format(self):
+        """Round-trip preserves both inline and reference-style link formats.
+
+        _Requirements: 2.4, 2.5_
+        """
+        markdown = '''Click [ref link][1] or [inline](http://inline.com/).
+
+[1]: http://ref.com/'''
+
+        label = MarkdownLabel(text=markdown)
+        serialized = label.to_markdown()
+
+        # Verify reference-style link is preserved
+        assert '[ref link][1]' in serialized
+        assert '[1]: http://ref.com/' in serialized
+
+        # Verify inline link is preserved
+        assert '[inline](http://inline.com/)' in serialized
+
+        # Parse again and verify semantic equivalence
+        label2 = MarkdownLabel(text=serialized)
+        ast1 = label.get_ast()
+        ast2 = label2.get_ast()
+
+        links1 = [c for c in ast1[0]['children'] if c.get('type') == 'link']
+        links2 = [c for c in ast2[0]['children'] if c.get('type') == 'link']
+
+        assert len(links1) == len(links2) == 2
+
+        # Both links should have same URLs
+        urls1 = [l['attrs']['url'] for l in links1]
+        urls2 = [l['attrs']['url'] for l in links2]
+        assert urls1 == urls2

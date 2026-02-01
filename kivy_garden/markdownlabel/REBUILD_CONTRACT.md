@@ -96,6 +96,11 @@ These properties trigger a **complete widget tree rebuild**:
 - `link_color` - Changes link color, requires rebuild to regenerate markup with new color
 - `code_bg_color` - Changes code block background color, requires rebuild to regenerate markup with new background
 
+### Font Fallback Properties
+- `fallback_enabled` - Enables/disables font fallback system, requires rebuild to regenerate markup
+- `fallback_fonts` - List of fallback fonts for Unicode coverage, requires rebuild to regenerate markup
+- `fallback_font_scales` - Per-font size scaling factors, requires rebuild to regenerate markup
+
 ## Implementation Details
 
 ### Style-Only Update Mechanism

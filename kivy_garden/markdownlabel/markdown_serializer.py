@@ -17,7 +17,7 @@ class MarkdownSerializer:
 
     def __init__(self):
         """Initialize the MarkdownSerializer."""
-        pass
+        self._link_definitions = {}  # label -> (url, title) mappings
 
     def serialize(self, tokens: List[Dict[str, Any]]) -> str:
         """Convert AST tokens to Markdown string.
@@ -28,11 +28,24 @@ class MarkdownSerializer:
         Returns:
             Markdown string representation
         """
+        # Reset link definitions for each serialization
+        self._link_definitions = {}
+
         result = []
         for i, token in enumerate(tokens):
             serialized = self._serialize_token(token)
             if serialized is not None:
                 result.append(serialized)
+
+        # Append link definitions at document end
+        if self._link_definitions:
+            definitions = []
+            for label, (url, title) in self._link_definitions.items():
+                if title:
+                    definitions.append(f'[{label}]: {url} "{title}"')
+                else:
+                    definitions.append(f'[{label}]: {url}')
+            result.append('\n'.join(definitions))
 
         return '\n\n'.join(result)
 
@@ -418,20 +431,32 @@ class MarkdownSerializer:
         return f'~~{inner}~~'
 
     def inline_link(self, token: Dict[str, Any]) -> str:
-        """Serialize link token.
+        """Serialize link token, preserving reference-style format.
 
         Args:
             token: Link token with 'children' and 'attrs'
 
         Returns:
-            Markdown link
+            Markdown link (reference-style or inline)
         """
         children = token.get('children', [])
         attrs = token.get('attrs', {})
         url = attrs.get('url', '')
+        title = attrs.get('title')
 
         text = self.serialize_inline(children)
-        return f'[{text}]({url})'
+
+        # Check for reference-style indicators
+        ref = token.get('ref')
+        label = token.get('label')
+
+        if ref is not None and label is not None:
+            # Reference-style link - collect definition
+            self._link_definitions[label] = (url, title)
+            return f'[{text}][{label}]'
+        else:
+            # Inline link - existing behavior
+            return f'[{text}]({url})'
 
     def inline_image(self, token: Dict[str, Any]) -> str:
         """Serialize image token.
