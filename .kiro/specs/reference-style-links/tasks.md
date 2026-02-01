@@ -55,14 +55,14 @@ This implementation adds proper reference-style link support to MarkdownLabel. T
     - Verify on_ref_press event contains resolved URL
     - _Requirements: 1.3_
 
-- [ ] 5. Add round-trip serialization tests
-  - [ ] 5.1 Write property test for round-trip serialization
+- [x] 5. Add round-trip serialization tests
+  - [x] 5.1 Write property test for round-trip serialization
     - **Property 3: Reference-Style Link Round-Trip Serialization**
     - Parse reference-style markdown, serialize, parse again
     - Compare normalized ASTs for semantic equivalence
     - **Validates: Requirements 2.1, 2.2, 2.3, 2.4, 2.5**
   
-  - [ ] 5.2 Write unit tests for round-trip edge cases
+  - [x] 5.2 Write unit tests for round-trip edge cases
     - Test round-trip with titles containing special characters
     - Test round-trip with multiple definitions
     - _Requirements: 2.5, 3.4_
