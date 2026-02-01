@@ -51,6 +51,7 @@ TEST_MODULES = [
     'test_kivy_renderer_blocks.py',
     'test_kivy_renderer_tables.py',
     'test_inline_renderer.py',
+    'test_reference_style_links.py',
 ]
 
 
