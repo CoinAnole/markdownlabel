@@ -67,8 +67,8 @@ This implementation adds proper reference-style link support to MarkdownLabel. T
     - Test round-trip with multiple definitions
     - _Requirements: 2.5, 3.4_
 
-- [ ] 6. Add Hypothesis strategy for reference-style links
-  - [ ] 6.1 Create `markdown_reference_link` strategy in test_utils.py
+- [x] 6. Add Hypothesis strategy for reference-style links
+  - [x] 6.1 Create `markdown_reference_link` strategy in test_utils.py
     - Generate valid reference-style link markdown
     - Include variations: explicit label, implicit label, with title
     - _Requirements: 2.5_
