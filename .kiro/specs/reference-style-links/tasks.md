@@ -6,25 +6,25 @@ This implementation adds proper reference-style link support to MarkdownLabel. T
 
 ## Tasks
 
-- [ ] 1. Enhance MarkdownSerializer for reference-style links
-  - [ ] 1.1 Add link definition tracking to MarkdownSerializer
+- [x] 1. Enhance MarkdownSerializer for reference-style links
+  - [x] 1.1 Add link definition tracking to MarkdownSerializer
     - Add `_link_definitions` dictionary to track label → (url, title) mappings
     - Reset the dictionary at the start of each `serialize()` call
     - _Requirements: 2.1, 2.2_
   
-  - [ ] 1.2 Update `inline_link` method to detect reference-style links
+  - [x] 1.2 Update `inline_link` method to detect reference-style links
     - Check for `ref` and `label` fields in link tokens
     - If present, serialize as `[text][label]` format and collect definition
     - If absent, continue using existing `[text](url)` format
     - _Requirements: 2.1, 2.4_
   
-  - [ ] 1.3 Append link definitions at document end
+  - [x] 1.3 Append link definitions at document end
     - After serializing all tokens, append collected definitions
     - Format: `[label]: url` or `[label]: url "title"` if title exists
     - Add blank line separator before definitions
     - _Requirements: 2.2, 2.3_
   
-  - [ ] 1.4 Write unit tests for reference-style link serialization
+  - [x] 1.4 Write unit tests for reference-style link serialization
     - Test basic reference-style link serialization
     - Test implicit reference-style link (`[Google][]`)
     - Test link with title in definition

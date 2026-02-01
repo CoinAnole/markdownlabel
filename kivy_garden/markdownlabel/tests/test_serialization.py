@@ -783,3 +783,107 @@ class TestMarkdownSerializerEdgeCases:
         token = {'type': 'block_code', 'raw': 'code with newline\n'}
         result = serializer.block_code(token)
         assert result == '```\ncode with newline\n```'
+
+
+class TestReferenceStyleLinkSerialization:
+    """Tests for reference-style link serialization."""
+
+    @pytest.mark.unit
+    def test_basic_reference_style_link_serialization(self):
+        """Basic reference-style link serializes to [text][label] format with definition."""
+        markdown = '''Click [here][1] for info.
+
+[1]: http://example.com/'''
+
+        label = MarkdownLabel(text=markdown)
+        serialized = label.to_markdown()
+
+        # Should contain reference-style link format
+        assert '[here][1]' in serialized
+        # Should contain definition at end
+        assert '[1]: http://example.com/' in serialized
+
+    @pytest.mark.unit
+    def test_implicit_reference_style_link_serialization(self):
+        """Implicit reference-style link ([Google][]) serializes correctly."""
+        markdown = '''Visit [Google][] for search.
+
+[Google]: http://google.com/'''
+
+        label = MarkdownLabel(text=markdown)
+        serialized = label.to_markdown()
+
+        # Should contain reference-style link format with label
+        assert '[Google][Google]' in serialized
+        # Should contain definition at end
+        assert '[Google]: http://google.com/' in serialized
+
+    @pytest.mark.unit
+    def test_reference_style_link_with_title_serialization(self):
+        """Reference-style link with title includes title in definition."""
+        markdown = '''Visit [Google][] for search.
+
+[Google]: http://google.com/ "Search Engine"'''
+
+        label = MarkdownLabel(text=markdown)
+        serialized = label.to_markdown()
+
+        # Should contain reference-style link format
+        assert '[Google][Google]' in serialized
+        # Should contain definition with title
+        assert '[Google]: http://google.com/ "Search Engine"' in serialized
+
+    @pytest.mark.unit
+    def test_mixed_inline_and_reference_style_links(self):
+        """Mixed inline and reference-style links serialize correctly."""
+        markdown = '''Click [here][1] or [inline](http://inline.com/).
+
+[1]: http://example.com/'''
+
+        label = MarkdownLabel(text=markdown)
+        serialized = label.to_markdown()
+
+        # Should contain reference-style link
+        assert '[here][1]' in serialized
+        # Should contain inline link
+        assert '[inline](http://inline.com/)' in serialized
+        # Should contain definition
+        assert '[1]: http://example.com/' in serialized
+
+    @pytest.mark.unit
+    def test_multiple_reference_style_links_same_label(self):
+        """Multiple links with same label produce single definition."""
+        markdown = '''Click [here][1] and [there][1] for info.
+
+[1]: http://example.com/'''
+
+        label = MarkdownLabel(text=markdown)
+        serialized = label.to_markdown()
+
+        # Should contain both links
+        assert '[here][1]' in serialized
+        assert '[there][1]' in serialized
+        # Should contain only one definition
+        assert serialized.count('[1]: http://example.com/') == 1
+
+    @pytest.mark.unit
+    def test_reference_style_link_round_trip(self):
+        """Reference-style link round-trips correctly."""
+        markdown = '''Click [here][1] for info.
+
+[1]: http://example.com/'''
+
+        label = MarkdownLabel(text=markdown)
+        ast1 = label.get_ast()
+
+        serialized = label.to_markdown()
+
+        label2 = MarkdownLabel(text=serialized)
+        ast2 = label2.get_ast()
+
+        # Both should have link tokens with same URL
+        link1 = ast1[0]['children'][1]
+        link2 = ast2[0]['children'][1]
+
+        assert link1['attrs']['url'] == link2['attrs']['url']
+        assert link1['children'][0]['raw'] == link2['children'][0]['raw']
