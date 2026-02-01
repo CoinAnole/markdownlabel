@@ -164,8 +164,15 @@ def apply_fallback_markup(text: str,
                           wrap_primary: bool = False,
                           base_font_size: Optional[float] = None,
                           font_scales: Optional[dict] = None) -> str:
-    if not enabled or not text:
-        return escape_kivy_markup(text)
+    escaped = escape_kivy_markup(text)
+    if not text:
+        return escaped
+
+    # When fallback is disabled but wrap_primary is True, still wrap with primary font
+    if not enabled:
+        if wrap_primary:
+            return f'[font={primary_font}]{escaped}[/font]'
+        return escaped
 
     fallback_list = [font for font in (fallback_fonts or []) if font]
     fonts = [primary_font] + [font for font in fallback_list if font != primary_font]
