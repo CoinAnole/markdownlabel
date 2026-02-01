@@ -44,13 +44,13 @@ This implementation adds proper reference-style link support to MarkdownLabel. T
 - [x] 3. Checkpoint - Verify serialization works
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 4. Add rendering verification tests
-  - [ ] 4.1 Write property test for rendering equivalence
+- [x] 4. Add rendering verification tests
+  - [x] 4.1 Write property test for rendering equivalence
     - **Property 1: Reference-Style Links Render Identically to Inline Links**
     - Verify reference-style links produce same BBCode as inline links
     - **Validates: Requirements 1.1, 1.2, 1.4**
   
-  - [ ] 4.2 Write unit test for on_ref_press event dispatch
+  - [x] 4.2 Write unit test for on_ref_press event dispatch
     - Create MarkdownLabel with reference-style link
     - Verify on_ref_press event contains resolved URL
     - _Requirements: 1.3_
