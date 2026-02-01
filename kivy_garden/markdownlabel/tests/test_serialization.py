@@ -887,3 +887,66 @@ class TestReferenceStyleLinkSerialization:
 
         assert link1['attrs']['url'] == link2['attrs']['url']
         assert link1['children'][0]['raw'] == link2['children'][0]['raw']
+
+    @pytest.mark.property
+    @given(
+        label=st.text(min_size=1, max_size=10, alphabet=st.characters(
+            whitelist_categories=['L', 'N'],
+            blacklist_characters='[]()&\n\r'
+        )),
+        link_text1=st.text(min_size=1, max_size=20, alphabet=st.characters(
+            whitelist_categories=['L', 'N'],
+            blacklist_characters='[]()&\n\r'
+        )),
+        link_text2=st.text(min_size=1, max_size=20, alphabet=st.characters(
+            whitelist_categories=['L', 'N'],
+            blacklist_characters='[]()&\n\r'
+        )),
+        num_links=st.integers(min_value=2, max_value=5)
+    )
+    # Complex strategy: 50 examples (adequate coverage for property test)
+    @settings(max_examples=50, deadline=None)
+    def test_property_duplicate_labels_single_definition(
+        self, label, link_text1, link_text2, num_links
+    ):
+        """**Property 4: Duplicate Labels Produce Single Definition**
+
+        *For any* document with multiple links sharing the same label,
+        serialization SHALL output exactly one definition for that label.
+
+        **Validates: Requirements 3.2**
+        """
+        assume(len(label.strip()) > 0)
+        assume(len(link_text1.strip()) > 0)
+        assume(len(link_text2.strip()) > 0)
+
+        # Build markdown with multiple links using the same label
+        link_texts = [link_text1, link_text2]
+        for i in range(num_links - 2):
+            link_texts.append(f"link{i}")
+
+        links = ' and '.join(f'[{text}][{label}]' for text in link_texts)
+        markdown = f'''{links}
+
+[{label}]: http://example.com/'''
+
+        md_label = MarkdownLabel(text=markdown)
+        serialized = md_label.to_markdown()
+
+        # Property: Only one definition should exist for the label
+        definition_pattern = f'[{label}]: http://example.com/'
+        definition_count = serialized.count(definition_pattern)
+
+        assert definition_count == 1, (
+            f"Expected exactly 1 definition for label '{label}', "
+            f"but found {definition_count}.\n"
+            f"Input markdown:\n{markdown}\n"
+            f"Serialized output:\n{serialized}"
+        )
+
+        # Additional verification: all link references should be preserved
+        for text in link_texts:
+            assert f'[{text}][{label}]' in serialized, (
+                f"Link reference '[{text}][{label}]' not found in serialized output.\n"
+                f"Serialized output:\n{serialized}"
+            )

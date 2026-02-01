@@ -31,13 +31,13 @@ This implementation adds proper reference-style link support to MarkdownLabel. T
     - Test mixed inline and reference-style links
     - _Requirements: 2.1, 2.2, 2.3, 2.4_
 
-- [ ] 2. Implement definition deduplication
-  - [ ] 2.1 Handle multiple links with same label
+- [x] 2. Implement definition deduplication
+  - [x] 2.1 Handle multiple links with same label
     - When collecting definitions, use label as key (natural deduplication)
     - Verify only one definition is output per label
     - _Requirements: 3.2_
   
-  - [ ] 2.2 Write property test for duplicate label handling
+  - [x] 2.2 Write property test for duplicate label handling
     - **Property 4: Duplicate Labels Produce Single Definition**
     - **Validates: Requirements 3.2**
 
