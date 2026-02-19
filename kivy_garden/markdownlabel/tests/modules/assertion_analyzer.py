@@ -8,7 +8,7 @@ particularly distinguishing between rebuild-related assertions and value-only as
 import ast
 import re
 from dataclasses import dataclass
-from typing import List, Optional, Dict, Any
+from typing import List, Optional, Dict, Any, Tuple
 from enum import Enum
 
 
@@ -250,7 +250,7 @@ class AssertionAnalyzer:
     def _classify_assertion_code(
         self,
         code: str
-    ) -> tuple[AssertionType, float, Dict[str, Any]]:
+    ) -> Tuple[AssertionType, float, Dict[str, Any]]:
         """Classify assertion code into assertion types.
 
         Returns:

@@ -121,6 +121,7 @@ def test_font_size_triggers_rebuild(self):
 
 # Property-based tests
 
+@pytest.mark.test_tests
 @given(
     test_name_base=st.text(
         min_size=1,
@@ -187,6 +188,7 @@ def {test_name}(self):
         pass
 
 
+@pytest.mark.test_tests
 @given(
     test_names=st.lists(
         st.text(

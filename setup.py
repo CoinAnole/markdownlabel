@@ -37,6 +37,7 @@ setup(
         'Programming Language :: Python :: 3.10',
         'Programming Language :: Python :: 3.11',
         'Programming Language :: Python :: 3.12',
+        'Programming Language :: Python :: 3.13',
     ],
     keywords='Kivy kivy-garden markdown',
 
@@ -44,6 +45,7 @@ setup(
     install_requires=[
         'kivy==2.3.1',
         'mistune==3.2.0',
+        'fonttools>=4.0.0',
     ],
     extras_require={
         'dev': ['pytest>=3.6', 'pytest-cov', 'pytest-asyncio',

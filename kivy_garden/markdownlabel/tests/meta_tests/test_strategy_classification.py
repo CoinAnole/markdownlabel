@@ -178,7 +178,7 @@ class TestMaxExamplesCalculation:
         )
 
 
-@pytest.mark.property
+@pytest.mark.test_tests
 class TestCombinationStrategies:
     """Property tests for combination strategy handling."""
 

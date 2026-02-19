@@ -4,3 +4,21 @@
 [submodule "external/mistune"]
 	path = external/mistune
 	url = https://github.com/lepture/mistune.git
+[submodule "external/kivy-garden.github.io"]
+	path = external/kivy-garden.github.io
+	url = https://github.com/kivy-garden/kivy-garden.github.io.git
+[submodule "external/draggable"]
+	path = external/draggable
+	url = https://github.com/kivy-garden/draggable.git
+[submodule "external/qrcode"]
+	path = external/qrcode
+	url = https://github.com/kivy-garden/qrcode.git
+[submodule "external/mapview"]
+	path = external/mapview
+	url = https://github.com/kivy-garden/mapview.git
+[submodule "external/zbarcam"]
+	path = external/zbarcam
+	url = https://github.com/kivy-garden/zbarcam.git
+[submodule "external/markdownlabel_testapp"]
+	path = external/markdownlabel_testapp
+	url = https://github.com/CoinAnole/markdownlabel_testapp.git
