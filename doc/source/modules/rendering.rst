@@ -13,27 +13,6 @@ Module Contents
    :undoc-members:
    :show-inheritance:
 
-MarkdownLabelRendering Class
-------------------------------
-
-.. autoclass:: kivy_garden.markdownlabel.rendering.MarkdownLabelRendering
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-   .. rubric:: Key Methods
-
-   .. autosummary::
-      :nosignatures:
-
-      _rebuild_widgets
-      _update_styles_in_place
-      _update_font_sizes_in_place
-      _update_text_size_bindings_in_place
-      _render_as_texture
-      _needs_clipping
-      _get_effective_render_mode
-
 Rendering Pipeline
 ------------------
 

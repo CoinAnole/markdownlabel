@@ -56,16 +56,16 @@ See :doc:`label_compatibility` for the complete compatibility reference.
 Auto-Sizing Behavior
 --------------------
 
-By default, MarkdownLabel automatically sizes to fit its content.
+By default, ``auto_size_height`` is ``False``.
 
-Enable Auto-Size (Default)
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+Enable Auto-Size
+~~~~~~~~~~~~~~~~
 
 .. code-block:: python
 
     label = MarkdownLabel(
         text='# Heading\\n\\nContent',
-        auto_size_height=True,   # Default
+        auto_size_height=True,
         size_hint_y=None         # Required for auto-size
     )
 
@@ -115,7 +115,7 @@ Renders as actual Kivy widgets. Best for:
 
 .. code-block:: python
 
-    label = MarkdownLabel(text='Content', render_mode='widget')
+    label = MarkdownLabel(text='Content', render_mode='widgets')
 
 Texture Mode
 ~~~~~~~~~~~~

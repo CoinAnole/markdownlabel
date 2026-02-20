@@ -31,6 +31,7 @@ author = 'Kivy Garden'
 # ones.
 extensions = [
     'sphinx.ext.autodoc',
+    'sphinx.ext.autosummary',
     'sphinx.ext.todo',
     'sphinx.ext.coverage',
     'sphinx.ext.intersphinx',
@@ -40,6 +41,7 @@ extensions = [
 intersphinx_mapping = {
     'kivy': ('https://kivy.org/docs/', None),
 }
+intersphinx_disabled_domains = []
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -55,6 +57,35 @@ exclude_patterns = []
 # Hide version annotations from inherited Kivy docstrings
 autodoc_member_order = 'bysource'
 autodoc_typehints = 'description'
+autosummary_generate = True
+nitpick_ignore_regex = [
+    # In offline/restricted environments we intentionally allow unresolved
+    # cross-references to external Kivy classes.
+    (r'py:class', r'kivy\..*'),
+    (r'py:class', r'kivy_garden\.markdownlabel\.properties\.MarkdownLabelProperties'),
+]
+
+
+def _normalize_disabled_domains(value):
+    """Normalize intersphinx-disabled domain names from config/CLI."""
+    if value is None:
+        return []
+    if isinstance(value, str):
+        return [item.strip() for item in value.split(',') if item.strip()]
+    return [str(item).strip() for item in value if str(item).strip()]
+
+
+def _apply_intersphinx_domain_filter(app, config):
+    """Drop selected intersphinx mappings after CLI overrides are applied."""
+    disabled_domains = _normalize_disabled_domains(config.intersphinx_disabled_domains)
+    for domain in disabled_domains:
+        config.intersphinx_mapping.pop(domain, None)
+
+
+def setup(app):
+    """Sphinx extension hook for doc build customizations."""
+    app.add_config_value('intersphinx_disabled_domains', [], 'env')
+    app.connect('config-inited', _apply_intersphinx_domain_filter)
 
 # -- Options for HTML output -------------------------------------------------
 

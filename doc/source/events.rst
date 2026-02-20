@@ -48,7 +48,7 @@ For simple handlers, use a lambda:
 Link Detection
 --------------
 
-MarkdownLink supports standard Markdown link syntax:
+MarkdownLabel supports standard Markdown link syntax:
 
 **Inline Links**
    ``[Link Text](https://example.com)``
@@ -66,11 +66,11 @@ Control link appearance with the ``link_style`` property:
 
 .. code-block:: python
 
-    # Styled links (default) - blue and underlined
+    # Styled links - blue and underlined
     label.link_style = 'styled'
 
-    # Plain links - no special styling
-    label.link_style = 'plain'
+    # Unstyled links (default) - no special styling
+    label.link_style = 'unstyled'
 
 Customize link color:
 

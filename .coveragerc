@@ -2,14 +2,17 @@
 branch = True
 
 [report]
-include = 
+include =
     */kivy_garden/markdownlabel/__init__.py
+    */kivy_garden/markdownlabel/_version.py
+    */kivy_garden/markdownlabel/font_fallback.py
     */kivy_garden/markdownlabel/properties.py
     */kivy_garden/markdownlabel/rendering.py
     */kivy_garden/markdownlabel/inline_renderer.py
     */kivy_garden/markdownlabel/kivy_renderer.py
     */kivy_garden/markdownlabel/kivy_renderer_tables.py
     */kivy_garden/markdownlabel/markdown_serializer.py
+    */kivy_garden/markdownlabel/utils.py
 exclude_lines =
     pragma: no cover
     def __repr__

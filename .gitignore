@@ -5,6 +5,7 @@ __pycache__/
 
 # C extensions
 *.so
+*.pyo
 
 # Distribution / packaging
 .Python
@@ -69,6 +70,7 @@ instance/
 
 # Sphinx documentation
 docs/_build/
+doc/build/
 
 # PyBuilder
 target/
@@ -124,9 +126,30 @@ dmypy.json
 .pyre/
 
 .vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+.vs/
+
+# Editor backup/swap files
+*~
+*.swp
+*.swo
+*.bak
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Kivy
+.kivy/
 
 # aider
 .aider*
+
+# mise (version manager)
+mise.toml
 
 # git submodules
 external/

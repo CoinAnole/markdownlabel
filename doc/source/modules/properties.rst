@@ -3,15 +3,14 @@
 Properties Module
 =================
 
-The ``properties`` module defines all Kivy properties for the MarkdownLabel widget, including property classifications for style updates vs full rebuilds.
+The ``properties`` module defines Kivy properties used by
+``MarkdownLabelProperties`` and classifies them by update behavior.
 
 Module Contents
 ---------------
 
 .. automodule:: kivy_garden.markdownlabel.properties
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   :no-members:
 
 Property Classification
 -----------------------
@@ -19,66 +18,34 @@ Property Classification
 Properties in MarkdownLabel are classified into two categories:
 
 **STYLE_ONLY_PROPERTIES**
-   Changes to these properties update the widget tree in-place without rebuilding. This is faster and preserves widget identity.
+   Changing these updates existing child widgets in place.
 
-   Examples: ``color``, ``font_name``, ``halign``, ``valign``, ``padding``, ``outline_width``
+   Typical examples: ``color``, ``font_name``, ``halign``, ``valign``,
+   ``padding``, ``line_height``, ``text_size``
 
 **STRUCTURE_PROPERTIES**
-   Changes to these properties require a full rebuild of the widget tree because they affect the generated markup or widget structure.
+   Changing these schedules a full rebuild of the rendered widget tree.
 
-   Examples: ``link_color``, ``code_bg_color``, ``link_style``, ``fallback_enabled``
-
-MarkdownLabelProperties Class
--------------------------------
-
-.. autoclass:: kivy_garden.markdownlabel.properties.MarkdownLabelProperties
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   Typical examples: ``text``, ``render_mode``, ``strict_label_mode``,
+   ``link_style``, ``link_color``, ``code_bg_color``,
+   ``fallback_enabled``, ``fallback_fonts``
 
 Key Properties
 --------------
 
-**Text Content:**
+Commonly used properties include:
 
-.. autodata:: kivy_garden.markdownlabel.properties.MarkdownLabelProperties.text
-   :annotation:
-
-**Font Properties:**
-
-.. autodata:: kivy_garden.markdownlabel.properties.MarkdownLabelProperties.font_name
-   :annotation:
-
-.. autodata:: kivy_garden.markdownlabel.properties.MarkdownLabelProperties.base_font_size
-   :annotation:
-
-.. autodata:: kivy_garden.markdownlabel.properties.MarkdownLabelProperties.code_font_name
-   :annotation:
-
-**Color Properties:**
-
-.. autodata:: kivy_garden.markdownlabel.properties.MarkdownLabelProperties.color
-   :annotation:
-
-.. autodata:: kivy_garden.markdownlabel.properties.MarkdownLabelProperties.link_color
-   :annotation:
-
-.. autodata:: kivy_garden.markdownlabel.properties.MarkdownLabelProperties.code_bg_color
-   :annotation:
-
-**Layout Properties:**
-
-.. autodata:: kivy_garden.markdownlabel.properties.MarkdownLabelProperties.halign
-   :annotation:
-
-.. autodata:: kivy_garden.markdownlabel.properties.MarkdownLabelProperties.valign
-   :annotation:
-
-.. autodata:: kivy_garden.markdownlabel.properties.MarkdownLabelProperties.padding
-   :annotation:
+- ``text`` - Markdown source text
+- ``font_name`` / ``code_font_name`` - Body/code font selection
+- ``font_size`` (alias of ``base_font_size``) - Base text size
+- ``color`` / ``link_color`` / ``code_bg_color`` - Core colors
+- ``halign`` / ``valign`` / ``padding`` / ``text_size`` - Layout and alignment
+- ``render_mode`` - ``'widgets'``, ``'texture'``, or ``'auto'``
+- ``auto_size_height`` / ``strict_label_mode`` - Sizing behavior
 
 See Also
 --------
 
 - :doc:`rendering` - How property changes trigger rendering updates
 - :doc:`../usage_guide` - Practical usage of these properties
+- :doc:`../label_compatibility` - Label API compatibility details

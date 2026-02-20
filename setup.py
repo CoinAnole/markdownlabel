@@ -29,7 +29,7 @@ setup_params = dict(
     author='Kivy',
     author_email='kivy@kivy.org',
     classifiers=[
-        'Development Status :: 4 - Beta',
+        'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Developers',
         'Topic :: Software Development :: Libraries',
         'License :: OSI Approved :: MIT License',

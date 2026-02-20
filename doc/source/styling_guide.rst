@@ -77,9 +77,9 @@ Set the background color for code blocks::
 Disabled State
 ~~~~~~~~~~~~~~
 
-When the widget is disabled::
+When the widget is disabled (default value shown)::
 
-    label.disabled_color = [0.5, 0.5, 0.5, 1]  # Grayed out
+    label.disabled_color = [1, 1, 1, 0.3]
 
 Alignment
 ---------
@@ -89,7 +89,8 @@ Horizontal Alignment
 
 Align text horizontally::
 
-    label.halign = 'left'      # Default
+    label.halign = 'auto'      # Default
+    label.halign = 'left'
     label.halign = 'center'
     label.halign = 'right'
     label.halign = 'justify'   # Full justification
@@ -101,9 +102,10 @@ Vertical Alignment
 
 When height is constrained::
 
-    label.valign = 'top'       # Default
+    label.valign = 'bottom'    # Default
+    label.valign = 'top'
     label.valign = 'middle'    # Or 'center'
-    label.valign = 'bottom'
+    label.valign = 'center'
 
 Spacing
 -------
@@ -129,8 +131,8 @@ Line Height
 
 Adjust line spacing::
 
-    label.line_height = 1.2  # 20% extra space (default)
-    label.line_height = 1.0  # Normal spacing
+    label.line_height = 1.0  # Default
+    label.line_height = 1.2  # 20% extra space
     label.line_height = 1.5  # 50% extra space
 
 Link Styling
@@ -141,8 +143,8 @@ Link Appearance
 
 Control how links are rendered::
 
-    label.link_style = 'styled'   # Blue, underlined (default)
-    label.link_style = 'plain'    # Normal text appearance
+    label.link_style = 'unstyled'  # Default, Label-like appearance
+    label.link_style = 'styled'    # Colored + underlined
 
 Advanced Styling
 ----------------
@@ -175,7 +177,8 @@ Base Direction
 
 Set text direction::
 
-    label.base_direction = 'ltr'   # Left-to-right (default)
+    label.base_direction = None    # Default (automatic)
+    label.base_direction = 'ltr'
     label.base_direction = 'rtl'   # Right-to-left
 
 Advanced Font Properties

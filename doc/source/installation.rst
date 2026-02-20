@@ -17,6 +17,7 @@ MarkdownLabel requires the following packages:
 
 1. `Kivy <https://kivy.org/#download>`_ - The UI framework (2.0.0 or higher)
 2. `mistune <https://mistune.lepture.com/>`_ - Markdown parser (3.0.0 or higher)
+3. `fonttools <https://fonttools.readthedocs.io/>`_ - Font fallback support (4.0.0 or higher)
 
 Installation Methods
 --------------------

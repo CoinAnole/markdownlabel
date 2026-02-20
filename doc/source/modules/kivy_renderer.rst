@@ -3,7 +3,8 @@
 Kivy Renderer Module
 ====================
 
-The ``kivy_renderer`` module provides the ``KivyRenderer`` class that converts Markdown AST tokens to Kivy widget trees.
+The ``kivy_renderer`` module provides the ``KivyRenderer`` class that converts
+Markdown AST tokens to Kivy widget trees.
 
 Module Contents
 ---------------
@@ -12,30 +13,6 @@ Module Contents
    :members:
    :undoc-members:
    :show-inheritance:
-
-KivyRenderer Class
-------------------
-
-.. autoclass:: kivy_garden.markdownlabel.KivyRenderer
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-   .. rubric:: Block Render Methods
-
-   .. autosummary::
-      :nosignatures:
-
-      __call__
-      render_tokens
-      paragraph
-      heading
-      list
-      list_item
-      block_code
-      block_quote
-      thematic_break
-      blank_line
 
 Block Elements Supported
 ------------------------
@@ -56,7 +33,8 @@ Block Elements Supported
    Indented quotes with optional styling
 
 **Tables**
-   Supported via the ``KivyRendererTables`` mixin (see :doc:`kivy_renderer_tables`)
+   Supported via the ``KivyRendererTableMixin`` mixin
+   (see :doc:`kivy_renderer_tables`)
 
 **Horizontal Rules**
    Thematic breaks as visual separators

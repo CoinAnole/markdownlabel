@@ -3,7 +3,9 @@
 Markdown Serializer Module
 ==========================
 
-The ``markdown_serializer`` module provides functionality to convert the Abstract Syntax Tree (AST) back to Markdown text. This is primarily used for testing and debugging.
+The ``markdown_serializer`` module provides functionality to convert the
+Abstract Syntax Tree (AST) back to Markdown text. This is primarily used for
+testing and debugging.
 
 Module Contents
 ---------------
@@ -12,31 +14,6 @@ Module Contents
    :members:
    :undoc-members:
    :show-inheritance:
-
-MarkdownSerializer Class
-------------------------
-
-.. autoclass:: kivy_garden.markdownlabel.MarkdownSerializer
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-   .. rubric:: Key Methods
-
-   .. autosummary::
-      :nosignatures:
-
-      serialize
-      render_tokens
-      text
-      emphasis
-      strong
-      codespan
-      link
-      paragraph
-      heading
-      list
-      block_code
 
 Use Cases
 ---------

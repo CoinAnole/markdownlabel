@@ -44,9 +44,9 @@ Public API
 The following items are exported in the main ``kivy_garden.markdownlabel`` module:
 
 - :class:`~kivy_garden.markdownlabel.MarkdownLabel` - The main widget class
-- :class:`~kivy_garden.markdownlabel.InlineRenderer` - Inline markup renderer
-- :class:`~kivy_garden.markdownlabel.KivyRenderer` - Block-level renderer
-- :class:`~kivy_garden.markdownlabel.MarkdownSerializer` - AST to Markdown serializer
+- :class:`~kivy_garden.markdownlabel.inline_renderer.InlineRenderer` - Inline markup renderer
+- :class:`~kivy_garden.markdownlabel.kivy_renderer.KivyRenderer` - Block-level renderer
+- :class:`~kivy_garden.markdownlabel.markdown_serializer.MarkdownSerializer` - AST to Markdown serializer
 - :func:`~kivy_garden.markdownlabel.find_labels_recursive` - Widget traversal utility
 - :func:`~kivy_garden.markdownlabel.collect_widget_ids` - Widget ID collector
 - :func:`~kivy_garden.markdownlabel.extract_font_tags` - Font tag extractor

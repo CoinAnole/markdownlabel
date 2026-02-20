@@ -39,7 +39,7 @@ Kivy application developers who need to display formatted text content without m
 ### Package Layout
 
 ```
-kivy_garden/markdownlabel/
+src/kivy_garden/markdownlabel/
 ├── __init__.py          # Main MarkdownLabel class (orchestration, events)
 ├── properties.py        # Property definitions, classification constants
 ├── rendering.py         # Widget tree building, style updates
@@ -95,7 +95,7 @@ Properties are classified as:
 - **STYLE_ONLY_PROPERTIES**: Update in-place without rebuilding widget tree
 - **STRUCTURE_PROPERTIES**: Trigger full rebuild of widget tree
 
-See `kivy_garden/markdownlabel/REBUILD_CONTRACT.md` for detailed semantics.
+See `src/kivy_garden/markdownlabel/REBUILD_CONTRACT.md` for detailed semantics.
 
 ---
 
@@ -181,13 +181,13 @@ pip install -e ".[dev]"
 #### Testing
 ```bash
 # Run all tests
-pytest kivy_garden/markdownlabel/tests/
+pytest src/kivy_garden/markdownlabel/tests/
 
 # Run with coverage
-pytest --cov=kivy_garden.markdownlabel kivy_garden/markdownlabel/tests/
+pytest --cov=kivy_garden.markdownlabel src/kivy_garden/markdownlabel/tests/
 
 # Run specific test file
-pytest kivy_garden/markdownlabel/tests/test_core_functionality.py
+pytest src/kivy_garden/markdownlabel/tests/test_core_functionality.py
 ```
 
 **CRITICAL TESTING RULES:**
@@ -199,7 +199,7 @@ pytest kivy_garden/markdownlabel/tests/test_core_functionality.py
 #### Code Quality
 ```bash
 # Check code style (flake8)
-python3 -m flake8 kivy_garden/
+python3 -m flake8 src/kivy_garden/
 
 # Run pre-commit hook manually
 ./tools/hooks/pre-commit
@@ -257,7 +257,7 @@ Published at: https://kivy-garden.github.io/markdownlabel/
 - `setup.cfg`: Flake8 (110 char lines, PEP8)
 - `pytest.ini`: Test configuration
 - `.coveragerc`: Coverage settings
-- `kivy_garden/markdownlabel/REBUILD_CONTRACT.md`: Property rebuild semantics documentation
+- `src/kivy_garden/markdownlabel/REBUILD_CONTRACT.md`: Property rebuild semantics documentation
 
 ---
 

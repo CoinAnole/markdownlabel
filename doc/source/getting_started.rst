@@ -65,7 +65,7 @@ MarkdownLabel supports standard Markdown syntax:
 - Unordered lists (``-``, ``*``, ``+``)
 - Ordered lists (``1.``, ``2.``, etc.)
 - Tables
-- Code blocks (fenced with `````)
+- Code blocks (fenced with triple backticks)
 - Blockquotes (``>``)
 - Horizontal rules (``---``)
 
@@ -74,7 +74,7 @@ MarkdownLabel supports standard Markdown syntax:
 - Bold (``**text**`` or ``__text__``)
 - Italic (``*text*`` or ``_text_``)
 - Strikethrough (``~~text~~``)
-- Inline code (`` `code` ``)
+- Inline code (single backticks around text)
 - Links (``[text](url)``)
 - Images (``![alt](url)``)
 
@@ -88,11 +88,11 @@ Key Concepts
     Most common Label properties work: ``font_name``, ``color``, ``halign``, ``valign``, ``padding``, ``text_size``, etc.
 
 **Two Rendering Modes**
-    - **Widget mode** (default): Renders as actual Kivy widgets
+    - **Widget mode** (default ``render_mode='widgets'``): Renders as actual Kivy widgets
     - **Texture mode**: Renders to a texture for better performance with static content
 
 **Interactive Links**
     Use ``bind(on_ref_press=your_callback)`` to handle link clicks.
 
 **Auto-Sizing**
-    By default, MarkdownLabel automatically sizes to fit its content. You can disable this with ``auto_size_height=False``.
+    By default, ``auto_size_height`` is ``False``. Enable it with ``auto_size_height=True``.

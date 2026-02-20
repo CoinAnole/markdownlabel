@@ -34,10 +34,10 @@ These properties work exactly like Kivy Label:
      - Preserves link_color for links
    * - ``line_height``
      - Line spacing multiplier
-     - 1.0 = normal, 1.2 = default
+     - 1.0 = default
    * - ``disabled_color``
      - Color when disabled
-     - Default: [0.5,0.5,0.5,1]
+     - Default: [1,1,1,0.3]
 
 **Layout Properties**
 
@@ -92,6 +92,24 @@ These properties work exactly like Kivy Label:
    * - ``strip``
      - Strip leading/trailing whitespace
 
+**Truncation Properties**
+
+.. list-table::
+   :header-rows: 1
+
+   * - Property
+     - Description
+   * - ``shorten``
+     - Enable/disable text shortening
+   * - ``max_lines``
+     - Maximum number of displayed lines (0 = unlimited)
+   * - ``shorten_from``
+     - Truncation direction: 'left', 'center', 'right'
+   * - ``split_str``
+     - Word split marker used for shortening
+   * - ``ellipsis_options``
+     - Additional ellipsis rendering options
+
 **Read-Only Properties**
 
 .. list-table::
@@ -126,10 +144,6 @@ These properties are accepted for compatibility but have no effect (Markdown con
      - Ignored (use ``~~text~~`` in Markdown)
    * - ``markup``
      - Always True for MarkdownLabel
-   * - ``shorten``
-     - No-op (not applicable)
-   * - ``max_lines``
-     - No-op (not applicable)
 
 Key Differences from Label
 --------------------------
@@ -144,16 +158,17 @@ Key Differences from Label
     # This is True
     isinstance(markdown_label, BoxLayout)  # True
 
-**No Texture Property**
+**Texture Property Behavior**
 
-Standard Label has a ``texture`` property. MarkdownLabel provides this only when:
-
-- ``render_mode='texture'`` is set, OR
-- ``aggregate_texture_enabled=True`` (property exists but may be read-only)
+Standard Label exposes a direct text texture. MarkdownLabel exposes an
+aggregated ``texture`` alias only when ``aggregate_texture_enabled=True``.
 
 **Size Behavior**
 
-Labels default to ``size_hint_y=None``. MarkdownLabel defaults to ``size_hint_y=1`` but changes to ``None`` when ``auto_size_height=True`` (the default).
+Labels often use ``size_hint_y=None`` for content-driven height. MarkdownLabel
+defaults to ``size_hint_y=1`` with ``auto_size_height=False``. When
+``auto_size_height=True`` (and ``strict_label_mode=False``), it switches to
+``size_hint_y=None`` and follows content height.
 
 **Text Property**
 
@@ -216,8 +231,6 @@ Unsupported Label Features
 These Label features are not available in MarkdownLabel:
 
 - ``text`` as property reference (use Markdown link syntax)
-- ``texture`` (only in texture mode)
-- ``mipmap`` at Label level (applies to all rendered text)
 - Direct canvas access for text
 
 Best Practices

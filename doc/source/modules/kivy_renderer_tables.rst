@@ -13,29 +13,11 @@ Module Contents
    :undoc-members:
    :show-inheritance:
 
-KivyRendererTables Mixin
-------------------------
-
-.. autoclass:: kivy_garden.markdownlabel.kivy_renderer_tables.KivyRendererTables
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-   .. rubric:: Table Render Methods
-
-   .. autosummary::
-      :nosignatures:
-
-      table
-      table_head
-      table_body
-      table_row
-      table_cell
-
 Table Support
 -------------
 
-Tables are rendered using Kivy's ``GridLayout`` with appropriate column constraints. The mixin extends ``KivyRenderer`` to handle:
+Tables are rendered using Kivy's ``GridLayout`` with appropriate column
+constraints. The ``KivyRendererTableMixin`` extends ``KivyRenderer`` to handle:
 
 - Table headers (bold text)
 - Table body rows

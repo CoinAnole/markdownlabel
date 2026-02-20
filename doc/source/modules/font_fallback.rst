@@ -3,7 +3,8 @@
 Font Fallback Module
 ====================
 
-The ``font_fallback`` module provides font fallback functionality for when primary fonts don't contain required glyphs.
+The ``font_fallback`` module provides font fallback helpers for cases where
+primary fonts do not contain required glyphs.
 
 Module Contents
 ---------------
@@ -23,13 +24,11 @@ When ``fallback_enabled`` is True, MarkdownLabel can use alternative fonts for c
 - Emoji support
 - Special characters
 
-Classes
--------
+Key Functions
+-------------
 
-.. autoclass:: kivy_garden.markdownlabel.font_fallback.FontFallbackManager
-   :members:
-   :undoc-members:
-   :show-inheritance:
+- ``apply_fallback_markup()`` - Apply fallback font markup runs
+- ``escape_kivy_markup()`` - Escape markup control characters safely
 
 Configuration
 -------------
