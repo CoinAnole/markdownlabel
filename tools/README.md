@@ -32,26 +32,9 @@ Establishes performance baselines for property-based tests.
 python3 tools/measure_baseline_performance.py
 ```
 
-## Integration
 
-### CI Integration
-Run validation in your CI pipeline:
-
-```yaml
-- name: Validate test comments and optimization
-  run: python3 tools/validate_comments.py validate kivy_garden/markdownlabel/tests/
-```
-
-### Pre-commit Hook
-Add to `.git/hooks/pre-commit`:
-
-```bash
-#!/bin/bash
-python3 tools/validate_comments.py validate kivy_garden/markdownlabel/tests/
-```
 
 ## Related Documentation
 
-- `PROPERTY_BASED_TESTING_GUIDE.md` - Optimization guidelines
 - `TESTING.md` - General testing documentation
-- `REFACTORING_VALIDATION_REPORT.md` - Latest refactoring results
+

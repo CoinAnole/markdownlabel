@@ -27,9 +27,14 @@ from kivy_garden.markdownlabel import MarkdownLabel  # noqa: E402
 # Sample markdown content for property demonstrations
 SAMPLE_MARKDOWN = """## Sample Heading
 
-This is a paragraph with some text to demonstrate the property. It includes `inline code` for testing code font preservation.
+This is a paragraph with some text to demonstrate the property. \
+It includes `inline code` for testing code font preservation.
 
-Another paragraph to show line spacing effects. To make alignment differences clearer, this paragraph contains multiple sentences that should wrap across several lines when the text width is constrained. Notice how the right edge will appear ragged for left alignment but straight for justified alignment when enough wrapping occurs."""
+Another paragraph to show line spacing effects. To make alignment \
+differences clearer, this paragraph contains multiple sentences that \
+should wrap across several lines when the text width is constrained. \
+Notice how the right edge will appear ragged for left alignment but \
+straight for justified alignment when enough wrapping occurs."""
 
 
 class MarkdownDemoApp(App):

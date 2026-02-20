@@ -1,0 +1,11 @@
+/* Hide Kivy version annotations from autodoc output */
+.versionadded,
+.versionchanged,
+.deprecated {
+    display: none !important;
+}
+
+/* Also hide the version modified spans */
+.versionmodified {
+    display: none !important;
+}

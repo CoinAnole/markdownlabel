@@ -11,14 +11,17 @@
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
 import os
+import sys
+sys.path.insert(0, os.path.abspath('../../src'))
+
 import sphinx_rtd_theme
 
 
 # -- Project information -----------------------------------------------------
 
-project = 'Flower'
-copyright = '2019, Kivy'
-author = 'Kivy'
+project = 'MarkdownLabel'
+copyright = '2026, Kivy Garden'
+author = 'Kivy Garden'
 
 
 # -- General configuration ---------------------------------------------------
@@ -47,6 +50,12 @@ templates_path = ['_templates']
 exclude_patterns = []
 
 
+# -- Options for autodoc -----------------------------------------------------
+
+# Hide version annotations from inherited Kivy docstrings
+autodoc_member_order = 'bysource'
+autodoc_typehints = 'description'
+
 # -- Options for HTML output -------------------------------------------------
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
@@ -58,3 +67,8 @@ html_theme = 'sphinx_rtd_theme'
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
+
+# Custom CSS to hide Kivy version annotations
+html_css_files = [
+    'custom.css',
+]

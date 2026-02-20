@@ -9,10 +9,7 @@ import pytest
 from hypothesis import given, settings, assume
 from hypothesis import strategies as st
 
-from kivy.uix.label import Label
-
 from kivy_garden.markdownlabel import MarkdownLabel
-from kivy_garden.markdownlabel.inline_renderer import InlineRenderer
 from .test_utils import find_labels_with_ref_markup
 
 

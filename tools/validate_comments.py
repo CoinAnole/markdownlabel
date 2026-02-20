@@ -10,25 +10,26 @@ import argparse
 import json
 import os
 import sys
-from pathlib import Path
 from typing import List, Dict, Any, Optional
 
-from kivy_garden.markdownlabel.tests.modules.comment_manager import CommentAnalyzer, DirectoryAnalysis, CommentStandardizer, BatchResult
+from kivy_garden.markdownlabel.tests.modules.comment_manager import (
+    CommentAnalyzer, DirectoryAnalysis, CommentStandardizer, BatchResult
+)
 from kivy_garden.markdownlabel.tests.modules.file_analyzer import FileAnalyzer
 
 
 class CommentValidationCLI:
     """Command-line interface for comment validation and standardization."""
-    
+
     def __init__(self):
         """Initialize CLI with analysis and standardization tools."""
         self.comment_analyzer = CommentAnalyzer()
         self.comment_standardizer = CommentStandardizer()
         self.file_analyzer = FileAnalyzer()
-    
+
     def create_parser(self) -> argparse.ArgumentParser:
         """Create command-line argument parser.
-        
+
         Returns:
             Configured ArgumentParser instance
         """
@@ -38,27 +39,27 @@ class CommentValidationCLI:
             epilog="""
 Examples:
   # Validate comments in test directory
-  python validate_comments.py validate kivy_garden/markdownlabel/tests/
-  
+  python validate_comments.py validate src/kivy_garden/markdownlabel/tests/
+
   # Standardize comments (dry run)
-  python validate_comments.py standardize kivy_garden/markdownlabel/tests/ --dry-run
-  
+  python validate_comments.py standardize src/kivy_garden/markdownlabel/tests/ --dry-run
+
   # Apply standardization with backup
-  python validate_comments.py standardize kivy_garden/markdownlabel/tests/ --backup-dir ./backups
-  
+  python validate_comments.py standardize src/kivy_garden/markdownlabel/tests/ --backup-dir ./backups
+
   # Generate detailed report
-  python validate_comments.py report kivy_garden/markdownlabel/tests/ --output report.json
-  
+  python validate_comments.py report src/kivy_garden/markdownlabel/tests/ --output report.json
+
   # Integration with optimization tools
-  python validate_comments.py optimize kivy_garden/markdownlabel/tests/ --include-comments
+  python validate_comments.py optimize src/kivy_garden/markdownlabel/tests/ --include-comments
             """
         )
-        
+
         subparsers = parser.add_subparsers(dest='command', help='Available commands')
-        
+
         # Validate command
         validate_parser = subparsers.add_parser(
-            'validate', 
+            'validate',
             help='Validate comment format compliance'
         )
         validate_parser.add_argument(
@@ -74,7 +75,7 @@ Examples:
             action='store_true',
             help='Show detailed validation results'
         )
-        
+
         # Standardize command
         standardize_parser = subparsers.add_parser(
             'standardize',
@@ -97,7 +98,7 @@ Examples:
             '--output', '-o',
             help='Output file for standardization report (JSON format)'
         )
-        
+
         # Report command
         report_parser = subparsers.add_parser(
             'report',
@@ -117,7 +118,7 @@ Examples:
             action='store_true',
             help='Include optimization recommendations in report'
         )
-        
+
         # Optimize command (integration with existing tools)
         optimize_parser = subparsers.add_parser(
             'optimize',
@@ -136,36 +137,36 @@ Examples:
             '--output', '-o',
             help='Output file for optimization report (JSON format)'
         )
-        
+
         return parser
-    
-    def validate_comments(self, directory: str, output: Optional[str] = None, 
+
+    def validate_comments(self, directory: str, output: Optional[str] = None,
                          verbose: bool = False) -> int:
         """Validate comment format compliance in directory.
-        
+
         Args:
             directory: Directory to validate
             output: Optional output file for report
             verbose: Show detailed results
-            
+
         Returns:
             Exit code (0 for success, 1 for validation failures)
         """
         if not os.path.exists(directory):
             print(f"Error: Directory '{directory}' does not exist", file=sys.stderr)
             return 1
-        
+
         print(f"Validating comments in: {directory}")
-        
+
         try:
             analysis = self.comment_analyzer.analyze_directory(directory)
         except Exception as e:
             print(f"Error during analysis: {e}", file=sys.stderr)
             return 1
-        
+
         # Display summary
         stats = analysis.summary_stats
-        print(f"\nValidation Summary:")
+        print("\nValidation Summary:")
         print(f"  Files analyzed: {analysis.analyzed_files}")
         print(f"  Total property tests: {stats.get('total_property_tests', 0)}")
         print(f"  Documented tests: {stats.get('total_documented_tests', 0)}")
@@ -173,16 +174,16 @@ Examples:
         print(f"  Format violations: {stats.get('total_format_violations', 0)}")
         print(f"  Strategy mismatches: {stats.get('total_strategy_mismatches', 0)}")
         print(f"  Compliance: {stats.get('compliance_percentage', 0):.1f}%")
-        
+
         # Show detailed results if requested
         if verbose:
             self._show_detailed_validation_results(analysis)
-        
+
         # Save report if requested
         if output:
             self._save_validation_report(analysis, output)
             print(f"\nDetailed report saved to: {output}")
-        
+
         # Determine exit code based on compliance
         has_issues = (
             stats.get('total_undocumented_tests', 0) > 0 or
@@ -190,167 +191,169 @@ Examples:
             stats.get('total_strategy_mismatches', 0) > 0 or
             len(analysis.global_inconsistencies) > 0
         )
-        
+
         if has_issues:
-            print(f"\n⚠️  Validation found issues. Run with --verbose for details.")
+            print("\n⚠️  Validation found issues. Run with --verbose for details.")
             return 1
         else:
-            print(f"\n✅ All comments are properly formatted and documented.")
+            print("\n✅ All comments are properly formatted and documented.")
             return 0
-    
+
     def standardize_comments(self, directory: str, dry_run: bool = False,
                            backup_dir: Optional[str] = None,
                            output: Optional[str] = None) -> int:
         """Standardize comment formats in directory.
-        
+
         Args:
             directory: Directory to standardize
             dry_run: Show changes without applying them
             backup_dir: Directory for backup files
             output: Optional output file for report
-            
+
         Returns:
             Exit code (0 for success, 1 for errors)
         """
         if not os.path.exists(directory):
             print(f"Error: Directory '{directory}' does not exist", file=sys.stderr)
             return 1
-        
+
         # Set up standardizer with custom backup directory if provided
         if backup_dir:
             standardizer = CommentStandardizer(backup_dir)
         else:
             standardizer = self.comment_standardizer
-        
+
         print(f"{'Analyzing' if dry_run else 'Standardizing'} comments in: {directory}")
-        
+
         # Find all test files
         test_files = []
         for root, dirs, files in os.walk(directory):
             for file in files:
                 if file.startswith('test_') and file.endswith('.py'):
                     test_files.append(os.path.join(root, file))
-        
+
         if not test_files:
             print("No test files found in directory")
             return 0
-        
+
         try:
             result = standardizer.apply_standardization(test_files, dry_run=dry_run)
         except Exception as e:
             print(f"Error during standardization: {e}", file=sys.stderr)
             return 1
-        
+
         # Display results
-        print(f"\nStandardization {'Analysis' if dry_run else 'Results'}:")
+        print("\nStandardization {}:".format('Analysis' if dry_run else 'Results'))
         print(f"  Files processed: {result.total_files}")
         print(f"  Successful: {result.successful_files}")
         print(f"  Failed: {result.failed_files}")
         print(f"  Total changes: {result.total_changes}")
-        
+
         if dry_run and result.total_changes > 0:
-            print(f"\n📝 {result.total_changes} changes would be made. Run without --dry-run to apply.")
+            print("\n📝 {} changes would be made. Run without --dry-run to apply.".format(
+                result.total_changes))
         elif not dry_run and result.total_changes > 0:
-            print(f"\n✅ Applied {result.total_changes} standardization changes.")
+            print("\n✅ Applied {} standardization changes.".format(result.total_changes))
             if backup_dir or standardizer.backup_dir:
                 print(f"   Backups saved to: {backup_dir or standardizer.backup_dir}")
         elif result.total_changes == 0:
-            print(f"\n✅ All comments are already properly standardized.")
-        
+            print("\n✅ All comments are already properly standardized.")
+
         # Show errors if any
         if result.failed_files > 0:
-            print(f"\n⚠️  {result.failed_files} files had errors:")
+            print("\n⚠️  {} files had errors:".format(result.failed_files))
             for file_result in result.file_results:
                 if not file_result.success:
                     print(f"  {file_result.file_path}: {', '.join(file_result.errors)}")
-        
+
         # Save report if requested
         if output:
             self._save_standardization_report(result, output)
             print(f"\nDetailed report saved to: {output}")
-        
+
         return 1 if result.failed_files > 0 else 0
-    
+
     def generate_report(self, directory: str, output: str,
                        include_optimization: bool = False) -> int:
         """Generate comprehensive analysis report.
-        
+
         Args:
             directory: Directory to analyze
             output: Output file for report
             include_optimization: Include optimization recommendations
-            
+
         Returns:
             Exit code (0 for success, 1 for errors)
         """
         if not os.path.exists(directory):
             print(f"Error: Directory '{directory}' does not exist", file=sys.stderr)
             return 1
-        
+
         print(f"Generating comprehensive report for: {directory}")
-        
+
         try:
             # Comment analysis
             comment_analysis = self.comment_analyzer.analyze_directory(directory)
-            
+
             report_data = {
                 'directory': directory,
                 'comment_analysis': self._serialize_comment_analysis(comment_analysis),
                 'generated_at': self._get_timestamp()
             }
-            
+
             # Add optimization analysis if requested
             if include_optimization:
                 optimization_report = self.file_analyzer.validate_test_suite(directory)
-                report_data['optimization_analysis'] = self._serialize_optimization_report(optimization_report)
-            
+                report_data['optimization_analysis'] = self._serialize_optimization_report(
+                    optimization_report)
+
             # Save report
             with open(output, 'w') as f:
                 json.dump(report_data, f, indent=2)
-            
+
             print(f"✅ Report generated: {output}")
             return 0
-            
+
         except Exception as e:
             print(f"Error generating report: {e}", file=sys.stderr)
             return 1
-    
+
     def run_optimization_with_comments(self, directory: str, include_comments: bool = False,
                                      output: Optional[str] = None) -> int:
         """Run optimization analysis with comment integration.
-        
+
         Args:
             directory: Directory to analyze
             include_comments: Include comment compliance in report
             output: Optional output file for report
-            
+
         Returns:
             Exit code (0 for success, 1 for errors)
         """
         if not os.path.exists(directory):
             print(f"Error: Directory '{directory}' does not exist", file=sys.stderr)
             return 1
-        
+
         print(f"Running optimization analysis for: {directory}")
-        
+
         try:
             report = self.file_analyzer.validate_test_suite(directory)
-            
+
             # Display optimization summary
-            print(f"\nOptimization Analysis:")
+            print("\nOptimization Analysis:")
             print(f"  Total tests: {report.total_tests}")
             print(f"  Over-tested: {report.total_over_tested}")
             print(f"  Potential time savings: {report.potential_time_savings_percent:.1f}%")
             print(f"  Estimated time reduction: {report.estimated_time_reduction_seconds:.1f}s")
-            
+
             # Display comment compliance if included
             if include_comments and report.overall_comment_compliance:
                 compliance = report.overall_comment_compliance
-                print(f"\nComment Compliance:")
+                print("\nComment Compliance:")
                 print(f"  Documented tests: {compliance.documented_tests}/{compliance.total_property_tests}")
                 print(f"  Compliance rate: {compliance.compliance_percentage:.1f}%")
                 print(f"  Format violations: {compliance.format_violations}")
-            
+
             # Save report if requested
             if output:
                 report_data = {
@@ -358,51 +361,54 @@ Examples:
                     'optimization_report': self._serialize_optimization_report(report),
                     'generated_at': self._get_timestamp()
                 }
-                
+
                 with open(output, 'w') as f:
                     json.dump(report_data, f, indent=2)
-                
+
                 print(f"\nDetailed report saved to: {output}")
-            
+
             return 0
-            
+
         except Exception as e:
             print(f"Error during optimization analysis: {e}", file=sys.stderr)
             return 1
-    
+
     def _show_detailed_validation_results(self, analysis: DirectoryAnalysis):
         """Show detailed validation results."""
-        print(f"\nDetailed Results:")
-        
+        print("\nDetailed Results:")
+
         for file_analysis in analysis.file_analyses:
-            if (file_analysis.format_violations or 
+            if (file_analysis.format_violations or
                 file_analysis.missing_documentation or
-                file_analysis.strategy_mismatches):
+                    file_analysis.strategy_mismatches):
                 print(f"\n📁 {file_analysis.file_path}:")
-                
+
                 if file_analysis.missing_documentation:
-                    print(f"  Missing documentation:")
+                    print("  Missing documentation:")
                     for func_name, line_num, max_examples in file_analysis.missing_documentation:
                         print(f"    - {func_name} (line {line_num}): max_examples={max_examples}")
-                
+
                 if file_analysis.format_violations:
-                    print(f"  Format violations:")
+                    print("  Format violations:")
                     for violation in file_analysis.format_violations:
                         print(f"    - Line {violation.line_number}: {violation.message}")
 
                 if file_analysis.strategy_mismatches:
-                    print(f"  Strategy mismatches:")
+                    print("  Strategy mismatches:")
                     for mismatch in file_analysis.strategy_mismatches:
-                        print(f"    - {mismatch.function_name} (line {mismatch.line_number}): Documented='{mismatch.documented_type}', Implemented='{mismatch.implemented_type}'")
-                        print(f"      Use: {mismatch.rationale}")
+                        print("    - {} (line {}): Documented='{}', Implemented='{}'".format(
+                            mismatch.function_name,
+                            mismatch.line_number,
+                            mismatch.documented_type,
+                            mismatch.implemented_type
+                        ))
+                        print("      Use: {}".format(mismatch.rationale))
 
-
-        
         if analysis.global_inconsistencies:
-            print(f"\nGlobal Inconsistencies:")
+            print("\nGlobal Inconsistencies:")
             for inconsistency in analysis.global_inconsistencies:
                 print(f"  - {inconsistency.inconsistency_type}: {inconsistency.description}")
-    
+
     def _save_validation_report(self, analysis: DirectoryAnalysis, output: str):
         """Save validation report to JSON file."""
         report_data = {
@@ -411,10 +417,10 @@ Examples:
             'files': self._serialize_comment_analysis(analysis),
             'generated_at': self._get_timestamp()
         }
-        
+
         with open(output, 'w') as f:
             json.dump(report_data, f, indent=2)
-    
+
     def _save_standardization_report(self, result: BatchResult, output: str):
         """Save standardization report to JSON file."""
         report_data = {
@@ -437,10 +443,10 @@ Examples:
             'global_errors': result.global_errors,
             'generated_at': self._get_timestamp()
         }
-        
+
         with open(output, 'w') as f:
             json.dump(report_data, f, indent=2)
-    
+
     def _serialize_comment_analysis(self, analysis: DirectoryAnalysis) -> Dict[str, Any]:
         """Serialize comment analysis to JSON-compatible format."""
         return {
@@ -483,7 +489,7 @@ Examples:
                 for gi in analysis.global_inconsistencies
             ]
         }
-    
+
     def _serialize_optimization_report(self, report) -> Dict[str, Any]:
         """Serialize optimization report to JSON-compatible format."""
         return {
@@ -534,28 +540,28 @@ Examples:
                 for fa in report.file_analyses
             ]
         }
-    
+
     def _get_timestamp(self) -> str:
         """Get current timestamp in ISO format."""
         from datetime import datetime
         return datetime.now().isoformat()
-    
+
     def run(self, args: List[str]) -> int:
         """Run the CLI with given arguments.
-        
+
         Args:
             args: Command-line arguments
-            
+
         Returns:
             Exit code
         """
         parser = self.create_parser()
         parsed_args = parser.parse_args(args)
-        
+
         if not parsed_args.command:
             parser.print_help()
             return 1
-        
+
         try:
             if parsed_args.command == 'validate':
                 return self.validate_comments(
@@ -585,7 +591,7 @@ Examples:
             else:
                 print(f"Unknown command: {parsed_args.command}", file=sys.stderr)
                 return 1
-                
+
         except KeyboardInterrupt:
             print("\nOperation cancelled by user", file=sys.stderr)
             return 1

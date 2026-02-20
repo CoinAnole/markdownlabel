@@ -9,6 +9,7 @@ from typing import Any, Dict, List, Optional
 
 from .font_fallback import apply_fallback_markup
 
+
 def escape_kivy_markup(text: str) -> str:
     """Escape Kivy markup special characters for safe display."""
     text = text.replace('&', '&amp;')

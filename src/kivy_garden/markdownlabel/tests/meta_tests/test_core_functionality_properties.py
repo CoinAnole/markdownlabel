@@ -60,7 +60,7 @@ class TestNoTimingAssertions:
     @pytest.mark.parametrize('module_name', TEST_MODULES)
     def test_no_timing_assertions_in_test_files(self, module_name):
         """Test files should not contain timing assertions."""
-        module_path = Path(f'kivy_garden/markdownlabel/tests/{module_name}')
+        module_path = Path(f'src/kivy_garden/markdownlabel/tests/{module_name}')
         assert module_path.exists(), f"Expected test module not found: {module_path}"
 
         timing_patterns = self._check_file_for_timing_assertions(str(module_path))
@@ -136,7 +136,7 @@ class TestSubprocessPytestConfiguration:
     @pytest.mark.parametrize('module_name', TEST_MODULES)
     def test_subprocess_pytest_uses_stable_configuration(self, module_name):
         """Subprocess pytest calls should use stable configuration."""
-        module_path = Path(f'kivy_garden/markdownlabel/tests/{module_name}')
+        module_path = Path(f'src/kivy_garden/markdownlabel/tests/{module_name}')
         assert module_path.exists(), f"Expected test module not found: {module_path}"
 
         issues = self._check_file_for_subprocess_pytest_calls(str(module_path))
@@ -187,7 +187,7 @@ class TestNoSilentPassFileChecks:
     @pytest.mark.parametrize('module_name', TEST_MODULES)
     def test_no_silent_pass_file_existence_checks(self, module_name):
         """Test files should not contain silent-pass file existence checks."""
-        module_path = Path(f'kivy_garden/markdownlabel/tests/{module_name}')
+        module_path = Path(f'src/kivy_garden/markdownlabel/tests/{module_name}')
         assert module_path.exists(), f"Expected test module not found: {module_path}"
 
         silent_pass_patterns = self._check_file_for_silent_pass_patterns(str(module_path))
@@ -235,7 +235,7 @@ class TestNoBroadExceptionHandling:
     @pytest.mark.parametrize('module_name', TEST_MODULES)
     def test_no_broad_exception_handling(self, module_name):
         """Test files should not contain broad exception handling."""
-        module_path = Path(f'kivy_garden/markdownlabel/tests/{module_name}')
+        module_path = Path(f'src/kivy_garden/markdownlabel/tests/{module_name}')
         assert module_path.exists(), f"Expected test module not found: {module_path}"
 
         # Skip checking this test file itself since it contains pattern examples
@@ -342,7 +342,7 @@ class TestFixedListPropertyTestsConverted:
     @pytest.mark.parametrize('module_name', TEST_MODULES)
     def test_fixed_list_property_tests_converted_to_parametrized(self, module_name):
         """Fixed-list property tests should be converted to parametrized tests."""
-        module_path = Path(f'kivy_garden/markdownlabel/tests/{module_name}')
+        module_path = Path(f'src/kivy_garden/markdownlabel/tests/{module_name}')
         assert module_path.exists(), f"Expected test module not found: {module_path}"
 
         # Skip this test file itself to avoid self-reference
@@ -373,7 +373,7 @@ class TestFixedListPropertyTestsConverted:
 
     def test_conversion_progress_tracking(self):
         """Track overall progress of fixed-list to parametrized conversion."""
-        test_dir = Path('kivy_garden/markdownlabel/tests')
+        test_dir = Path('src/kivy_garden/markdownlabel/tests')
         assert test_dir.exists(), f"Expected test directory not found: {test_dir}"
 
         total_fixed_lists = 0
@@ -406,7 +406,7 @@ class TestFixedListPropertyTestsConverted:
 
     def test_centralized_test_modules_list_is_complete(self):
         """Verify that TEST_MODULES includes all actual test files."""
-        test_dir = Path('kivy_garden/markdownlabel/tests')
+        test_dir = Path('src/kivy_garden/markdownlabel/tests')
         assert test_dir.exists(), f"Expected test directory not found: {test_dir}"
 
         # Find all actual test files
@@ -439,7 +439,7 @@ class TestFixedListPropertyTestsConverted:
                 "TEST_MODULES list in conftest.py is out of sync with actual test files:",
                 *error_messages,
                 "",
-                "Please update the TEST_MODULES list in kivy_garden/markdownlabel/tests/conftest.py"
+                "Please update the TEST_MODULES list in src/kivy_garden/markdownlabel/tests/conftest.py"
             ])
 
         # Verify we have a reasonable number of test files
@@ -515,7 +515,7 @@ class TestPerformanceTestsMarked:
     def test_performance_tests_properly_marked(self):
         """Performance tests should be properly marked with @pytest.mark.slow."""
         # Check the performance test file specifically
-        performance_file = Path('kivy_garden/markdownlabel/tests/test_performance.py')
+        performance_file = Path('src/kivy_garden/markdownlabel/tests/test_performance.py')
 
         if not performance_file.exists():
             pytest.skip("Performance test file not found")
@@ -533,7 +533,7 @@ class TestPerformanceTestsMarked:
     @pytest.mark.parametrize('module_name', TEST_MODULES)
     def test_performance_indicators_are_marked(self, module_name):
         """Tests with performance indicators should be properly marked."""
-        module_path = Path(f'kivy_garden/markdownlabel/tests/{module_name}')
+        module_path = Path(f'src/kivy_garden/markdownlabel/tests/{module_name}')
         assert module_path.exists(), f"Expected test module not found: {module_path}"
 
         analysis = self._check_file_for_performance_test_markers(str(module_path))
@@ -592,7 +592,7 @@ class TestNoDuplicateEnvironmentSetup:
     @pytest.mark.parametrize('module_name', TEST_MODULES)
     def test_no_duplicate_environment_setup(self, module_name):
         """Test files should not contain duplicate environment setup."""
-        module_path = Path(f'kivy_garden/markdownlabel/tests/{module_name}')
+        module_path = Path(f'src/kivy_garden/markdownlabel/tests/{module_name}')
         assert module_path.exists(), f"Expected test module not found: {module_path}"
 
         # Skip conftest.py as it's the centralized location for environment setup
@@ -608,7 +608,7 @@ class TestNoDuplicateEnvironmentSetup:
 
     def test_conftest_has_centralized_setup(self):
         """conftest.py should contain the centralized environment setup."""
-        conftest_path = Path('kivy_garden/markdownlabel/tests/conftest.py')
+        conftest_path = Path('src/kivy_garden/markdownlabel/tests/conftest.py')
 
         if not conftest_path.exists():
             pytest.fail("conftest.py not found - centralized environment setup is missing")

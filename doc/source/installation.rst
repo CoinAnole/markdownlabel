@@ -1,47 +1,95 @@
-.. _install:
+.. _installation:
 
-************
 Installation
-************
+============
 
-Supported versions
+Supported Versions
 ------------------
 
-* Python 3.5+
+- **Python**: 3.8, 3.9, 3.10, 3.11, 3.12, 3.13
+- **Kivy**: 2.0.0+
+- **mistune**: 3.0.0+
 
 Dependencies
 ------------
 
-#. `Kivy <https://kivy.org/#download>`_
+MarkdownLabel requires the following packages:
 
+1. `Kivy <https://kivy.org/#download>`_ - The UI framework (2.0.0 or higher)
+2. `mistune <https://mistune.lepture.com/>`_ - Markdown parser (3.0.0 or higher)
 
-Installation
-------------
+Installation Methods
+--------------------
 
-Please see the `garden docs <https://kivy-garden.github.io/>`_ for full installation instructions.
+From PyPI (Recommended)
+~~~~~~~~~~~~~~~~~~~~~~~
 
-If the flower maintainer has uploaded the flower to
-`pypi <https://pypi.org/>`_, you can just install it with
-`pip install kivy_garden.flower`.
+If the package is published to PyPI, you can install it directly::
 
-You can install flower master directly from github with::
+    pip install kivy_garden.markdownlabel
 
-    python -m pip install https://github.com/kivy-garden/flower/archive/master.zip
+From GitHub
+~~~~~~~~~~~~
 
-Look under the repository's releases tab if you'd like to install a specific
-release or a pre-compiled wheel, if the flower has any. Then use the url with
-`pip`.
+Install the latest development version directly from GitHub::
 
-Or you can automatically install it using garden's pypi server with::
+    python -m pip install https://github.com/kivy-garden/markdownlabel/archive/master.zip
 
-    python -m pip install kivy_garden.flower --extra-index-url https://kivy-garden.github.io/simple/
+To install a specific release, use the release URL::
 
-To permanently add our garden server to your pip configuration so that you
-don't have to specify it with `--extra-index-url`, add::
+    python -m pip install https://github.com/kivy-garden/markdownlabel/archive/v1.0.0.zip
+
+Using Kivy Garden Index
+~~~~~~~~~~~~~~~~~~~~~~~
+
+You can install using the Kivy Garden package index::
+
+    python -m pip install kivy_garden.markdownlabel --extra-index-url https://kivy-garden.github.io/simple/
+
+To permanently add the garden server to your pip configuration, add the following to your `pip.conf <https://pip.pypa.io/en/stable/user_guide/#config-file>`_::
 
     [global]
     timeout = 60
     index-url = https://kivy-garden.github.io/simple/
 
-to your `pip.conf <https://pip.pypa.io/en/stable/user_guide/#config-file>`_.
+Development Installation
+~~~~~~~~~~~~~~~~~~~~~~~~
 
+If you want to contribute or modify the code, install in development mode::
+
+    git clone https://github.com/kivy-garden/markdownlabel.git
+    cd markdownlabel
+    pip install -e .
+
+The ``-e`` flag installs the package in "editable" mode, so changes to the source code are immediately available without reinstallation.
+
+Verify Installation
+-------------------
+
+Test that the installation worked::
+
+    python -c "from kivy_garden.markdownlabel import MarkdownLabel; print('Success!')"
+
+Troubleshooting
+---------------
+
+**ImportError: No module named 'kivy'**
+    Install Kivy first::
+
+        pip install kivy
+
+**ImportError: No module named 'mistune'**
+    The mistune dependency should be installed automatically, but if not::
+
+        pip install mistune>=3.0.0
+
+**SDL2 Library Errors (Linux)**
+    Install required system libraries::
+
+        sudo apt-get install -y libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev
+
+See Also
+--------
+
+- :doc:`getting_started` - Get started using MarkdownLabel
+- `Kivy Installation Guide <https://kivy.org/doc/stable/gettingstarted/installation.html>`_

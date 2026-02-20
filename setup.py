@@ -7,7 +7,7 @@ from os import path
 
 here = path.abspath(path.dirname(__file__))
 
-filename = path.join(here, 'kivy_garden', 'markdownlabel', '_version.py')
+filename = path.join(here, 'src', 'kivy_garden', 'markdownlabel', '_version.py')
 locals = {}
 with open(filename, "rb") as fh:
     exec(compile(fh.read(), filename, 'exec'), globals(), locals)
@@ -18,7 +18,8 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as f:
 
 URL = 'https://github.com/kivy-garden/markdownlabel'
 
-setup(
+# exposing the params so it can be imported
+setup_params = dict(
     name='kivy_garden.markdownlabel',
     version=__version__,
     description='A Kivy widget that renders Markdown as interactive UI elements.',
@@ -41,23 +42,36 @@ setup(
     ],
     keywords='Kivy kivy-garden markdown',
 
-    packages=find_namespace_packages(include=['kivy_garden.*']),
+    packages=find_namespace_packages(where='src', include=['kivy_garden.*']),
+    package_dir={'': 'src'},
+    python_requires='>=3.8',
     install_requires=[
-        'kivy==2.3.1',
-        'mistune==3.2.0',
+        'kivy>=2.0.0',
+        'mistune>=3.0.0',
         'fonttools>=4.0.0',
     ],
     extras_require={
-        'dev': ['pytest>=3.6', 'pytest-cov', 'pytest-asyncio',
+        # pytest-asyncio>=0.21.0 required to prevent PytestConfigWarning
+        # about asyncio_default_fixture_loop_scope in pytest.ini
+        # asyncio_default_fixture_loop_scope was added to pytest.ini
+        # to prevent a warning with python 3.8
+        'dev': ['pytest>=3.6', 'pytest-cov', 'pytest-asyncio>=0.21.0',
                 'sphinx_rtd_theme', 'hypothesis>=6.0.0'],
         'ci': ['coveralls', 'pycodestyle'],
         'test': ['pytest>=3.6', 'hypothesis>=6.0.0'],
     },
-    package_data={},
-    data_files=[],
     entry_points={},
     project_urls={
         'Bug Reports': URL + '/issues',
         'Source': URL,
     },
 )
+
+
+def run_setup():
+    setup(**setup_params)
+
+
+# makes sure the setup doesn't run at import time
+if __name__ == '__main__':
+    run_setup()
