@@ -7,6 +7,7 @@ through parse-serialize-parse cycles.
 """
 
 import pytest
+import mistune
 from hypothesis import given, settings, assume
 from hypothesis import strategies as st
 
@@ -891,6 +892,17 @@ class TestMarkdownSerializerEdgeCases:
         assert serializer._serialize_list_item(item_token) == ''
 
     @pytest.mark.unit
+    def test_inline_link_serializes_with_title(self):
+        """Inline links include optional title in serialized output."""
+        serializer = MarkdownSerializer()
+        token = {
+            'type': 'link',
+            'children': [{'type': 'text', 'raw': 'here'}],
+            'attrs': {'url': 'http://example.com/', 'title': 'Example Site'}
+        }
+        assert serializer.inline_link(token) == '[here](http://example.com/ "Example Site")'
+
+    @pytest.mark.unit
     def test_block_code_no_newline(self):
         """Test block code serialization without trailing newline."""
         serializer = MarkdownSerializer()
@@ -971,6 +983,23 @@ class TestReferenceStyleLinkSerialization:
         assert '[inline](http://inline.com/)' in serialized
         # Should contain definition
         assert '[1]: http://example.com/' in serialized
+
+    @pytest.mark.unit
+    def test_inline_link_with_title_serialization(self):
+        """Inline links with titles preserve title through parse-serialize-parse."""
+        markdown = 'Click [here](http://example.com/ "Example Site") for info.'
+
+        parser = mistune.create_markdown(renderer='ast')
+        ast1 = parser(markdown)
+        serialized = MarkdownSerializer().serialize(ast1)
+
+        assert '[here](http://example.com/ "Example Site")' in serialized
+
+        ast2 = parser(serialized)
+        link1 = ast1[0]['children'][1]
+        link2 = ast2[0]['children'][1]
+        assert link1['attrs']['title'] == link2['attrs']['title']
+        assert link1['attrs']['title'] == 'Example Site'
 
     @pytest.mark.unit
     def test_multiple_reference_style_links_same_label(self):

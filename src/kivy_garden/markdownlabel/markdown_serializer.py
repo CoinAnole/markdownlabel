@@ -482,7 +482,9 @@ class MarkdownSerializer:
             self._link_definitions[label] = (url, title)
             return f'[{text}][{label}]'
         else:
-            # Inline link - existing behavior
+            # Inline link - preserve optional title
+            if title is not None:
+                return f'[{text}]({url} "{title}")'
             return f'[{text}]({url})'
 
     def inline_image(self, token: Dict[str, Any]) -> str:
