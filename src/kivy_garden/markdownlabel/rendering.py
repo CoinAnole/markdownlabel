@@ -10,6 +10,8 @@ from kivy.uix.gridlayout import GridLayout
 from kivy.uix.widget import Widget
 from kivy.graphics import Fbo, ClearColor, ClearBuffers
 
+_DEFAULT_CODE_LABEL_COLOR = [0.9, 0.9, 0.9, 1]
+
 
 def clear_text_size_bindings(label):
     """Remove previously attached text_size-related bindings from a Label."""
@@ -118,7 +120,11 @@ class MarkdownLabelRendering:
 
         def update_widget(widget):
             if isinstance(widget, Label):
-                widget.color = effective_color
+                if hasattr(widget, '_is_code') and widget._is_code:
+                    code_color = list(getattr(widget, '_code_color', _DEFAULT_CODE_LABEL_COLOR))
+                    widget.color = list(self.disabled_color) if self.disabled else code_color
+                else:
+                    widget.color = effective_color
                 widget.halign = effective_halign
                 widget.valign = self.valign
                 widget.line_height = self.line_height
@@ -474,7 +480,7 @@ class MarkdownLabelRendering:
                 widget.bind(minimum_size=on_child_size_change)
         elif isinstance(widget, Widget):
             if widget is not self:
-                widget.bind(height=on_child_size_change)
+                widget.bind(size=on_child_size_change)
 
         if hasattr(widget, 'children'):
             for child in widget.children:

@@ -16,6 +16,12 @@ from kivy_garden.markdownlabel import MarkdownLabel
 from .test_utils import has_clipping_container
 
 
+def _observer_count(widget, property_name):
+    """Count active observers for a property."""
+    observers = widget.get_property_observers(property_name)
+    return len(observers) if observers else 0
+
+
 class TestContentClippingWhenHeightConstrained:
     """Property tests for content clipping when height-constrained."""
 
@@ -137,6 +143,53 @@ class TestContentClippingWhenHeightConstrained:
                 break
 
         assert found_stencil, "Expected StencilView for clipping"
+
+    @pytest.mark.unit
+    def test_text_size_clipping_rebuilds_do_not_accumulate_forwarding_bindings(self):
+        """Repeated clipping rebuilds keep width forwarding observer count stable."""
+        label = MarkdownLabel(text='A', text_size=[None, 50], width=240, size_hint_x=None)
+        label.force_rebuild()
+        width_observers = _observer_count(label, 'width')
+        height_observers = _observer_count(label, 'height')
+
+        for i in range(5):
+            label.text = f'Round {i}'
+            label.force_rebuild()
+            assert _observer_count(label, 'width') == width_observers
+            assert _observer_count(label, 'height') == height_observers
+
+    @pytest.mark.unit
+    def test_strict_mode_clipping_rebuilds_do_not_accumulate_forwarding_bindings(self):
+        """Strict mode clipping keeps width/height forwarding observer counts stable."""
+        label = MarkdownLabel(
+            text='A',
+            strict_label_mode=True,
+            size_hint_y=None,
+            height=120,
+            width=260,
+            size_hint_x=None,
+        )
+        label.force_rebuild()
+        width_observers = _observer_count(label, 'width')
+        height_observers = _observer_count(label, 'height')
+
+        for i in range(5):
+            label.text = f'Strict round {i}'
+            label.force_rebuild()
+            assert _observer_count(label, 'width') == width_observers
+            assert _observer_count(label, 'height') == height_observers
+
+    @pytest.mark.unit
+    def test_clipping_forwarding_bindings_are_removed_when_clipping_disabled(self):
+        """Switching from clipped to unclipped rendering removes forwarding observers."""
+        label = MarkdownLabel(text='A', text_size=[None, 50], width=240, size_hint_x=None)
+        label.force_rebuild()
+        clipped_width_observers = _observer_count(label, 'width')
+
+        label.text_size = [None, None]
+        label.force_rebuild()
+
+        assert _observer_count(label, 'width') < clipped_width_observers
 
 
 class TestNoClippingWhenUnconstrained:

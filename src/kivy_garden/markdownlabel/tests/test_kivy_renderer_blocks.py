@@ -718,7 +718,7 @@ class TestKivyRendererEdgeCases:
             assert mock_list.called
 
     def test_image_on_texture_callback(self, renderer):
-        """Test the on_texture callback in image rendering."""
+        """Image binds texture+width callbacks and recomputes aspect-ratio height."""
         renderer.label = MagicMock()
         token = {
             'type': 'image',
@@ -739,10 +739,16 @@ class TestKivyRendererEdgeCases:
             assert mock_image.bind.called
             args, kwargs = mock_image.bind.call_args
             assert 'texture' in kwargs
-            callback = kwargs['texture']
+            assert 'width' in kwargs
+            texture_callback = kwargs['texture']
+            width_callback = kwargs['width']
 
-            callback(mock_image, mock_image.texture)
+            texture_callback(mock_image, mock_image.texture)
             assert mock_image.height == 50
+
+            mock_image.width = 200
+            width_callback(mock_image, mock_image.width)
+            assert mock_image.height == 100
 
     def test_block_code_update_bg_logic(self, renderer):
         """Test the update_bg function inner logic in block_code."""

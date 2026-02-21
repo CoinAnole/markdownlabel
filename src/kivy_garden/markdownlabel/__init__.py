@@ -115,12 +115,17 @@ class MarkdownLabel(MarkdownLabelProperties, MarkdownLabelRendering, BoxLayout):
 
         # Store user's size_hint_y value before potential override
         self._user_size_hint_y = kwargs.get('size_hint_y', 1)
+        self._min_height_to_height_cb = self.setter('height')
+        self._min_height_binding_active = False
+        self._active_clipping_container = None
+        self._clip_width_cb = None
+        self._clip_height_cb = None
 
         # Apply auto-sizing only when auto_size_height is True
         # AND strict_label_mode is False
         if self.auto_size_height and not self.strict_label_mode:
             self.size_hint_y = None
-            self.bind(minimum_height=self.setter('height'))
+            self._bind_minimum_height_to_height()
         elif self.strict_label_mode:
             self.size_hint_y = self._user_size_hint_y
 
@@ -234,20 +239,20 @@ class MarkdownLabel(MarkdownLabelProperties, MarkdownLabelRendering, BoxLayout):
 
         if value:
             self.size_hint_y = None
-            self.bind(minimum_height=self.setter('height'))
+            self._bind_minimum_height_to_height()
         else:
-            self.unbind(minimum_height=self.setter('height'))
+            self._unbind_minimum_height_to_height()
             self.size_hint_y = self._user_size_hint_y
 
     def _on_strict_label_mode_changed(self, instance, value):
         """Handle strict_label_mode property changes."""
         if value:
-            self.unbind(minimum_height=self.setter('height'))
+            self._unbind_minimum_height_to_height()
             self.size_hint_y = self._user_size_hint_y
         else:
             if self.auto_size_height:
                 self.size_hint_y = None
-                self.bind(minimum_height=self.setter('height'))
+                self._bind_minimum_height_to_height()
 
         self._schedule_rebuild()
 
@@ -272,8 +277,61 @@ class MarkdownLabel(MarkdownLabelProperties, MarkdownLabelRendering, BoxLayout):
         self._pending_rebuild = False
         self._rebuild_widgets()
 
+    def _bind_minimum_height_to_height(self):
+        """Bind minimum_height to height once using a stable callback."""
+        if self._min_height_binding_active:
+            return
+        self.bind(minimum_height=self._min_height_to_height_cb)
+        self._min_height_binding_active = True
+
+    def _unbind_minimum_height_to_height(self):
+        """Remove minimum_height -> height binding when active."""
+        if not self._min_height_binding_active:
+            return
+        self.unbind(minimum_height=self._min_height_to_height_cb)
+        self._min_height_binding_active = False
+
+    def _detach_clipping_bindings(self):
+        """Remove width/height forwarding callbacks for the active clipping container."""
+        if self._clip_width_cb is not None:
+            self.unbind(width=self._clip_width_cb)
+            self._clip_width_cb = None
+
+        if self._clip_height_cb is not None:
+            self.unbind(height=self._clip_height_cb)
+            self._clip_height_cb = None
+
+        self._active_clipping_container = None
+
+    def _attach_clipping_bindings(self, clipping_container, bind_height=False):
+        """Forward parent width/height updates to the clipping container."""
+        self._detach_clipping_bindings()
+        self._active_clipping_container = clipping_container
+
+        self._clip_width_cb = clipping_container.setter('width')
+        self.bind(width=self._clip_width_cb)
+        clipping_container.width = self.width
+
+        if bind_height:
+            self._clip_height_cb = clipping_container.setter('height')
+            self.bind(height=self._clip_height_cb)
+            clipping_container.height = self.height
+
+    def _configure_clipping_container(self, clipping_container):
+        """Configure clipping container size and parent forwarding callbacks."""
+        bind_height = False
+        if self.text_size and self.text_size[1] is not None:
+            clipping_container.height = self.text_size[1]
+        elif self.strict_label_mode and self.height:
+            clipping_container.height = self.height
+            bind_height = True
+
+        clipping_container.size_hint_x = None
+        self._attach_clipping_bindings(clipping_container, bind_height=bind_height)
+
     def _rebuild_widgets(self):
         """Parse the Markdown text and rebuild the widget tree."""
+        self._detach_clipping_bindings()
         self.clear_widgets()
         self._aggregated_refs = {}
 
@@ -357,16 +415,7 @@ class MarkdownLabel(MarkdownLabelProperties, MarkdownLabelRendering, BoxLayout):
 
                 if needs_clipping:
                     clipping_container = _ClippingContainer()
-
-                    if self.text_size and self.text_size[1] is not None:
-                        clipping_container.height = self.text_size[1]
-                    elif self.strict_label_mode and self.height:
-                        clipping_container.height = self.height
-                        self.bind(height=clipping_container.setter('height'))
-
-                    clipping_container.size_hint_x = None
-                    self.bind(width=clipping_container.setter('width'))
-                    clipping_container.width = self.width
+                    self._configure_clipping_container(clipping_container)
 
                     clipping_container.add_widget(image)
                     self.add_widget(clipping_container)
@@ -382,16 +431,7 @@ class MarkdownLabel(MarkdownLabelProperties, MarkdownLabelRendering, BoxLayout):
 
         if needs_clipping:
             clipping_container = _ClippingContainer()
-
-            if self.text_size and self.text_size[1] is not None:
-                clipping_container.height = self.text_size[1]
-            elif self.strict_label_mode and self.height:
-                clipping_container.height = self.height
-                self.bind(height=clipping_container.setter('height'))
-
-            clipping_container.size_hint_x = None
-            self.bind(width=clipping_container.setter('width'))
-            clipping_container.width = self.width
+            self._configure_clipping_container(clipping_container)
 
             for child in reversed(list(content.children)):
                 content.remove_widget(child)

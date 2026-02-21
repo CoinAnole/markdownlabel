@@ -15,6 +15,12 @@ from .test_utils import (
 )
 
 
+def _observer_count(widget, property_name):
+    """Count active observers for a property."""
+    observers = widget.get_property_observers(property_name)
+    return len(observers) if observers else 0
+
+
 # *For any* MarkdownLabel with content, the widget SHALL have size_hint_y=None
 # and its height SHALL equal or exceed the sum of its children's heights.
 
@@ -333,6 +339,34 @@ class TestAutoSizeHeightDynamicToggling:
 
             assert label.size_hint_y == expected_size_hint_y, \
                 f"Expected size_hint_y={expected_size_hint_y}, got {label.size_hint_y}"
+
+    @pytest.mark.unit
+    def test_minimum_height_binding_state_toggles_between_zero_and_one(self):
+        """minimum_height binding is added/removed without duplicates."""
+        label = MarkdownLabel(text='Sample', auto_size_height=False)
+
+        assert _observer_count(label, 'minimum_height') == 0
+
+        label.auto_size_height = True
+        assert _observer_count(label, 'minimum_height') == 1
+
+        label.auto_size_height = False
+        assert _observer_count(label, 'minimum_height') == 0
+
+        label.auto_size_height = True
+        assert _observer_count(label, 'minimum_height') == 1
+
+    @pytest.mark.unit
+    def test_minimum_height_binding_does_not_grow_with_strict_mode_toggles(self):
+        """Repeated strict mode toggles do not accumulate minimum_height observers."""
+        label = MarkdownLabel(text='Sample', auto_size_height=True)
+        assert _observer_count(label, 'minimum_height') == 1
+
+        for _ in range(5):
+            label.strict_label_mode = True
+            assert _observer_count(label, 'minimum_height') == 0
+            label.strict_label_mode = False
+            assert _observer_count(label, 'minimum_height') == 1
 
 
 # *For any* MarkdownLabel with `strict_label_mode=True`, the widget SHALL preserve

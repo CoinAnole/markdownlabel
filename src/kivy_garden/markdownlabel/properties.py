@@ -203,12 +203,18 @@ class MarkdownLabelProperties:
                 if hasattr(widget, 'minimum_width') and widget.minimum_width:
                     if widget.minimum_width > max_width:
                         max_width = widget.minimum_width
+                elif widget.width > max_width:
+                    max_width = widget.width
                 if hasattr(widget, 'minimum_height') and widget.minimum_height:
                     total_height += widget.minimum_height
+                else:
+                    total_height += widget.height
             elif isinstance(widget, BoxLayout):
                 for child in widget.children:
                     collect_sizes(child, visited)
             elif isinstance(widget, Widget):
+                if widget.width > max_width:
+                    max_width = widget.width
                 total_height += widget.height
 
         for child in self.children:

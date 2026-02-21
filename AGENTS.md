@@ -265,6 +265,12 @@ Published at: https://kivy-garden.github.io/markdownlabel/
 
 Tests set `KIVY_NO_ARGS=1` and `KIVY_NO_CONSOLELOG=1` for headless runs. Keep these when running CI locally (e.g., `pytest` from repo root).
 
+If Kivy tests need an X server in restricted/sandboxed environments, run pytest under escalated `xvfb-run` and set a writable Kivy home:
+
+```bash
+KIVY_HOME=/tmp/kivy xvfb-run -a pytest src/kivy_garden/markdownlabel/tests/
+```
+
 ---
 
 ## Repository Structure Notes

@@ -162,6 +162,36 @@ class TestColorPropertyForwarding:
         assert len(body_labels) >= 1, "Expected at least one body text label with specified color"
         assert len(code_labels) >= 1, "Expected at least one code label with light color"
 
+    @pytest.mark.unit
+    def test_color_style_update_preserves_code_block_colors(self):
+        """In-place color updates change body labels but keep code labels on code color."""
+        markdown = 'Body text\n\n```python\nprint("x")\n```\n\nTail text'
+        initial_body_color = [0.1, 0.2, 0.3, 1.0]
+        updated_body_color = [0.8, 0.1, 0.2, 1.0]
+        code_color = [0.9, 0.9, 0.9, 1.0]
+        label = MarkdownLabel(text=markdown, color=initial_body_color)
+
+        all_labels = find_labels_recursive(label)
+        body_labels = [lbl for lbl in all_labels if not getattr(lbl, '_is_code', False)]
+        code_labels = [lbl for lbl in all_labels if getattr(lbl, '_is_code', False)]
+        assert body_labels, "Expected non-code labels in mixed content"
+        assert code_labels, "Expected code labels in mixed content"
+
+        label.color = updated_body_color
+
+        for body_label in body_labels:
+            assert colors_equal(list(body_label.color), updated_body_color), \
+                f"Expected updated body color {updated_body_color}, got {list(body_label.color)}"
+
+        for code_label in code_labels:
+            assert colors_equal(list(code_label.color), code_color), \
+                f"Expected code color {code_color}, got {list(code_label.color)}"
+
+        label.disabled = True
+        for code_label in code_labels:
+            assert colors_equal(list(code_label.color), list(label.disabled_color)), \
+                f"Expected disabled code color {list(label.disabled_color)}, got {list(code_label.color)}"
+
 
 class TestLinkStyling:
     """Tests for link styling behavior."""

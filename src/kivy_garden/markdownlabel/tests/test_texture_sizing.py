@@ -392,3 +392,35 @@ code = "block"
         # to texture_size even in headless mode
         assert ts_with_blanks[1] >= ts_no_blanks[1], \
             "Expected content with blank lines to have at least as much height"
+
+    @pytest.mark.unit
+    def test_clipped_content_contributes_non_zero_texture_width(self):
+        """Clipping containers contribute effective width to texture_size."""
+        label = MarkdownLabel(
+            text='A paragraph that should be clipped.',
+            text_size=[None, 60],
+            width=240,
+            size_hint_x=None,
+        )
+        label.force_rebuild()
+
+        texture_size = label.texture_size
+        assert texture_size[0] > 0, f"Expected non-zero clipped width, got {texture_size[0]}"
+
+    @pytest.mark.unit
+    def test_texture_size_updates_when_parent_width_changes_in_clipping_mode(self):
+        """Changing parent width updates texture_size width for clipped layouts."""
+        label = MarkdownLabel(
+            text='A paragraph that should be clipped.',
+            text_size=[None, 60],
+            width=200,
+            size_hint_x=None,
+        )
+        label.force_rebuild()
+        width_before = label.texture_size[0]
+
+        label.width = 360
+        width_after = label.texture_size[0]
+
+        assert width_after > width_before, \
+            f"Expected clipped texture width to increase ({width_before} -> {width_after})"

@@ -41,6 +41,7 @@ class KivyRenderer(KivyRendererTableMixin):
         5: 1.25,  # h5
         6: 1.0,   # h6
     }
+    CODE_TEXT_COLOR = [0.9, 0.9, 0.9, 1]
 
     def __init__(self,
                  base_font_size: float = 15,
@@ -662,7 +663,7 @@ class KivyRenderer(KivyRendererTableMixin):
             'size_hint_y': None,
             'halign': 'left',
             'valign': 'top',
-            'color': self.disabled_color if self.disabled else [0.9, 0.9, 0.9, 1],
+            'color': list(self.disabled_color) if self.disabled else list(self.CODE_TEXT_COLOR),
             'unicode_errors': self.unicode_errors,
             'strip': self.strip,
             'font_features': self.font_features,
@@ -693,6 +694,7 @@ class KivyRenderer(KivyRendererTableMixin):
         # Set font scale metadata for code blocks
         label._font_scale = 1.0
         label._is_code = True
+        label._code_color = list(self.CODE_TEXT_COLOR)
 
         container.add_widget(label)
         container.bind(minimum_height=container.setter('height'))
@@ -826,20 +828,18 @@ class KivyRenderer(KivyRendererTableMixin):
         # Store alt text for fallback (always set attribute for testing consistency)
         image.alt_text = alt_text
 
-        # Set initial height based on texture when loaded
-        def on_texture(instance, value):
-            if value:
-                # Calculate height maintaining aspect ratio
-                ratio = value.height / value.width if value.width > 0 else 1
+        # Keep image height synchronized to texture ratio and current width.
+        def sync_image_height(instance, _value=None):
+            texture = getattr(instance, 'texture', None)
+            if texture and texture.width > 0:
+                ratio = texture.height / texture.width
                 instance.height = instance.width * ratio
             else:
                 # Fallback height if no texture
                 instance.height = 100
 
-        image.bind(texture=on_texture)
-
-        # Set default height until texture loads
-        image.height = 100
+        image.bind(texture=sync_image_height, width=sync_image_height)
+        sync_image_height(image)
 
         # Return image, but handle loading errors with fallback?
         # For now, AsyncImage handles its own loading.

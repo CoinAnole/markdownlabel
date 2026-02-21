@@ -261,8 +261,9 @@ def assert_no_rebuild(widget, change_func):
 
 #### `color`
 - **Type**: Style-only
-- **Behavior**: Updates `Label.color` on all Labels
-- **Exception**: Code blocks preserve their light color `[0.9, 0.9, 0.9, 1]`
+- **Behavior**: Updates `Label.color` on non-code Labels
+- **Exception**: Code block Labels preserve their code color `[0.9, 0.9, 0.9, 1]` across in-place style updates
+- **Disabled behavior**: When `disabled=True`, code block Labels use `disabled_color`
 - **Format**: RGBA list `[r, g, b, a]` with values 0.0-1.0
 
 #### `outline_width`
