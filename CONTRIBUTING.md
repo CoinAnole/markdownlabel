@@ -43,10 +43,6 @@ to easily have all the required tools to check your edits.
 
     pip install --editable .[dev]
 
-You can make sure the tests are ran before pushing by using the git hook.
-
-    cp tools/hooks/pre-commit .git/hooks/
-
 If you are unsure of the meaning of the pycodestyle output, you can use the
 --show-pep8 flag to learn more about the errors.
 

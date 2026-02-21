@@ -38,7 +38,7 @@ Install the latest development version directly from GitHub::
 
 To install a specific release, use the release URL::
 
-    python -m pip install https://github.com/kivy-garden/markdownlabel/archive/v1.0.0.zip
+    python -m pip install https://github.com/kivy-garden/markdownlabel/archive/v1.0.1.zip
 
 Using Kivy Garden Index
 ~~~~~~~~~~~~~~~~~~~~~~~

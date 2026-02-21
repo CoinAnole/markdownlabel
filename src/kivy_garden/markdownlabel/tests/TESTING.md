@@ -263,10 +263,10 @@ Certain private methods are **acceptable exceptions** for testing when no public
 
 ```bash
 # Validate comment format
-python tools/validate_comments.py validate kivy_garden/markdownlabel/tests/
+python tools/validate_comments.py validate src/kivy_garden/markdownlabel/tests/
 
 # Standardize comments (dry run first)
-python tools/validate_comments.py standardize kivy_garden/markdownlabel/tests/ --dry-run
+python tools/validate_comments.py standardize src/kivy_garden/markdownlabel/tests/ --dry-run
 
 # Analyze test performance
 python tools/analyze_tests.py --include-comments

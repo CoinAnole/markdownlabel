@@ -129,7 +129,7 @@ pytest -m slow
 pytest -m ""
 
 # Run specific test file
-pytest kivy_garden/markdownlabel/tests/test_core_functionality.py
+pytest src/kivy_garden/markdownlabel/tests/test_core_functionality.py
 ```
 
 ### Test Categories
