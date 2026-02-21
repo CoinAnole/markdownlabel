@@ -3,9 +3,9 @@
 ## 1. Quick Reference
 
 **Counts & Categories**
-- 26 main unit tests (13,332 lines total, avg 513/file)
-- conftest.py (123 lines): fixtures & TEST_MODULES
-- test_utils.py (918 lines): helpers, Hypothesis strategies
+- 27 main unit tests
+- conftest.py: fixtures & TEST_MODULES
+- test_utils.py: helpers, Hypothesis strategies
 - modules/ (14 files): meta-analysis tools
 - meta_tests/ (20 files): test suite validators
 
@@ -17,7 +17,7 @@
 | Style Properties | test_font_properties.py, test_color_properties.py, test_padding_properties.py, test_text_properties.py, test_shortening_properties.py, test_rtl_alignment.py, test_clipping_behavior.py, test_performance.py, test_advanced_compatibility.py | Font, color, padding, text, RTL, clipping, perf |
 | Structure Properties | test_sizing_behavior.py, test_texture_render_mode.py, test_core_functionality.py | strict_label_mode, render_mode, text |
 | Rendering | test_inline_renderer.py, test_kivy_renderer_blocks.py, test_kivy_renderer_tables.py | Inline, blocks, tables |
-| Core/Compat | test_core_functionality.py, test_label_compatibility.py, test_coordinate_translation.py | Parsing, aliases, refs/anchors |
+| Core/Compat | test_core_functionality.py, test_label_compatibility.py, test_coordinate_translation.py, test_reference_style_links.py | Parsing, aliases, refs/anchors, reference-style links |
 | Other | test_serialization.py, test_texture_sizing.py | Serialization, texture math |
 
 **Infrastructure Overview**
@@ -41,7 +41,7 @@
 | text | [`test_core_functionality.py`](kivy_garden/markdownlabel/tests/test_core_functionality.py) [`test_rebuild_scheduling.py`](kivy_garden/markdownlabel/tests/test_rebuild_scheduling.py) | Structure |
 | render_mode | [`test_texture_render_mode.py`](kivy_garden/markdownlabel/tests/test_texture_render_mode.py) | Structure |
 | strict_label_mode | [`test_sizing_behavior.py`](kivy_garden/markdownlabel/tests/test_sizing_behavior.py) | Structure |
-| link_style | [`test_core_functionality.py`](kivy_garden/markdownlabel/tests/test_core_functionality.py) | Structure |
+| link_style | [`test_core_functionality.py`](kivy_garden/markdownlabel/tests/test_core_functionality.py) [`test_reference_style_links.py`](kivy_garden/markdownlabel/tests/test_reference_style_links.py) | Structure |
 | link_color | [`test_color_properties.py`](kivy_garden/markdownlabel/tests/test_color_properties.py) | Structure |
 | code_bg_color | [`test_color_properties.py`](kivy_garden/markdownlabel/tests/test_color_properties.py) | Structure |
 | fallback_enabled, fallback_fonts, fallback_font_scales | [`test_rebuild_property_classification.py`](kivy_garden/markdownlabel/tests/test_rebuild_property_classification.py) | Structure |
@@ -53,7 +53,7 @@
 
 ### General Functionality Tests
 
-#### [`test_advanced_compatibility.py`](kivy_garden/markdownlabel/tests/test_advanced_compatibility.py) (869 lines)
+#### [`test_advanced_compatibility.py`](kivy_garden/markdownlabel/tests/test_advanced_compatibility.py)
 **Purpose**: Advanced compatibility: font forwarding, disabled color, reactive style updates.
 **Key Classes**:
 - TestAdvancedFontPropertiesForwarding - advanced font forwarding (~25 tests)
@@ -64,17 +64,18 @@
 **Dependencies**: test_utils (find_labels_recursive, collect_widget_ids, assert_no_rebuild, colors_equal)
 **Related**: test_font_properties.py, test_rebuild_style_propagation.py
 
-#### [`test_clipping_behavior.py`](kivy_garden/markdownlabel/tests/test_clipping_behavior.py) (260 lines)
-**Purpose**: Clipping with StencilView (height-constrained) vs expansion (unconstrained).
+#### [`test_clipping_behavior.py`](kivy_garden/markdownlabel/tests/test_clipping_behavior.py)
+**Purpose**: Clipping with StencilView (height-constrained) vs expansion (unconstrained), including
+forwarding-binding lifecycle checks across rebuilds.
 **Key Classes**:
 - TestContentClippingWhenHeightConstrained - text_size/strict mode (~10 tests)
 - TestNoClippingWhenUnconstrained - no constraints (~8 tests)
 **Property Types**: Style-only (text_size, strict_label_mode)
 **Markers**: @pytest.mark.property, @pytest.mark.unit
-**Dependencies**: test_utils (has_clipping_container)
+**Dependencies**: test_utils (has_clipping_container, collect_widget_ids, assert_rebuild_occurred)
 **Related**: test_sizing_behavior.py, test_text_properties.py
 
-#### [`test_color_properties.py`](kivy_garden/markdownlabel/tests/test_color_properties.py) (193 lines)
+#### [`test_color_properties.py`](kivy_garden/markdownlabel/tests/test_color_properties.py)
 **Purpose**: Color forwarding, code preservation, style no-rebuild.
 **Key Classes**:
 - TestColorPropertyForwarding - forwarding/updates (~8 tests)
@@ -84,7 +85,7 @@
 **Dependencies**: test_utils (color_strategy, find_labels_recursive)
 **Related**: test_performance.py, test_rebuild_identity_preservation.py
 
-#### [`test_coordinate_translation.py`](kivy_garden/markdownlabel/tests/test_coordinate_translation.py) (1031 lines)
+#### [`test_coordinate_translation.py`](kivy_garden/markdownlabel/tests/test_coordinate_translation.py)
 **Purpose**: Refs/anchors coordinate translation from Labels to MarkdownLabel.
 **Key Classes**:
 - TestCoordinateTranslation - markup/translation (~15 tests)
@@ -95,7 +96,7 @@
 **Dependencies**: test_utils (find_labels_with_refs, get_widget_offset)
 **Related**: test_core_functionality.py
 
-#### [`test_core_functionality.py`](kivy_garden/markdownlabel/tests/test_core_functionality.py) (450 lines)
+#### [`test_core_functionality.py`](kivy_garden/markdownlabel/tests/test_core_functionality.py)
 **Purpose**: Parsing, rendering, tree gen, text updates, links, nesting.
 **Key Classes**:
 - TestMarkdownToWidgetTreeGeneration - markdown to widgets (~10 tests)
@@ -107,7 +108,7 @@
 **Dependencies**: test_utils (markdown_heading, collect_widget_ids)
 **Related**: test_rebuild_scheduling.py, test_inline_renderer.py
 
-#### [`test_font_properties.py`](kivy_garden/markdownlabel/tests/test_font_properties.py) (890 lines)
+#### [`test_font_properties.py`](kivy_garden/markdownlabel/tests/test_font_properties.py)
 **Purpose**: Font forwarding (name/size/line_height/advanced), heading scales, no-rebuild.
 **Key Classes**:
 - TestFontNamePropertyForwarding - font_name (~10 tests)
@@ -120,7 +121,7 @@
 **Dependencies**: test_utils (find_labels_recursive)
 **Related**: test_advanced_compatibility.py, test_label_compatibility.py
 
-#### [`test_inline_renderer.py`](kivy_garden/markdownlabel/tests/test_inline_renderer.py) (849 lines)
+#### [`test_inline_renderer.py`](kivy_garden/markdownlabel/tests/test_inline_renderer.py)
 **Purpose**: InlineRenderer: formatting, escaping, URL/HTML security.
 **Key Classes**:
 - TestInlineFormattingConversion - tags (~8 tests)
@@ -132,7 +133,7 @@
 **Dependencies**: None
 **Related**: test_core_functionality.py
 
-#### [`test_kivy_renderer_blocks.py`](kivy_garden/markdownlabel/tests/test_kivy_renderer_blocks.py) (768 lines)
+#### [`test_kivy_renderer_blocks.py`](kivy_garden/markdownlabel/tests/test_kivy_renderer_blocks.py)
 **Purpose**: Blocks: headings, paras, lists, code, quotes.
 **Key Classes**:
 - TestHeadingFontHierarchy - headings (~5 tests)
@@ -145,7 +146,7 @@
 **Dependencies**: test_utils (heading_token)
 **Related**: test_kivy_renderer_tables.py
 
-#### [`test_kivy_renderer_tables.py`](kivy_garden/markdownlabel/tests/test_kivy_renderer_tables.py) (338 lines)
+#### [`test_kivy_renderer_tables.py`](kivy_garden/markdownlabel/tests/test_kivy_renderer_tables.py)
 **Purpose**: Tables: grid, cell alignment.
 **Key Classes**:
 - TestTableGridStructure - cols/cells (~5 tests)
@@ -155,7 +156,7 @@
 **Dependencies**: test_utils (table_token)
 **Related**: test_kivy_renderer_blocks.py
 
-#### [`test_label_compatibility.py`](kivy_garden/markdownlabel/tests/test_label_compatibility.py) (430 lines)
+#### [`test_label_compatibility.py`](kivy_garden/markdownlabel/tests/test_label_compatibility.py)
 **Purpose**: Label API compat: font_size alias, no-op props.
 **Key Classes**:
 - TestFontSizeAliasBidirectionality - alias sync (~5 tests)
@@ -166,7 +167,7 @@
 **Dependencies**: test_utils (st_rgba_color)
 **Related**: test_font_properties.py
 
-#### [`test_padding_properties.py`](kivy_garden/markdownlabel/tests/test_padding_properties.py) (714 lines)
+#### [`test_padding_properties.py`](kivy_garden/markdownlabel/tests/test_padding_properties.py)
 **Purpose**: Padding/text_padding/label_padding norm/forward/updates.
 **Key Classes**:
 - TestPaddingApplication - norm (~5 tests)
@@ -177,7 +178,7 @@
 **Dependencies**: test_utils (text_padding_strategy, padding_equal)
 **Related**: test_text_properties.py
 
-#### [`test_performance.py`](kivy_garden/markdownlabel/tests/test_performance.py) (377 lines)
+#### [`test_performance.py`](kivy_garden/markdownlabel/tests/test_performance.py)
 **Purpose**: Style updates no rebuild, disabled switching.
 **Key Classes**:
 - TestStyleOnlyPropertyUpdates - preserve tree (~20 tests)
@@ -186,7 +187,7 @@
 **Dependencies**: test_utils (find_labels_recursive)
 **Related**: test_color_properties.py, test_rebuild_identity_preservation.py
 
-#### [`test_rtl_alignment.py`](kivy_garden/markdownlabel/tests/test_rtl_alignment.py) (493 lines)
+#### [`test_rtl_alignment.py`](kivy_garden/markdownlabel/tests/test_rtl_alignment.py)
 **Purpose**: RTL halign auto/override, direction changes.
 **Key Classes**:
 - TestAutoAlignmentRespectsDirection - auto (~15 tests)
@@ -197,17 +198,30 @@
 **Dependencies**: test_utils (find_labels_recursive)
 **Related**: test_core_functionality.py
 
-#### [`test_serialization.py`](kivy_garden/markdownlabel/tests/test_serialization.py) (785 lines)
-**Purpose**: Round-trip serialization, code fences.
+#### [`test_serialization.py`](kivy_garden/markdownlabel/tests/test_serialization.py)
+**Purpose**: Round-trip serialization, code fence collision handling, and reference-style link serialization.
 **Key Classes**:
 - TestMarkdownRoundTripSerialization - elements (~15 tests)
 - TestCodeBlockSerialization - backticks (~10 tests)
+- TestCodeFenceCollisionProperty - fence-width collision handling
+- TestMarkdownSerializerEdgeCases - defensive serializer edge cases
+- TestReferenceStyleLinkSerialization - reference-style link titles and forms
 **Property Types**: N/A
 **Markers**: @pytest.mark.property
 **Dependencies**: test_utils (markdown_heading)
-**Related**: test_inline_renderer.py
+**Related**: test_inline_renderer.py, test_reference_style_links.py
 
-#### [`test_shortening_properties.py`](kivy_garden/markdownlabel/tests/test_shortening_properties.py) (360 lines)
+#### [`test_reference_style_links.py`](kivy_garden/markdownlabel/tests/test_reference_style_links.py)
+**Purpose**: Reference-style link rendering equivalence and `on_ref_press` URL dispatch behavior.
+**Key Classes**:
+- TestReferenceStyleLinkRenderingEquivalence - inline vs reference rendering parity
+- TestReferenceStyleLinkEventDispatch - resolved URL dispatch and ref markup checks
+**Property Types**: N/A
+**Markers**: @pytest.mark.property, @pytest.mark.unit, @pytest.mark.needs_window
+**Dependencies**: test_utils (find_labels_with_ref_markup)
+**Related**: test_core_functionality.py, test_inline_renderer.py, test_serialization.py
+
+#### [`test_shortening_properties.py`](kivy_garden/markdownlabel/tests/test_shortening_properties.py)
 **Purpose**: Shortening props forwarding.
 **Key Classes**:
 - TestShorteningPropertyForwarding - to elements (~25 tests)
@@ -216,7 +230,7 @@
 **Dependencies**: test_utils (collect_widget_ids)
 **Related**: test_text_properties.py
 
-#### [`test_sizing_behavior.py`](kivy_garden/markdownlabel/tests/test_sizing_behavior.py) (587 lines)
+#### [`test_sizing_behavior.py`](kivy_garden/markdownlabel/tests/test_sizing_behavior.py)
 **Purpose**: auto_size_height, strict_label_mode sizing.
 **Key Classes**:
 - TestAutoSizingBehavior - auto (~10 tests)
@@ -226,7 +240,7 @@
 **Dependencies**: None
 **Related**: test_clipping_behavior.py
 
-#### [`test_text_properties.py`](kivy_garden/markdownlabel/tests/test_text_properties.py) (590 lines)
+#### [`test_text_properties.py`](kivy_garden/markdownlabel/tests/test_text_properties.py)
 **Purpose**: text_size forward/storage, unicode_errors/strip.
 **Key Classes**:
 - TestTextSizeForwarding - storage (~10 tests)
@@ -237,7 +251,7 @@
 **Dependencies**: test_utils (find_labels_recursive)
 **Related**: test_padding_properties.py, test_shortening_properties.py
 
-#### [`test_texture_render_mode.py`](kivy_garden/markdownlabel/tests/test_texture_render_mode.py) (689 lines)
+#### [`test_texture_render_mode.py`](kivy_garden/markdownlabel/tests/test_texture_render_mode.py)
 **Purpose**: texture mode structure, links, hit-test, fallback.
 **Key Classes**:
 - TestTextureRenderModeStructure - images (~5 tests)
@@ -248,7 +262,7 @@
 **Dependencies**: test_utils (find_images)
 **Related**: test_texture_sizing.py
 
-#### [`test_texture_sizing.py`](kivy_garden/markdownlabel/tests/test_texture_sizing.py) (394 lines)
+#### [`test_texture_sizing.py`](kivy_garden/markdownlabel/tests/test_texture_sizing.py)
 **Purpose**: texture_size calc across widgets.
 **Key Classes**:
 - TestComprehensiveTextureSizeCalculation - validity (~20 tests)
@@ -259,7 +273,7 @@
 
 ### Rebuild Behavior Tests
 
-#### [`test_rebuild_advanced_properties.py`](kivy_garden/markdownlabel/tests/test_rebuild_advanced_properties.py) (531 lines)
+#### [`test_rebuild_advanced_properties.py`](kivy_garden/markdownlabel/tests/test_rebuild_advanced_properties.py)
 **Purpose**: Advanced props (fonts/text/trunc) identity no rebuild PBT.
 **Key Classes**:
 - TestAdvancedFontPropertyIdentityPreservationPBT - fonts (48 tests)
@@ -269,7 +283,7 @@
 **Dependencies**: test_utils (assert_no_rebuild)
 **Related**: test_rebuild_identity_preservation.py, other rebuild_*.py
 
-#### [`test_rebuild_identity_preservation.py`](kivy_garden/markdownlabel/tests/test_rebuild_identity_preservation.py) (496 lines)
+#### [`test_rebuild_identity_preservation.py`](kivy_garden/markdownlabel/tests/test_rebuild_identity_preservation.py)
 **Purpose**: Style changes preserve IDs (no rebuild) PBT.
 **Key Classes**:
 - TestStylePropertyIdentityPreservationPBT - style (50 tests)
@@ -279,7 +293,7 @@
 **Dependencies**: test_utils (collect_widget_ids)
 **Related**: test_rebuild_style_propagation.py, test_performance.py
 
-#### [`test_rebuild_property_classification.py`](kivy_garden/markdownlabel/tests/test_rebuild_property_classification.py) (213 lines)
+#### [`test_rebuild_property_classification.py`](kivy_garden/markdownlabel/tests/test_rebuild_property_classification.py)
 **Purpose**: STYLE_ONLY/STRUCTURE sets validation.
 **Key Classes**:
 - TestPropertyClassificationSets - validation (~15 tests)
@@ -288,7 +302,7 @@
 **Dependencies**: None
 **Related**: All rebuild_*.py; [`REBUILD_CONTRACT.md`](../REBUILD_CONTRACT.md)
 
-#### [`test_rebuild_scheduling.py`](kivy_garden/markdownlabel/tests/test_rebuild_scheduling.py) (253 lines)
+#### [`test_rebuild_scheduling.py`](kivy_garden/markdownlabel/tests/test_rebuild_scheduling.py)
 **Purpose**: Rebuild batching/deferral via Clock.
 **Key Classes**:
 - TestBatchedRebuilds - batching (~5 tests)
@@ -298,7 +312,7 @@
 **Dependencies**: test_utils (collect_widget_ids)
 **Related**: test_core_functionality.py
 
-#### [`test_rebuild_structure_changes.py`](kivy_garden/markdownlabel/tests/test_rebuild_structure_changes.py) (216 lines)
+#### [`test_rebuild_structure_changes.py`](kivy_garden/markdownlabel/tests/test_rebuild_structure_changes.py)
 **Purpose**: Structure props trigger rebuild (new IDs) PBT.
 **Key Classes**:
 - TestStructurePropertyRebuildPBT - PBT (50 tests)
@@ -307,7 +321,7 @@
 **Dependencies**: test_utils (collect_widget_ids)
 **Related**: test_sizing_behavior.py, test_texture_render_mode.py
 
-#### [`test_rebuild_style_propagation.py`](kivy_garden/markdownlabel/tests/test_rebuild_style_propagation.py) (241 lines)
+#### [`test_rebuild_style_propagation.py`](kivy_garden/markdownlabel/tests/test_rebuild_style_propagation.py)
 **Purpose**: Style props propagate to descendants no rebuild PBT.
 **Key Classes**:
 - TestStylePropertyPropagationPBT - PBT (50 tests)
@@ -316,7 +330,7 @@
 **Dependencies**: test_utils (find_labels_recursive, assert_no_rebuild)
 **Related**: test_rebuild_identity_preservation.py
 
-#### [`test_rebuild_text_size_and_code_blocks.py`](kivy_garden/markdownlabel/tests/test_rebuild_text_size_and_code_blocks.py) (315 lines)
+#### [`test_rebuild_text_size_and_code_blocks.py`](kivy_garden/markdownlabel/tests/test_rebuild_text_size_and_code_blocks.py)
 **Purpose**: text_size preservation/bindings, code monospace on font change.
 **Key Classes**:
 - TestTextSizePropertyIdentityPreservationPBT - text_size (50 tests)
@@ -328,12 +342,12 @@
 
 ## 3. Infrastructure & Support Files
 
-### conftest.py (123 lines)
+### conftest.py
 - Fixtures: setup_kivy_environment (session autouse, KIVY_NO_ARGS=1), sample_markdown_texts, default_colors, default_padding_values, kivy_fonts
 - TEST_MODULES (24-54): 27 main tests for meta
 - Env: repo_root in sys.path
 
-### test_utils.py (918 lines)
+### test_utils.py
 - Helpers: find_labels_recursive, collect_widget_ids, assert_no_rebuild/colors_equal/padding_equal/floats_equal; FakeTouch, simulate_coverage_measurement
 - Strategies: st_alphanumeric_text/st_rgba_color; markdown_heading/table_token; duplicate_helper_functions etc.
 - Constants: KIVY_FONTS
@@ -372,7 +386,7 @@
 - Style Properties: test_font_properties.py (fonts), test_color_properties.py (colors), test_padding_properties.py, test_text_properties.py (text proc), test_shortening_properties.py (trunc), test_rtl_alignment.py (dir/align), test_clipping_behavior.py (clip), test_performance.py (perf), test_advanced_compatibility.py (advanced)
 - Rebuild (7 files): test_rebuild_identity_preservation.py/propagation/advanced_properties/text_size_code/structure_changes/scheduling + test_rebuild_property_classification.py (sets)
 - Structure: test_sizing_behavior.py (strict), test_texture_render_mode.py (render_mode), test_core_functionality.py (text)
-- Compat/Edge: test_label_compatibility.py (Label API), test_coordinate_translation.py (refs)
+- Compat/Edge: test_label_compatibility.py (Label API), test_coordinate_translation.py (coords), test_reference_style_links.py (reference links)
 - Serialization: test_serialization.py
 
 **Cross-Cutting**
@@ -390,6 +404,7 @@
 - **Block elements?** [`test_kivy_renderer_blocks.py`](kivy_garden/markdownlabel/tests/test_kivy_renderer_blocks.py) (headings/lists/code)
 - **Tables?** [`test_kivy_renderer_tables.py`](kivy_garden/markdownlabel/tests/test_kivy_renderer_tables.py)
 - **Refs/anchors/coords?** [`test_coordinate_translation.py`](kivy_garden/markdownlabel/tests/test_coordinate_translation.py)
+- **Reference-style links?** [`test_reference_style_links.py`](kivy_garden/markdownlabel/tests/test_reference_style_links.py)
 - **Style no-rebuild perf?** [`test_performance.py`](kivy_garden/markdownlabel/tests/test_performance.py), test_rebuild_identity_preservation.py
 - **Structure rebuild?** test_rebuild_structure_changes.py, test_sizing_behavior.py (strict), test_texture_render_mode.py
 - **Serialization round-trip?** [`test_serialization.py`](kivy_garden/markdownlabel/tests/test_serialization.py)

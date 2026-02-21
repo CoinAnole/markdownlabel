@@ -15,7 +15,8 @@ Guidelines for writing and maintaining tests, including property-based testing w
 
 ## Test Organization
 
-Tests are organized by **functionality**, not by implementation file. See `.kiro/steering/structure.md` for the test file layout.
+Tests are organized by **functionality**, not by implementation file. See
+[`TEST_MAP.md`](./TEST_MAP.md) for the current test file layout and navigation guide.
 
 ### Class Organization
 
