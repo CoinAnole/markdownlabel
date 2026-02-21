@@ -571,6 +571,54 @@ class TestTextureFallbackBranch:
         assert len(images) == 0, \
             "Expected no Image widgets in fallback mode"
 
+    @pytest.mark.unit
+    def test_texture_fallback_clears_stale_aggregated_refs(self, monkeypatch):
+        """Fallback path clears stale texture hit-test zones."""
+        def fake_texture_failure(instance, content):
+            instance._aggregated_refs = {'http://stale.com': [(0, 0, 120, 80)]}
+            return None
+
+        monkeypatch.setattr(MarkdownLabel, '_render_as_texture', fake_texture_failure)
+
+        label = MarkdownLabel(
+            text='Click [here](http://example.com)',
+            render_mode='texture',
+            size=(400, 300),
+            size_hint=(None, None)
+        )
+        label.force_rebuild()
+
+        assert label._aggregated_refs == {}, \
+            f"Expected stale _aggregated_refs to be cleared, got {label._aggregated_refs}"
+
+    @pytest.mark.unit
+    def test_texture_fallback_does_not_dispatch_stale_ref_zones(self, monkeypatch, ref_capture):
+        """Fallback path should never dispatch refs from stale texture zones."""
+        dispatched_refs, capture_ref = ref_capture
+
+        def fake_texture_failure(instance, content):
+            instance._aggregated_refs = {'http://stale.com': [(0, 0, 200, 200)]}
+            return None
+
+        monkeypatch.setattr(MarkdownLabel, '_render_as_texture', fake_texture_failure)
+
+        label = MarkdownLabel(
+            text='Click [here](http://example.com)',
+            render_mode='texture',
+            size=(400, 300),
+            size_hint=(None, None),
+            pos=(0, 0)
+        )
+        label.bind(on_ref_press=capture_ref)
+        label.force_rebuild()
+
+        touch = FakeTouch(10, 10)
+        result = label.on_touch_down(touch)
+
+        assert len(dispatched_refs) == 0, \
+            f"Expected no dispatch from stale zones after fallback, got {dispatched_refs}"
+        assert not result, f"Expected falsy on_touch_down result, got {result}"
+
 
 @pytest.mark.slow
 class TestAutoRenderModeSelection:

@@ -349,6 +349,7 @@ class MarkdownLabelRendering:
                 "falling back to widget mode.",
                 RuntimeWarning,
             )
+            self._aggregated_refs = {}
             return None
 
         content.size = (content_width, content_height)
@@ -412,6 +413,7 @@ class MarkdownLabelRendering:
                 f"Texture rendering failed, falling back to widget mode: {e}",
                 RuntimeWarning
             )
+            self._aggregated_refs = {}
             return None
 
     def _collect_refs_for_texture(self, widget, content_height, offset_x=0, offset_y=0):

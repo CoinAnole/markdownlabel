@@ -424,3 +424,42 @@ code = "block"
 
         assert width_after > width_before, \
             f"Expected clipped texture width to increase ({width_before} -> {width_after})"
+
+    @pytest.mark.unit
+    def test_texture_size_uses_label_texture_bounds_not_full_label_bounds(self):
+        """Label contributions use rendered texture bounds centered in the Label box."""
+        label = MarkdownLabel(text='')
+
+        child = Label(text='x', size_hint=(None, None), size=(200, 100), pos=(30, 10))
+        child.texture_size = (80, 20)
+        label.add_widget(child)
+
+        texture_size = label.texture_size
+        assert texture_size[0] == 80, f"Expected width 80 from texture bounds, got {texture_size[0]}"
+        assert texture_size[1] == 20, f"Expected height 20 from texture bounds, got {texture_size[1]}"
+
+    @pytest.mark.unit
+    def test_texture_size_horizontal_siblings_use_bounding_box_height_not_sum(self):
+        """Horizontal siblings should contribute max vertical extent, not summed heights."""
+        label = MarkdownLabel(text='')
+
+        row = BoxLayout(orientation='horizontal', size_hint=(None, None), size=(220, 80), pos=(10, 15))
+        left = Label(text='left', size_hint=(None, None), size=(30, 20))
+        right = Label(text='right', size_hint=(None, None), size=(80, 40))
+
+        row.add_widget(left)
+        row.add_widget(right)
+
+        left.pos = (0, 0)
+        right.pos = (120, 5)
+
+        label.add_widget(row)
+
+        texture_size = label.texture_size
+
+        expected_height = 45  # min_y=15, max_y=60 in MarkdownLabel-local coordinates
+        summed_height = 60
+        assert texture_size[1] == expected_height, (
+            f"Expected bounding-box height {expected_height}, got {texture_size[1]}"
+        )
+        assert texture_size[1] < summed_height, "Height should not be computed as sibling sum"

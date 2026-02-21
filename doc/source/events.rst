@@ -84,7 +84,7 @@ Texture Mode Link Handling
 When using ``render_mode='texture'``, links are handled differently:
 
 - Click detection uses hit-testing on the aggregated texture
-- The ``on_touch_down`` method checks ``_aggregated_refs`` for link zones
+- The ``on_touch_down`` method checks ``_aggregated_refs`` only when texture rendering succeeds
 - Links still dispatch ``on_ref_press`` events normally
 
 Example: Opening Links in Browser

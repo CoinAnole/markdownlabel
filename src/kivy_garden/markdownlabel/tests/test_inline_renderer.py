@@ -8,6 +8,7 @@ to Kivy markup strings.
 import pytest
 from hypothesis import given, strategies as st, settings
 
+from kivy_garden.markdownlabel import font_fallback
 from kivy_garden.markdownlabel.inline_renderer import InlineRenderer, escape_kivy_markup
 
 
@@ -671,6 +672,51 @@ class TestHTMLContentEscapingProperty:
 
             expected = escape_kivy_markup(html_content)
             assert result == expected, "Inline HTML should render literally with Kivy markup escaping"
+
+
+class TestFontFallbackResolutionCaching:
+    """Regression tests for non-sticky font path resolution misses."""
+
+    @pytest.mark.unit
+    def test_resolve_font_path_recovers_after_late_registry_registration(self, monkeypatch, tmp_path):
+        """A prior miss should not block later resolution for the same font name."""
+        font_name = 'LateRegisteredFont'
+        font_path = tmp_path / 'late-registered.ttf'
+        font_path.write_bytes(b'fake-font-data')
+
+        monkeypatch.setattr(font_fallback, 'resource_find', lambda _name: None)
+        monkeypatch.setattr(font_fallback.LabelBase, '_fonts', {}, raising=False)
+        font_fallback._RESOLVED_FONT_PATH_CACHE.clear()
+
+        assert font_fallback._resolve_font_path(font_name) is None
+
+        font_fallback.LabelBase._fonts[font_name] = str(font_path)
+        resolved = font_fallback._resolve_font_path(font_name)
+        assert resolved == str(font_path), f"Expected late-registered font path, got {resolved!r}"
+
+    @pytest.mark.unit
+    def test_resolve_font_path_recovers_after_resource_becomes_available(self, monkeypatch, tmp_path):
+        """A prior miss should not stick when resource_find later returns a path."""
+        font_name = 'DynamicResourceFont'
+        font_path = tmp_path / 'dynamic-resource.ttf'
+        font_path.write_bytes(b'fake-font-data')
+
+        state = {'available': False}
+
+        def fake_resource_find(name):
+            if name == font_name and state['available']:
+                return str(font_path)
+            return None
+
+        monkeypatch.setattr(font_fallback, 'resource_find', fake_resource_find)
+        monkeypatch.setattr(font_fallback.LabelBase, '_fonts', {}, raising=False)
+        font_fallback._RESOLVED_FONT_PATH_CACHE.clear()
+
+        assert font_fallback._resolve_font_path(font_name) is None
+
+        state['available'] = True
+        resolved = font_fallback._resolve_font_path(font_name)
+        assert resolved == str(font_path), f"Expected resolved dynamic resource path, got {resolved!r}"
 
 
 class TestInlineRendererEdgeCases:

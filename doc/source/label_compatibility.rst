@@ -118,7 +118,7 @@ These properties work exactly like Kivy Label:
    * - Property
      - Description
    * - ``texture_size``
-     - Aggregated from child Labels
+     - Layout-aware bounding box of rendered descendant content
    * - ``refs``
      - Reference positions for links
    * - ``anchors``

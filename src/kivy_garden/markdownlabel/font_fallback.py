@@ -6,7 +6,7 @@ import logging
 import unicodedata
 from functools import lru_cache
 from pathlib import Path
-from typing import Iterable, List, Optional, Sequence, Tuple
+from typing import Dict, Iterable, List, Optional, Sequence, Tuple
 
 from fontTools.ttLib import TTCollection, TTFont
 from kivy.core.text import LabelBase
@@ -15,6 +15,8 @@ from kivy.resources import resource_find
 _fonttools_logger = logging.getLogger("fontTools")
 if _fonttools_logger.level < logging.WARNING:
     _fonttools_logger.setLevel(logging.WARNING)
+
+_RESOLVED_FONT_PATH_CACHE: Dict[str, str] = {}
 
 
 def escape_kivy_markup(text: str) -> str:
@@ -47,17 +49,23 @@ def _is_neutral_char(ch: str) -> bool:
     return False
 
 
-@lru_cache(maxsize=128)
 def _resolve_font_path(font_name: str) -> Optional[str]:
     if not font_name:
         return None
 
+    cached = _RESOLVED_FONT_PATH_CACHE.get(font_name)
+    if cached is not None:
+        return cached
+
     raw_path = Path(font_name)
     if raw_path.suffix.lower() in ('.ttf', '.ttc', '.otf', '.otc') and raw_path.exists():
-        return str(raw_path)
+        resolved_path = str(raw_path)
+        _RESOLVED_FONT_PATH_CACHE[font_name] = resolved_path
+        return resolved_path
 
     resolved = resource_find(font_name)
     if resolved:
+        _RESOLVED_FONT_PATH_CACHE[font_name] = resolved
         return resolved
 
     font_registry = getattr(LabelBase, '_fonts', {}) or {}
@@ -78,6 +86,7 @@ def _resolve_font_path(font_name: str) -> Optional[str]:
     for candidate in candidates:
         resolved_candidate = resource_find(candidate) or candidate
         if Path(resolved_candidate).exists():
+            _RESOLVED_FONT_PATH_CACHE[font_name] = resolved_candidate
             return resolved_candidate
 
     return None

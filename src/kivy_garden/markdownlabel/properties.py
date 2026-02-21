@@ -163,9 +163,11 @@ class MarkdownLabelProperties:
     aggregate_texture_enabled = BooleanProperty(False)
 
     def _get_texture_size(self):
-        """Compute aggregate texture_size from all descendant widgets.
+        """Compute layout-aware texture_size from rendered descendant bounds.
 
-        Walks the widget tree (O(n)); updated when `_texture_size_version` changes.
+        Returns a [width, height] bounding-box size in MarkdownLabel-local
+        coordinates. This measures rendered extents (including nested
+        positioning), not a raw sum of descendant heights.
         """
         from kivy.uix.label import Label
         from kivy.uix.image import AsyncImage
@@ -176,51 +178,74 @@ class MarkdownLabelProperties:
         if not self.children:
             return [0, 0]
 
-        max_width = 0
-        total_height = 0
+        visited = set()
+        min_x = None
+        min_y = None
+        max_x = None
+        max_y = None
 
-        def collect_sizes(widget, visited=None):
-            nonlocal max_width, total_height
+        def include_rect(x, y, width, height):
+            nonlocal min_x, min_y, max_x, max_y
+            width = max(0.0, float(width))
+            height = max(0.0, float(height))
+            x1 = float(x)
+            y1 = float(y)
+            x2 = x1 + width
+            y2 = y1 + height
 
-            if visited is None:
-                visited = set()
+            if min_x is None:
+                min_x = x1
+                min_y = y1
+                max_x = x2
+                max_y = y2
+                return
 
+            min_x = min(min_x, x1)
+            min_y = min(min_y, y1)
+            max_x = max(max_x, x2)
+            max_y = max(max_y, y2)
+
+        def collect_bounds(widget, parent_offset_x=0.0, parent_offset_y=0.0):
             widget_id = id(widget)
             if widget_id in visited:
                 return
             visited.add(widget_id)
 
+            local_x = parent_offset_x + float(getattr(widget, 'x', 0.0))
+            local_y = parent_offset_y + float(getattr(widget, 'y', 0.0))
+
             if isinstance(widget, Label) and hasattr(widget, 'texture_size'):
                 ts = widget.texture_size
-                if ts[0] > max_width:
-                    max_width = ts[0]
-                total_height += ts[1]
+                tex_w = ts[0] if ts and ts[0] > 0 else float(widget.width)
+                tex_h = ts[1] if ts and ts[1] > 0 else float(widget.height)
+                box_x = local_x + (float(widget.width) - tex_w) / 2.0
+                box_y = local_y + (float(widget.height) - tex_h) / 2.0
+                include_rect(box_x, box_y, tex_w, tex_h)
             elif isinstance(widget, AsyncImage):
-                if widget.width > max_width:
-                    max_width = widget.width
-                total_height += widget.height
+                include_rect(local_x, local_y, float(widget.width), float(widget.height))
             elif isinstance(widget, GridLayout):
-                if hasattr(widget, 'minimum_width') and widget.minimum_width:
-                    if widget.minimum_width > max_width:
-                        max_width = widget.minimum_width
-                elif widget.width > max_width:
-                    max_width = widget.width
-                if hasattr(widget, 'minimum_height') and widget.minimum_height:
-                    total_height += widget.minimum_height
-                else:
-                    total_height += widget.height
+                width = float(widget.minimum_width) if getattr(widget, 'minimum_width', 0) else float(
+                    widget.width
+                )
+                height = float(widget.minimum_height) if getattr(widget, 'minimum_height', 0) else float(
+                    widget.height
+                )
+                include_rect(local_x, local_y, width, height)
             elif isinstance(widget, BoxLayout):
                 for child in widget.children:
-                    collect_sizes(child, visited)
+                    collect_bounds(child, local_x, local_y)
             elif isinstance(widget, Widget):
-                if widget.width > max_width:
-                    max_width = widget.width
-                total_height += widget.height
+                include_rect(local_x, local_y, float(widget.width), float(widget.height))
 
         for child in self.children:
-            collect_sizes(child)
+            collect_bounds(child)
 
-        return [max_width, total_height]
+        if min_x is None:
+            return [0, 0]
+
+        width = max(0.0, max_x - min_x)
+        height = max(0.0, max_y - min_y)
+        return [width, height]
 
     texture_size = AliasProperty(_get_texture_size, bind=['children', 'text', '_texture_size_version'])
 

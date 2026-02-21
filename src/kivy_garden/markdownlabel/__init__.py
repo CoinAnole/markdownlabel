@@ -425,6 +425,10 @@ class MarkdownLabel(MarkdownLabelProperties, MarkdownLabelRendering, BoxLayout):
                 self._bind_child_size_changes(self)
                 return
 
+            # Texture rendering failed and widget-mode fallback will be used.
+            # Ensure stale texture hit-test zones never survive fallback.
+            self._aggregated_refs = {}
+
         # Widget render mode (default)
         self._bind_ref_press_events(content)
         needs_clipping = self._needs_clipping()
