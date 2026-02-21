@@ -19,6 +19,26 @@ class MarkdownSerializer:
         """Initialize the MarkdownSerializer."""
         self._link_definitions = {}  # label -> (url, title) mappings
 
+    def _longest_backtick_run(self, text: str) -> int:
+        """Return the longest run of consecutive backticks in text."""
+        longest = 0
+        current = 0
+
+        for char in text:
+            if char == '`':
+                current += 1
+                if current > longest:
+                    longest = current
+            else:
+                current = 0
+
+        return longest
+
+    def _backtick_fence(self, text: str, min_length: int = 1) -> str:
+        """Return a safe backtick fence longer than any run in text."""
+        fence_length = max(min_length, self._longest_backtick_run(text) + 1)
+        return '`' * fence_length
+
     def serialize(self, tokens: List[Dict[str, Any]]) -> str:
         """Convert AST tokens to Markdown string.
 
@@ -199,11 +219,7 @@ class MarkdownSerializer:
         language = attrs.get('info', '')
 
         # Find appropriate fence length to avoid collision with content
-        fence_length = 3
-        while '`' * fence_length in raw:
-            fence_length += 1
-
-        fence = '`' * fence_length
+        fence = self._backtick_fence(raw, min_length=3)
 
         # Don't add extra newline if content already ends with one
         if raw.endswith('\n'):
@@ -415,7 +431,18 @@ class MarkdownSerializer:
             Markdown inline code
         """
         raw = token.get('raw', '')
-        return f'`{raw}`'
+        fence = self._backtick_fence(raw)
+
+        needs_padding = (
+            raw.startswith('`')
+            or raw.endswith('`')
+            or (raw.startswith(' ') and raw.endswith(' ') and raw.strip(' ') != '')
+        )
+
+        if needs_padding:
+            return f'{fence} {raw} {fence}'
+
+        return f'{fence}{raw}{fence}'
 
     def inline_strikethrough(self, token: Dict[str, Any]) -> str:
         """Serialize strikethrough text token.

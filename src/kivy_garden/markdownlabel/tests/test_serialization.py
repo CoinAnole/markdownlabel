@@ -368,6 +368,86 @@ class TestMarkdownRoundTripSerialization:
         assert ast1 == ast2
 
     @pytest.mark.unit
+    def test_inline_code_with_inner_backtick_uses_longer_delimiter(self):
+        """Inline code containing a backtick uses a longer backtick delimiter."""
+        markdown = 'Text with ``a`b`` included.'
+
+        label = MarkdownLabel(text=markdown)
+        ast1 = self._normalize_ast(label.get_ast())
+
+        serialized = label.to_markdown()
+        assert '``a`b``' in serialized
+
+        label2 = MarkdownLabel(text=serialized)
+        ast2 = self._normalize_ast(label2.get_ast())
+
+        assert ast1 == ast2
+
+    @pytest.mark.unit
+    def test_inline_code_with_double_backticks_uses_triple_delimiter(self):
+        """Inline code containing `` uses a triple-backtick delimiter."""
+        markdown = 'Text with ```a``b``` included.'
+
+        label = MarkdownLabel(text=markdown)
+        ast1 = self._normalize_ast(label.get_ast())
+
+        serialized = label.to_markdown()
+        assert '```a``b```' in serialized
+
+        label2 = MarkdownLabel(text=serialized)
+        ast2 = self._normalize_ast(label2.get_ast())
+
+        assert ast1 == ast2
+
+    @pytest.mark.unit
+    def test_inline_code_start_end_backtick_gets_padding(self):
+        """Inline code that starts/ends with backticks is padded inside delimiters."""
+        markdown = 'Text with `` `foo` `` included.'
+
+        label = MarkdownLabel(text=markdown)
+        ast1 = self._normalize_ast(label.get_ast())
+
+        serialized = label.to_markdown()
+        assert '`` `foo` ``' in serialized
+
+        label2 = MarkdownLabel(text=serialized)
+        ast2 = self._normalize_ast(label2.get_ast())
+
+        assert ast1 == ast2
+
+    @pytest.mark.unit
+    def test_inline_code_with_leading_and_trailing_space_preserved(self):
+        """Inline code preserves leading/trailing spaces through serialization."""
+        markdown = 'Text with ``  a  `` included.'
+
+        label = MarkdownLabel(text=markdown)
+        ast1 = self._normalize_ast(label.get_ast())
+
+        serialized = label.to_markdown()
+        assert '`  a  `' in serialized
+
+        label2 = MarkdownLabel(text=serialized)
+        ast2 = self._normalize_ast(label2.get_ast())
+
+        assert ast1 == ast2
+
+    @pytest.mark.unit
+    def test_inline_code_all_spaces_no_extra_padding(self):
+        """Inline code with only spaces serializes without additional padding."""
+        markdown = 'Text with `  ` included.'
+
+        label = MarkdownLabel(text=markdown)
+        ast1 = self._normalize_ast(label.get_ast())
+
+        serialized = label.to_markdown()
+        assert '`  `' in serialized
+
+        label2 = MarkdownLabel(text=serialized)
+        ast2 = self._normalize_ast(label2.get_ast())
+
+        assert ast1 == ast2
+
+    @pytest.mark.unit
     def test_strikethrough_serialization(self):
         """Strikethrough serialization."""
         markdown = 'Text with ~~strikethrough~~ included.'
@@ -726,6 +806,48 @@ class TestMarkdownSerializerEdgeCases:
         token = {'type': 'weird_inline', 'raw': 'content'}
         # serialize_inline falls back to raw
         assert serializer.serialize_inline([token]) == 'content'
+
+    @pytest.mark.unit
+    def test_inline_codespan_single_backtick_delimiter(self):
+        """Inline code without backticks uses single-backtick delimiters."""
+        serializer = MarkdownSerializer()
+        token = {'type': 'codespan', 'raw': 'code'}
+        assert serializer.inline_codespan(token) == '`code`'
+
+    @pytest.mark.unit
+    def test_inline_codespan_inner_backtick_uses_longer_delimiter(self):
+        """Inline code with one backtick uses two-backtick delimiters."""
+        serializer = MarkdownSerializer()
+        token = {'type': 'codespan', 'raw': 'a`b'}
+        assert serializer.inline_codespan(token) == '``a`b``'
+
+    @pytest.mark.unit
+    def test_inline_codespan_inner_double_backticks_uses_triple_delimiter(self):
+        """Inline code with `` uses three-backtick delimiters."""
+        serializer = MarkdownSerializer()
+        token = {'type': 'codespan', 'raw': 'a``b'}
+        assert serializer.inline_codespan(token) == '```a``b```'
+
+    @pytest.mark.unit
+    def test_inline_codespan_backtick_edges_are_padded(self):
+        """Inline code that starts/ends with backticks is padded."""
+        serializer = MarkdownSerializer()
+        token = {'type': 'codespan', 'raw': '`foo`'}
+        assert serializer.inline_codespan(token) == '`` `foo` ``'
+
+    @pytest.mark.unit
+    def test_inline_codespan_leading_trailing_spaces_are_padded(self):
+        """Inline code with edge spaces and non-space content is padded."""
+        serializer = MarkdownSerializer()
+        token = {'type': 'codespan', 'raw': ' a '}
+        assert serializer.inline_codespan(token) == '`  a  `'
+
+    @pytest.mark.unit
+    def test_inline_codespan_all_spaces_not_double_padded(self):
+        """Inline code with only spaces keeps exact content spacing."""
+        serializer = MarkdownSerializer()
+        token = {'type': 'codespan', 'raw': '  '}
+        assert serializer.inline_codespan(token) == '`  `'
 
     @pytest.mark.unit
     def test_blank_line(self):
