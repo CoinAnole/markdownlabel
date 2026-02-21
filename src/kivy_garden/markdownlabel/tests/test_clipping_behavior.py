@@ -13,7 +13,7 @@ import pytest
 from hypothesis import given, strategies as st, settings, assume
 
 from kivy_garden.markdownlabel import MarkdownLabel
-from .test_utils import has_clipping_container
+from .test_utils import has_clipping_container, collect_widget_ids, assert_rebuild_occurred
 
 
 def _observer_count(widget, property_name):
@@ -153,8 +153,10 @@ class TestContentClippingWhenHeightConstrained:
         height_observers = _observer_count(label, 'height')
 
         for i in range(5):
+            ids_before = collect_widget_ids(label, exclude_root=True)
             label.text = f'Round {i}'
             label.force_rebuild()
+            assert_rebuild_occurred(label, ids_before)
             assert _observer_count(label, 'width') == width_observers
             assert _observer_count(label, 'height') == height_observers
 
@@ -174,8 +176,10 @@ class TestContentClippingWhenHeightConstrained:
         height_observers = _observer_count(label, 'height')
 
         for i in range(5):
+            ids_before = collect_widget_ids(label, exclude_root=True)
             label.text = f'Strict round {i}'
             label.force_rebuild()
+            assert_rebuild_occurred(label, ids_before)
             assert _observer_count(label, 'width') == width_observers
             assert _observer_count(label, 'height') == height_observers
 
