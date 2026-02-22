@@ -1,0 +1,615 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Markdown Serializer Module &mdash; MarkdownLabel  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=6de54d14" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Font Fallback Module" href="font_fallback.html" />
+    <link rel="prev" title="Kivy Renderer Tables Module" href="kivy_renderer_tables.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            MarkdownLabel
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage_guide.html">Usage Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../styling_guide.html">Styling Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../label_compatibility.html">Label API Compatibility</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../events.html">Event Handling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples.html">Examples</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../api.html">API Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../api.html#main-widget">Main Widget</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../api.html#supporting-modules">Supporting Modules</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="properties.html">Properties Module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="rendering.html">Rendering Module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="inline_renderer.html">Inline Renderer Module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kivy_renderer.html">Kivy Renderer Module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kivy_renderer_tables.html">Kivy Renderer Tables Module</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Markdown Serializer Module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#module-kivy_garden.markdownlabel.markdown_serializer">Module Contents</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#use-cases">Use Cases</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#example-usage">Example Usage</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#supported-elements">Supported Elements</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#limitations">Limitations</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#see-also">See Also</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="font_fallback.html">Font Fallback Module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="utils.html">Utils Module</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#version-information">Version Information</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#public-api">Public API</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">MarkdownLabel</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../api.html">API Reference</a></li>
+      <li class="breadcrumb-item active">Markdown Serializer Module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/modules/markdown_serializer.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="markdown-serializer-module">
+<span id="id1"></span><h1>Markdown Serializer Module<a class="headerlink" href="#markdown-serializer-module" title="Link to this heading"></a></h1>
+<p>The <code class="docutils literal notranslate"><span class="pre">markdown_serializer</span></code> module provides functionality to convert the
+Abstract Syntax Tree (AST) back to Markdown text. This is primarily used for
+testing and debugging.</p>
+<section id="module-kivy_garden.markdownlabel.markdown_serializer">
+<span id="module-contents"></span><h2>Module Contents<a class="headerlink" href="#module-kivy_garden.markdownlabel.markdown_serializer" title="Link to this heading"></a></h2>
+<section id="markdownserializer">
+<h3>MarkdownSerializer<a class="headerlink" href="#markdownserializer" title="Link to this heading"></a></h3>
+<p>Serializes mistune AST tokens back to Markdown text for round-trip testing.</p>
+</section>
+<dl class="py class">
+<dt class="sig sig-object py" id="kivy_garden.markdownlabel.markdown_serializer.MarkdownSerializer">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">kivy_garden.markdownlabel.markdown_serializer.</span></span><span class="sig-name descname"><span class="pre">MarkdownSerializer</span></span><a class="headerlink" href="#kivy_garden.markdownlabel.markdown_serializer.MarkdownSerializer" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Serializes AST tokens back to Markdown text.</p>
+<p>This serializer converts mistune AST tokens back to Markdown string
+representation, enabling round-trip testing to verify parsing correctness.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="kivy_garden.markdownlabel.markdown_serializer.MarkdownSerializer.serialize">
+<span class="sig-name descname"><span class="pre">serialize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tokens</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kivy_garden.markdownlabel.markdown_serializer.MarkdownSerializer.serialize" title="Link to this definition"></a></dt>
+<dd><p>Convert AST tokens to Markdown string.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>tokens: List of AST tokens from mistune</p>
+</dd>
+<dt>Returns:</dt><dd><p>Markdown string representation</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>tokens</strong> (<em>List</em><em>[</em><em>Dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em><em>]</em>)</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="kivy_garden.markdownlabel.markdown_serializer.MarkdownSerializer.serialize_inline">
+<span class="sig-name descname"><span class="pre">serialize_inline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">children</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kivy_garden.markdownlabel.markdown_serializer.MarkdownSerializer.serialize_inline" title="Link to this definition"></a></dt>
+<dd><p>Serialize inline tokens to Markdown string.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>children: List of inline tokens</p>
+</dd>
+<dt>Returns:</dt><dd><p>Markdown string</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>children</strong> (<em>List</em><em>[</em><em>Dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em><em>]</em>)</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="kivy_garden.markdownlabel.markdown_serializer.MarkdownSerializer.paragraph">
+<span class="sig-name descname"><span class="pre">paragraph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kivy_garden.markdownlabel.markdown_serializer.MarkdownSerializer.paragraph" title="Link to this definition"></a></dt>
+<dd><p>Serialize a paragraph token.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>token: Paragraph token with ‘children’</p>
+</dd>
+<dt>Returns:</dt><dd><p>Markdown paragraph text</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>token</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>)</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="kivy_garden.markdownlabel.markdown_serializer.MarkdownSerializer.heading">
+<span class="sig-name descname"><span class="pre">heading</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kivy_garden.markdownlabel.markdown_serializer.MarkdownSerializer.heading" title="Link to this definition"></a></dt>
+<dd><p>Serialize a heading token.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>token: Heading token with ‘children’ and ‘attrs’</p>
+</dd>
+<dt>Returns:</dt><dd><p>Markdown heading (e.g., ‘# Heading’)</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>token</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>)</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="kivy_garden.markdownlabel.markdown_serializer.MarkdownSerializer.list">
+<span class="sig-name descname"><span class="pre">list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kivy_garden.markdownlabel.markdown_serializer.MarkdownSerializer.list" title="Link to this definition"></a></dt>
+<dd><p>Serialize a list token.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>token: List token with ‘children’ and ‘attrs’</p>
+</dd>
+<dt>Returns:</dt><dd><p>Markdown list</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>token</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>)</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="kivy_garden.markdownlabel.markdown_serializer.MarkdownSerializer.block_text">
+<span class="sig-name descname"><span class="pre">block_text</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kivy_garden.markdownlabel.markdown_serializer.MarkdownSerializer.block_text" title="Link to this definition"></a></dt>
+<dd><p>Serialize a block_text token (used in tight lists).</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>token: Block text token with ‘children’</p>
+</dd>
+<dt>Returns:</dt><dd><p>Inline text content</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>token</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>)</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="kivy_garden.markdownlabel.markdown_serializer.MarkdownSerializer.block_code">
+<span class="sig-name descname"><span class="pre">block_code</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kivy_garden.markdownlabel.markdown_serializer.MarkdownSerializer.block_code" title="Link to this definition"></a></dt>
+<dd><p>Serialize a code block token.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>token: Code block token with ‘raw’ and optional ‘attrs’</p>
+</dd>
+<dt>Returns:</dt><dd><p>Markdown fenced code block</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>token</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>)</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="kivy_garden.markdownlabel.markdown_serializer.MarkdownSerializer.block_quote">
+<span class="sig-name descname"><span class="pre">block_quote</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kivy_garden.markdownlabel.markdown_serializer.MarkdownSerializer.block_quote" title="Link to this definition"></a></dt>
+<dd><p>Serialize a block quote token.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>token: Block quote token with ‘children’</p>
+</dd>
+<dt>Returns:</dt><dd><p>Markdown block quote</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>token</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>)</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="kivy_garden.markdownlabel.markdown_serializer.MarkdownSerializer.thematic_break">
+<span class="sig-name descname"><span class="pre">thematic_break</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kivy_garden.markdownlabel.markdown_serializer.MarkdownSerializer.thematic_break" title="Link to this definition"></a></dt>
+<dd><p>Serialize a thematic break token.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>token: Thematic break token</p>
+</dd>
+<dt>Returns:</dt><dd><p>Markdown horizontal rule</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>token</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>)</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="kivy_garden.markdownlabel.markdown_serializer.MarkdownSerializer.blank_line">
+<span class="sig-name descname"><span class="pre">blank_line</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kivy_garden.markdownlabel.markdown_serializer.MarkdownSerializer.blank_line" title="Link to this definition"></a></dt>
+<dd><p>Serialize a blank line token.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>token: Blank line token</p>
+</dd>
+<dt>Returns:</dt><dd><p>Empty string (blank lines are handled by join)</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>token</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>)</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="kivy_garden.markdownlabel.markdown_serializer.MarkdownSerializer.table">
+<span class="sig-name descname"><span class="pre">table</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kivy_garden.markdownlabel.markdown_serializer.MarkdownSerializer.table" title="Link to this definition"></a></dt>
+<dd><p>Serialize a table token.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>token: Table token with ‘children’ containing head and body</p>
+</dd>
+<dt>Returns:</dt><dd><p>Markdown table</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>token</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>)</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="kivy_garden.markdownlabel.markdown_serializer.MarkdownSerializer.inline_text">
+<span class="sig-name descname"><span class="pre">inline_text</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kivy_garden.markdownlabel.markdown_serializer.MarkdownSerializer.inline_text" title="Link to this definition"></a></dt>
+<dd><p>Serialize plain text token.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>token: Text token with ‘raw’</p>
+</dd>
+<dt>Returns:</dt><dd><p>Plain text</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>token</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>)</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="kivy_garden.markdownlabel.markdown_serializer.MarkdownSerializer.inline_strong">
+<span class="sig-name descname"><span class="pre">inline_strong</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kivy_garden.markdownlabel.markdown_serializer.MarkdownSerializer.inline_strong" title="Link to this definition"></a></dt>
+<dd><p>Serialize bold text token.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>token: Strong token with ‘children’</p>
+</dd>
+<dt>Returns:</dt><dd><p>Markdown bold text</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>token</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>)</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="kivy_garden.markdownlabel.markdown_serializer.MarkdownSerializer.inline_emphasis">
+<span class="sig-name descname"><span class="pre">inline_emphasis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kivy_garden.markdownlabel.markdown_serializer.MarkdownSerializer.inline_emphasis" title="Link to this definition"></a></dt>
+<dd><p>Serialize italic text token.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>token: Emphasis token with ‘children’</p>
+</dd>
+<dt>Returns:</dt><dd><p>Markdown italic text</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>token</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>)</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="kivy_garden.markdownlabel.markdown_serializer.MarkdownSerializer.inline_codespan">
+<span class="sig-name descname"><span class="pre">inline_codespan</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kivy_garden.markdownlabel.markdown_serializer.MarkdownSerializer.inline_codespan" title="Link to this definition"></a></dt>
+<dd><p>Serialize inline code token.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>token: Codespan token with ‘raw’</p>
+</dd>
+<dt>Returns:</dt><dd><p>Markdown inline code</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>token</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>)</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="kivy_garden.markdownlabel.markdown_serializer.MarkdownSerializer.inline_strikethrough">
+<span class="sig-name descname"><span class="pre">inline_strikethrough</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kivy_garden.markdownlabel.markdown_serializer.MarkdownSerializer.inline_strikethrough" title="Link to this definition"></a></dt>
+<dd><p>Serialize strikethrough text token.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>token: Strikethrough token with ‘children’</p>
+</dd>
+<dt>Returns:</dt><dd><p>Markdown strikethrough text</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>token</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>)</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="kivy_garden.markdownlabel.markdown_serializer.MarkdownSerializer.inline_link">
+<span class="sig-name descname"><span class="pre">inline_link</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kivy_garden.markdownlabel.markdown_serializer.MarkdownSerializer.inline_link" title="Link to this definition"></a></dt>
+<dd><p>Serialize link token, preserving reference-style format.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>token: Link token with ‘children’ and ‘attrs’</p>
+</dd>
+<dt>Returns:</dt><dd><p>Markdown link (reference-style or inline)</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>token</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>)</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="kivy_garden.markdownlabel.markdown_serializer.MarkdownSerializer.inline_image">
+<span class="sig-name descname"><span class="pre">inline_image</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kivy_garden.markdownlabel.markdown_serializer.MarkdownSerializer.inline_image" title="Link to this definition"></a></dt>
+<dd><p>Serialize image token.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>token: Image token with ‘children’ (alt text) and ‘attrs’</p>
+</dd>
+<dt>Returns:</dt><dd><p>Markdown image</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>token</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>)</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="kivy_garden.markdownlabel.markdown_serializer.MarkdownSerializer.inline_softbreak">
+<span class="sig-name descname"><span class="pre">inline_softbreak</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kivy_garden.markdownlabel.markdown_serializer.MarkdownSerializer.inline_softbreak" title="Link to this definition"></a></dt>
+<dd><p>Serialize soft line break.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>token: Softbreak token</p>
+</dd>
+<dt>Returns:</dt><dd><p>Space character</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>token</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>)</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="kivy_garden.markdownlabel.markdown_serializer.MarkdownSerializer.inline_linebreak">
+<span class="sig-name descname"><span class="pre">inline_linebreak</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kivy_garden.markdownlabel.markdown_serializer.MarkdownSerializer.inline_linebreak" title="Link to this definition"></a></dt>
+<dd><p>Serialize hard line break.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>token: Linebreak token</p>
+</dd>
+<dt>Returns:</dt><dd><p>Markdown hard break (two spaces + newline)</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>token</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>)</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="use-cases">
+<h2>Use Cases<a class="headerlink" href="#use-cases" title="Link to this heading"></a></h2>
+<dl class="simple">
+<dt><strong>Testing</strong></dt><dd><p>Verify that parsed content can be accurately serialized back to Markdown</p>
+</dd>
+<dt><strong>Debugging</strong></dt><dd><p>Inspect the AST structure by viewing the serialized output</p>
+</dd>
+<dt><strong>Round-trip Validation</strong></dt><dd><p>Ensure no data is lost during parse-serialize cycles</p>
+</dd>
+</dl>
+</section>
+<section id="example-usage">
+<h2>Example Usage<a class="headerlink" href="#example-usage" title="Link to this heading"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">kivy_garden.markdownlabel</span><span class="w"> </span><span class="kn">import</span> <span class="n">MarkdownLabel</span><span class="p">,</span> <span class="n">MarkdownSerializer</span>
+
+<span class="n">label</span> <span class="o">=</span> <span class="n">MarkdownLabel</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;# Hello</span><span class="se">\\</span><span class="s1">n</span><span class="se">\\</span><span class="s1">nWorld&#39;</span><span class="p">)</span>
+
+<span class="c1"># Get the AST</span>
+<span class="n">ast</span> <span class="o">=</span> <span class="n">label</span><span class="o">.</span><span class="n">get_ast</span><span class="p">()</span>
+
+<span class="c1"># Serialize back to Markdown</span>
+<span class="n">serializer</span> <span class="o">=</span> <span class="n">MarkdownSerializer</span><span class="p">()</span>
+<span class="n">markdown</span> <span class="o">=</span> <span class="n">serializer</span><span class="o">.</span><span class="n">serialize</span><span class="p">(</span><span class="n">ast</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">markdown</span><span class="p">)</span>  <span class="c1"># Outputs: # Hello\\n\\nWorld</span>
+</pre></div>
+</div>
+</section>
+<section id="supported-elements">
+<h2>Supported Elements<a class="headerlink" href="#supported-elements" title="Link to this heading"></a></h2>
+<p>The serializer supports all Markdown elements that the parser produces:</p>
+<ul class="simple">
+<li><p>Inline: text, emphasis, strong, codespan, links, strikethrough</p></li>
+<li><p>Blocks: paragraphs, headings, lists, code blocks, block quotes</p></li>
+<li><p>Tables: table structure with headers and cells</p></li>
+</ul>
+</section>
+<section id="limitations">
+<h2>Limitations<a class="headerlink" href="#limitations" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Original formatting (line breaks, indentation) may not be preserved</p></li>
+<li><p>Reference-style links are converted to inline links</p></li>
+<li><p>Some HTML elements may not serialize cleanly</p></li>
+</ul>
+</section>
+<section id="see-also">
+<h2>See Also<a class="headerlink" href="#see-also" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="markdownlabel.html"><span class="doc">MarkdownLabel Widget</span></a> - Using <code class="docutils literal notranslate"><span class="pre">get_ast()</span></code> and <code class="docutils literal notranslate"><span class="pre">to_markdown()</span></code> methods</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="kivy_renderer_tables.html" class="btn btn-neutral float-left" title="Kivy Renderer Tables Module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="font_fallback.html" class="btn btn-neutral float-right" title="Font Fallback Module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Kivy Garden.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

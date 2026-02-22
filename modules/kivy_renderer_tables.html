@@ -1,0 +1,330 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kivy Renderer Tables Module &mdash; MarkdownLabel  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=6de54d14" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Markdown Serializer Module" href="markdown_serializer.html" />
+    <link rel="prev" title="Kivy Renderer Module" href="kivy_renderer.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            MarkdownLabel
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage_guide.html">Usage Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../styling_guide.html">Styling Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../label_compatibility.html">Label API Compatibility</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../events.html">Event Handling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples.html">Examples</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../api.html">API Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../api.html#main-widget">Main Widget</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../api.html#supporting-modules">Supporting Modules</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="properties.html">Properties Module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="rendering.html">Rendering Module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="inline_renderer.html">Inline Renderer Module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kivy_renderer.html">Kivy Renderer Module</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Kivy Renderer Tables Module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#module-kivy_garden.markdownlabel.kivy_renderer_tables">Module Contents</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#table-support">Table Support</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#markdown-table-syntax">Markdown Table Syntax</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#implementation-details">Implementation Details</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#see-also">See Also</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="markdown_serializer.html">Markdown Serializer Module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="font_fallback.html">Font Fallback Module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="utils.html">Utils Module</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#version-information">Version Information</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#public-api">Public API</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">MarkdownLabel</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../api.html">API Reference</a></li>
+      <li class="breadcrumb-item active">Kivy Renderer Tables Module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/modules/kivy_renderer_tables.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="kivy-renderer-tables-module">
+<span id="id1"></span><h1>Kivy Renderer Tables Module<a class="headerlink" href="#kivy-renderer-tables-module" title="Link to this heading"></a></h1>
+<p>The <code class="docutils literal notranslate"><span class="pre">kivy_renderer_tables</span></code> module provides table rendering support as a mixin for <code class="docutils literal notranslate"><span class="pre">KivyRenderer</span></code>.</p>
+<section id="module-kivy_garden.markdownlabel.kivy_renderer_tables">
+<span id="module-contents"></span><h2>Module Contents<a class="headerlink" href="#module-kivy_garden.markdownlabel.kivy_renderer_tables" title="Link to this heading"></a></h2>
+<section id="kivyrenderer-table-support">
+<h3>KivyRenderer Table Support<a class="headerlink" href="#kivyrenderer-table-support" title="Link to this heading"></a></h3>
+<p>Table rendering functionality for KivyRenderer as a mixin class.</p>
+</section>
+<dl class="py class">
+<dt class="sig sig-object py" id="kivy_garden.markdownlabel.kivy_renderer_tables.KivyRendererTableMixin">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">kivy_garden.markdownlabel.kivy_renderer_tables.</span></span><span class="sig-name descname"><span class="pre">KivyRendererTableMixin</span></span><a class="headerlink" href="#kivy_garden.markdownlabel.kivy_renderer_tables.KivyRendererTableMixin" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Mixin class providing table rendering functionality for KivyRenderer.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="kivy_garden.markdownlabel.kivy_renderer_tables.KivyRendererTableMixin.table">
+<span class="sig-name descname"><span class="pre">table</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kivy_garden.markdownlabel.kivy_renderer_tables.KivyRendererTableMixin.table" title="Link to this definition"></a></dt>
+<dd><p>Render a table as a GridLayout with bottom spacing.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>token: Table token with ‘children’ containing head and body
+state: Block state</p>
+</dd>
+<dt>Returns:</dt><dd><p>GridLayout containing table cells</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>token</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>)</p></li>
+<li><p><strong>state</strong> (<em>Any</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://kivy.org/doc/stable/api-kivy.uix.gridlayout.html#kivy.uix.gridlayout.GridLayout" title="(in Kivy v2.3.1)"><em>GridLayout</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="kivy_garden.markdownlabel.kivy_renderer_tables.KivyRendererTableMixin.table_head">
+<span class="sig-name descname"><span class="pre">table_head</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kivy_garden.markdownlabel.kivy_renderer_tables.KivyRendererTableMixin.table_head" title="Link to this definition"></a></dt>
+<dd><p>Handle table_head token (processed by table()).</p>
+<p>This method exists for completeness but table_head is typically
+processed as part of the table() method.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>token: Table head token
+state: Block state</p>
+</dd>
+<dt>Returns:</dt><dd><p>None (processed by parent table)</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>token</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>)</p></li>
+<li><p><strong>state</strong> (<em>Any</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="kivy_garden.markdownlabel.kivy_renderer_tables.KivyRendererTableMixin.table_body">
+<span class="sig-name descname"><span class="pre">table_body</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kivy_garden.markdownlabel.kivy_renderer_tables.KivyRendererTableMixin.table_body" title="Link to this definition"></a></dt>
+<dd><p>Handle table_body token (processed by table()).</p>
+<p>This method exists for completeness but table_body is typically
+processed as part of the table() method.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>token: Table body token
+state: Block state</p>
+</dd>
+<dt>Returns:</dt><dd><p>None (processed by parent table)</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>token</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>)</p></li>
+<li><p><strong>state</strong> (<em>Any</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="kivy_garden.markdownlabel.kivy_renderer_tables.KivyRendererTableMixin.table_row">
+<span class="sig-name descname"><span class="pre">table_row</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kivy_garden.markdownlabel.kivy_renderer_tables.KivyRendererTableMixin.table_row" title="Link to this definition"></a></dt>
+<dd><p>Handle table_row token (processed by table()).</p>
+<p>This method exists for completeness but table_row is typically
+processed as part of the table() method.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>token: Table row token
+state: Block state</p>
+</dd>
+<dt>Returns:</dt><dd><p>None (processed by parent table)</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>token</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>)</p></li>
+<li><p><strong>state</strong> (<em>Any</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="kivy_garden.markdownlabel.kivy_renderer_tables.KivyRendererTableMixin.table_cell">
+<span class="sig-name descname"><span class="pre">table_cell</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kivy_garden.markdownlabel.kivy_renderer_tables.KivyRendererTableMixin.table_cell" title="Link to this definition"></a></dt>
+<dd><p>Handle table_cell token directly.</p>
+<p>This method can be called directly if needed, but cells are typically
+processed as part of the table() method.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>token: Table cell token
+state: Block state</p>
+</dd>
+<dt>Returns:</dt><dd><p>Label widget for the cell</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>token</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>)</p></li>
+<li><p><strong>state</strong> (<em>Any</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://kivy.org/doc/stable/api-kivy.uix.label.html#kivy.uix.label.Label" title="(in Kivy v2.3.1)"><em>Label</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="table-support">
+<h2>Table Support<a class="headerlink" href="#table-support" title="Link to this heading"></a></h2>
+<p>Tables are rendered using Kivy’s <code class="docutils literal notranslate"><span class="pre">GridLayout</span></code> with appropriate column
+constraints. The <code class="docutils literal notranslate"><span class="pre">KivyRendererTableMixin</span></code> extends <code class="docutils literal notranslate"><span class="pre">KivyRenderer</span></code> to handle:</p>
+<ul class="simple">
+<li><p>Table headers (bold text)</p></li>
+<li><p>Table body rows</p></li>
+<li><p>Cell alignment (left, center, right)</p></li>
+<li><p>Column widths based on content</p></li>
+</ul>
+</section>
+<section id="markdown-table-syntax">
+<h2>Markdown Table Syntax<a class="headerlink" href="#markdown-table-syntax" title="Link to this heading"></a></h2>
+<p>MarkdownLabel supports standard Markdown table syntax:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">|</span> <span class="n">Header</span> <span class="mi">1</span> <span class="o">|</span> <span class="n">Header</span> <span class="mi">2</span> <span class="o">|</span> <span class="n">Header</span> <span class="mi">3</span> <span class="o">|</span>
+<span class="o">|----------|----------|----------|</span>
+<span class="o">|</span> <span class="n">Cell</span> <span class="mi">1</span>   <span class="o">|</span> <span class="n">Cell</span> <span class="mi">2</span>   <span class="o">|</span> <span class="n">Cell</span> <span class="mi">3</span>   <span class="o">|</span>
+<span class="o">|</span> <span class="n">Cell</span> <span class="mi">4</span>   <span class="o">|</span> <span class="n">Cell</span> <span class="mi">5</span>   <span class="o">|</span> <span class="n">Cell</span> <span class="mi">6</span>   <span class="o">|</span>
+</pre></div>
+</div>
+<p>Alignment can be specified in the separator line:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">|</span> <span class="n">Left</span> <span class="o">|</span> <span class="n">Center</span> <span class="o">|</span> <span class="n">Right</span> <span class="o">|</span>
+<span class="o">|</span><span class="p">:</span><span class="o">-----|</span><span class="p">:</span><span class="o">------</span><span class="p">:</span><span class="o">|------</span><span class="p">:</span><span class="o">|</span>
+<span class="o">|</span> <span class="n">L</span>    <span class="o">|</span>   <span class="n">C</span>    <span class="o">|</span>     <span class="n">R</span> <span class="o">|</span>
+</pre></div>
+</div>
+</section>
+<section id="implementation-details">
+<h2>Implementation Details<a class="headerlink" href="#implementation-details" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Tables are rendered as nested layouts</p></li>
+<li><p>Each row is a horizontal BoxLayout</p></li>
+<li><p>Cells use the same styling as regular text</p></li>
+<li><p>Header rows use bold formatting automatically</p></li>
+</ul>
+</section>
+<section id="see-also">
+<h2>See Also<a class="headerlink" href="#see-also" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="kivy_renderer.html"><span class="doc">Kivy Renderer Module</span></a> - Main block renderer</p></li>
+<li><p><a class="reference external" href="https://mistune.lepture.com/en/latest/plugins.html#table">mistune Table Plugin</a></p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="kivy_renderer.html" class="btn btn-neutral float-left" title="Kivy Renderer Module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="markdown_serializer.html" class="btn btn-neutral float-right" title="Markdown Serializer Module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Kivy Garden.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

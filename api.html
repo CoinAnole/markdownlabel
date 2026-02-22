@@ -1,0 +1,186 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>API Reference &mdash; MarkdownLabel  documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="_static/custom.css?v=6de54d14" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="MarkdownLabel Widget" href="modules/markdownlabel.html" />
+    <link rel="prev" title="Examples" href="examples.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            MarkdownLabel
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage_guide.html">Usage Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="styling_guide.html">Styling Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="label_compatibility.html">Label API Compatibility</a></li>
+<li class="toctree-l1"><a class="reference internal" href="events.html">Event Handling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#main-widget">Main Widget</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="modules/markdownlabel.html">MarkdownLabel Widget</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#supporting-modules">Supporting Modules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="modules/properties.html">Properties Module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/rendering.html">Rendering Module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/inline_renderer.html">Inline Renderer Module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/kivy_renderer.html">Kivy Renderer Module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/kivy_renderer_tables.html">Kivy Renderer Tables Module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/markdown_serializer.html">Markdown Serializer Module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/font_fallback.html">Font Fallback Module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/utils.html">Utils Module</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#version-information">Version Information</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#public-api">Public API</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">MarkdownLabel</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">API Reference</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/api.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="api-reference">
+<span id="id1"></span><h1>API Reference<a class="headerlink" href="#api-reference" title="Link to this heading"></a></h1>
+<p>This section provides detailed API documentation for all public modules and classes in MarkdownLabel.</p>
+<section id="main-widget">
+<h2>Main Widget<a class="headerlink" href="#main-widget" title="Link to this heading"></a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="modules/markdownlabel.html">MarkdownLabel Widget</a></li>
+</ul>
+</div>
+</section>
+<section id="supporting-modules">
+<h2>Supporting Modules<a class="headerlink" href="#supporting-modules" title="Link to this heading"></a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="modules/properties.html">Properties Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules/rendering.html">Rendering Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules/inline_renderer.html">Inline Renderer Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules/kivy_renderer.html">Kivy Renderer Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules/kivy_renderer_tables.html">Kivy Renderer Tables Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules/markdown_serializer.html">Markdown Serializer Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules/font_fallback.html">Font Fallback Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules/utils.html">Utils Module</a></li>
+</ul>
+</div>
+</section>
+<section id="version-information">
+<h2>Version Information<a class="headerlink" href="#version-information" title="Link to this heading"></a></h2>
+<p>The version string is available as <code class="docutils literal notranslate"><span class="pre">kivy_garden.markdownlabel.__version__</span></code>.</p>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">kivy_garden.markdownlabel</span><span class="w"> </span><span class="kn">import</span> <span class="n">__version__</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;MarkdownLabel version: </span><span class="si">{</span><span class="n">__version__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="public-api">
+<h2>Public API<a class="headerlink" href="#public-api" title="Link to this heading"></a></h2>
+<p>The following items are exported in the main <code class="docutils literal notranslate"><span class="pre">kivy_garden.markdownlabel</span></code> module:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="modules/markdownlabel.html#kivy_garden.markdownlabel.MarkdownLabel" title="kivy_garden.markdownlabel.MarkdownLabel"><code class="xref py py-class docutils literal notranslate"><span class="pre">MarkdownLabel</span></code></a> - The main widget class</p></li>
+<li><p><a class="reference internal" href="modules/inline_renderer.html#kivy_garden.markdownlabel.inline_renderer.InlineRenderer" title="kivy_garden.markdownlabel.inline_renderer.InlineRenderer"><code class="xref py py-class docutils literal notranslate"><span class="pre">InlineRenderer</span></code></a> - Inline markup renderer</p></li>
+<li><p><a class="reference internal" href="modules/kivy_renderer.html#kivy_garden.markdownlabel.kivy_renderer.KivyRenderer" title="kivy_garden.markdownlabel.kivy_renderer.KivyRenderer"><code class="xref py py-class docutils literal notranslate"><span class="pre">KivyRenderer</span></code></a> - Block-level renderer</p></li>
+<li><p><a class="reference internal" href="modules/markdown_serializer.html#kivy_garden.markdownlabel.markdown_serializer.MarkdownSerializer" title="kivy_garden.markdownlabel.markdown_serializer.MarkdownSerializer"><code class="xref py py-class docutils literal notranslate"><span class="pre">MarkdownSerializer</span></code></a> - AST to Markdown serializer</p></li>
+<li><p><a class="reference internal" href="modules/utils.html#kivy_garden.markdownlabel.find_labels_recursive" title="kivy_garden.markdownlabel.find_labels_recursive"><code class="xref py py-func docutils literal notranslate"><span class="pre">find_labels_recursive()</span></code></a> - Widget traversal utility</p></li>
+<li><p><a class="reference internal" href="modules/utils.html#kivy_garden.markdownlabel.collect_widget_ids" title="kivy_garden.markdownlabel.collect_widget_ids"><code class="xref py py-func docutils literal notranslate"><span class="pre">collect_widget_ids()</span></code></a> - Widget ID collector</p></li>
+<li><p><a class="reference internal" href="modules/utils.html#kivy_garden.markdownlabel.extract_font_tags" title="kivy_garden.markdownlabel.extract_font_tags"><code class="xref py py-func docutils literal notranslate"><span class="pre">extract_font_tags()</span></code></a> - Font tag extractor</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">__version__</span></code> - Version string</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="examples.html" class="btn btn-neutral float-left" title="Examples" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="modules/markdownlabel.html" class="btn btn-neutral float-right" title="MarkdownLabel Widget" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Kivy Garden.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

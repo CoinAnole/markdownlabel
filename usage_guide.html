@@ -1,0 +1,389 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Usage Guide &mdash; MarkdownLabel  documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="_static/custom.css?v=6de54d14" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Styling Guide" href="styling_guide.html" />
+    <link rel="prev" title="Installation" href="installation.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            MarkdownLabel
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Usage Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#basic-usage">Basic Usage</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#setting-markdown-content">Setting Markdown Content</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#handling-link-clicks">Handling Link Clicks</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#label-compatible-properties">Label-Compatible Properties</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#auto-sizing-behavior">Auto-Sizing Behavior</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#enable-auto-size">Enable Auto-Size</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#disable-auto-size">Disable Auto-Size</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#text-wrapping">Text Wrapping</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#rendering-modes">Rendering Modes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#widget-mode-default">Widget Mode (Default)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#texture-mode">Texture Mode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#image-sizing-mode">Image Sizing Mode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#strict-label-mode">Strict Label Mode</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#updating-styles">Updating Styles</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#individual-properties">Individual Properties</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#batch-updates">Batch Updates</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#working-with-the-ast">Working with the AST</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#performance-tips">Performance Tips</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#common-patterns">Common Patterns</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#scrollable-content">Scrollable Content</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#responsive-design">Responsive Design</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#see-also">See Also</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="styling_guide.html">Styling Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="label_compatibility.html">Label API Compatibility</a></li>
+<li class="toctree-l1"><a class="reference internal" href="events.html">Event Handling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API Reference</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">MarkdownLabel</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Usage Guide</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/usage_guide.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="usage-guide">
+<span id="id1"></span><h1>Usage Guide<a class="headerlink" href="#usage-guide" title="Link to this heading"></a></h1>
+<p>This guide covers comprehensive usage patterns for MarkdownLabel.</p>
+<section id="basic-usage">
+<h2>Basic Usage<a class="headerlink" href="#basic-usage" title="Link to this heading"></a></h2>
+<section id="setting-markdown-content">
+<h3>Setting Markdown Content<a class="headerlink" href="#setting-markdown-content" title="Link to this heading"></a></h3>
+<p>Use the <code class="docutils literal notranslate"><span class="pre">text</span></code> property to set Markdown content:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">kivy_garden.markdownlabel</span><span class="w"> </span><span class="kn">import</span> <span class="n">MarkdownLabel</span>
+
+<span class="n">label</span> <span class="o">=</span> <span class="n">MarkdownLabel</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;# Hello</span><span class="se">\\</span><span class="s1">n</span><span class="se">\\</span><span class="s1">nThis is **bold** text.&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>You can update content dynamically:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">label</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="s1">&#39;# New Content</span><span class="se">\\</span><span class="s1">n</span><span class="se">\\</span><span class="s1">nUpdated **markdown**.&#39;</span>
+</pre></div>
+</div>
+</section>
+<section id="handling-link-clicks">
+<h3>Handling Link Clicks<a class="headerlink" href="#handling-link-clicks" title="Link to this heading"></a></h3>
+<p>Bind to the <code class="docutils literal notranslate"><span class="pre">on_ref_press</span></code> event:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">on_link_click</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="n">url</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Clicked: </span><span class="si">{</span><span class="n">url</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+<span class="n">label</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="n">on_ref_press</span><span class="o">=</span><span class="n">on_link_click</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>See <a class="reference internal" href="events.html"><span class="doc">Event Handling</span></a> for detailed event handling documentation.</p>
+</section>
+</section>
+<section id="label-compatible-properties">
+<h2>Label-Compatible Properties<a class="headerlink" href="#label-compatible-properties" title="Link to this heading"></a></h2>
+<p>Many Kivy Label properties work with MarkdownLabel:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">label</span> <span class="o">=</span> <span class="n">MarkdownLabel</span><span class="p">(</span>
+    <span class="n">text</span><span class="o">=</span><span class="s1">&#39;# Content&#39;</span><span class="p">,</span>
+    <span class="n">font_name</span><span class="o">=</span><span class="s1">&#39;Arial&#39;</span><span class="p">,</span>
+    <span class="n">font_size</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span>           <span class="c1"># Maps to base_font_size</span>
+    <span class="n">color</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>     <span class="c1"># White text</span>
+    <span class="n">halign</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span>        <span class="c1"># Horizontal alignment</span>
+    <span class="n">valign</span><span class="o">=</span><span class="s1">&#39;middle&#39;</span><span class="p">,</span>        <span class="c1"># Vertical alignment</span>
+    <span class="n">padding</span><span class="o">=</span><span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">],</span>       <span class="c1"># Container padding</span>
+    <span class="n">line_height</span><span class="o">=</span><span class="mf">1.2</span><span class="p">,</span>        <span class="c1"># Line spacing</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>See <a class="reference internal" href="label_compatibility.html"><span class="doc">Label API Compatibility</span></a> for the complete compatibility reference.</p>
+</section>
+<section id="auto-sizing-behavior">
+<h2>Auto-Sizing Behavior<a class="headerlink" href="#auto-sizing-behavior" title="Link to this heading"></a></h2>
+<p>By default, <code class="docutils literal notranslate"><span class="pre">auto_size_height</span></code> is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+<section id="enable-auto-size">
+<h3>Enable Auto-Size<a class="headerlink" href="#enable-auto-size" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">label</span> <span class="o">=</span> <span class="n">MarkdownLabel</span><span class="p">(</span>
+    <span class="n">text</span><span class="o">=</span><span class="s1">&#39;# Heading</span><span class="se">\\</span><span class="s1">n</span><span class="se">\\</span><span class="s1">nContent&#39;</span><span class="p">,</span>
+    <span class="n">auto_size_height</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">size_hint_y</span><span class="o">=</span><span class="kc">None</span>         <span class="c1"># Required for auto-size</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="disable-auto-size">
+<h3>Disable Auto-Size<a class="headerlink" href="#disable-auto-size" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">label</span> <span class="o">=</span> <span class="n">MarkdownLabel</span><span class="p">(</span>
+    <span class="n">text</span><span class="o">=</span><span class="s1">&#39;# Heading&#39;</span><span class="p">,</span>
+    <span class="n">auto_size_height</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">size_hint_y</span><span class="o">=</span><span class="mi">1</span>           <span class="c1"># Fill available space</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="text-wrapping">
+<h2>Text Wrapping<a class="headerlink" href="#text-wrapping" title="Link to this heading"></a></h2>
+<p>Use <code class="docutils literal notranslate"><span class="pre">text_size</span></code> to constrain text width and enable wrapping:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">label</span> <span class="o">=</span> <span class="n">MarkdownLabel</span><span class="p">(</span>
+    <span class="n">text</span><span class="o">=</span><span class="s1">&#39;Long text that should wrap to multiple lines...&#39;</span><span class="p">,</span>
+    <span class="n">text_size</span><span class="o">=</span><span class="p">[</span><span class="mi">400</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span>  <span class="c1"># Fixed width, auto height</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Constrain both dimensions:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">label</span> <span class="o">=</span> <span class="n">MarkdownLabel</span><span class="p">(</span>
+    <span class="n">text</span><span class="o">=</span><span class="s1">&#39;Content&#39;</span><span class="p">,</span>
+    <span class="n">text_size</span><span class="o">=</span><span class="p">[</span><span class="mi">400</span><span class="p">,</span> <span class="mi">300</span><span class="p">],</span>   <span class="c1"># Fixed width and height</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="rendering-modes">
+<h2>Rendering Modes<a class="headerlink" href="#rendering-modes" title="Link to this heading"></a></h2>
+<section id="widget-mode-default">
+<h3>Widget Mode (Default)<a class="headerlink" href="#widget-mode-default" title="Link to this heading"></a></h3>
+<p>Renders as actual Kivy widgets. Best for:</p>
+<ul class="simple">
+<li><p>Interactive content (links)</p></li>
+<li><p>Dynamic styling changes</p></li>
+<li><p>Mixed content types</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">label</span> <span class="o">=</span> <span class="n">MarkdownLabel</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;Content&#39;</span><span class="p">,</span> <span class="n">render_mode</span><span class="o">=</span><span class="s1">&#39;widgets&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="texture-mode">
+<h3>Texture Mode<a class="headerlink" href="#texture-mode" title="Link to this heading"></a></h3>
+<p>Renders to a texture for better performance. Best for:</p>
+<ul class="simple">
+<li><p>Static content</p></li>
+<li><p>Large documents</p></li>
+<li><p>Performance-critical applications</p></li>
+<li><p>Text-only or table/list-heavy content without Markdown images</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">label</span> <span class="o">=</span> <span class="n">MarkdownLabel</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;Content&#39;</span><span class="p">,</span> <span class="n">render_mode</span><span class="o">=</span><span class="s1">&#39;texture&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Note:</strong> Links still work in texture mode via hit-testing.
+<strong>Important:</strong> If Markdown content includes images (<code class="docutils literal notranslate"><span class="pre">![alt](url)</span></code>),
+MarkdownLabel now skips texture rendering and falls back to widget mode.</p>
+</section>
+<section id="image-sizing-mode">
+<h3>Image Sizing Mode<a class="headerlink" href="#image-sizing-mode" title="Link to this heading"></a></h3>
+<p>Markdown images use <code class="docutils literal notranslate"><span class="pre">image_size_mode</span></code> to control sizing in widget mode:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">contain_no_upscale</span></code> (default): preserve native image size unless the content
+area is narrower, in which case the image scales down.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">fill_width</span></code>: scale image to full available content width while preserving
+aspect ratio.</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">label</span> <span class="o">=</span> <span class="n">MarkdownLabel</span><span class="p">(</span>
+    <span class="n">text</span><span class="o">=</span><span class="s1">&#39;![Logo](https://example.com/logo.png)&#39;</span><span class="p">,</span>
+    <span class="n">image_size_mode</span><span class="o">=</span><span class="s1">&#39;contain_no_upscale&#39;</span>  <span class="c1"># default</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">label</span> <span class="o">=</span> <span class="n">MarkdownLabel</span><span class="p">(</span>
+    <span class="n">text</span><span class="o">=</span><span class="s1">&#39;![Hero](https://example.com/hero.png)&#39;</span><span class="p">,</span>
+    <span class="n">image_size_mode</span><span class="o">=</span><span class="s1">&#39;fill_width&#39;</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="strict-label-mode">
+<h3>Strict Label Mode<a class="headerlink" href="#strict-label-mode" title="Link to this heading"></a></h3>
+<p>Enforces Label-like behavior with fixed height:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">label</span> <span class="o">=</span> <span class="n">MarkdownLabel</span><span class="p">(</span>
+    <span class="n">text</span><span class="o">=</span><span class="s1">&#39;Content&#39;</span><span class="p">,</span>
+    <span class="n">strict_label_mode</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">text_size</span><span class="o">=</span><span class="p">[</span><span class="mi">400</span><span class="p">,</span> <span class="mi">200</span><span class="p">]</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="updating-styles">
+<h2>Updating Styles<a class="headerlink" href="#updating-styles" title="Link to this heading"></a></h2>
+<section id="individual-properties">
+<h3>Individual Properties<a class="headerlink" href="#individual-properties" title="Link to this heading"></a></h3>
+<p>Change properties directly:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">label</span><span class="o">.</span><span class="n">color</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>      <span class="c1"># Red text</span>
+<span class="n">label</span><span class="o">.</span><span class="n">base_font_size</span> <span class="o">=</span> <span class="mi">20</span>        <span class="c1"># Larger font</span>
+<span class="n">label</span><span class="o">.</span><span class="n">halign</span> <span class="o">=</span> <span class="s1">&#39;right&#39;</span>           <span class="c1"># Right alignment</span>
+</pre></div>
+</div>
+</section>
+<section id="batch-updates">
+<h3>Batch Updates<a class="headerlink" href="#batch-updates" title="Link to this heading"></a></h3>
+<p>Use <code class="docutils literal notranslate"><span class="pre">update_style()</span></code> for multiple changes with single refresh:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">label</span><span class="o">.</span><span class="n">update_style</span><span class="p">(</span>
+    <span class="n">color</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="n">base_font_size</span><span class="o">=</span><span class="mi">18</span><span class="p">,</span>
+    <span class="n">halign</span><span class="o">=</span><span class="s1">&#39;center&#39;</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="working-with-the-ast">
+<h2>Working with the AST<a class="headerlink" href="#working-with-the-ast" title="Link to this heading"></a></h2>
+<p>Access the parsed AST:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ast</span> <span class="o">=</span> <span class="n">label</span><span class="o">.</span><span class="n">get_ast</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">ast</span><span class="p">)</span>  <span class="c1"># List of token dictionaries</span>
+</pre></div>
+</div>
+<p>Serialize back to Markdown:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">markdown</span> <span class="o">=</span> <span class="n">label</span><span class="o">.</span><span class="n">to_markdown</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">markdown</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="performance-tips">
+<h2>Performance Tips<a class="headerlink" href="#performance-tips" title="Link to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p><strong>Use texture mode</strong> for large static documents without Markdown images</p></li>
+<li><p><strong>Batch style updates</strong> with <code class="docutils literal notranslate"><span class="pre">update_style()</span></code></p></li>
+<li><p><strong>Set appropriate text_size</strong> to avoid unnecessary calculations</p></li>
+<li><p><strong>Disable auto_size_height</strong> if you don’t need dynamic sizing</p></li>
+<li><p><strong>Use ``force_rebuild()``</strong> only when necessary</p></li>
+</ol>
+</section>
+<section id="common-patterns">
+<h2>Common Patterns<a class="headerlink" href="#common-patterns" title="Link to this heading"></a></h2>
+<section id="scrollable-content">
+<h3>Scrollable Content<a class="headerlink" href="#scrollable-content" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">kivy.uix.scrollview</span><span class="w"> </span><span class="kn">import</span> <span class="n">ScrollView</span>
+
+<span class="n">scroll</span> <span class="o">=</span> <span class="n">ScrollView</span><span class="p">()</span>
+<span class="n">label</span> <span class="o">=</span> <span class="n">MarkdownLabel</span><span class="p">(</span>
+    <span class="n">text</span><span class="o">=</span><span class="n">long_markdown_content</span><span class="p">,</span>
+    <span class="n">size_hint_y</span><span class="o">=</span><span class="kc">None</span>
+<span class="p">)</span>
+<span class="n">label</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="n">texture_size</span><span class="o">=</span><span class="n">label</span><span class="o">.</span><span class="n">setter</span><span class="p">(</span><span class="s1">&#39;size&#39;</span><span class="p">))</span>
+<span class="n">scroll</span><span class="o">.</span><span class="n">add_widget</span><span class="p">(</span><span class="n">label</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="responsive-design">
+<h3>Responsive Design<a class="headerlink" href="#responsive-design" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">kivy.core.window</span><span class="w"> </span><span class="kn">import</span> <span class="n">Window</span>
+
+<span class="n">label</span> <span class="o">=</span> <span class="n">MarkdownLabel</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;Content&#39;</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">on_window_size</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span>
+    <span class="n">label</span><span class="o">.</span><span class="n">text_size</span> <span class="o">=</span> <span class="p">[</span><span class="n">size</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="mf">0.9</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span>
+
+<span class="n">Window</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">on_window_size</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="see-also">
+<h2>See Also<a class="headerlink" href="#see-also" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="styling_guide.html"><span class="doc">Styling Guide</span></a> - Font and color customization</p></li>
+<li><p><a class="reference internal" href="label_compatibility.html"><span class="doc">Label API Compatibility</span></a> - Complete Label API reference</p></li>
+<li><p><a class="reference internal" href="events.html"><span class="doc">Event Handling</span></a> - Event handling details</p></li>
+<li><p><a class="reference internal" href="examples.html"><span class="doc">Examples</span></a> - Working code examples</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="installation.html" class="btn btn-neutral float-left" title="Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="styling_guide.html" class="btn btn-neutral float-right" title="Styling Guide" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Kivy Garden.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

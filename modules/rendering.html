@@ -1,0 +1,221 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rendering Module &mdash; MarkdownLabel  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=6de54d14" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Inline Renderer Module" href="inline_renderer.html" />
+    <link rel="prev" title="Properties Module" href="properties.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            MarkdownLabel
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage_guide.html">Usage Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../styling_guide.html">Styling Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../label_compatibility.html">Label API Compatibility</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../events.html">Event Handling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples.html">Examples</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../api.html">API Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../api.html#main-widget">Main Widget</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../api.html#supporting-modules">Supporting Modules</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="properties.html">Properties Module</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Rendering Module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#module-kivy_garden.markdownlabel.rendering">Module Contents</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#rendering-pipeline">Rendering Pipeline</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#render-modes">Render Modes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#clipping-behavior">Clipping Behavior</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#in-place-updates">In-Place Updates</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#see-also">See Also</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="inline_renderer.html">Inline Renderer Module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kivy_renderer.html">Kivy Renderer Module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kivy_renderer_tables.html">Kivy Renderer Tables Module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="markdown_serializer.html">Markdown Serializer Module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="font_fallback.html">Font Fallback Module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="utils.html">Utils Module</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#version-information">Version Information</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#public-api">Public API</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">MarkdownLabel</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../api.html">API Reference</a></li>
+      <li class="breadcrumb-item active">Rendering Module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/modules/rendering.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="rendering-module">
+<span id="id1"></span><h1>Rendering Module<a class="headerlink" href="#rendering-module" title="Link to this heading"></a></h1>
+<p>The <code class="docutils literal notranslate"><span class="pre">rendering</span></code> module contains the <code class="docutils literal notranslate"><span class="pre">MarkdownLabelRendering</span></code> mixin class that handles widget tree building and style updates.</p>
+<section id="module-kivy_garden.markdownlabel.rendering">
+<span id="module-contents"></span><h2>Module Contents<a class="headerlink" href="#module-kivy_garden.markdownlabel.rendering" title="Link to this heading"></a></h2>
+<p>Rendering logic for MarkdownLabel.</p>
+<p>This module contains all rendering-related methods including widget tree
+building, texture rendering, and style updates.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="kivy_garden.markdownlabel.rendering.clear_text_size_bindings">
+<span class="sig-prename descclassname"><span class="pre">kivy_garden.markdownlabel.rendering.</span></span><span class="sig-name descname"><span class="pre">clear_text_size_bindings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">label</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kivy_garden.markdownlabel.rendering.clear_text_size_bindings" title="Link to this definition"></a></dt>
+<dd><p>Remove previously attached text_size-related bindings from a Label.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="kivy_garden.markdownlabel.rendering.apply_text_size_binding">
+<span class="sig-prename descclassname"><span class="pre">kivy_garden.markdownlabel.rendering.</span></span><span class="sig-name descname"><span class="pre">apply_text_size_binding</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">label</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strict_label_mode</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kivy_garden.markdownlabel.rendering.apply_text_size_binding" title="Link to this definition"></a></dt>
+<dd><p>Apply text_size binding logic consistently for both build and updates.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="kivy_garden.markdownlabel.rendering.MarkdownLabelRendering">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">kivy_garden.markdownlabel.rendering.</span></span><span class="sig-name descname"><span class="pre">MarkdownLabelRendering</span></span><a class="headerlink" href="#kivy_garden.markdownlabel.rendering.MarkdownLabelRendering" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Mixin class containing rendering logic for MarkdownLabel.</p>
+<p>This class is designed to be mixed into the main MarkdownLabel class
+to provide rendering functionality in a separate, organized module.</p>
+</dd></dl>
+
+</section>
+<section id="rendering-pipeline">
+<h2>Rendering Pipeline<a class="headerlink" href="#rendering-pipeline" title="Link to this heading"></a></h2>
+<p>The rendering process follows a three-layer pipeline:</p>
+<ol class="arabic simple">
+<li><p><strong>Parsing</strong>: mistune parses Markdown text into an Abstract Syntax Tree (AST)</p></li>
+<li><p><strong>Block Rendering</strong>: <code class="docutils literal notranslate"><span class="pre">KivyRenderer</span></code> converts AST blocks to Kivy widgets</p></li>
+<li><p><strong>Inline Rendering</strong>: <code class="docutils literal notranslate"><span class="pre">InlineRenderer</span></code> converts inline elements to BBCode markup strings</p></li>
+</ol>
+</section>
+<section id="render-modes">
+<h2>Render Modes<a class="headerlink" href="#render-modes" title="Link to this heading"></a></h2>
+<dl class="simple">
+<dt><strong>Widget Mode</strong> (default)</dt><dd><p>Renders Markdown as actual Kivy widget hierarchy. Supports full interactivity and dynamic styling.</p>
+</dd>
+<dt><strong>Texture Mode</strong></dt><dd><p>Renders Markdown to a texture for better performance with static content.
+Uses <code class="docutils literal notranslate"><span class="pre">_render_as_texture()</span></code> method.
+If Markdown content includes image widgets (<code class="docutils literal notranslate"><span class="pre">AsyncImage</span></code>), texture rendering
+is skipped and widget-mode fallback is used.</p>
+</dd>
+<dt><strong>Strict Label Mode</strong></dt><dd><p>When enabled, maintains fixed height and uses <code class="docutils literal notranslate"><span class="pre">text_size</span></code> for text wrapping, similar to standard Kivy Label behavior.</p>
+</dd>
+</dl>
+</section>
+<section id="clipping-behavior">
+<h2>Clipping Behavior<a class="headerlink" href="#clipping-behavior" title="Link to this heading"></a></h2>
+<p>Content clipping is handled by <code class="docutils literal notranslate"><span class="pre">_ClippingContainer</span></code> (a <code class="docutils literal notranslate"><span class="pre">StencilView</span></code> subclass) when:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">text_size[1]</span></code> is set (height-constrained rendering)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">strict_label_mode</span></code> is enabled with a fixed height</p></li>
+</ul>
+</section>
+<section id="in-place-updates">
+<h2>In-Place Updates<a class="headerlink" href="#in-place-updates" title="Link to this heading"></a></h2>
+<p>For <strong>STYLE_ONLY_PROPERTIES</strong>, the rendering system can update styles without rebuilding the widget tree:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">_update_styles_in_place()</span></code> - Applies all style properties</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">_update_font_sizes_in_place()</span></code> - Updates font sizes efficiently</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">_update_text_size_bindings_in_place()</span></code> - Refreshes text wrapping bindings</p></li>
+</ul>
+</section>
+<section id="see-also">
+<h2>See Also<a class="headerlink" href="#see-also" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="properties.html"><span class="doc">Properties Module</span></a> - Property classification that triggers different update modes</p></li>
+<li><p><a class="reference internal" href="kivy_renderer.html"><span class="doc">Kivy Renderer Module</span></a> - Block-level rendering implementation</p></li>
+<li><p><a class="reference internal" href="inline_renderer.html"><span class="doc">Inline Renderer Module</span></a> - Inline markup rendering</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="properties.html" class="btn btn-neutral float-left" title="Properties Module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="inline_renderer.html" class="btn btn-neutral float-right" title="Inline Renderer Module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Kivy Garden.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

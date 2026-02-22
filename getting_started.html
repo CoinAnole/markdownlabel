@@ -1,0 +1,224 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Getting Started &mdash; MarkdownLabel  documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="_static/custom.css?v=6de54d14" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Installation" href="installation.html" />
+    <link rel="prev" title="Welcome to MarkdownLabel’s Documentation!" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            MarkdownLabel
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Getting Started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#what-is-markdownlabel">What is MarkdownLabel?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#quick-start">Quick Start</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#next-steps">Next Steps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#supported-markdown">Supported Markdown</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#key-concepts">Key Concepts</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage_guide.html">Usage Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="styling_guide.html">Styling Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="label_compatibility.html">Label API Compatibility</a></li>
+<li class="toctree-l1"><a class="reference internal" href="events.html">Event Handling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API Reference</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">MarkdownLabel</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Getting Started</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/getting_started.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="getting-started">
+<span id="id1"></span><h1>Getting Started<a class="headerlink" href="#getting-started" title="Link to this heading"></a></h1>
+<p>Welcome to MarkdownLabel! This guide will help you get up and running with the widget.</p>
+<section id="what-is-markdownlabel">
+<h2>What is MarkdownLabel?<a class="headerlink" href="#what-is-markdownlabel" title="Link to this heading"></a></h2>
+<p><strong>MarkdownLabel</strong> is a Kivy widget that renders Markdown text as interactive UI elements. Unlike a standard Kivy Label, MarkdownLabel:</p>
+<ul class="simple">
+<li><p>Renders full Markdown syntax (headings, lists, tables, code blocks, etc.)</p></li>
+<li><p>Supports interactive links with click events</p></li>
+<li><p>Provides a Label-compatible API for easy migration</p></li>
+<li><p>Extends BoxLayout (not Label) to accommodate complex Markdown structures</p></li>
+</ul>
+</section>
+<section id="quick-start">
+<h2>Quick Start<a class="headerlink" href="#quick-start" title="Link to this heading"></a></h2>
+<ol class="arabic">
+<li><p><strong>Install the package</strong> (see <a class="reference internal" href="installation.html"><span class="doc">Installation</span></a>)</p></li>
+<li><p><strong>Create a simple example</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">kivy.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">runTouchApp</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kivy_garden.markdownlabel</span><span class="w"> </span><span class="kn">import</span> <span class="n">MarkdownLabel</span>
+
+<span class="n">MARKDOWN_TEXT</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2"># Hello MarkdownLabel</span>
+
+<span class="s2">This is a **simple** demonstration.</span>
+
+<span class="s2">## Features</span>
+
+<span class="s2">- *Italic* text</span>
+<span class="s2">- **Bold** text</span>
+<span class="s2">- `inline code`</span>
+<span class="s2">- [Clickable links](https://kivy.org)</span>
+<span class="s2">&quot;&quot;&quot;</span>
+
+<span class="n">runTouchApp</span><span class="p">(</span><span class="n">MarkdownLabel</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">MARKDOWN_TEXT</span><span class="p">))</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Run your app</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">your_app</span><span class="o">.</span><span class="n">py</span>
+</pre></div>
+</div>
+</li>
+</ol>
+</section>
+<section id="next-steps">
+<h2>Next Steps<a class="headerlink" href="#next-steps" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="usage_guide.html"><span class="doc">Usage Guide</span></a> - Learn comprehensive usage patterns</p></li>
+<li><p><a class="reference internal" href="styling_guide.html"><span class="doc">Styling Guide</span></a> - Customize fonts, colors, and appearance</p></li>
+<li><p><a class="reference internal" href="label_compatibility.html"><span class="doc">Label API Compatibility</span></a> - Understand Label API compatibility</p></li>
+<li><p><a class="reference internal" href="examples.html"><span class="doc">Examples</span></a> - See complete working examples</p></li>
+<li><p><a class="reference internal" href="api.html"><span class="doc">API Reference</span></a> - Browse the API reference</p></li>
+</ul>
+</section>
+<section id="supported-markdown">
+<h2>Supported Markdown<a class="headerlink" href="#supported-markdown" title="Link to this heading"></a></h2>
+<p>MarkdownLabel supports standard Markdown syntax:</p>
+<p><strong>Block Elements:</strong></p>
+<ul class="simple">
+<li><p>Headings (H1-H6)</p></li>
+<li><p>Paragraphs</p></li>
+<li><p>Unordered lists (<code class="docutils literal notranslate"><span class="pre">-</span></code>, <code class="docutils literal notranslate"><span class="pre">*</span></code>, <code class="docutils literal notranslate"><span class="pre">+</span></code>)</p></li>
+<li><p>Ordered lists (<code class="docutils literal notranslate"><span class="pre">1.</span></code>, <code class="docutils literal notranslate"><span class="pre">2.</span></code>, etc.)</p></li>
+<li><p>Tables</p></li>
+<li><p>Code blocks (fenced with triple backticks)</p></li>
+<li><p>Blockquotes (<code class="docutils literal notranslate"><span class="pre">&gt;</span></code>)</p></li>
+<li><p>Horizontal rules (<code class="docutils literal notranslate"><span class="pre">---</span></code>)</p></li>
+</ul>
+<p><strong>Inline Elements:</strong></p>
+<ul class="simple">
+<li><p>Bold (<code class="docutils literal notranslate"><span class="pre">**text**</span></code> or <code class="docutils literal notranslate"><span class="pre">__text__</span></code>)</p></li>
+<li><p>Italic (<code class="docutils literal notranslate"><span class="pre">*text*</span></code> or <code class="docutils literal notranslate"><span class="pre">_text_</span></code>)</p></li>
+<li><p>Strikethrough (<code class="docutils literal notranslate"><span class="pre">~~text~~</span></code>)</p></li>
+<li><p>Inline code (single backticks around text)</p></li>
+<li><p>Links (<code class="docutils literal notranslate"><span class="pre">[text](url)</span></code>)</p></li>
+<li><p>Images (<code class="docutils literal notranslate"><span class="pre">![alt](url)</span></code>)</p></li>
+</ul>
+</section>
+<section id="key-concepts">
+<h2>Key Concepts<a class="headerlink" href="#key-concepts" title="Link to this heading"></a></h2>
+<dl class="simple">
+<dt><strong>Not a True Label</strong></dt><dd><p>MarkdownLabel extends <code class="docutils literal notranslate"><span class="pre">BoxLayout</span></code>, not <code class="docutils literal notranslate"><span class="pre">Label</span></code>. This is necessary because Markdown content requires multiple child widgets (headings, lists, tables, etc.).</p>
+</dd>
+<dt><strong>Label-Compatible API</strong></dt><dd><p>Most common Label properties work: <code class="docutils literal notranslate"><span class="pre">font_name</span></code>, <code class="docutils literal notranslate"><span class="pre">color</span></code>, <code class="docutils literal notranslate"><span class="pre">halign</span></code>, <code class="docutils literal notranslate"><span class="pre">valign</span></code>, <code class="docutils literal notranslate"><span class="pre">padding</span></code>, <code class="docutils literal notranslate"><span class="pre">text_size</span></code>, etc.</p>
+</dd>
+<dt><strong>Two Rendering Modes</strong></dt><dd><ul class="simple">
+<li><p><strong>Widget mode</strong> (default <code class="docutils literal notranslate"><span class="pre">render_mode='widgets'</span></code>): Renders as actual Kivy widgets</p></li>
+<li><p><strong>Texture mode</strong>: Renders to a texture for better performance with static content
+that does not include Markdown images. Content with <code class="docutils literal notranslate"><span class="pre">![alt](url)</span></code> falls
+back to widget mode automatically.</p></li>
+</ul>
+</dd>
+<dt><strong>Interactive Links</strong></dt><dd><p>Use <code class="docutils literal notranslate"><span class="pre">bind(on_ref_press=your_callback)</span></code> to handle link clicks.</p>
+</dd>
+<dt><strong>Auto-Sizing</strong></dt><dd><p>By default, <code class="docutils literal notranslate"><span class="pre">auto_size_height</span></code> is <code class="docutils literal notranslate"><span class="pre">False</span></code>. Enable it with <code class="docutils literal notranslate"><span class="pre">auto_size_height=True</span></code>.</p>
+</dd>
+</dl>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to MarkdownLabel’s Documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="installation.html" class="btn btn-neutral float-right" title="Installation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Kivy Garden.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

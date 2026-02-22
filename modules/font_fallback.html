@@ -1,0 +1,231 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Font Fallback Module &mdash; MarkdownLabel  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=6de54d14" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Utils Module" href="utils.html" />
+    <link rel="prev" title="Markdown Serializer Module" href="markdown_serializer.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            MarkdownLabel
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage_guide.html">Usage Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../styling_guide.html">Styling Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../label_compatibility.html">Label API Compatibility</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../events.html">Event Handling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples.html">Examples</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../api.html">API Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../api.html#main-widget">Main Widget</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../api.html#supporting-modules">Supporting Modules</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="properties.html">Properties Module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="rendering.html">Rendering Module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="inline_renderer.html">Inline Renderer Module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kivy_renderer.html">Kivy Renderer Module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kivy_renderer_tables.html">Kivy Renderer Tables Module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="markdown_serializer.html">Markdown Serializer Module</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Font Fallback Module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#module-kivy_garden.markdownlabel.font_fallback">Module Contents</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#font-fallback-system">Font Fallback System</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#key-functions">Key Functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#configuration">Configuration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#example">Example</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#see-also">See Also</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="utils.html">Utils Module</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#version-information">Version Information</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#public-api">Public API</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">MarkdownLabel</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../api.html">API Reference</a></li>
+      <li class="breadcrumb-item active">Font Fallback Module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/modules/font_fallback.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="font-fallback-module">
+<span id="id1"></span><h1>Font Fallback Module<a class="headerlink" href="#font-fallback-module" title="Link to this heading"></a></h1>
+<p>The <code class="docutils literal notranslate"><span class="pre">font_fallback</span></code> module provides font fallback helpers for cases where
+primary fonts do not contain required glyphs.</p>
+<section id="module-kivy_garden.markdownlabel.font_fallback">
+<span id="module-contents"></span><h2>Module Contents<a class="headerlink" href="#module-kivy_garden.markdownlabel.font_fallback" title="Link to this heading"></a></h2>
+<p>Font fallback helpers for Kivy markup rendering.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="kivy_garden.markdownlabel.font_fallback.escape_kivy_markup">
+<span class="sig-prename descclassname"><span class="pre">kivy_garden.markdownlabel.font_fallback.</span></span><span class="sig-name descname"><span class="pre">escape_kivy_markup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kivy_garden.markdownlabel.font_fallback.escape_kivy_markup" title="Link to this definition"></a></dt>
+<dd><p>Escape Kivy markup special characters for safe display.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>text</strong> (<em>str</em>)</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="kivy_garden.markdownlabel.font_fallback.apply_fallback_markup">
+<span class="sig-prename descclassname"><span class="pre">kivy_garden.markdownlabel.font_fallback.</span></span><span class="sig-name descname"><span class="pre">apply_fallback_markup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">primary_font</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fallback_fonts</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enabled</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wrap_primary</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base_font_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">font_scales</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kivy_garden.markdownlabel.font_fallback.apply_fallback_markup" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>text</strong> (<em>str</em>)</p></li>
+<li><p><strong>primary_font</strong> (<em>str</em>)</p></li>
+<li><p><strong>fallback_fonts</strong> (<em>Iterable</em><em>[</em><em>str</em><em>] </em><em>| </em><em>None</em>)</p></li>
+<li><p><strong>enabled</strong> (<em>bool</em>)</p></li>
+<li><p><strong>wrap_primary</strong> (<em>bool</em>)</p></li>
+<li><p><strong>base_font_size</strong> (<em>float</em><em> | </em><em>None</em>)</p></li>
+<li><p><strong>font_scales</strong> (<em>dict</em><em> | </em><em>None</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="font-fallback-system">
+<h2>Font Fallback System<a class="headerlink" href="#font-fallback-system" title="Link to this heading"></a></h2>
+<p>When <code class="docutils literal notranslate"><span class="pre">fallback_enabled</span></code> is True, MarkdownLabel can use alternative fonts for characters not present in the primary font. This is especially useful for:</p>
+<ul class="simple">
+<li><p>Multi-language content</p></li>
+<li><p>Mathematical symbols</p></li>
+<li><p>Emoji support</p></li>
+<li><p>Special characters</p></li>
+</ul>
+</section>
+<section id="key-functions">
+<h2>Key Functions<a class="headerlink" href="#key-functions" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">apply_fallback_markup()</span></code> - Apply fallback font markup runs</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">escape_kivy_markup()</span></code> - Escape markup control characters safely</p></li>
+</ul>
+</section>
+<section id="configuration">
+<h2>Configuration<a class="headerlink" href="#configuration" title="Link to this heading"></a></h2>
+<p>Font fallback is configured via properties:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">fallback_enabled</span></code> - Enable/disable fallback</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">fallback_fonts</span></code> - List of fallback font names/paths</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">fallback_font_scales</span></code> - Scale factors for fallback fonts</p></li>
+</ul>
+</section>
+<section id="example">
+<h2>Example<a class="headerlink" href="#example" title="Link to this heading"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">label</span> <span class="o">=</span> <span class="n">MarkdownLabel</span><span class="p">(</span>
+    <span class="n">text</span><span class="o">=</span><span class="s1">&#39;Hello 世界 🌍&#39;</span><span class="p">,</span>
+    <span class="n">font_name</span><span class="o">=</span><span class="s1">&#39;Arial&#39;</span><span class="p">,</span>
+    <span class="n">fallback_enabled</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">fallback_fonts</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;NotoSansCJK&#39;</span><span class="p">,</span> <span class="s1">&#39;NotoColorEmoji&#39;</span><span class="p">],</span>
+    <span class="n">fallback_font_scales</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;NotoColorEmoji&#39;</span><span class="p">:</span> <span class="mf">1.2</span><span class="p">}</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="see-also">
+<h2>See Also<a class="headerlink" href="#see-also" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="properties.html"><span class="doc">Properties Module</span></a> - Fallback-related properties</p></li>
+<li><p><a class="reference internal" href="../styling_guide.html"><span class="doc">Styling Guide</span></a> - Font customization guide</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="markdown_serializer.html" class="btn btn-neutral float-left" title="Markdown Serializer Module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="utils.html" class="btn btn-neutral float-right" title="Utils Module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Kivy Garden.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

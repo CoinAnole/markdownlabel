@@ -1,0 +1,444 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Styling Guide &mdash; MarkdownLabel  documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="_static/custom.css?v=6de54d14" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Label API Compatibility" href="label_compatibility.html" />
+    <link rel="prev" title="Usage Guide" href="usage_guide.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            MarkdownLabel
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage_guide.html">Usage Guide</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Styling Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#font-customization">Font Customization</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#primary-font">Primary Font</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#code-font">Code Font</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#font-fallback">Font Fallback</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#base-font-size">Base Font Size</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#color-customization">Color Customization</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#text-color">Text Color</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#link-color">Link Color</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#code-background">Code Background</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#disabled-state">Disabled State</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#alignment">Alignment</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#horizontal-alignment">Horizontal Alignment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#vertical-alignment">Vertical Alignment</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#spacing">Spacing</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#container-padding">Container Padding</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#text-padding">Text Padding</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#line-height">Line Height</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#link-styling">Link Styling</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#link-appearance">Link Appearance</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#advanced-styling">Advanced Styling</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#outline">Outline</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#mipmap">Mipmap</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#text-language">Text Language</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#base-direction">Base Direction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#advanced-font-properties">Advanced Font Properties</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#styling-examples">Styling Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#dark-theme">Dark Theme</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#documentation-style">Documentation Style</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#terminal-style">Terminal Style</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#dynamic-styling">Dynamic Styling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#style-only-properties">Style-Only Properties</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#structure-properties">Structure Properties</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#see-also">See Also</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="label_compatibility.html">Label API Compatibility</a></li>
+<li class="toctree-l1"><a class="reference internal" href="events.html">Event Handling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API Reference</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">MarkdownLabel</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Styling Guide</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/styling_guide.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="styling-guide">
+<span id="id1"></span><h1>Styling Guide<a class="headerlink" href="#styling-guide" title="Link to this heading"></a></h1>
+<p>This guide covers customizing the appearance of MarkdownLabel content.</p>
+<section id="font-customization">
+<h2>Font Customization<a class="headerlink" href="#font-customization" title="Link to this heading"></a></h2>
+<section id="primary-font">
+<h3>Primary Font<a class="headerlink" href="#primary-font" title="Link to this heading"></a></h3>
+<p>Set the main font for all text (except code blocks):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">label</span><span class="o">.</span><span class="n">font_name</span> <span class="o">=</span> <span class="s1">&#39;Arial&#39;</span>
+</pre></div>
+</div>
+<p>Or using a font file path:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">label</span><span class="o">.</span><span class="n">font_name</span> <span class="o">=</span> <span class="s1">&#39;fonts/MyCustomFont.ttf&#39;</span>
+</pre></div>
+</div>
+</section>
+<section id="code-font">
+<h3>Code Font<a class="headerlink" href="#code-font" title="Link to this heading"></a></h3>
+<p>Set the font for inline and block code:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">label</span><span class="o">.</span><span class="n">code_font_name</span> <span class="o">=</span> <span class="s1">&#39;monospace&#39;</span>
+</pre></div>
+</div>
+</section>
+<section id="font-fallback">
+<h3>Font Fallback<a class="headerlink" href="#font-fallback" title="Link to this heading"></a></h3>
+<p>Enable font fallback for multi-language support:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">label</span><span class="o">.</span><span class="n">fallback_enabled</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="n">label</span><span class="o">.</span><span class="n">fallback_fonts</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;NotoSansCJK&#39;</span><span class="p">,</span> <span class="s1">&#39;NotoColorEmoji&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+</section>
+<section id="base-font-size">
+<h3>Base Font Size<a class="headerlink" href="#base-font-size" title="Link to this heading"></a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">base_font_size</span></code> controls the normal text size. Headings scale from this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">label</span><span class="o">.</span><span class="n">base_font_size</span> <span class="o">=</span> <span class="mi">16</span>  <span class="c1"># Normal text</span>
+<span class="c1"># H1 = 32, H2 = 24, etc. (scaled from base)</span>
+</pre></div>
+</div>
+<p>You can also use <code class="docutils literal notranslate"><span class="pre">font_size</span></code> as an alias:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">label</span><span class="o">.</span><span class="n">font_size</span> <span class="o">=</span> <span class="mi">16</span>  <span class="c1"># Same as base_font_size</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="color-customization">
+<h2>Color Customization<a class="headerlink" href="#color-customization" title="Link to this heading"></a></h2>
+<section id="text-color">
+<h3>Text Color<a class="headerlink" href="#text-color" title="Link to this heading"></a></h3>
+<p>Set the main text color (RGB + Alpha):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">label</span><span class="o">.</span><span class="n">color</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>  <span class="c1"># White</span>
+<span class="n">label</span><span class="o">.</span><span class="n">color</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>  <span class="c1"># Black</span>
+<span class="n">label</span><span class="o">.</span><span class="n">color</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">]</span>  <span class="c1"># Semi-transparent red</span>
+</pre></div>
+</div>
+<p>Colors are specified as lists of four floats: <code class="docutils literal notranslate"><span class="pre">[R,</span> <span class="pre">G,</span> <span class="pre">B,</span> <span class="pre">A]</span></code> where each value is 0.0 to 1.0.</p>
+</section>
+<section id="link-color">
+<h3>Link Color<a class="headerlink" href="#link-color" title="Link to this heading"></a></h3>
+<p>Customize link appearance:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">label</span><span class="o">.</span><span class="n">link_color</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>  <span class="c1"># Blue</span>
+</pre></div>
+</div>
+</section>
+<section id="code-background">
+<h3>Code Background<a class="headerlink" href="#code-background" title="Link to this heading"></a></h3>
+<p>Set the background color for code blocks:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">label</span><span class="o">.</span><span class="n">code_bg_color</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>  <span class="c1"># Dark gray</span>
+</pre></div>
+</div>
+</section>
+<section id="disabled-state">
+<h3>Disabled State<a class="headerlink" href="#disabled-state" title="Link to this heading"></a></h3>
+<p>When the widget is disabled (default value shown):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">label</span><span class="o">.</span><span class="n">disabled_color</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">]</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="alignment">
+<h2>Alignment<a class="headerlink" href="#alignment" title="Link to this heading"></a></h2>
+<section id="horizontal-alignment">
+<h3>Horizontal Alignment<a class="headerlink" href="#horizontal-alignment" title="Link to this heading"></a></h3>
+<p>Align text horizontally:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">label</span><span class="o">.</span><span class="n">halign</span> <span class="o">=</span> <span class="s1">&#39;auto&#39;</span>      <span class="c1"># Default</span>
+<span class="n">label</span><span class="o">.</span><span class="n">halign</span> <span class="o">=</span> <span class="s1">&#39;left&#39;</span>
+<span class="n">label</span><span class="o">.</span><span class="n">halign</span> <span class="o">=</span> <span class="s1">&#39;center&#39;</span>
+<span class="n">label</span><span class="o">.</span><span class="n">halign</span> <span class="o">=</span> <span class="s1">&#39;right&#39;</span>
+<span class="n">label</span><span class="o">.</span><span class="n">halign</span> <span class="o">=</span> <span class="s1">&#39;justify&#39;</span>   <span class="c1"># Full justification</span>
+</pre></div>
+</div>
+<p><strong>Note:</strong> <code class="docutils literal notranslate"><span class="pre">auto</span></code> is also supported for RTL text detection.</p>
+</section>
+<section id="vertical-alignment">
+<h3>Vertical Alignment<a class="headerlink" href="#vertical-alignment" title="Link to this heading"></a></h3>
+<p>When height is constrained:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">label</span><span class="o">.</span><span class="n">valign</span> <span class="o">=</span> <span class="s1">&#39;bottom&#39;</span>    <span class="c1"># Default</span>
+<span class="n">label</span><span class="o">.</span><span class="n">valign</span> <span class="o">=</span> <span class="s1">&#39;top&#39;</span>
+<span class="n">label</span><span class="o">.</span><span class="n">valign</span> <span class="o">=</span> <span class="s1">&#39;middle&#39;</span>    <span class="c1"># Or &#39;center&#39;</span>
+<span class="n">label</span><span class="o">.</span><span class="n">valign</span> <span class="o">=</span> <span class="s1">&#39;center&#39;</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="spacing">
+<h2>Spacing<a class="headerlink" href="#spacing" title="Link to this heading"></a></h2>
+<section id="container-padding">
+<h3>Container Padding<a class="headerlink" href="#container-padding" title="Link to this heading"></a></h3>
+<p>Padding around the entire content:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">label</span><span class="o">.</span><span class="n">padding</span> <span class="o">=</span> <span class="p">[</span><span class="mi">10</span><span class="p">]</span>              <span class="c1"># All sides: 10px</span>
+<span class="n">label</span><span class="o">.</span><span class="n">padding</span> <span class="o">=</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">]</span>          <span class="c1"># Horizontal: 10, Vertical: 20</span>
+<span class="n">label</span><span class="o">.</span><span class="n">padding</span> <span class="o">=</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">]</span>  <span class="c1"># Left, Top, Right, Bottom</span>
+</pre></div>
+</div>
+</section>
+<section id="text-padding">
+<h3>Text Padding<a class="headerlink" href="#text-padding" title="Link to this heading"></a></h3>
+<p>Padding inside text blocks:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">label</span><span class="o">.</span><span class="n">text_padding</span> <span class="o">=</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span>
+</pre></div>
+</div>
+</section>
+<section id="line-height">
+<h3>Line Height<a class="headerlink" href="#line-height" title="Link to this heading"></a></h3>
+<p>Adjust line spacing:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">label</span><span class="o">.</span><span class="n">line_height</span> <span class="o">=</span> <span class="mf">1.0</span>  <span class="c1"># Default</span>
+<span class="n">label</span><span class="o">.</span><span class="n">line_height</span> <span class="o">=</span> <span class="mf">1.2</span>  <span class="c1"># 20% extra space</span>
+<span class="n">label</span><span class="o">.</span><span class="n">line_height</span> <span class="o">=</span> <span class="mf">1.5</span>  <span class="c1"># 50% extra space</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="link-styling">
+<h2>Link Styling<a class="headerlink" href="#link-styling" title="Link to this heading"></a></h2>
+<section id="link-appearance">
+<h3>Link Appearance<a class="headerlink" href="#link-appearance" title="Link to this heading"></a></h3>
+<p>Control how links are rendered:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">label</span><span class="o">.</span><span class="n">link_style</span> <span class="o">=</span> <span class="s1">&#39;styled&#39;</span>    <span class="c1"># Default: colored + underlined</span>
+<span class="n">label</span><span class="o">.</span><span class="n">link_style</span> <span class="o">=</span> <span class="s1">&#39;unstyled&#39;</span>  <span class="c1"># Label-like appearance</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="advanced-styling">
+<h2>Advanced Styling<a class="headerlink" href="#advanced-styling" title="Link to this heading"></a></h2>
+<section id="outline">
+<h3>Outline<a class="headerlink" href="#outline" title="Link to this heading"></a></h3>
+<p>Add text outline:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">label</span><span class="o">.</span><span class="n">outline_width</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">label</span><span class="o">.</span><span class="n">outline_color</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>  <span class="c1"># Black outline</span>
+</pre></div>
+</div>
+</section>
+<section id="mipmap">
+<h3>Mipmap<a class="headerlink" href="#mipmap" title="Link to this heading"></a></h3>
+<p>Enable mipmap for better scaling quality:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">label</span><span class="o">.</span><span class="n">mipmap</span> <span class="o">=</span> <span class="kc">True</span>
+</pre></div>
+</div>
+</section>
+<section id="text-language">
+<h3>Text Language<a class="headerlink" href="#text-language" title="Link to this heading"></a></h3>
+<p>Set text language for proper shaping:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">label</span><span class="o">.</span><span class="n">text_language</span> <span class="o">=</span> <span class="s1">&#39;en_US&#39;</span>
+<span class="n">label</span><span class="o">.</span><span class="n">text_language</span> <span class="o">=</span> <span class="s1">&#39;ar_AR&#39;</span>  <span class="c1"># Arabic</span>
+</pre></div>
+</div>
+</section>
+<section id="base-direction">
+<h3>Base Direction<a class="headerlink" href="#base-direction" title="Link to this heading"></a></h3>
+<p>Set text direction:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">label</span><span class="o">.</span><span class="n">base_direction</span> <span class="o">=</span> <span class="kc">None</span>    <span class="c1"># Default (automatic)</span>
+<span class="n">label</span><span class="o">.</span><span class="n">base_direction</span> <span class="o">=</span> <span class="s1">&#39;ltr&#39;</span>
+<span class="n">label</span><span class="o">.</span><span class="n">base_direction</span> <span class="o">=</span> <span class="s1">&#39;rtl&#39;</span>   <span class="c1"># Right-to-left</span>
+</pre></div>
+</div>
+</section>
+<section id="advanced-font-properties">
+<h3>Advanced Font Properties<a class="headerlink" href="#advanced-font-properties" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">label</span><span class="o">.</span><span class="n">font_family</span> <span class="o">=</span> <span class="s1">&#39;sans-serif&#39;</span>
+<span class="n">label</span><span class="o">.</span><span class="n">font_context</span> <span class="o">=</span> <span class="s1">&#39;default&#39;</span>
+<span class="n">label</span><span class="o">.</span><span class="n">font_features</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+<span class="n">label</span><span class="o">.</span><span class="n">font_hinting</span> <span class="o">=</span> <span class="s1">&#39;normal&#39;</span>   <span class="c1"># &#39;normal&#39;, &#39;light&#39;, &#39;mono&#39;, &#39;none&#39;</span>
+<span class="n">label</span><span class="o">.</span><span class="n">font_kerning</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="n">label</span><span class="o">.</span><span class="n">font_blended</span> <span class="o">=</span> <span class="kc">True</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="styling-examples">
+<h2>Styling Examples<a class="headerlink" href="#styling-examples" title="Link to this heading"></a></h2>
+<section id="dark-theme">
+<h3>Dark Theme<a class="headerlink" href="#dark-theme" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">label</span> <span class="o">=</span> <span class="n">MarkdownLabel</span><span class="p">(</span>
+    <span class="n">text</span><span class="o">=</span><span class="s1">&#39;# Dark Theme</span><span class="se">\\</span><span class="s1">n</span><span class="se">\\</span><span class="s1">nContent&#39;</span><span class="p">,</span>
+    <span class="n">color</span><span class="o">=</span><span class="p">[</span><span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>          <span class="c1"># Light gray text</span>
+    <span class="n">code_bg_color</span><span class="o">=</span><span class="p">[</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>  <span class="c1"># Dark code blocks</span>
+    <span class="n">link_color</span><span class="o">=</span><span class="p">[</span><span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>       <span class="c1"># Light blue links</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="documentation-style">
+<h3>Documentation Style<a class="headerlink" href="#documentation-style" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">label</span> <span class="o">=</span> <span class="n">MarkdownLabel</span><span class="p">(</span>
+    <span class="n">text</span><span class="o">=</span><span class="s1">&#39;# Docs&#39;</span><span class="p">,</span>
+    <span class="n">base_font_size</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span>
+    <span class="n">line_height</span><span class="o">=</span><span class="mf">1.6</span><span class="p">,</span>
+    <span class="n">color</span><span class="o">=</span><span class="p">[</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="n">code_bg_color</span><span class="o">=</span><span class="p">[</span><span class="mf">0.95</span><span class="p">,</span> <span class="mf">0.95</span><span class="p">,</span> <span class="mf">0.95</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="n">padding</span><span class="o">=</span><span class="p">[</span><span class="mi">20</span><span class="p">,</span> <span class="mi">20</span><span class="p">],</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="terminal-style">
+<h3>Terminal Style<a class="headerlink" href="#terminal-style" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">label</span> <span class="o">=</span> <span class="n">MarkdownLabel</span><span class="p">(</span>
+    <span class="n">text</span><span class="o">=</span><span class="s1">&#39;# Terminal&#39;</span><span class="p">,</span>
+    <span class="n">font_name</span><span class="o">=</span><span class="s1">&#39;monospace&#39;</span><span class="p">,</span>
+    <span class="n">color</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>                <span class="c1"># Green text</span>
+    <span class="n">code_bg_color</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>      <span class="c1"># Dark green background</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="dynamic-styling">
+<h2>Dynamic Styling<a class="headerlink" href="#dynamic-styling" title="Link to this heading"></a></h2>
+<p>Change styles at runtime:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Single property</span>
+<span class="n">label</span><span class="o">.</span><span class="n">color</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+
+<span class="c1"># Batch update</span>
+<span class="n">label</span><span class="o">.</span><span class="n">update_style</span><span class="p">(</span>
+    <span class="n">color</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="n">base_font_size</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
+    <span class="n">halign</span><span class="o">=</span><span class="s1">&#39;center&#39;</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="style-only-properties">
+<h2>Style-Only Properties<a class="headerlink" href="#style-only-properties" title="Link to this heading"></a></h2>
+<p>These properties update in-place without rebuilding:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>- ``color`` - Text color
+- ``font_name`` - Primary font
+- ``base_font_size`` - Font size
+- ``halign`` - Horizontal alignment
+- ``valign`` - Vertical alignment
+- ``padding`` - Container padding
+- ``line_height`` - Line spacing
+- ``outline_width``, ``outline_color`` - Text outline
+- ``mipmap`` - Mipmap quality
+- ``base_direction`` - Text direction
+- ``text_language`` - Language hint
+</pre></div>
+</div>
+</section>
+<section id="structure-properties">
+<h2>Structure Properties<a class="headerlink" href="#structure-properties" title="Link to this heading"></a></h2>
+<p>These properties require a full rebuild:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>- ``link_color`` - Link color (affects BBCode generation)
+- ``code_bg_color`` - Code background
+- ``link_style`` - Link appearance style
+- ``fallback_enabled`` - Font fallback
+- ``fallback_fonts`` - Fallback font list
+</pre></div>
+</div>
+</section>
+<section id="see-also">
+<h2>See Also<a class="headerlink" href="#see-also" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="usage_guide.html"><span class="doc">Usage Guide</span></a> - General usage patterns</p></li>
+<li><p><a class="reference internal" href="label_compatibility.html"><span class="doc">Label API Compatibility</span></a> - Label property reference</p></li>
+<li><p><a class="reference internal" href="modules/properties.html"><span class="doc">Properties Module</span></a> - Property system details</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="usage_guide.html" class="btn btn-neutral float-left" title="Usage Guide" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="label_compatibility.html" class="btn btn-neutral float-right" title="Label API Compatibility" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Kivy Garden.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

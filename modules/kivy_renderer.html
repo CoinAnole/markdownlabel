@@ -1,0 +1,577 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kivy Renderer Module &mdash; MarkdownLabel  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=6de54d14" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Kivy Renderer Tables Module" href="kivy_renderer_tables.html" />
+    <link rel="prev" title="Inline Renderer Module" href="inline_renderer.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            MarkdownLabel
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage_guide.html">Usage Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../styling_guide.html">Styling Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../label_compatibility.html">Label API Compatibility</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../events.html">Event Handling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples.html">Examples</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../api.html">API Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../api.html#main-widget">Main Widget</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../api.html#supporting-modules">Supporting Modules</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="properties.html">Properties Module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="rendering.html">Rendering Module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="inline_renderer.html">Inline Renderer Module</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Kivy Renderer Module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#module-kivy_garden.markdownlabel.kivy_renderer">Module Contents</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#block-elements-supported">Block Elements Supported</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#nesting-depth-protection">Nesting Depth Protection</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#rendering-context">Rendering Context</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#example-usage">Example Usage</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#see-also">See Also</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="kivy_renderer_tables.html">Kivy Renderer Tables Module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="markdown_serializer.html">Markdown Serializer Module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="font_fallback.html">Font Fallback Module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="utils.html">Utils Module</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#version-information">Version Information</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#public-api">Public API</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">MarkdownLabel</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../api.html">API Reference</a></li>
+      <li class="breadcrumb-item active">Kivy Renderer Module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/modules/kivy_renderer.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="kivy-renderer-module">
+<span id="id1"></span><h1>Kivy Renderer Module<a class="headerlink" href="#kivy-renderer-module" title="Link to this heading"></a></h1>
+<p>The <code class="docutils literal notranslate"><span class="pre">kivy_renderer</span></code> module provides the <code class="docutils literal notranslate"><span class="pre">KivyRenderer</span></code> class that converts
+Markdown AST tokens to Kivy widget trees.</p>
+<section id="module-kivy_garden.markdownlabel.kivy_renderer">
+<span id="module-contents"></span><h2>Module Contents<a class="headerlink" href="#module-kivy_garden.markdownlabel.kivy_renderer" title="Link to this heading"></a></h2>
+<section id="kivyrenderer">
+<h3>KivyRenderer<a class="headerlink" href="#kivyrenderer" title="Link to this heading"></a></h3>
+<p>Renders mistune AST to Kivy widgets for block-level elements.</p>
+</section>
+<dl class="py class">
+<dt class="sig sig-object py" id="kivy_garden.markdownlabel.kivy_renderer.KivyRenderer">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">kivy_garden.markdownlabel.kivy_renderer.</span></span><span class="sig-name descname"><span class="pre">KivyRenderer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">base_font_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">15</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">code_font_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'RobotoMono-Regular'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">link_color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">link_style</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'unstyled'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">code_bg_color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">font_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Roboto'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outline_width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outline_color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disabled_outline_color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">line_height</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">halign</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'auto'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">valign</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'bottom'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unicode_errors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'replace'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strip</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">font_family</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">font_context</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">font_features</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">font_hinting</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'normal'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">font_kerning</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">font_blended</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disabled</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disabled_color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mipmap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base_direction</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text_language</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit_render_to_text_bbox</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shorten</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_lines</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shorten_from</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'center'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">split_str</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text_padding</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strict_label_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_size_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'contain_no_upscale'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ellipsis_options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fallback_enabled</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fallback_fonts</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fallback_font_scales</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kivy_garden.markdownlabel.kivy_renderer.KivyRenderer" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="kivy_renderer_tables.html#kivy_garden.markdownlabel.kivy_renderer_tables.KivyRendererTableMixin" title="kivy_garden.markdownlabel.kivy_renderer_tables.KivyRendererTableMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">KivyRendererTableMixin</span></code></a></p>
+<p>Renders mistune AST to Kivy widgets.</p>
+<p>This renderer handles block-level Markdown elements like paragraphs,
+headings, lists, code blocks, tables, and block quotes, converting
+them to appropriate Kivy widgets.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>base_font_size</strong> (<em>float</em>)</p></li>
+<li><p><strong>code_font_name</strong> (<em>str</em>)</p></li>
+<li><p><strong>link_color</strong> (<em>List</em><em>[</em><em>float</em><em>] </em><em>| </em><em>None</em>)</p></li>
+<li><p><strong>link_style</strong> (<em>str</em>)</p></li>
+<li><p><strong>code_bg_color</strong> (<em>List</em><em>[</em><em>float</em><em>] </em><em>| </em><em>None</em>)</p></li>
+<li><p><strong>font_name</strong> (<em>str</em>)</p></li>
+<li><p><strong>color</strong> (<em>List</em><em>[</em><em>float</em><em>] </em><em>| </em><em>None</em>)</p></li>
+<li><p><strong>outline_width</strong> (<em>float</em><em> | </em><em>None</em>)</p></li>
+<li><p><strong>outline_color</strong> (<em>List</em><em>[</em><em>float</em><em>] </em><em>| </em><em>None</em>)</p></li>
+<li><p><strong>disabled_outline_color</strong> (<em>List</em><em>[</em><em>float</em><em>] </em><em>| </em><em>None</em>)</p></li>
+<li><p><strong>line_height</strong> (<em>float</em>)</p></li>
+<li><p><strong>halign</strong> (<em>str</em>)</p></li>
+<li><p><strong>valign</strong> (<em>str</em>)</p></li>
+<li><p><strong>text_size</strong> (<em>List</em><em> | </em><em>None</em>)</p></li>
+<li><p><strong>unicode_errors</strong> (<em>str</em>)</p></li>
+<li><p><strong>strip</strong> (<em>bool</em>)</p></li>
+<li><p><strong>font_family</strong> (<em>str</em><em> | </em><em>None</em>)</p></li>
+<li><p><strong>font_context</strong> (<em>str</em><em> | </em><em>None</em>)</p></li>
+<li><p><strong>font_features</strong> (<em>str</em>)</p></li>
+<li><p><strong>font_hinting</strong> (<em>str</em><em> | </em><em>None</em>)</p></li>
+<li><p><strong>font_kerning</strong> (<em>bool</em>)</p></li>
+<li><p><strong>font_blended</strong> (<em>bool</em>)</p></li>
+<li><p><strong>disabled</strong> (<em>bool</em>)</p></li>
+<li><p><strong>disabled_color</strong> (<em>List</em><em>[</em><em>float</em><em>] </em><em>| </em><em>None</em>)</p></li>
+<li><p><strong>mipmap</strong> (<em>bool</em>)</p></li>
+<li><p><strong>base_direction</strong> (<em>str</em><em> | </em><em>None</em>)</p></li>
+<li><p><strong>text_language</strong> (<em>str</em><em> | </em><em>None</em>)</p></li>
+<li><p><strong>limit_render_to_text_bbox</strong> (<em>bool</em>)</p></li>
+<li><p><strong>shorten</strong> (<em>bool</em>)</p></li>
+<li><p><strong>max_lines</strong> (<em>int</em>)</p></li>
+<li><p><strong>shorten_from</strong> (<em>str</em>)</p></li>
+<li><p><strong>split_str</strong> (<em>str</em>)</p></li>
+<li><p><strong>text_padding</strong> (<em>List</em><em>[</em><em>float</em><em>] </em><em>| </em><em>None</em>)</p></li>
+<li><p><strong>strict_label_mode</strong> (<em>bool</em>)</p></li>
+<li><p><strong>image_size_mode</strong> (<em>str</em>)</p></li>
+<li><p><strong>ellipsis_options</strong> (<em>Dict</em><em> | </em><em>None</em>)</p></li>
+<li><p><strong>fallback_enabled</strong> (<em>bool</em>)</p></li>
+<li><p><strong>fallback_fonts</strong> (<em>List</em><em>[</em><em>str</em><em>] </em><em>| </em><em>None</em>)</p></li>
+<li><p><strong>fallback_font_scales</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>float</em><em>] </em><em>| </em><em>None</em>)</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kivy_garden.markdownlabel.kivy_renderer.KivyRenderer.NAME">
+<span class="sig-name descname"><span class="pre">NAME</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'kivy'</span></span><a class="headerlink" href="#kivy_garden.markdownlabel.kivy_renderer.KivyRenderer.NAME" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kivy_garden.markdownlabel.kivy_renderer.KivyRenderer.HEADING_SIZES">
+<span class="sig-name descname"><span class="pre">HEADING_SIZES</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{1:</span> <span class="pre">2.5,</span> <span class="pre">2:</span> <span class="pre">2.0,</span> <span class="pre">3:</span> <span class="pre">1.75,</span> <span class="pre">4:</span> <span class="pre">1.5,</span> <span class="pre">5:</span> <span class="pre">1.25,</span> <span class="pre">6:</span> <span class="pre">1.0}</span></span><a class="headerlink" href="#kivy_garden.markdownlabel.kivy_renderer.KivyRenderer.HEADING_SIZES" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kivy_garden.markdownlabel.kivy_renderer.KivyRenderer.CODE_TEXT_COLOR">
+<span class="sig-name descname"><span class="pre">CODE_TEXT_COLOR</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[0.9,</span> <span class="pre">0.9,</span> <span class="pre">0.9,</span> <span class="pre">1]</span></span><a class="headerlink" href="#kivy_garden.markdownlabel.kivy_renderer.KivyRenderer.CODE_TEXT_COLOR" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="kivy_garden.markdownlabel.kivy_renderer.KivyRenderer.paragraph">
+<span class="sig-name descname"><span class="pre">paragraph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kivy_garden.markdownlabel.kivy_renderer.KivyRenderer.paragraph" title="Link to this definition"></a></dt>
+<dd><p>Render a paragraph as a Label with markup enabled.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>token: Paragraph token with ‘children’
+state: Block state</p>
+</dd>
+<dt>Returns:</dt><dd><p>Label widget with markup=True, or AsyncImage for standalone images</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>token</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>)</p></li>
+<li><p><strong>state</strong> (<em>Any</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://kivy.org/doc/stable/api-kivy.uix.widget.html#kivy.uix.widget.Widget" title="(in Kivy v2.3.1)"><em>Widget</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="kivy_garden.markdownlabel.kivy_renderer.KivyRenderer.block_text">
+<span class="sig-name descname"><span class="pre">block_text</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kivy_garden.markdownlabel.kivy_renderer.KivyRenderer.block_text" title="Link to this definition"></a></dt>
+<dd><p>Render block text (used in list items) as a Label with markup enabled.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>token: Block text token with ‘children’
+state: Block state</p>
+</dd>
+<dt>Returns:</dt><dd><p>Label widget with markup=True, or AsyncImage for standalone images</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>token</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>)</p></li>
+<li><p><strong>state</strong> (<em>Any</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://kivy.org/doc/stable/api-kivy.uix.widget.html#kivy.uix.widget.Widget" title="(in Kivy v2.3.1)"><em>Widget</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="kivy_garden.markdownlabel.kivy_renderer.KivyRenderer.heading">
+<span class="sig-name descname"><span class="pre">heading</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kivy_garden.markdownlabel.kivy_renderer.KivyRenderer.heading" title="Link to this definition"></a></dt>
+<dd><p>Render a heading as a Label with scaled font size.</p>
+<p>Font sizes are based on heading level:
+- h1: 2.5x base
+- h2: 2.0x base
+- h3: 1.75x base
+- h4: 1.5x base
+- h5: 1.25x base
+- h6: 1.0x base</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>token: Heading token with ‘children’ and ‘attrs’
+state: Block state</p>
+</dd>
+<dt>Returns:</dt><dd><p>Label widget with scaled font size</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>token</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>)</p></li>
+<li><p><strong>state</strong> (<em>Any</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://kivy.org/doc/stable/api-kivy.uix.label.html#kivy.uix.label.Label" title="(in Kivy v2.3.1)"><em>Label</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="kivy_garden.markdownlabel.kivy_renderer.KivyRenderer.blank_line">
+<span class="sig-name descname"><span class="pre">blank_line</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kivy_garden.markdownlabel.kivy_renderer.KivyRenderer.blank_line" title="Link to this definition"></a></dt>
+<dd><p>Render a blank line as an empty widget with height.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>token: Blank line token
+state: Block state</p>
+</dd>
+<dt>Returns:</dt><dd><p>Empty widget with fixed height</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>token</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>)</p></li>
+<li><p><strong>state</strong> (<em>Any</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://kivy.org/doc/stable/api-kivy.uix.widget.html#kivy.uix.widget.Widget" title="(in Kivy v2.3.1)"><em>Widget</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="kivy_garden.markdownlabel.kivy_renderer.KivyRenderer.list">
+<span class="sig-name descname"><span class="pre">list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kivy_garden.markdownlabel.kivy_renderer.KivyRenderer.list" title="Link to this definition"></a></dt>
+<dd><p>Render a list as a vertical BoxLayout.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>token: List token with ‘children’ and ‘attrs’
+state: Block state</p>
+</dd>
+<dt>Returns:</dt><dd><p>BoxLayout containing list items</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>token</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>)</p></li>
+<li><p><strong>state</strong> (<em>Any</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://kivy.org/doc/stable/api-kivy.uix.boxlayout.html#kivy.uix.boxlayout.BoxLayout" title="(in Kivy v2.3.1)"><em>BoxLayout</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="kivy_garden.markdownlabel.kivy_renderer.KivyRenderer.list_item">
+<span class="sig-name descname"><span class="pre">list_item</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kivy_garden.markdownlabel.kivy_renderer.KivyRenderer.list_item" title="Link to this definition"></a></dt>
+<dd><p>Render a list item (called directly if needed).</p>
+<p>Note: Usually list items are rendered via _render_list_item from list().</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>token: List item token
+state: Block state</p>
+</dd>
+<dt>Returns:</dt><dd><p>BoxLayout with content</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>token</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>)</p></li>
+<li><p><strong>state</strong> (<em>Any</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://kivy.org/doc/stable/api-kivy.uix.boxlayout.html#kivy.uix.boxlayout.BoxLayout" title="(in Kivy v2.3.1)"><em>BoxLayout</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="kivy_garden.markdownlabel.kivy_renderer.KivyRenderer.block_code">
+<span class="sig-name descname"><span class="pre">block_code</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kivy_garden.markdownlabel.kivy_renderer.KivyRenderer.block_code" title="Link to this definition"></a></dt>
+<dd><p>Render a code block with monospace font and dark background.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>token: Code block token with ‘raw’ and optional ‘attrs’
+state: Block state</p>
+</dd>
+<dt>Returns:</dt><dd><p>Widget containing styled code block</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>token</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>)</p></li>
+<li><p><strong>state</strong> (<em>Any</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://kivy.org/doc/stable/api-kivy.uix.widget.html#kivy.uix.widget.Widget" title="(in Kivy v2.3.1)"><em>Widget</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="kivy_garden.markdownlabel.kivy_renderer.KivyRenderer.block_quote">
+<span class="sig-name descname"><span class="pre">block_quote</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kivy_garden.markdownlabel.kivy_renderer.KivyRenderer.block_quote" title="Link to this definition"></a></dt>
+<dd><p>Render a block quote with left border and indentation.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>token: Block quote token with ‘children’
+state: Block state</p>
+</dd>
+<dt>Returns:</dt><dd><p>BoxLayout with left border styling</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>token</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>)</p></li>
+<li><p><strong>state</strong> (<em>Any</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://kivy.org/doc/stable/api-kivy.uix.boxlayout.html#kivy.uix.boxlayout.BoxLayout" title="(in Kivy v2.3.1)"><em>BoxLayout</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="kivy_garden.markdownlabel.kivy_renderer.KivyRenderer.thematic_break">
+<span class="sig-name descname"><span class="pre">thematic_break</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kivy_garden.markdownlabel.kivy_renderer.KivyRenderer.thematic_break" title="Link to this definition"></a></dt>
+<dd><p>Render a thematic break (horizontal rule) as a widget with a line.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>token: Thematic break token
+state: Block state</p>
+</dd>
+<dt>Returns:</dt><dd><p>Widget with horizontal line on canvas</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>token</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>)</p></li>
+<li><p><strong>state</strong> (<em>Any</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://kivy.org/doc/stable/api-kivy.uix.widget.html#kivy.uix.widget.Widget" title="(in Kivy v2.3.1)"><em>Widget</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="kivy_garden.markdownlabel.kivy_renderer.KivyRenderer.image">
+<span class="sig-name descname"><span class="pre">image</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kivy_garden.markdownlabel.kivy_renderer.KivyRenderer.image" title="Link to this definition"></a></dt>
+<dd><p>Render an image as an AsyncImage widget.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>token: Image token with ‘attrs’ containing url
+state: Block state</p>
+</dd>
+<dt>Returns:</dt><dd><p>AsyncImage widget or Label with alt text on failure</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>token</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>)</p></li>
+<li><p><strong>state</strong> (<em>Any</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://kivy.org/doc/stable/api-kivy.uix.widget.html#kivy.uix.widget.Widget" title="(in Kivy v2.3.1)"><em>Widget</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="kivy_garden.markdownlabel.kivy_renderer.KivyRenderer.block_html">
+<span class="sig-name descname"><span class="pre">block_html</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kivy_garden.markdownlabel.kivy_renderer.KivyRenderer.block_html" title="Link to this definition"></a></dt>
+<dd><p>Render block HTML as a plain text Label (showing source).</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>token: HTML token with ‘raw’ content
+state: Block state</p>
+</dd>
+<dt>Returns:</dt><dd><p>Label widget with escaped HTML source</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>token</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>)</p></li>
+<li><p><strong>state</strong> (<em>Any</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://kivy.org/doc/stable/api-kivy.uix.label.html#kivy.uix.label.Label" title="(in Kivy v2.3.1)"><em>Label</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="kivy_garden.markdownlabel.kivy_renderer.KivyRenderer.newline">
+<span class="sig-name descname"><span class="pre">newline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kivy_garden.markdownlabel.kivy_renderer.KivyRenderer.newline" title="Link to this definition"></a></dt>
+<dd><p>Render a newline as a small spacer widget.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>token: Newline token
+state: Block state</p>
+</dd>
+<dt>Returns:</dt><dd><p>Small spacer widget</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>token</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>)</p></li>
+<li><p><strong>state</strong> (<em>Any</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://kivy.org/doc/stable/api-kivy.uix.widget.html#kivy.uix.widget.Widget" title="(in Kivy v2.3.1)"><em>Widget</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="block-elements-supported">
+<h2>Block Elements Supported<a class="headerlink" href="#block-elements-supported" title="Link to this heading"></a></h2>
+<dl class="simple">
+<dt><strong>Paragraphs</strong></dt><dd><p>Standard text blocks rendered as Labels</p>
+</dd>
+<dt><strong>Headings</strong> (H1-H6)</dt><dd><p>Rendered with progressively larger font sizes based on <code class="docutils literal notranslate"><span class="pre">base_font_size</span></code></p>
+</dd>
+<dt><strong>Lists</strong></dt><dd><p>Both ordered (numbered) and unordered (bullet) lists with proper indentation</p>
+</dd>
+<dt><strong>Code Blocks</strong></dt><dd><p>Fenced code blocks with background color from <code class="docutils literal notranslate"><span class="pre">code_bg_color</span></code></p>
+</dd>
+<dt><strong>Block Quotes</strong></dt><dd><p>Indented quotes with optional styling</p>
+</dd>
+<dt><strong>Tables</strong></dt><dd><p>Supported via the <code class="docutils literal notranslate"><span class="pre">KivyRendererTableMixin</span></code> mixin
+(see <a class="reference internal" href="kivy_renderer_tables.html"><span class="doc">Kivy Renderer Tables Module</span></a>)</p>
+</dd>
+<dt><strong>Horizontal Rules</strong></dt><dd><p>Thematic breaks as visual separators</p>
+</dd>
+</dl>
+</section>
+<section id="nesting-depth-protection">
+<h2>Nesting Depth Protection<a class="headerlink" href="#nesting-depth-protection" title="Link to this heading"></a></h2>
+<p>The renderer includes recursion depth limiting to prevent stack overflow with deeply nested structures. The maximum depth is controlled by the <code class="docutils literal notranslate"><span class="pre">MAX_NESTING_DEPTH</span></code> constant.</p>
+</section>
+<section id="rendering-context">
+<h2>Rendering Context<a class="headerlink" href="#rendering-context" title="Link to this heading"></a></h2>
+<p>The renderer maintains context during rendering:</p>
+<ul class="simple">
+<li><p>Current nesting level</p></li>
+<li><p>List type and numbering</p></li>
+<li><p>Indentation state</p></li>
+<li><p>Style properties</p></li>
+</ul>
+</section>
+<section id="example-usage">
+<h2>Example Usage<a class="headerlink" href="#example-usage" title="Link to this heading"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">kivy_garden.markdownlabel</span><span class="w"> </span><span class="kn">import</span> <span class="n">KivyRenderer</span>
+
+<span class="n">renderer</span> <span class="o">=</span> <span class="n">KivyRenderer</span><span class="p">(</span>
+    <span class="n">base_font_size</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span>
+    <span class="n">halign</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">,</span>
+    <span class="n">color</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+<span class="p">)</span>
+
+<span class="c1"># Render AST tokens to widget tree</span>
+<span class="n">widget_tree</span> <span class="o">=</span> <span class="n">renderer</span><span class="p">(</span><span class="n">ast_tokens</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="see-also">
+<h2>See Also<a class="headerlink" href="#see-also" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="inline_renderer.html"><span class="doc">Inline Renderer Module</span></a> - Inline element rendering</p></li>
+<li><p><a class="reference internal" href="kivy_renderer_tables.html"><span class="doc">Kivy Renderer Tables Module</span></a> - Table rendering support</p></li>
+<li><p><a class="reference internal" href="rendering.html"><span class="doc">Rendering Module</span></a> - Overall rendering pipeline</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="inline_renderer.html" class="btn btn-neutral float-left" title="Inline Renderer Module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="kivy_renderer_tables.html" class="btn btn-neutral float-right" title="Kivy Renderer Tables Module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Kivy Garden.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
