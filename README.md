@@ -146,6 +146,18 @@ Every push or pull request run the [GitHub Action](https://github.com/kivy-garde
 It tests the code on various OS and also generates wheels that can be released on PyPI upon a
 tag. Docs are also generated and uploaded to the repo as well as artifacts of the CI.
 
+### CI Trigger Matrix
+
+The workflow is configured to run on branch pushes (`master`/`main`) and tag pushes, with an
+event dedup guard to avoid duplicate full runs when both are pushed for the same commit.
+
+| Push scenario | Docs deploy (`docs_deploy`) | Release draft (`release`) |
+| --- | --- | --- |
+| Push `master`/`main` only | Yes | No |
+| Push tag only (`v*`) | Yes | Yes |
+| Push tag only (non-`v*`) | No | Yes |
+| Push `master`/`main` and `v*` tag for same commit | Branch run is skipped by dedup; tag run deploys docs | Branch run is skipped by dedup; tag run creates draft |
+
 Contributing
 --------------
 
