@@ -63,6 +63,7 @@ class MarkdownLabelProperties:
         'text',
         'link_style',
         'render_mode',
+        'image_size_mode',
         'strict_label_mode',
         'link_color',
         'code_bg_color',
@@ -76,7 +77,7 @@ class MarkdownLabelProperties:
     base_font_size = NumericProperty(15)
     code_font_name = StringProperty('RobotoMono-Regular')
     link_color = ColorProperty([0, 0.5, 1, 1])
-    link_style = OptionProperty('unstyled', options=['unstyled', 'styled'])
+    link_style = OptionProperty('styled', options=['unstyled', 'styled'])
     code_bg_color = ColorProperty([0.15, 0.15, 0.15, 1])
     fallback_enabled = BooleanProperty(False)
     fallback_fonts = ListProperty([])
@@ -155,6 +156,10 @@ class MarkdownLabelProperties:
     auto_size_height = BooleanProperty(False)
     strict_label_mode = BooleanProperty(False)
     render_mode = OptionProperty('widgets', options=['widgets', 'texture', 'auto'])
+    image_size_mode = OptionProperty(
+        'contain_no_upscale',
+        options=['contain_no_upscale', 'fill_width']
+    )
 
     # Internal storage for texture mode
     _aggregated_refs = DictProperty({})

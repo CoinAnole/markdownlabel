@@ -15,7 +15,7 @@
 |----------|-------|-------|
 | Rebuild | test_rebuild_*.py (7 files) | Identity, propagation, scheduling, structure, classification |
 | Style Properties | test_font_properties.py, test_color_properties.py, test_padding_properties.py, test_text_properties.py, test_shortening_properties.py, test_rtl_alignment.py, test_clipping_behavior.py, test_performance.py, test_advanced_compatibility.py | Font, color, padding, text, RTL, clipping, perf |
-| Structure Properties | test_sizing_behavior.py, test_texture_render_mode.py, test_core_functionality.py | strict_label_mode, render_mode, text |
+| Structure Properties | test_sizing_behavior.py, test_texture_render_mode.py, test_core_functionality.py, test_rebuild_structure_changes.py | strict_label_mode, render_mode, image_size_mode, text |
 | Rendering | test_inline_renderer.py, test_kivy_renderer_blocks.py, test_kivy_renderer_tables.py | Inline, blocks, tables |
 | Core/Compat | test_core_functionality.py, test_label_compatibility.py, test_coordinate_translation.py, test_reference_style_links.py | Parsing, aliases, refs/anchors, reference-style links |
 | Other | test_serialization.py, test_texture_sizing.py | Serialization, texture math |
@@ -40,6 +40,7 @@
 | unicode_errors, strip | [`test_text_properties.py`](./test_text_properties.py) | Style |
 | text | [`test_core_functionality.py`](./test_core_functionality.py) [`test_rebuild_scheduling.py`](./test_rebuild_scheduling.py) | Structure |
 | render_mode | [`test_texture_render_mode.py`](./test_texture_render_mode.py) | Structure |
+| image_size_mode | [`test_texture_render_mode.py`](./test_texture_render_mode.py) [`test_rebuild_structure_changes.py`](./test_rebuild_structure_changes.py) [`test_kivy_renderer_blocks.py`](./test_kivy_renderer_blocks.py) | Structure |
 | strict_label_mode | [`test_sizing_behavior.py`](./test_sizing_behavior.py) | Structure |
 | link_style | [`test_core_functionality.py`](./test_core_functionality.py) [`test_reference_style_links.py`](./test_reference_style_links.py) | Structure |
 | link_color | [`test_color_properties.py`](./test_color_properties.py) | Structure |
@@ -134,7 +135,7 @@ forwarding-binding lifecycle checks across rebuilds.
 **Related**: test_core_functionality.py
 
 #### [`test_kivy_renderer_blocks.py`](./test_kivy_renderer_blocks.py)
-**Purpose**: Blocks: headings, paras, lists, code, quotes.
+**Purpose**: Blocks: headings, paras, lists, code, quotes, and image sizing policy.
 **Key Classes**:
 - TestHeadingFontHierarchy - headings (~5 tests)
 - TestParagraphMarkupEnabled - paras (2 tests)
@@ -252,11 +253,12 @@ forwarding-binding lifecycle checks across rebuilds.
 **Related**: test_padding_properties.py, test_shortening_properties.py
 
 #### [`test_texture_render_mode.py`](./test_texture_render_mode.py)
-**Purpose**: texture mode structure, links, hit-test, fallback.
+**Purpose**: texture mode structure, links, hit-test, fallback, and image-mode-independent AsyncImage fallback.
 **Key Classes**:
 - TestTextureRenderModeStructure - images (~5 tests)
 - TestTextureModeLinksHandling - refs (~5 tests)
 - TestDeterministicTextureHitTesting - hit (~10 tests)
+- TestTextureFallbackBranch - widget fallback on texture failure and AsyncImage content
 **Property Types**: Structure
 **Markers**: @pytest.mark.slow
 **Dependencies**: test_utils (find_images)

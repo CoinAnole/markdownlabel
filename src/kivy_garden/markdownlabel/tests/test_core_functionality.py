@@ -18,7 +18,8 @@ from .test_utils import (
     markdown_link,
     simple_markdown_document,
     st_alphanumeric_text,
-    collect_widget_ids
+    collect_widget_ids,
+    find_images,
 )
 
 
@@ -144,6 +145,15 @@ class TestMarkdownToWidgetTreeGeneration:
 
         assert len(label.children) == 0, \
             f"Expected 0 children for empty text, got {len(label.children)}"
+
+    @pytest.mark.needs_window
+    def test_standalone_image_markdown_produces_image_widget(self):
+        """Standalone image markdown renders an Image/AsyncImage widget."""
+        label = MarkdownLabel(text='![Alt text](https://example.com/image.png)')
+
+        images = find_images(label)
+        assert len(images) >= 1, \
+            f"Expected at least one image widget, found {len(images)}"
 
 
 # *For any* two different Markdown texts, when the `text` property is changed

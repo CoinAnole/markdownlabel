@@ -90,6 +90,8 @@ Key Concepts
 **Two Rendering Modes**
     - **Widget mode** (default ``render_mode='widgets'``): Renders as actual Kivy widgets
     - **Texture mode**: Renders to a texture for better performance with static content
+      that does not include Markdown images. Content with ``![alt](url)`` falls
+      back to widget mode automatically.
 
 **Interactive Links**
     Use ``bind(on_ref_press=your_callback)`` to handle link clicks.

@@ -197,8 +197,8 @@ class TestLinkStyling:
     """Tests for link styling behavior."""
 
     @pytest.mark.unit
-    def test_links_unstyled_by_default(self):
-        """Default links remain unstyled while keeping ref markup."""
+    def test_links_styled_by_default(self):
+        """Default links include style markup while keeping ref markup."""
         markdown = 'Click [here](https://kivy.org)'
         label = MarkdownLabel(text=markdown)
 
@@ -207,17 +207,17 @@ class TestLinkStyling:
 
         assert any('[ref=' in getattr(lbl, 'text', '') for lbl in labels), \
             "Expected ref markup for link"
-        assert not any('[color=' in getattr(lbl, 'text', '') for lbl in labels), \
-            "Default links should not inject color markup"
+        assert any('[color=' in getattr(lbl, 'text', '') for lbl in labels), \
+            "Default links should inject color markup"
 
     @pytest.mark.unit
-    def test_links_styled_when_enabled(self):
-        """Links gain color markup when link_style='styled'."""
+    def test_links_unstyled_when_configured(self):
+        """Explicit unstyled mode removes injected color markup."""
         markdown = 'Click [here](https://kivy.org)'
-        label = MarkdownLabel(text=markdown, link_style='styled')
+        label = MarkdownLabel(text=markdown, link_style='unstyled')
 
         labels = find_labels_recursive(label)
         assert len(labels) >= 1, "Expected at least one Label"
 
-        assert any('[color=' in getattr(lbl, 'text', '') for lbl in labels), \
-            "Expected colored markup when link_style='styled'"
+        assert not any('[color=' in getattr(lbl, 'text', '') for lbl in labels), \
+            "Expected no color markup when link_style='unstyled'"

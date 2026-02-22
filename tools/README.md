@@ -32,9 +32,15 @@ Establishes performance baselines for property-based tests.
 python3 tools/measure_baseline_performance.py
 ```
 
+### 4. Environment Diagnostic (`tools/where_is_markdownlabel.py`)
+Shows which `kivy_garden.markdownlabel` module/distribution your Python is importing.
+
+```bash
+python3 tools/where_is_markdownlabel.py
+```
+
 
 
 ## Related Documentation
 
 - `TESTING.md` - General testing documentation
-

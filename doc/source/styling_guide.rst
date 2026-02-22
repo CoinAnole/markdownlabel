@@ -143,8 +143,8 @@ Link Appearance
 
 Control how links are rendered::
 
-    label.link_style = 'unstyled'  # Default, Label-like appearance
-    label.link_style = 'styled'    # Colored + underlined
+    label.link_style = 'styled'    # Default: colored + underlined
+    label.link_style = 'unstyled'  # Label-like appearance
 
 Advanced Styling
 ----------------

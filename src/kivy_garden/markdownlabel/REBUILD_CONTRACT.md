@@ -87,6 +87,7 @@ These properties trigger a **complete widget tree rebuild**:
 
 ### Rendering Properties
 - `render_mode` - Changes between 'widgets', 'texture', and 'auto' rendering modes
+- `image_size_mode` - Changes Markdown image sizing policy (`contain_no_upscale` vs `fill_width`)
 - `strict_label_mode` - Changes layout behavior, affecting widget hierarchy
 
 ### Parser Configuration
@@ -310,6 +311,13 @@ def assert_no_rebuild(widget, change_func):
 - **Reason**: Fundamentally changes rendering approach
 - **Widget mode**: Creates Label widgets for each text element
 - **Texture mode**: Renders to single texture image
+
+#### `image_size_mode`
+- **Type**: Structure (requires rebuild)
+- **Values**: `'contain_no_upscale'`, `'fill_width'`
+- **Reason**: Changes Markdown image layout behavior and computed heights
+- **`contain_no_upscale`**: Keeps native size unless constrained by available width
+- **`fill_width`**: Scales images to full available content width
 
 #### `strict_label_mode`
 - **Type**: Structure (requires rebuild)

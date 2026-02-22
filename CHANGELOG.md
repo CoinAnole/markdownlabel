@@ -1,5 +1,27 @@
 # Changelog
 
+## [v1.0.2] - 2026-02-22
+
+### Added
+- Added `image_size_mode` property with two modes for Markdown images:
+  - `contain_no_upscale` (new default image sizing behavior)
+  - `fill_width` (full content-width scaling)
+
+### Changed
+- Changed default `link_style` from `unstyled` to `styled`.
+- Updated `examples/simple_demo.py` to rely on the new default link styling.
+- Consolidated image behavior examples into `examples/full_featured_demo.py` and simplified image scenarios.
+
+### Fixed
+- Fixed standalone Markdown image blocks so they render as image widgets instead of alt-text-only labels.
+- Fixed texture mode behavior for Markdown images by explicitly falling back to widgets mode when `AsyncImage` content is present or still loading.
+- Fixed stale tiny texture snapshots in texture mode by rebuilding when width changes after initial layout.
+
+### Documentation
+- Documented texture-mode image fallback behavior in usage/getting-started/rendering docs.
+- Documented `image_size_mode` usage and property semantics.
+- Updated test mapping docs for image fallback and sizing coverage.
+
 ## [v1.0.1] - 2026-02-21
 
 ### Fixed

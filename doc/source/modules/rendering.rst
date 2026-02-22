@@ -29,7 +29,10 @@ Render Modes
    Renders Markdown as actual Kivy widget hierarchy. Supports full interactivity and dynamic styling.
 
 **Texture Mode**
-   Renders Markdown to a texture for better performance with static content. Uses ``_render_as_texture()`` method.
+   Renders Markdown to a texture for better performance with static content.
+   Uses ``_render_as_texture()`` method.
+   If Markdown content includes image widgets (``AsyncImage``), texture rendering
+   is skipped and widget-mode fallback is used.
 
 **Strict Label Mode**
    When enabled, maintains fixed height and uses ``text_size`` for text wrapping, similar to standard Kivy Label behavior.

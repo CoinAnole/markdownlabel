@@ -22,7 +22,11 @@ functionality.
 import pytest
 from hypothesis import given, strategies as st, settings
 
+from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.widget import Widget
+
 from kivy_garden.markdownlabel import MarkdownLabel
+from kivy_garden.markdownlabel import rendering as rendering_module
 from .test_utils import find_labels_recursive, FakeTouch, find_images
 
 
@@ -121,6 +125,21 @@ class TestTextureRenderModeStructure:
         label = MarkdownLabel(text='Hello World')
         assert label.render_mode == 'widgets', \
             f"Default render_mode should be 'widgets', got {label.render_mode}"
+
+    @pytest.mark.unit
+    @pytest.mark.parametrize('image_size_mode', ['contain_no_upscale', 'fill_width'])
+    def test_image_size_mode_property_values(self, image_size_mode):
+        """image_size_mode property accepts valid values."""
+        label = MarkdownLabel(text='![img](https://example.com/i.png)', image_size_mode=image_size_mode)
+        assert label.image_size_mode == image_size_mode, \
+            f"Expected image_size_mode={image_size_mode}, got {label.image_size_mode}"
+
+    @pytest.mark.unit
+    def test_default_image_size_mode_is_contain_no_upscale(self):
+        """Default image_size_mode is 'contain_no_upscale'."""
+        label = MarkdownLabel(text='Hello World')
+        assert label.image_size_mode == 'contain_no_upscale', \
+            f"Default image_size_mode should be 'contain_no_upscale', got {label.image_size_mode}"
 
 
 # *For any* MarkdownLabel with render_mode='texture' containing links, when a touch
@@ -618,6 +637,102 @@ class TestTextureFallbackBranch:
         assert len(dispatched_refs) == 0, \
             f"Expected no dispatch from stale zones after fallback, got {dispatched_refs}"
         assert not result, f"Expected falsy on_touch_down result, got {result}"
+
+    @pytest.mark.unit
+    def test_texture_mode_skips_fbo_when_async_images_unloaded(self, monkeypatch):
+        """Texture mode returns None when AsyncImage textures are not ready yet."""
+        class FakeCoreImage:
+            loaded = False
+
+        class FakeAsyncImage(Widget):
+            def __init__(self, **kwargs):
+                super().__init__(**kwargs)
+                # Simulate placeholder texture being present before source finishes loading.
+                self.texture = object()
+                self._coreimage = FakeCoreImage()
+
+        monkeypatch.setattr(rendering_module, 'AsyncImage', FakeAsyncImage)
+
+        label = MarkdownLabel(
+            text='placeholder',
+            render_mode='texture',
+            size=(400, 300),
+            size_hint=(None, None)
+        )
+
+        content = BoxLayout(orientation='vertical', size_hint_y=None)
+        content.bind(minimum_height=content.setter('height'))
+        content.add_widget(FakeAsyncImage(size_hint_y=None, height=100))
+
+        # Testing Exception: internal rendering API needed to deterministically
+        # simulate an unloaded AsyncImage at render time.
+        texture_widget = label._render_as_texture(content)
+
+        assert texture_widget is None, \
+            "Expected texture rendering to skip FBO and return None for unloaded AsyncImage"
+
+    @pytest.mark.unit
+    def test_texture_mode_with_loaded_asyncimage_still_falls_back(self, monkeypatch):
+        """Texture mode should fall back when markdown contains AsyncImage widgets."""
+        class FakeCoreImage:
+            loaded = True
+
+        class FakeAsyncImage(Widget):
+            def __init__(self, **kwargs):
+                super().__init__(**kwargs)
+                self.texture = object()
+                self._coreimage = FakeCoreImage()
+                self.size_hint_x = 1
+
+        monkeypatch.setattr(rendering_module, 'AsyncImage', FakeAsyncImage)
+
+        label = MarkdownLabel(
+            text='placeholder',
+            render_mode='texture',
+            size=(400, 300),
+            size_hint=(None, None)
+        )
+
+        content = BoxLayout(orientation='vertical', size_hint_y=None)
+        content.bind(minimum_height=content.setter('height'))
+        content.add_widget(FakeAsyncImage(size_hint_y=None, height=120))
+
+        texture_widget = label._render_as_texture(content)
+
+        assert texture_widget is None, \
+            "Expected texture rendering to skip FBO for AsyncImage content even when loaded"
+
+    @pytest.mark.unit
+    def test_texture_fallback_is_independent_of_image_size_mode(self, monkeypatch):
+        """Texture mode fallback should still happen when image_size_mode='fill_width'."""
+        class FakeCoreImage:
+            loaded = True
+
+        class FakeAsyncImage(Widget):
+            def __init__(self, **kwargs):
+                super().__init__(**kwargs)
+                self.texture = object()
+                self._coreimage = FakeCoreImage()
+                self.size_hint_x = 1
+
+        monkeypatch.setattr(rendering_module, 'AsyncImage', FakeAsyncImage)
+
+        label = MarkdownLabel(
+            text='placeholder',
+            render_mode='texture',
+            image_size_mode='fill_width',
+            size=(400, 300),
+            size_hint=(None, None)
+        )
+
+        content = BoxLayout(orientation='vertical', size_hint_y=None)
+        content.bind(minimum_height=content.setter('height'))
+        content.add_widget(FakeAsyncImage(size_hint_y=None, height=120))
+
+        texture_widget = label._render_as_texture(content)
+
+        assert texture_widget is None, \
+            "Expected AsyncImage content to bypass texture mode regardless of image_size_mode"
 
 
 @pytest.mark.slow

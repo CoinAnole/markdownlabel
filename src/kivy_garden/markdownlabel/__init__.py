@@ -137,6 +137,9 @@ class MarkdownLabel(MarkdownLabelProperties, MarkdownLabelRendering, BoxLayout):
 
         # Bind render_mode changes to handler
         self.bind(render_mode=self._on_render_mode_changed)
+        # In texture mode, initial builds can happen before final layout width.
+        # Rebuild when width changes so texture snapshots match actual size.
+        self.bind(width=self._on_width_changed_for_texture)
 
         # Store the parsed AST tokens
         self._ast_tokens = []
@@ -174,6 +177,7 @@ class MarkdownLabel(MarkdownLabelProperties, MarkdownLabelRendering, BoxLayout):
         # Color changes affect generated markup/backgrounds; treat as structure-level.
         self.bind(link_color=self._make_style_callback('link_color'))
         self.bind(code_bg_color=self._make_style_callback('code_bg_color'))
+        self.bind(image_size_mode=self._make_style_callback('image_size_mode'))
         self.bind(fallback_enabled=self._make_style_callback('fallback_enabled'))
         self.bind(fallback_fonts=self._make_style_callback('fallback_fonts'))
         self.bind(fallback_font_scales=self._make_style_callback('fallback_font_scales'))
@@ -259,6 +263,14 @@ class MarkdownLabel(MarkdownLabelProperties, MarkdownLabelRendering, BoxLayout):
     def _on_render_mode_changed(self, instance, value):
         """Handle render_mode property changes."""
         self._schedule_rebuild()
+
+    def _on_width_changed_for_texture(self, instance, value):
+        """Rebuild when width changes in texture mode to avoid stale tiny snapshots."""
+        if not self.text:
+            return
+
+        if self._get_effective_render_mode() == 'texture':
+            self._schedule_rebuild()
 
     def _schedule_rebuild(self):
         """Schedule a rebuild for the next frame."""
@@ -389,6 +401,7 @@ class MarkdownLabel(MarkdownLabelProperties, MarkdownLabelRendering, BoxLayout):
             split_str=self.split_str,
             text_padding=list(self.text_padding),
             strict_label_mode=self.strict_label_mode,
+            image_size_mode=self.image_size_mode,
             ellipsis_options=dict(self.ellipsis_options),
             limit_render_to_text_bbox=self.limit_render_to_text_bbox,
             fallback_enabled=self.fallback_enabled,

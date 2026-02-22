@@ -315,12 +315,44 @@ class MarkdownLabelRendering:
 
         MAX_FBO_DIM = 8192  # guardrail for GPU-backed FBO dimensions
 
+        def _sync_async_image_geometry(widget):
+            """Synchronize AsyncImage width/height with parent constraints.
+
+            In texture mode we snapshot immediately, so we cannot rely on future
+            layout/async ticks to converge image geometry.
+            """
+            if isinstance(widget, AsyncImage):
+                parent = getattr(widget, 'parent', None)
+                size_hint_x = getattr(widget, 'size_hint_x', 1)
+
+                if parent is not None and parent.width > 0:
+                    if size_hint_x is None:
+                        target_width = float(parent.width)
+                    else:
+                        target_width = float(parent.width) * float(size_hint_x)
+                    if target_width > 0 and abs(widget.width - target_width) > 0.5:
+                        widget.width = target_width
+
+                texture = getattr(widget, 'texture', None)
+                if texture and getattr(texture, 'width', 0) > 0:
+                    target_height = widget.width * (texture.height / texture.width)
+                    if target_height > 0 and abs(widget.height - target_height) > 0.5:
+                        widget.height = target_height
+                elif widget.height <= 0:
+                    widget.height = 100
+
+            if hasattr(widget, 'children'):
+                for child in widget.children:
+                    _sync_async_image_geometry(child)
+
         content_width = self.width if self.width > 0 else 800
         content_height = 0
 
         # Layout children with the intended width so measurements are accurate
         content.size_hint = (None, None)
         content.width = content_width
+        content.do_layout()
+        _sync_async_image_geometry(content)
         content.do_layout()
 
         for child in content.children:
@@ -355,17 +387,47 @@ class MarkdownLabelRendering:
         content.size = (content_width, content_height)
         content.pos = (0, 0)
         content.do_layout()
+        _sync_async_image_geometry(content)
+        content.do_layout()
 
         self._collect_refs_for_texture(content, content_height)
 
         def _has_unloaded_images(widget):
-            if isinstance(widget, AsyncImage) and not widget.texture:
-                return True
+            if isinstance(widget, AsyncImage):
+                coreimage = getattr(widget, '_coreimage', None)
+                if coreimage is not None and not getattr(coreimage, 'loaded', False):
+                    return True
+                if not getattr(widget, 'texture', None):
+                    return True
             if hasattr(widget, 'children'):
                 return any(_has_unloaded_images(child) for child in widget.children)
             return False
 
+        def _contains_async_images(widget):
+            if isinstance(widget, AsyncImage):
+                return True
+            if hasattr(widget, 'children'):
+                return any(_contains_async_images(child) for child in widget.children)
+            return False
+
         has_unloaded_images = _has_unloaded_images(content)
+        if has_unloaded_images:
+            warnings.warn(
+                "Texture render skipped because some AsyncImage textures are still loading; "
+                "falling back to widget mode.",
+                RuntimeWarning,
+            )
+            self._aggregated_refs = {}
+            return None
+
+        if _contains_async_images(content):
+            warnings.warn(
+                "Texture render skipped because Markdown images are not supported in "
+                "texture mode; falling back to widget mode.",
+                RuntimeWarning,
+            )
+            self._aggregated_refs = {}
+            return None
 
         try:
             fbo = Fbo(size=(int(content_width), int(content_height)))
@@ -398,13 +460,6 @@ class MarkdownLabelRendering:
                 pass
 
             fbo.remove(content.canvas)
-
-            if has_unloaded_images:
-                warnings.warn(
-                    "Texture render completed but some AsyncImage textures were not loaded; "
-                    "images may appear blank until re-rendered.",
-                    RuntimeWarning,
-                )
 
             return image
 

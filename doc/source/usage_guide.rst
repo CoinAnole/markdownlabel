@@ -125,12 +125,39 @@ Renders to a texture for better performance. Best for:
 - Static content
 - Large documents
 - Performance-critical applications
+- Text-only or table/list-heavy content without Markdown images
 
 .. code-block:: python
 
     label = MarkdownLabel(text='Content', render_mode='texture')
 
 **Note:** Links still work in texture mode via hit-testing.
+**Important:** If Markdown content includes images (``![alt](url)``),
+MarkdownLabel now skips texture rendering and falls back to widget mode.
+
+Image Sizing Mode
+~~~~~~~~~~~~~~~~~
+
+Markdown images use ``image_size_mode`` to control sizing in widget mode:
+
+- ``contain_no_upscale`` (default): preserve native image size unless the content
+  area is narrower, in which case the image scales down.
+- ``fill_width``: scale image to full available content width while preserving
+  aspect ratio.
+
+.. code-block:: python
+
+    label = MarkdownLabel(
+        text='![Logo](https://example.com/logo.png)',
+        image_size_mode='contain_no_upscale'  # default
+    )
+
+.. code-block:: python
+
+    label = MarkdownLabel(
+        text='![Hero](https://example.com/hero.png)',
+        image_size_mode='fill_width'
+    )
 
 Strict Label Mode
 ~~~~~~~~~~~~~~~~~
@@ -184,7 +211,7 @@ Serialize back to Markdown::
 Performance Tips
 ----------------
 
-1. **Use texture mode** for large static documents
+1. **Use texture mode** for large static documents without Markdown images
 2. **Batch style updates** with ``update_style()``
 3. **Set appropriate text_size** to avoid unnecessary calculations
 4. **Disable auto_size_height** if you don't need dynamic sizing

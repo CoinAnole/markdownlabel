@@ -78,6 +78,7 @@ class KivyRenderer(KivyRendererTableMixin):
                  split_str: str = '',
                  text_padding: Optional[List[float]] = None,
                  strict_label_mode: bool = False,
+                 image_size_mode: str = 'contain_no_upscale',
                  ellipsis_options: Optional[Dict] = None,
                  fallback_enabled: bool = False,
                  fallback_fonts: Optional[List[str]] = None,
@@ -120,6 +121,9 @@ class KivyRenderer(KivyRendererTableMixin):
             text_padding: Padding values [left, top, right, bottom] for child Labels (default: [0, 0, 0, 0])
             strict_label_mode: When True, only apply text_size bindings if text_size is
                 explicitly set. When False (default), auto-bind width for text wrapping.
+            image_size_mode: Global image sizing policy. 'contain_no_upscale' keeps
+                native size unless constrained by layout width; 'fill_width' scales
+                images to full available width while preserving aspect ratio.
             ellipsis_options: Dictionary of ellipsis options for text shortening (default: {})
         """
         self.base_font_size = base_font_size
@@ -157,6 +161,7 @@ class KivyRenderer(KivyRendererTableMixin):
         self.split_str = split_str
         self.text_padding = text_padding or [0, 0, 0, 0]
         self.strict_label_mode = strict_label_mode
+        self.image_size_mode = image_size_mode
         self.ellipsis_options = ellipsis_options or {}
         self.fallback_enabled = fallback_enabled
         self.fallback_fonts = fallback_fonts or []
@@ -327,7 +332,34 @@ class KivyRenderer(KivyRendererTableMixin):
         """
         return self.inline_renderer.render(children)
 
-    def paragraph(self, token: Dict[str, Any], state: Any = None) -> Label:
+    @staticmethod
+    def _extract_standalone_image_token(
+        children: List[Dict[str, Any]],
+    ) -> Optional[Dict[str, Any]]:
+        """Return image token when children represent only a standalone image.
+
+        Mistune emits standalone markdown images as paragraph children with an
+        inline `image` token. Promote that specific shape to a real image widget
+        instead of rendering only alt text.
+        """
+        non_whitespace_children = []
+        for child in children:
+            child_type = child.get('type')
+            if child_type in ('softbreak', 'linebreak'):
+                continue
+            if child_type == 'text' and not child.get('raw', '').strip():
+                continue
+            non_whitespace_children.append(child)
+
+        if len(non_whitespace_children) != 1:
+            return None
+
+        candidate = non_whitespace_children[0]
+        if candidate.get('type') == 'image':
+            return candidate
+        return None
+
+    def paragraph(self, token: Dict[str, Any], state: Any = None) -> Widget:
         """Render a paragraph as a Label with markup enabled.
 
         Args:
@@ -335,9 +367,13 @@ class KivyRenderer(KivyRendererTableMixin):
             state: Block state
 
         Returns:
-            Label widget with markup=True
+            Label widget with markup=True, or AsyncImage for standalone images
         """
         children = token.get('children', [])
+        standalone_image = self._extract_standalone_image_token(children)
+        if standalone_image is not None:
+            return self.image(standalone_image, state)
+
         text = self._render_inline(children)
 
         label_kwargs = self._build_label_kwargs(
@@ -354,7 +390,7 @@ class KivyRenderer(KivyRendererTableMixin):
 
         return label
 
-    def block_text(self, token: Dict[str, Any], state: Any = None) -> Label:
+    def block_text(self, token: Dict[str, Any], state: Any = None) -> Widget:
         """Render block text (used in list items) as a Label with markup enabled.
 
         Args:
@@ -362,9 +398,13 @@ class KivyRenderer(KivyRendererTableMixin):
             state: Block state
 
         Returns:
-            Label widget with markup=True
+            Label widget with markup=True, or AsyncImage for standalone images
         """
         children = token.get('children', [])
+        standalone_image = self._extract_standalone_image_token(children)
+        if standalone_image is not None:
+            return self.image(standalone_image, state)
+
         text = self._render_inline(children)
 
         label_kwargs = self._build_label_kwargs(
@@ -810,6 +850,7 @@ class KivyRenderer(KivyRendererTableMixin):
         # Create AsyncImage
         image = AsyncImage(
             source=url,
+            size_hint_x=1,
             size_hint_y=None,
         )
         # Kivy 2.2+ deprecates allow_stretch/keep_ratio in favor of fit_mode.
@@ -833,7 +874,10 @@ class KivyRenderer(KivyRendererTableMixin):
             texture = getattr(instance, 'texture', None)
             if texture and texture.width > 0:
                 ratio = texture.height / texture.width
-                instance.height = instance.width * ratio
+                width = float(instance.width) if instance.width else 0.0
+                if self.image_size_mode == 'contain_no_upscale':
+                    width = min(width, float(texture.width))
+                instance.height = width * ratio if width > 0 else 100
             else:
                 # Fallback height if no texture
                 instance.height = 100

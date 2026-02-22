@@ -138,6 +138,10 @@ class MarkdownDemoApp(App):
         disabled_section = self.create_section("disabled", disabled_variations)
         main_layout.add_widget(disabled_section)
 
+        # Add image rendering demonstration section
+        image_section = self.create_image_display_section()
+        main_layout.add_widget(image_section)
+
         # Add full sample_markdown.md display
         full_sample_section = self.create_full_sample_section()
         main_layout.add_widget(full_sample_section)
@@ -159,7 +163,7 @@ class MarkdownDemoApp(App):
         header.bind(size=header.setter('text_size'))
         return header
 
-    def create_variation(self, description, show_background=False, **properties):
+    def create_variation(self, description, show_background=False, text=None, **properties):
         """Create a single MarkdownLabel variation with description."""
         variation_layout = BoxLayout(
             orientation='vertical',
@@ -182,8 +186,9 @@ class MarkdownDemoApp(App):
         variation_layout.add_widget(desc_label)
 
         # MarkdownLabel with specified properties
+        markdown_text = SAMPLE_MARKDOWN if text is None else text
         md_label = MarkdownLabel(
-            text=SAMPLE_MARKDOWN,
+            text=markdown_text,
             size_hint_y=None,
             **properties
         )
@@ -229,6 +234,30 @@ class MarkdownDemoApp(App):
         section_layout.bind(minimum_height=section_layout.setter('height'))
 
         return section_layout
+
+    def create_image_display_section(self):
+        """Create a section demonstrating Markdown image rendering behavior."""
+        image_path = Path(__file__).with_name("markdownlabel_test_pattern.png").resolve()
+
+        image_markdown = (
+            "Local image sizing comparison:\n\n"
+            f"![Local pattern image]({image_path})\n\n"
+            f"`{image_path}`"
+        )
+
+        image_variations = [
+            ("render_mode='widgets', image_size_mode='contain_no_upscale' (default)", {
+                "render_mode": "widgets",
+                "text": image_markdown,
+                "image_size_mode": "contain_no_upscale",
+            }),
+            ("render_mode='widgets', image_size_mode='fill_width'", {
+                "render_mode": "widgets",
+                "text": image_markdown,
+                "image_size_mode": "fill_width",
+            }),
+        ]
+        return self.create_section("image rendering", image_variations)
 
     def create_full_sample_section(self):
         """Create a section that displays the full sample_markdown.md content."""

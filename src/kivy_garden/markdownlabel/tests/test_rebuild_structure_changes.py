@@ -23,9 +23,9 @@ class TestStructurePropertyRebuild:
     """Tests for structure property changes rebuilding the widget tree.
 
     These tests verify that changing structure properties (text,
-    link_style, strict_label_mode, render_mode) rebuilds the widget
-    tree with new widget instances, while the root MarkdownLabel ID remains
-    unchanged.
+    link_style, strict_label_mode, render_mode, image_size_mode)
+    rebuilds the widget tree with new widget instances, while the root
+    MarkdownLabel ID remains unchanged.
 
     """
 
@@ -121,6 +121,26 @@ class TestStructurePropertyRebuild:
             "Children widget IDs should differ after render_mode change"
 
         # Assert root MarkdownLabel ID unchanged
+        assert id(label) == root_id_before, \
+            "Root MarkdownLabel ID should remain unchanged"
+
+    def test_image_size_mode_change_triggers_rebuild(self):
+        """Changing image_size_mode triggers widget rebuild."""
+        label = MarkdownLabel(
+            text='![Local](https://example.com/image.png)',
+            image_size_mode='contain_no_upscale'
+        )
+        root_id_before = id(label)
+
+        children_ids_before = collect_widget_ids(label, exclude_root=True)
+
+        label.image_size_mode = 'fill_width'
+        label.force_rebuild()
+
+        children_ids_after = collect_widget_ids(label, exclude_root=True)
+
+        assert children_ids_before != children_ids_after, \
+            "Children widget IDs should differ after image_size_mode change"
         assert id(label) == root_id_before, \
             "Root MarkdownLabel ID should remain unchanged"
 

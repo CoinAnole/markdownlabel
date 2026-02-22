@@ -27,7 +27,7 @@ Properties in MarkdownLabel are classified into two categories:
    Changing these schedules a full rebuild of the rendered widget tree.
 
    Typical examples: ``text``, ``render_mode``, ``strict_label_mode``,
-   ``link_style``, ``link_color``, ``code_bg_color``,
+   ``image_size_mode``, ``link_style``, ``link_color``, ``code_bg_color``,
    ``fallback_enabled``, ``fallback_fonts``
 
 Key Properties
@@ -41,6 +41,7 @@ Commonly used properties include:
 - ``color`` / ``link_color`` / ``code_bg_color`` - Core colors
 - ``halign`` / ``valign`` / ``padding`` / ``text_size`` - Layout and alignment
 - ``render_mode`` - ``'widgets'``, ``'texture'``, or ``'auto'``
+- ``image_size_mode`` - ``'contain_no_upscale'`` or ``'fill_width'`` for Markdown images
 - ``auto_size_height`` / ``strict_label_mode`` - Sizing behavior
 
 See Also

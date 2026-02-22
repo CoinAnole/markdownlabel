@@ -69,7 +69,7 @@ Control link appearance with the ``link_style`` property:
     # Styled links - blue and underlined
     label.link_style = 'styled'
 
-    # Unstyled links (default) - no special styling
+    # Unstyled links - no special styling
     label.link_style = 'unstyled'
 
 Customize link color:

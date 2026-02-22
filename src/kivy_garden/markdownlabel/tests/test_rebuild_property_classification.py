@@ -135,6 +135,7 @@ class TestPropertyClassificationSets:
             'text',
             'link_style',
             'render_mode',
+            'image_size_mode',
             'strict_label_mode',
             'link_color',
             'code_bg_color',
@@ -204,11 +205,12 @@ class TestPropertyClassificationSets:
     def test_structure_properties_count(self):
         """STRUCTURE_PROPERTIES has expected count after reclassification.
 
-        After reclassification, 9 properties remain:
-        text, link_style, render_mode, strict_label_mode, link_color, code_bg_color,
-        fallback_enabled, fallback_fonts, fallback_font_scales
+        After reclassification, 10 properties remain:
+        text, link_style, render_mode, image_size_mode, strict_label_mode,
+        link_color, code_bg_color, fallback_enabled, fallback_fonts,
+        fallback_font_scales
         """
-        expected_count = 9
+        expected_count = 10
         actual_count = len(MarkdownLabel.STRUCTURE_PROPERTIES)
         assert actual_count == expected_count, (
             f"STRUCTURE_PROPERTIES count mismatch. "

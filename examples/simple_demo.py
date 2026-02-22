@@ -35,5 +35,4 @@ Enjoy using MarkdownLabel in your Kivy apps!
 if __name__ == '__main__':
     runTouchApp(MarkdownLabel(
         text=MARKDOWN_TEXT,
-        link_style='styled',  # Makes links blue and underlined
     ))

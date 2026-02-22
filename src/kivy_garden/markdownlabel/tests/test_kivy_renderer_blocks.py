@@ -134,6 +134,25 @@ class TestParagraphMarkupEnabled:
 
         assert isinstance(widget, Label), f"Expected Label, got {type(widget)}"
 
+    @pytest.mark.unit
+    def test_paragraph_with_standalone_image_returns_asyncimage(self):
+        """Standalone image paragraph is promoted to AsyncImage widget."""
+        renderer = KivyRenderer()
+        token = {
+            'type': 'paragraph',
+            'children': [{
+                'type': 'image',
+                'attrs': {'url': 'https://example.com/image.png'},
+                'children': [{'type': 'text', 'raw': 'Alt text'}],
+            }]
+        }
+
+        widget = renderer.paragraph(token, None)
+
+        assert isinstance(widget, AsyncImage), f"Expected AsyncImage, got {type(widget)}"
+        assert widget.source == 'https://example.com/image.png'
+        assert getattr(widget, 'alt_text', '') == 'Alt text'
+
 
 # *For any* Markdown list (ordered or unordered), the rendered widget tree SHALL
 # contain a BoxLayout with one child BoxLayout per list item, and each item
@@ -495,6 +514,11 @@ class TestImageWidgetCreation:
         assert widget.source == expected_url, \
             f"Expected source '{expected_url}', got '{widget.source}'"
 
+    def test_image_default_size_mode_is_contain_no_upscale(self):
+        """Renderer defaults to native-size behavior unless constrained."""
+        renderer = KivyRenderer()
+        assert renderer.image_size_mode == 'contain_no_upscale'
+
     @pytest.mark.property
     @given(image_token())
     # Complex strategy: 20 examples (adequate coverage)
@@ -718,7 +742,7 @@ class TestKivyRendererEdgeCases:
             assert mock_list.called
 
     def test_image_on_texture_callback(self, renderer):
-        """Image binds texture+width callbacks and recomputes aspect-ratio height."""
+        """Default image mode does not upscale images beyond native texture width."""
         renderer.label = MagicMock()
         token = {
             'type': 'image',
@@ -747,6 +771,51 @@ class TestKivyRendererEdgeCases:
             assert mock_image.height == 50
 
             mock_image.width = 200
+            width_callback(mock_image, mock_image.width)
+            assert mock_image.height == 50
+
+    def test_image_downscales_when_container_is_narrower(self, renderer):
+        """contain_no_upscale mode should shrink large images to fit available width."""
+        token = {
+            'type': 'image',
+            'attrs': {'url': 'http://example.com/large.png'},
+            'children': [{'type': 'text', 'raw': 'Large image'}]
+        }
+
+        with patch('kivy_garden.markdownlabel.kivy_renderer.AsyncImage') as MockAsyncImage:
+            mock_image = MockAsyncImage.return_value
+            mock_image.texture = MagicMock()
+            mock_image.texture.width = 200
+            mock_image.texture.height = 100
+            mock_image.width = 100
+
+            renderer.image(token)
+            _, kwargs = mock_image.bind.call_args
+            width_callback = kwargs['width']
+
+            width_callback(mock_image, mock_image.width)
+            assert mock_image.height == 50
+
+    def test_image_fill_width_mode_scales_to_available_width(self):
+        """fill_width mode should scale image to full allocated width."""
+        renderer = KivyRenderer(image_size_mode='fill_width')
+        token = {
+            'type': 'image',
+            'attrs': {'url': 'http://example.com/fill.png'},
+            'children': [{'type': 'text', 'raw': 'Fill image'}]
+        }
+
+        with patch('kivy_garden.markdownlabel.kivy_renderer.AsyncImage') as MockAsyncImage:
+            mock_image = MockAsyncImage.return_value
+            mock_image.texture = MagicMock()
+            mock_image.texture.width = 100
+            mock_image.texture.height = 50
+            mock_image.width = 200
+
+            renderer.image(token)
+            _, kwargs = mock_image.bind.call_args
+            width_callback = kwargs['width']
+
             width_callback(mock_image, mock_image.width)
             assert mock_image.height == 100
 
@@ -815,6 +884,20 @@ class TestKivyRendererEdgeCases:
         widget = renderer.block_text(token)
         assert isinstance(widget, Label)
         assert widget.text == 'item'
+
+    def test_list_item_image_token(self, renderer):
+        """block_text with standalone image renders an AsyncImage."""
+        token = {
+            'type': 'block_text',
+            'children': [{
+                'type': 'image',
+                'attrs': {'url': 'https://example.com/list-image.png'},
+                'children': [{'type': 'text', 'raw': 'List image'}],
+            }]
+        }
+        widget = renderer.block_text(token)
+        assert isinstance(widget, AsyncImage)
+        assert widget.source == 'https://example.com/list-image.png'
 
     def test_text_size_binding_strict_mode(self, renderer):
         """Test text_size binding in strict label mode."""

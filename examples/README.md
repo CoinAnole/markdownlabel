@@ -6,6 +6,7 @@ This directory contains example applications demonstrating the MarkdownLabel wid
 
 - **simple_demo.py** - A minimal example showing basic MarkdownLabel usage
 - **full_featured_demo.py** - A comprehensive demo showcasing all Label-compatible properties
+- **markdownlabel_test_pattern.png** - Local test image used by the full-featured demo
 - **sample_markdown.md** - Sample Markdown content used by the full-featured demo
 
 ## Prerequisites
@@ -55,6 +56,7 @@ This example demonstrates:
 - **halign** - Text alignment (left, center, right, justify)
 - **padding** - Content padding
 - **disabled** - Disabled state with custom colors
+- **image rendering** - Local image, remote URL image, broken URL handling, texture-mode fallback behavior
 - Full sample_markdown.md rendering
 
 The full-featured demo opens a scrollable window (1400x900) with multiple sections, each demonstrating a specific property with side-by-side comparisons.
