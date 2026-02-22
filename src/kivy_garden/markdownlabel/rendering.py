@@ -4,6 +4,8 @@ This module contains all rendering-related methods including widget tree
 building, texture rendering, and style updates.
 """
 
+import logging
+
 from kivy.uix.label import Label
 from kivy.uix.image import Image, AsyncImage
 from kivy.uix.gridlayout import GridLayout
@@ -11,6 +13,7 @@ from kivy.uix.widget import Widget
 from kivy.graphics import Fbo, ClearColor, ClearBuffers
 
 _DEFAULT_CODE_LABEL_COLOR = [0.9, 0.9, 0.9, 1]
+_LOGGER = logging.getLogger(__name__)
 
 
 def clear_text_size_bindings(label):
@@ -412,19 +415,17 @@ class MarkdownLabelRendering:
 
         has_unloaded_images = _has_unloaded_images(content)
         if has_unloaded_images:
-            warnings.warn(
-                "Texture render skipped because some AsyncImage textures are still loading; "
-                "falling back to widget mode.",
-                RuntimeWarning,
+            _LOGGER.info(
+                "Texture render skipped because AsyncImage textures are still loading; "
+                "falling back to widget mode."
             )
             self._aggregated_refs = {}
             return None
 
         if _contains_async_images(content):
-            warnings.warn(
+            _LOGGER.info(
                 "Texture render skipped because Markdown images are not supported in "
-                "texture mode; falling back to widget mode.",
-                RuntimeWarning,
+                "texture mode; falling back to widget mode."
             )
             self._aggregated_refs = {}
             return None
